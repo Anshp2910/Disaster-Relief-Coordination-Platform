@@ -71,6 +71,7 @@ export const clientApi = {
   deleteResource: (id) => apiFetch(`/api/resources/${id}`, { method: 'DELETE' }),
   allocateResource: (id, payload) => apiFetch(`/api/resources/${id}/allocate`, { method: 'POST', body: payload }),
   deallocateResource: (id, payload) => apiFetch(`/api/resources/${id}/deallocate`, { method: 'POST', body: payload }),
+  matchResources: (requestId) => apiFetch(`/api/resources/match/${requestId}`, { method: 'GET' }),
 
   getZones: (params = {}) => {
     const qs = new URLSearchParams(params).toString()

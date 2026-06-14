@@ -49,6 +49,8 @@ export default function RequestDetail() {
   const [allocating, setAllocating] = useState(false)
   const [allocResource, setAllocResource] = useState('')
   const [allocQty, setAllocQty] = useState('')
+  const [matches, setMatches] = useState([])
+  const [loadingMatches, setLoadingMatches] = useState(false)
   const fileRef = useRef()
 
   const currentUser = (() => {
@@ -76,6 +78,20 @@ export default function RequestDetail() {
   }
 
   useEffect(() => { load(); loadResources() }, [id])
+
+  async function loadMatches() {
+    setLoadingMatches(true)
+    try {
+      const data = await clientApi.matchResources(id)
+      setMatches(data.matches || [])
+    } catch (e) {
+      console.error('Failed to load matches')
+    } finally {
+      setLoadingMatches(false)
+    }
+  }
+
+  useEffect(() => { if (item && item.status === 'Open') loadMatches() }, [item?.status])
 
   async function handleClaim() {
     try {
@@ -264,6 +280,50 @@ export default function RequestDetail() {
           )}
         </div>
       </div>
+
+      {matches.length > 0 && (
+        <div className="card" style={{ marginTop: 16 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>
+            Suggested Resources ({matches.length})
+          </h3>
+          <div style={{ fontSize: 12, color: 'var(--gov-muted)', marginBottom: 10 }}>
+            Auto-matched by category and proximity
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {matches.map((m) => (
+              <div key={m._id} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 14px', background: 'var(--gov-bg)', borderRadius: 6, fontSize: 13,
+              }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 600 }}>{m.name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--gov-muted)', marginTop: 2 }}>
+                    {m.quantity} {m.unit} available
+                    {m.distanceKm != null && <span> - {m.distanceKm} km away</span>}
+                    {m.categoryMatch && <span className="govt-badge govt-badge-green" style={{ marginLeft: 6, fontSize: 10 }}>Exact Match</span>}
+                  </div>
+                </div>
+                <button
+                  onClick={async () => {
+                    try {
+                      await clientApi.allocateResource(m._id, { requestId: id, allocQuantity: Math.min(m.quantity, 10) })
+                      loadResources()
+                      loadMatches()
+                      alert('Resource allocated')
+                    } catch (e) {
+                      alert(e.message)
+                    }
+                  }}
+                  className="btnPrimary"
+                  style={{ fontSize: 11, padding: '4px 12px', flexShrink: 0 }}
+                >
+                  Quick Allocate
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="card" style={{ marginTop: 16 }}>
         <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>

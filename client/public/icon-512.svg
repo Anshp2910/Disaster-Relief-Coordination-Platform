@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#000080"/>
+  <g transform="translate(256, 210)">
+    <circle r="85" fill="none" stroke="#FF9933" stroke-width="8"/>
+    <circle r="16" fill="#FF9933"/>
+    <g stroke="#FF9933" stroke-width="7" stroke-linecap="round">
+      <line x1="0" y1="-32" x2="0" y2="-68"/>
+      <line x1="27.7" y1="-16" x2="58.8" y2="-34"/>
+      <line x1="27.7" y1="16" x2="58.8" y2="34"/>
+      <line x1="0" y1="32" x2="0" y2="68"/>
+      <line x1="-27.7" y1="16" x2="-58.8" y2="34"/>
+      <line x1="-27.7" y1="-16" x2="-58.8" y2="-34"/>
+    </g>
+  </g>
+  <text x="256" y="380" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="42" font-weight="bold">DISASTER RELIEF</text>
+  <text x="256" y="418" text-anchor="middle" fill="#aaa" font-family="Arial,sans-serif" font-size="18">Coordination Platform</text>
+  <rect x="80" y="435" width="352" height="6" rx="3" fill="#138808"/>
+</svg>

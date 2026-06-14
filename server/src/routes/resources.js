@@ -4,6 +4,15 @@ import { validate } from '../middleware/validate.js'
 import { Resource } from '../models/Resource.js'
 import { Request } from '../models/Request.js'
 
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371
+  const toRad = (d) => (d * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
 export const resourcesRouter = express.Router()
 
 resourcesRouter.get('/', requireAuth, async (req, res) => {
@@ -42,6 +51,12 @@ resourcesRouter.post('/', requireAuth, validate('createResource'), async (req, r
     const status = quantity === 0 ? 'Depleted' : quantity <= 10 ? 'Low' : 'Available'
     const resource = new Resource({ name, category, quantity, unit, locationName, lat, lng, notes, status, updatedBy: req.user._id })
     await resource.save()
+
+    const io = req.app.get('io')
+    if (io) {
+      io.emit('resource:created', { item: resource })
+    }
+
     return res.status(201).json({ item: resource })
   } catch (err) {
     console.error('[resources] create error:', err.message)
@@ -84,7 +99,13 @@ resourcesRouter.delete('/:id', requireAuth, async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id)
     if (!resource) return res.status(404).json({ error: 'Resource not found' })
-    if (resource.allocatedTo) return res.status(400).json({ error: 'Cannot delete allocated resource' })
+
+    if (resource.allocatedTo) {
+      resource.allocatedTo = null
+      resource.allocatedQuantity = 0
+      await resource.save()
+    }
+
     await resource.deleteOne()
     return res.json({ ok: true })
   } catch (err) {
@@ -114,6 +135,16 @@ resourcesRouter.post('/:id/allocate', requireAuth, validate('allocateResource'),
     resource.updatedBy = req.user._id
 
     await resource.save()
+
+    const io = req.app.get('io')
+    if (io) {
+      io.emit('resource:allocated', {
+        resource: { _id: resource._id, name: resource.name },
+        requestId,
+        allocQuantity,
+      })
+    }
+
     return res.json({ item: resource })
   } catch (err) {
     console.error('[resources] allocate error:', err.message)
@@ -142,6 +173,61 @@ resourcesRouter.post('/:id/deallocate', requireAuth, validate('deallocateResourc
     return res.json({ item: resource })
   } catch (err) {
     console.error('[resources] deallocate error:', err.message)
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+resourcesRouter.get('/match/:requestId', requireAuth, async (req, res) => {
+  try {
+    const request = await Request.findById(req.params.requestId).lean()
+    if (!request) return res.status(404).json({ error: 'Request not found' })
+
+    const { lat, lng, category } = request
+    const MAX_DISTANCE_KM = 100
+
+    const categoryMap = {
+      Medical: ['Medical'],
+      Food: ['Food'],
+      Shelter: ['Shelter'],
+      Water: ['Water'],
+      Rescue: ['Supplies'],
+      Supplies: ['Supplies'],
+      Other: ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other'],
+    }
+
+    const matchedCategories = categoryMap[category] || ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other']
+
+    const resources = await Resource.find({
+      category: { $in: matchedCategories },
+      status: { $in: ['Available', 'Low'] },
+      quantity: { $gt: 0 },
+      allocatedTo: null,
+    }).lean()
+
+    const scored = resources
+      .map((r) => {
+        let distance = Infinity
+        if (lat != null && lng != null && r.lat != null && r.lng != null) {
+          distance = haversineKm(lat, lng, r.lat, r.lng)
+        }
+        const categoryMatch = r.category === category ? 1 : 0.5
+        const distanceScore = distance <= MAX_DISTANCE_KM ? 1 - distance / MAX_DISTANCE_KM : 0
+        const score = categoryMatch * 0.6 + distanceScore * 0.4
+
+        return {
+          ...r,
+          distanceKm: distance === Infinity ? null : Math.round(distance * 10) / 10,
+          score: Math.round(score * 100) / 100,
+          categoryMatch: r.category === category,
+        }
+      })
+      .filter((r) => r.score > 0.1)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10)
+
+    return res.json({ matches: scored })
+  } catch (err) {
+    console.error('[resources] match error:', err.message)
     res.status(500).json({ error: 'Server error' })
   }
 })

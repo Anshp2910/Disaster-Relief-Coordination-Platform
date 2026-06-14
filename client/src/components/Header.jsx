@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import NotificationBell from './NotificationBell'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -103,6 +104,7 @@ export default function Header() {
           ))}
           {token && (
             <>
+              <NotificationBell />
               <button onClick={() => navigate('/profile')} className="gov-nav-link">
                 {currentUser?.displayName || t('nav.profile')}
               </button>

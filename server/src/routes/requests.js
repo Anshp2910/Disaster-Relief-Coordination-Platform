@@ -86,6 +86,15 @@ requestsRouter.post('/', requireAuth, validate('createRequest'), async (req, res
   })
 
   const populated = await item.populate('createdBy', 'displayName email role')
+
+  const io = req.app.get('io')
+  if (io) {
+    console.log('[ws] emitting request:created for', populated.title)
+    io.emit('request:created', { item: populated })
+  } else {
+    console.log('[ws] io instance not found on app')
+  }
+
   return res.status(201).json({ item: populated })
 })
 
@@ -130,6 +139,12 @@ requestsRouter.put('/:id', requireAuth, validate('updateRequest'), async (req, r
 
   await item.save()
   const populated = await item.populate('createdBy', 'displayName email role')
+
+  const io = req.app.get('io')
+  if (io) {
+    io.emit('request:updated', { item: populated })
+  }
+
   return res.json({ item: populated })
 })
 
@@ -143,6 +158,12 @@ requestsRouter.delete('/:id', requireAuth, async (req, res) => {
   if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
 
   await item.deleteOne()
+
+  const io = req.app.get('io')
+  if (io) {
+    io.emit('request:deleted', { id })
+  }
+
   return res.json({ deleted: true })
 })
 
@@ -160,6 +181,12 @@ requestsRouter.post('/:id/claim', requireAuth, async (req, res) => {
 
   const populated = await item.populate('createdBy', 'displayName email role')
   await populated.populate('claimedBy', 'displayName email role')
+
+  const io = req.app.get('io')
+  if (io) {
+    io.emit('request:updated', { item: populated })
+  }
+
   return res.json({ item: populated })
 })
 
@@ -178,6 +205,12 @@ requestsRouter.post('/:id/unclaim', requireAuth, async (req, res) => {
   await item.save()
 
   const populated = await item.populate('createdBy', 'displayName email role')
+
+  const io = req.app.get('io')
+  if (io) {
+    io.emit('request:updated', { item: populated })
+  }
+
   return res.json({ item: populated })
 })
 
@@ -194,6 +227,15 @@ requestsRouter.post('/:id/comments', requireAuth, validate('comment'), async (re
   await item.save()
 
   const populated = await item.populate('comments.createdBy', 'displayName email role')
+
+  const io = req.app.get('io')
+  if (io) {
+    io.emit('request:commented', {
+      requestId: id,
+      comment: populated.comments[populated.comments.length - 1],
+    })
+  }
+
   return res.json({ comments: populated.comments })
 })
 
@@ -234,6 +276,11 @@ requestsRouter.post('/:id/files', requireAuth, upload.array('files', 5), async (
   item.files.push(...newFiles)
   item.auditLog.push({ action: 'filesUploaded', by: req.user._id, details: `${req.files.length} file(s)` })
   await item.save()
+
+  const io = req.app.get('io')
+  if (io) {
+    io.emit('request:updated', { item: { _id: id, files: item.files } })
+  }
 
   return res.json({ files: item.files })
 })

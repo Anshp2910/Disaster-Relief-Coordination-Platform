@@ -32,6 +32,11 @@ async function start() {
 
   io.on('connection', (socket) => {
     console.log('[ws] client connected:', socket.id)
+    socket.on('identify', (data) => {
+      console.log('[ws] identified:', data)
+      socket.userId = data.userId
+      socket.userRole = data.role
+    })
     socket.on('disconnect', () => console.log('[ws] client disconnected:', socket.id))
   })
 

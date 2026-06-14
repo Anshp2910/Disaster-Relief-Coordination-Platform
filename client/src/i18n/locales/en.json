@@ -224,5 +224,22 @@
     "high": "High",
     "medium": "Medium",
     "low": "Low"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications yet",
+    "markAllRead": "Mark all read",
+    "clear": "Clear",
+    "newRequest": "New Relief Request",
+    "requestUpdated": "Request Updated",
+    "newComment": "New Comment",
+    "resourceAllocated": "Resource Allocated"
+  },
+  "matching": {
+    "suggestedResources": "Suggested Resources",
+    "autoMatched": "Auto-matched by category and proximity",
+    "quickAllocate": "Quick Allocate",
+    "exactMatch": "Exact Match",
+    "kmAway": "km away"
   }
 }
