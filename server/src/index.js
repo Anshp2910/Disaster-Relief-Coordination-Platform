@@ -37,6 +37,26 @@ async function start() {
       socket.userId = data.userId
       socket.userRole = data.role
     })
+
+    socket.on('chat:join', ({ requestId }) => {
+      if (requestId) {
+        socket.join(`chat:${requestId}`)
+        console.log('[ws] joined chat room:', requestId)
+      }
+    })
+
+    socket.on('chat:leave', ({ requestId }) => {
+      if (requestId) {
+        socket.leave(`chat:${requestId}`)
+        console.log('[ws] left chat room:', requestId)
+      }
+    })
+
+    socket.on('geofencing:subscribe', ({ lat, lng, radiusKm }) => {
+      socket.geofencing = { lat, lng, radiusKm }
+      console.log('[ws] subscribed geofencing:', lat, lng, radiusKm)
+    })
+
     socket.on('disconnect', () => console.log('[ws] client disconnected:', socket.id))
   })
 

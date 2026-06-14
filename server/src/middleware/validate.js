@@ -104,6 +104,80 @@ const schemas = {
     affectedPopulation: Joi.number().min(0),
     notes: Joi.string().max(2000).trim(),
   }).min(1),
+
+  chatMessage: Joi.object({
+    text: Joi.string().min(1).max(2000).required().trim(),
+  }),
+
+  feedback: Joi.object({
+    rating: Joi.number().integer().min(1).max(5).required(),
+    comment: Joi.string().max(2000).trim(),
+    deliveryConfirmed: Joi.boolean(),
+  }),
+
+  createSchedule: Joi.object({
+    userId: Joi.string().required(),
+    zoneId: Joi.string(),
+    startDate: Joi.date().required(),
+    endDate: Joi.date().required().greater(Joi.ref('startDate')),
+    shift: Joi.string().valid('Morning', 'Afternoon', 'Night', 'Full Day'),
+    skills: Joi.array().items(Joi.string().valid('Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other')),
+    notes: Joi.string().max(1000).trim(),
+  }),
+
+  updateSchedule: Joi.object({
+    startDate: Joi.date(),
+    endDate: Joi.date(),
+    shift: Joi.string().valid('Morning', 'Afternoon', 'Night', 'Full Day'),
+    skills: Joi.array().items(Joi.string().valid('Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other')),
+    status: Joi.string().valid('Scheduled', 'Active', 'Completed', 'Cancelled'),
+    notes: Joi.string().max(1000).trim(),
+  }).min(1),
+
+  createIncident: Joi.object({
+    name: Joi.string().min(1).max(200).required().trim(),
+    description: Joi.string().max(5000).trim(),
+    disasterType: Joi.string().valid('Flood', 'Earthquake', 'Cyclone', 'Drought', 'Fire', 'Landslide', 'Other'),
+    severity: Joi.string().valid('Critical', 'High', 'Medium', 'Low'),
+    status: Joi.string().valid('Active', 'Monitoring', 'Resolved', 'Closed'),
+    zones: Joi.array().items(Joi.string()),
+    startDate: Joi.date(),
+    affectedPopulation: Joi.number().min(0),
+    centerLat: Joi.number().min(-90).max(90),
+    centerLng: Joi.number().min(-180).max(180),
+  }),
+
+  updateIncident: Joi.object({
+    name: Joi.string().min(1).max(200).trim(),
+    description: Joi.string().max(5000).trim(),
+    disasterType: Joi.string().valid('Flood', 'Earthquake', 'Cyclone', 'Drought', 'Fire', 'Landslide', 'Other'),
+    severity: Joi.string().valid('Critical', 'High', 'Medium', 'Low'),
+    status: Joi.string().valid('Active', 'Monitoring', 'Resolved', 'Closed'),
+    zones: Joi.array().items(Joi.string()),
+    endDate: Joi.date(),
+    affectedPopulation: Joi.number().min(0),
+    centerLat: Joi.number().min(-90).max(90),
+    centerLng: Joi.number().min(-180).max(180),
+  }).min(1),
+
+  sosAlert: Joi.object({
+    message: Joi.string().max(1000).trim(),
+    lat: Joi.number().min(-90).max(90),
+    lng: Joi.number().min(-180).max(180),
+    zoneId: Joi.string(),
+  }),
+
+  updateProfile: Joi.object({
+    displayName: Joi.string().min(1).max(100).trim(),
+    currentPassword: Joi.string(),
+    newPassword: Joi.string().min(6).max(128),
+    phone: Joi.string().max(20).trim(),
+    skills: Joi.array().items(Joi.string().valid('Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other')),
+    notifications: Joi.object({
+      email: Joi.boolean(),
+      sms: Joi.boolean(),
+    }),
+  }).or('displayName', 'newPassword', 'phone', 'skills', 'notifications'),
 }
 
 export function validate(schemaName) {

@@ -11,6 +11,14 @@ import { requestsRouter } from './routes/requests.js'
 import { adminRouter } from './routes/admin.js'
 import { resourcesRouter } from './routes/resources.js'
 import { zonesRouter } from './routes/zones.js'
+import { chatRouter } from './routes/chat.js'
+import { feedbackRouter } from './routes/feedback.js'
+import { schedulesRouter } from './routes/schedules.js'
+import { incidentsRouter } from './routes/incidents.js'
+import { bulkRouter } from './routes/bulk.js'
+import { escalationRouter } from './routes/escalation.js'
+import { geofencingRouter } from './routes/geofencing.js'
+import { sosRouter } from './routes/sos.js'
 import { getEnv } from './config/env.js'
 
 dotenv.config()
@@ -55,6 +63,14 @@ export function createApp() {
   app.use('/api/admin', adminRouter)
   app.use('/api/resources', resourcesRouter)
   app.use('/api/zones', zonesRouter)
+  app.use('/api/chat', chatRouter)
+  app.use('/api/feedback', feedbackRouter)
+  app.use('/api/schedules', schedulesRouter)
+  app.use('/api/incidents', incidentsRouter)
+  app.use('/api/bulk', bulkRouter)
+  app.use('/api/escalation', escalationRouter)
+  app.use('/api/geofencing', geofencingRouter)
+  app.use('/api/sos', sosRouter)
 
   app.use((err, req, res, next) => {
     console.error('[error]', err.message)

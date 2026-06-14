@@ -52,6 +52,10 @@ const RequestSchema = new mongoose.Schema(
     comments: [CommentSchema],
     auditLog: [AuditEntrySchema],
 
+    escalated: { type: Boolean, default: false },
+    escalatedAt: { type: Date, default: null },
+    escalationReason: { type: String, trim: true },
+
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { timestamps: true },

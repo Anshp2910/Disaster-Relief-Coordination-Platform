@@ -11,7 +11,12 @@
     "logout": "Logout",
     "profile": "Profile",
     "resources": "Resources",
-    "zones": "Zones"
+    "zones": "Zones",
+    "incidents": "Incidents",
+    "schedules": "Schedules",
+    "bulkImport": "Bulk Import",
+    "escalation": "Escalation",
+    "geofencing": "Geofencing"
   },
   "auth": {
     "appName": "DisasterRelief",

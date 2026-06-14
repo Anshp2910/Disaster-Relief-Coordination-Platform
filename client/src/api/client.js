@@ -82,4 +82,56 @@ export const clientApi = {
   createZone: (payload) => apiFetch('/api/zones', { method: 'POST', body: payload }),
   updateZone: (id, payload) => apiFetch(`/api/zones/${id}`, { method: 'PUT', body: payload }),
   deleteZone: (id) => apiFetch(`/api/zones/${id}`, { method: 'DELETE' }),
+
+  // Chat
+  getChatMessages: (requestId, params = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return apiFetch(`/api/chat/${requestId}${qs ? '?' + qs : ''}`, { method: 'GET' })
+  },
+  sendChatMessage: (requestId, text) => apiFetch(`/api/chat/${requestId}`, { method: 'POST', body: { text } }),
+  deleteChatMessage: (requestId, messageId) => apiFetch(`/api/chat/${requestId}/${messageId}`, { method: 'DELETE' }),
+
+  // Feedback
+  getFeedback: (requestId) => apiFetch(`/api/feedback/request/${requestId}`, { method: 'GET' }),
+  submitFeedback: (requestId, payload) => apiFetch(`/api/feedback/request/${requestId}`, { method: 'POST', body: payload }),
+  getFeedbackStats: () => apiFetch('/api/feedback/stats', { method: 'GET' }),
+
+  // Schedules
+  getSchedules: (params = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return apiFetch(`/api/schedules${qs ? '?' + qs : ''}`, { method: 'GET' })
+  },
+  createSchedule: (payload) => apiFetch('/api/schedules', { method: 'POST', body: payload }),
+  updateSchedule: (id, payload) => apiFetch(`/api/schedules/${id}`, { method: 'PUT', body: payload }),
+  deleteSchedule: (id) => apiFetch(`/api/schedules/${id}`, { method: 'DELETE' }),
+
+  // Incidents
+  getIncidents: (params = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return apiFetch(`/api/incidents${qs ? '?' + qs : ''}`, { method: 'GET' })
+  },
+  getIncident: (id) => apiFetch(`/api/incidents/${id}`, { method: 'GET' }),
+  createIncident: (payload) => apiFetch('/api/incidents', { method: 'POST', body: payload }),
+  updateIncident: (id, payload) => apiFetch(`/api/incidents/${id}`, { method: 'PUT', body: payload }),
+  deleteIncident: (id) => apiFetch(`/api/incidents/${id}`, { method: 'DELETE' }),
+
+  // Bulk Import/Export
+  exportRequestsCSV: () => `${API_BASE}/api/bulk/requests/export?token=${getToken()}`,
+  exportResourcesCSV: () => `${API_BASE}/api/bulk/resources/export?token=${getToken()}`,
+  importRequests: (rows) => apiFetch('/api/bulk/requests/import', { method: 'POST', body: { rows } }),
+  importResources: (rows) => apiFetch('/api/bulk/resources/import', { method: 'POST', body: { rows } }),
+
+  // Escalation
+  getEscalated: () => apiFetch('/api/escalation', { method: 'GET' }),
+  escalateRequest: (requestId, reason) => apiFetch(`/api/escalation/${requestId}`, { method: 'POST', body: { reason } }),
+  deescalateRequest: (requestId) => apiFetch(`/api/escalation/${requestId}`, { method: 'DELETE' }),
+
+  // SOS
+  broadcastSOS: (payload) => apiFetch('/api/sos/broadcast', { method: 'POST', body: payload }),
+
+  // Geofencing
+  checkGeofencing: (lat, lng, radiusKm) => apiFetch(`/api/geofencing/check?lat=${lat}&lng=${lng}&radiusKm=${radiusKm}`, { method: 'GET' }),
+
+  // Profile extended
+  updateProfileExtended: (payload) => apiFetch('/api/auth/profile', { method: 'PUT', body: payload }),
 }

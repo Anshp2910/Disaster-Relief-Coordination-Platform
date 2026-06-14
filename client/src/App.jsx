@@ -11,6 +11,11 @@ import Profile from './pages/Profile'
 import Resources from './pages/Resources'
 import ZoneHeatMap from './pages/ZoneHeatMap'
 import AdminDashboard from './pages/AdminDashboard'
+import Incidents from './pages/Incidents'
+import Schedules from './pages/Schedules'
+import BulkImport from './pages/BulkImport'
+import Escalation from './pages/Escalation'
+import Geofencing from './pages/Geofencing'
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem('token')
@@ -117,6 +122,51 @@ export default function App() {
             <RequireAdmin>
               <AdminDashboard />
             </RequireAdmin>
+          }
+        />
+
+        <Route
+          path="/incidents"
+          element={
+            <RequireAuth>
+              <Incidents />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/schedules"
+          element={
+            <RequireAuth>
+              <Schedules />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/bulk"
+          element={
+            <RequireAuth>
+              <BulkImport />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/escalation"
+          element={
+            <RequireAdmin>
+              <Escalation />
+            </RequireAdmin>
+          }
+        />
+
+        <Route
+          path="/geofencing"
+          element={
+            <RequireAuth>
+              <Geofencing />
+            </RequireAuth>
           }
         />
 

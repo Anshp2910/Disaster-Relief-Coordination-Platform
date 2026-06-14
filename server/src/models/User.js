@@ -9,6 +9,13 @@ const UserSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ['volunteer', 'ngo', 'admin'], required: true },
     displayName: { type: String, required: true, trim: true },
+    avatar: { type: String, trim: true, default: '' },
+    skills: [{ type: String, enum: ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other'] }],
+    phone: { type: String, trim: true, default: '' },
+    notifications: {
+      email: { type: Boolean, default: true },
+      sms: { type: Boolean, default: false },
+    },
   },
   { timestamps: true },
 )

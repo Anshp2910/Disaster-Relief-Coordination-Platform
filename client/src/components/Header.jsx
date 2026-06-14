@@ -1,6 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
 import NotificationBell from './NotificationBell'
+import { clientApi } from '../api/client'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -46,13 +48,35 @@ export default function Header() {
         { path: '/dashboard', label: t('nav.dashboard') },
         { path: '/zones', label: t('nav.zones') || 'Zones' },
         { path: '/resources', label: t('nav.resources') || 'Resources' },
+        { path: '/incidents', label: t('nav.incidents') || 'Incidents' },
+        { path: '/schedules', label: t('nav.schedules') || 'Schedules' },
+        { path: '/geofencing', label: t('nav.geofencing') || 'Geofencing' },
+        { path: '/bulk', label: t('nav.bulkImport') || 'Bulk' },
         { path: '/requests/new', label: t('nav.newRequest') },
-        ...(currentUser?.role === 'admin' ? [{ path: '/admin', label: t('nav.admin') }] : []),
+        ...(currentUser?.role === 'admin' ? [
+          { path: '/admin', label: t('nav.admin') },
+          { path: '/escalation', label: t('nav.escalation') || 'Escalation' },
+        ] : []),
       ]
     : [
         { path: '/login', label: t('nav.login') },
         { path: '/register', label: t('nav.register') },
       ]
+
+  const [sosLoading, setSosLoading] = useState(false)
+
+  async function handleSOS() {
+    if (!confirm('Send SOS emergency alert to all connected users?')) return
+    setSosLoading(true)
+    try {
+      await clientApi.broadcastSOS({ message: `SOS from ${currentUser?.displayName || 'User'}` })
+      alert('SOS alert broadcasted!')
+    } catch (e) {
+      alert('Failed: ' + e.message)
+    } finally {
+      setSosLoading(false)
+    }
+  }
 
   return (
     <header>
@@ -105,6 +129,13 @@ export default function Header() {
           {token && (
             <>
               <NotificationBell />
+              <button
+                onClick={handleSOS}
+                disabled={sosLoading}
+                style={{ background: '#cc0000', color: 'white', border: 'none', borderRadius: 4, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', letterSpacing: 0.5 }}
+              >
+                {sosLoading ? '...' : 'SOS'}
+              </button>
               <button onClick={() => navigate('/profile')} className="gov-nav-link">
                 {currentUser?.displayName || t('nav.profile')}
               </button>

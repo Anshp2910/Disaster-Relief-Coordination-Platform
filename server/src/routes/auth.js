@@ -76,13 +76,17 @@ authRouter.get('/me', requireAuth, async (req, res) => {
 
 authRouter.put('/profile', requireAuth, validate('updateProfile'), async (req, res) => {
   try {
-    const { displayName, currentPassword, newPassword } = req.body || {}
+    const { displayName, currentPassword, newPassword, phone, skills, notifications } = req.body || {}
     const user = await User.findById(req.user._id)
 
     if (displayName !== undefined) {
       if (!displayName.trim()) return res.status(400).json({ error: 'Display name required' })
       user.displayName = displayName.trim()
     }
+
+    if (phone !== undefined) user.phone = phone
+    if (skills !== undefined) user.skills = skills
+    if (notifications !== undefined) user.notifications = notifications
 
     if (newPassword) {
       if (!currentPassword) return res.status(400).json({ error: 'Current password required' })
@@ -93,7 +97,7 @@ authRouter.put('/profile', requireAuth, validate('updateProfile'), async (req, r
 
     await user.save()
     return res.json({
-      user: { id: user._id, email: user.email, role: user.role, displayName: user.displayName },
+      user: { id: user._id, email: user.email, role: user.role, displayName: user.displayName, phone: user.phone, skills: user.skills, notifications: user.notifications },
     })
   } catch (err) {
     return res.status(500).json({ error: 'Server error' })
