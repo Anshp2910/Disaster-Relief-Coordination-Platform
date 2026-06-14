@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Magnifying glass -->
+  <circle cx="180" cy="120" r="60" fill="#F0F4FF" stroke="#000080" stroke-width="2.5" opacity="0.3"/>
+  <circle cx="180" cy="120" r="45" fill="white" stroke="#000080" stroke-width="2" opacity="0.2"/>
+  <line x1="222" y1="162" x2="270" y2="210" stroke="#000080" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+  <!-- X mark inside magnifying glass -->
+  <line x1="165" y1="105" x2="195" y2="135" stroke="#FF9933" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  <line x1="195" y1="105" x2="165" y2="135" stroke="#FF9933" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  <!-- Text -->
+  <text x="200" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#000080" opacity="0.7">No Results Found</text>
+  <text x="200" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666666">Try adjusting your search or filters</text>
+  <text x="200" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666666">to find what you're looking for.</text>
+  <!-- Tricolor accent -->
+  <rect x="160" y="290" width="30" height="3" rx="1.5" fill="#FF9933" opacity="0.6"/>
+  <rect x="195" y="290" width="10" height="3" rx="1.5" fill="white" opacity="0.6"/>
+  <rect x="210" y="290" width="30" height="3" rx="1.5" fill="#138808" opacity="0.6"/>
+</svg>

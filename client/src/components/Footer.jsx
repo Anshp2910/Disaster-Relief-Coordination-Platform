@@ -5,6 +5,7 @@ export default function Footer() {
 
   return (
     <footer className="gov-footer">
+      <img src="/images/tricolor-accent.svg" alt="" style={{ width: '100%', display: 'block' }} />
       <div className="gov-container">
         <div className="gov-footer-grid">
           <div>

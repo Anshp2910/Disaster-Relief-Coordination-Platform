@@ -84,6 +84,9 @@ export default function Dashboard() {
 
   return (
     <div className="container">
+      <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden' }}>
+        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" style={{ width: '100%', display: 'block' }} />
+      </div>
       <div className="card">
         <div className="headerRow">
           <div>
@@ -137,7 +140,10 @@ export default function Dashboard() {
         ) : (
           <div className="gridGap" style={{ marginTop: 16 }}>
             {items.length === 0 ? (
-              <div className="muted" style={{ textAlign: 'center', padding: 20 }}>{t('dashboard.noRequests')}</div>
+              <div style={{ textAlign: 'center', padding: 20 }}>
+                <img src="/images/empty-requests.svg" alt="No requests" style={{ width: 200, margin: '0 auto 12px', display: 'block' }} />
+                <div className="muted">{t('dashboard.noRequests')}</div>
+              </div>
             ) : (
               items.map((it) => (
                 <div key={it._id} className="listCard" style={{ cursor: 'pointer' }} onClick={() => navigate(`/requests/${it._id}`)}>

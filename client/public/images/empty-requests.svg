@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Clipboard outline -->
+  <rect x="100" y="40" width="200" height="240" rx="16" fill="#F0F4FF" stroke="#000080" stroke-width="2" opacity="0.3"/>
+  <rect x="140" y="24" width="120" height="32" rx="8" fill="#000080" opacity="0.2"/>
+  <rect x="170" y="16" width="60" height="16" rx="8" fill="#000080" opacity="0.3"/>
+  <!-- Checkmark -->
+  <circle cx="200" cy="140" r="40" fill="#E8F5E9" stroke="#138808" stroke-width="2"/>
+  <path d="M180,140 L195,155 L225,125" stroke="#138808" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Text -->
+  <text x="200" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#000080" opacity="0.7">No Requests Yet</text>
+  <text x="200" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666666">All clear! Create a new relief request</text>
+  <text x="200" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666666">when help is needed.</text>
+  <!-- Tricolor accent -->
+  <rect x="160" y="275" width="30" height="3" rx="1.5" fill="#FF9933" opacity="0.6"/>
+  <rect x="195" y="275" width="10" height="3" rx="1.5" fill="white" opacity="0.6"/>
+  <rect x="210" y="275" width="30" height="3" rx="1.5" fill="#138808" opacity="0.6"/>
+</svg>

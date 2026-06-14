@@ -114,6 +114,12 @@ export default function MapOverview() {
             <div className="small muted">{t('dashboard.loading')}</div>
           </div>
         )}
+        {!loading && items.length === 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
+            <img src="/images/empty-map.svg" alt="No locations" style={{ width: 260, marginBottom: 16 }} />
+            <div className="muted">{t('dashboard.noRequests')}</div>
+          </div>
+        )}
         <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
       </div>
 

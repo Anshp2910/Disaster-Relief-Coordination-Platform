@@ -13,26 +13,9 @@ const LANGUAGES = [
   { code: 'pa', label: 'ਪੰਜਾਬੀ' },
 ]
 
-function AshokaChakra() {
+function LogoMark() {
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20" cy="20" r="18" stroke="#000080" strokeWidth="2.5" fill="none" />
-      <circle cx="20" cy="20" r="4" fill="#000080" />
-      {[...Array(24)].map((_, i) => {
-        const angle = (i * 15 * Math.PI) / 180
-        return (
-          <line
-            key={i}
-            x1={20}
-            y1={20}
-            x2={20 + 16 * Math.sin(angle)}
-            y2={20 - 16 * Math.cos(angle)}
-            stroke="#000080"
-            strokeWidth="1.2"
-          />
-        )
-      })}
-    </svg>
+    <img src="/images/logo.svg" alt="Logo" style={{ height: 48, width: 'auto' }} />
   )
 }
 
@@ -93,7 +76,7 @@ export default function Header() {
 
       <div className="gov-header-main">
         <div className="gov-container" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <AshokaChakra />
+          <LogoMark />
           <div>
             <div style={{ fontSize: 18, fontWeight: 700, color: '#000080', lineHeight: 1.2 }}>
               {t('appTitle')}
