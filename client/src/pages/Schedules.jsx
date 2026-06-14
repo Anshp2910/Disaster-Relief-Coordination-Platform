@@ -58,7 +58,7 @@ export default function Schedules() {
   async function loadDropdowns() {
     try {
       const [usersData, zonesData] = await Promise.all([clientApi.adminUsers(), clientApi.getZones()])
-      setUsers(usersData.items || usersData || [])
+      setUsers(usersData.users || usersData.items || [])
       setZones(zonesData.items || [])
     } catch (e) {
       console.error('Failed to load dropdowns:', e)
