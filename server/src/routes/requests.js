@@ -77,6 +77,7 @@ requestsRouter.post('/', requireAuth, validate('createRequest'), async (req, res
     locationName,
     lat,
     lng,
+    location: { type: 'Point', coordinates: [lng, lat] },
     status: status || 'Open',
     category: category || 'Other',
     priority: priority || 'Medium',
@@ -133,6 +134,9 @@ requestsRouter.put('/:id', requireAuth, validate('updateRequest'), async (req, r
   if (locationName !== undefined) item.locationName = locationName
   if (lat !== undefined) item.lat = lat
   if (lng !== undefined) item.lng = lng
+  if (lat !== undefined && lng !== undefined) item.location = { type: 'Point', coordinates: [lng, lat] }
+  else if (lat !== undefined) item.location = { type: 'Point', coordinates: [item.lng, lat] }
+  else if (lng !== undefined) item.location = { type: 'Point', coordinates: [lng, item.lat] }
   if (status !== undefined) item.status = status
   if (category !== undefined) item.category = category
   if (priority !== undefined) item.priority = priority
@@ -278,7 +282,14 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, async (req, res) 
   return res.json({ deleted: true })
 })
 
-requestsRouter.post('/:id/files', requireAuth, upload.array('files', 5), async (req, res) => {
+requestsRouter.post('/:id/files', requireAuth, (req, res, next) => {
+  upload.array('files', 5)(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message })
+    }
+    next()
+  })
+}, async (req, res) => {
   const { id } = req.params
   const item = await Request.findById(id)
   if (!item) return res.status(404).json({ error: 'Not found' })

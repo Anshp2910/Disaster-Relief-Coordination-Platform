@@ -36,9 +36,13 @@ schedulesRouter.get('/', requireAuth, async (req, res) => {
 
 schedulesRouter.post('/', requireAuth, validate('createSchedule'), async (req, res) => {
   try {
+    let targetUserId = req.user._id
+    if (req.body.userId && req.user.role === 'admin') {
+      targetUserId = req.body.userId
+    }
     const schedule = new Schedule({
       ...req.body,
-      userId: req.body.userId || req.user._id,
+      userId: targetUserId,
     })
     await schedule.save()
     const populated = await schedule.populate('userId', 'displayName email role skills')

@@ -13,6 +13,10 @@ const ResourceSchema = new mongoose.Schema(
     locationName: { type: String, required: true, trim: true, maxlength: 500 },
     lat: { type: Number, min: -90, max: 90 },
     lng: { type: Number, min: -180, max: 180 },
+    location: {
+      type: { type: String, enum: ['Point'], default: 'Point' },
+      coordinates: { type: [Number], index: '2dsphere' },
+    },
     status: {
       type: String,
       enum: ['Available', 'Low', 'Depleted', 'Reserved'],
@@ -26,6 +30,7 @@ const ResourceSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
+ResourceSchema.index({ location: '2dsphere' })
 ResourceSchema.index({ category: 1, status: 1 })
 ResourceSchema.index({ locationName: 'text', name: 'text' })
 

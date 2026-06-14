@@ -23,49 +23,42 @@ incidentsRouter.get('/', requireAuth, async (req, res) => {
         .sort({ startDate: -1 })
         .skip(skip)
         .limit(Number(limit))
-        .populate('zones', 'name severity status centerLat centerLng')
+        .populate('zones', 'name severity status centerLat centerLng radiusKm location')
         .populate('createdBy', 'displayName email')
         .lean(),
       Incident.countDocuments(filter),
     ])
 
     const enriched = await Promise.all(items.map(async (inc) => {
-      const zoneIds = (inc.zones || []).map((z) => z._id || z)
-      const requests = await Request.find({ lat: { $exists: true }, lng: { $exists: true } }).select('lat lng status').lean()
-      const resources = await Resource.find({ lat: { $exists: true }, lng: { $exists: true } }).select('lat lng category quantity status').lean()
-
-      const zones = await Zone.find({ _id: { $in: zoneIds } }).lean()
+      const zones = inc.zones || []
       let requestCount = 0
       let openRequests = 0
       let resourceCount = 0
 
-      for (const r of requests) {
-        if (r.lat && r.lng) {
-          for (const z of zones) {
-            if (z.centerLat && z.centerLng && r.lat && r.lng) {
-              const dist = haversineKm(z.centerLat, z.centerLng, r.lat, r.lng)
-              if (dist <= (z.radiusKm || 10)) {
-                requestCount++
-                if (r.status === 'Open') openRequests++
-                break
-              }
-            }
-          }
-        }
-      }
+      for (const z of zones) {
+        const radiusMeters = (z.radiusKm || 10) * 1000
+        const center = z.location?.coordinates ? [z.location.coordinates[0], z.location.coordinates[1]] : [z.centerLng, z.centerLat]
 
-      for (const r of resources) {
-        if (r.lat && r.lng) {
-          for (const z of zones) {
-            if (z.centerLat && z.centerLng && r.lat && r.lng) {
-              const dist = haversineKm(z.centerLat, z.centerLng, r.lat, r.lng)
-              if (dist <= (z.radiusKm || 10)) {
-                resourceCount++
-                break
-              }
-            }
-          }
-        }
+        const [requests, resources] = await Promise.all([
+          Request.find({
+            location: {
+              $geoWithin: {
+                $centerSphere: [center, radiusMeters / 6371000],
+              },
+            },
+          }).select('status').lean(),
+          Resource.find({
+            location: {
+              $geoWithin: {
+                $centerSphere: [center, radiusMeters / 6371000],
+              },
+            },
+          }).select('quantity').lean(),
+        ])
+
+        requestCount += requests.length
+        openRequests += requests.filter((r) => r.status === 'Open').length
+        resourceCount += resources.length
       }
 
       return { ...inc, stats: { requestCount, openRequests, resourceCount } }

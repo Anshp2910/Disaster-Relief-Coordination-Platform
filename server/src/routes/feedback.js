@@ -40,7 +40,9 @@ feedbackRouter.post('/request/:requestId', requireAuth, validate('feedback'), as
       fulfilledAt: item.status === 'Fulfilled' ? new Date() : null,
     })
 
-    if (deliveryConfirmed && item.status !== 'Fulfilled') {
+    const isClaimer = item.claimedBy && item.claimedBy.toString() === req.user._id.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (deliveryConfirmed && item.status !== 'Fulfilled' && (isClaimer || isAdmin)) {
       item.status = 'Fulfilled'
       item.auditLog.push({ action: 'deliveryConfirmed', by: req.user._id })
       await item.save()

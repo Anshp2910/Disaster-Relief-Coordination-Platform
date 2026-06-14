@@ -14,40 +14,48 @@ geofencingRouter.get('/check', requireAuth, async (req, res) => {
     const latitude = Number(lat)
     const longitude = Number(lng)
     const radius = Number(radiusKm)
+    const radiusMeters = radius * 1000
 
-    const zones = await Zone.find({ status: { $ne: 'Closed' } }).lean()
-    const nearby = []
+    const [zones, requests, resources] = await Promise.all([
+      Zone.find({
+        status: { $ne: 'Closed' },
+        location: {
+          $geoWithin: {
+            $centerSphere: [[longitude, latitude], radiusMeters / 6371000],
+          },
+        },
+      }).lean(),
+      Request.find({
+        location: {
+          $geoWithin: {
+            $centerSphere: [[longitude, latitude], radiusMeters / 6371000],
+          },
+        },
+      }).lean(),
+      Resource.find({
+        location: {
+          $geoWithin: {
+            $centerSphere: [[longitude, latitude], radiusMeters / 6371000],
+          },
+        },
+      }).lean(),
+    ])
 
-    for (const zone of zones) {
-      if (zone.centerLat && zone.centerLng) {
-        const dist = haversineKm(latitude, longitude, zone.centerLat, zone.centerLng)
-        if (dist <= (zone.radiusKm || radius)) {
-          nearby.push({ ...zone, distanceKm: Math.round(dist * 10) / 10 })
-        }
-      }
-    }
+    const nearby = zones.map((zone) => {
+      const center = zone.location?.coordinates ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
+      const dist = haversineKm(latitude, longitude, center[1], center[0])
+      return { ...zone, distanceKm: Math.round(dist * 10) / 10 }
+    })
 
-    const requests = await Request.find({ lat: { $exists: true }, lng: { $exists: true } }).lean()
-    const nearbyRequests = []
-    for (const r of requests) {
-      if (r.lat && r.lng) {
-        const dist = haversineKm(latitude, longitude, r.lat, r.lng)
-        if (dist <= radius) {
-          nearbyRequests.push({ ...r, distanceKm: Math.round(dist * 10) / 10 })
-        }
-      }
-    }
+    const nearbyRequests = requests.map((r) => {
+      const dist = haversineKm(latitude, longitude, r.lat, r.lng)
+      return { ...r, distanceKm: Math.round(dist * 10) / 10 }
+    })
 
-    const resources = await Resource.find({ lat: { $exists: true }, lng: { $exists: true } }).lean()
-    const nearbyResources = []
-    for (const r of resources) {
-      if (r.lat && r.lng) {
-        const dist = haversineKm(latitude, longitude, r.lat, r.lng)
-        if (dist <= radius) {
-          nearbyResources.push({ ...r, distanceKm: Math.round(dist * 10) / 10 })
-        }
-      }
-    }
+    const nearbyResources = resources.map((r) => {
+      const dist = haversineKm(latitude, longitude, r.lat, r.lng)
+      return { ...r, distanceKm: Math.round(dist * 10) / 10 }
+    })
 
     res.json({
       zones: nearby,

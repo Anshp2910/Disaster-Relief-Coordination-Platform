@@ -49,7 +49,7 @@ resourcesRouter.post('/', requireAuth, validate('createResource'), async (req, r
     if (quantity < 0) return res.status(400).json({ error: 'Quantity must be non-negative' })
 
     const status = quantity === 0 ? 'Depleted' : quantity <= 10 ? 'Low' : 'Available'
-    const resource = new Resource({ name, category, quantity, unit, locationName, lat, lng, notes, status, updatedBy: req.user._id })
+    const resource = new Resource({ name, category, quantity, unit, locationName, lat, lng, location: { type: 'Point', coordinates: [lng, lat] }, notes, status, updatedBy: req.user._id })
     await resource.save()
 
     const io = req.app.get('io')
@@ -87,6 +87,9 @@ resourcesRouter.put('/:id', requireAuth, validate('updateResource'), async (req,
     if (locationName !== undefined) resource.locationName = locationName
     if (lat !== undefined) resource.lat = lat
     if (lng !== undefined) resource.lng = lng
+    if (lat !== undefined && lng !== undefined) resource.location = { type: 'Point', coordinates: [lng, lat] }
+    else if (lat !== undefined) resource.location = { type: 'Point', coordinates: [resource.lng, lat] }
+    else if (lng !== undefined) resource.location = { type: 'Point', coordinates: [lng, resource.lat] }
     if (notes !== undefined) resource.notes = notes
     if (status !== undefined) resource.status = status
     resource.updatedBy = req.user._id
@@ -205,12 +208,28 @@ resourcesRouter.get('/match/:requestId', requireAuth, async (req, res) => {
 
     const matchedCategories = categoryMap[category] || ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other']
 
-    const resources = await Resource.find({
-      category: { $in: matchedCategories },
-      status: { $in: ['Available', 'Low'] },
-      quantity: { $gt: 0 },
-      allocatedTo: null,
-    }).lean()
+    let resources
+    if (lat != null && lng != null) {
+      resources = await Resource.find({
+        category: { $in: matchedCategories },
+        status: { $in: ['Available', 'Low'] },
+        quantity: { $gt: 0 },
+        allocatedTo: null,
+        location: {
+          $near: {
+            $geometry: { type: 'Point', coordinates: [lng, lat] },
+            $maxDistance: MAX_DISTANCE_KM * 1000,
+          },
+        },
+      }).lean()
+    } else {
+      resources = await Resource.find({
+        category: { $in: matchedCategories },
+        status: { $in: ['Available', 'Low'] },
+        quantity: { $gt: 0 },
+        allocatedTo: null,
+      }).lean()
+    }
 
     const scored = resources
       .map((r) => {

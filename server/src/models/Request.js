@@ -20,6 +20,10 @@ const RequestSchema = new mongoose.Schema(
     locationName: { type: String, required: true, trim: true },
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
+    location: {
+      type: { type: String, enum: ['Point'], default: 'Point' },
+      coordinates: { type: [Number], index: '2dsphere' },
+    },
 
     status: {
       type: String,
@@ -61,7 +65,7 @@ const RequestSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-RequestSchema.index({ lat: 1, lng: 1 })
+RequestSchema.index({ location: '2dsphere' })
 RequestSchema.index({ status: 1 })
 RequestSchema.index({ category: 1 })
 RequestSchema.index({ createdAt: -1 })

@@ -62,8 +62,8 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
       return res.status(400).json({ error: 'No rows to import' })
     }
 
-    const validCategories = ['Food', 'Water', 'Medical', 'Shelter', 'Clothing', 'Transport', 'Communication', 'Other']
-    const validStatuses = ['Open', 'Fulfilled', 'Claimed', 'Cancelled']
+    const validCategories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other']
+    const validStatuses = ['Open', 'In Progress', 'Resolved', 'Fulfilled']
     const validPriorities = ['Critical', 'High', 'Medium', 'Low']
 
     const imported = []
@@ -93,6 +93,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
         locationName: row.locationName || '',
         lat: row.lat ? Number(row.lat) : undefined,
         lng: row.lng ? Number(row.lng) : undefined,
+        location: (row.lat && row.lng) ? { type: 'Point', coordinates: [Number(row.lng), Number(row.lat)] } : undefined,
         createdBy: req.user._id,
         auditLog: [{ action: 'created', by: req.user._id }],
       })
@@ -113,8 +114,8 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
       return res.status(400).json({ error: 'No rows to import' })
     }
 
-    const validCategories = ['Food', 'Water', 'Medical', 'Shelter', 'Clothing', 'Transport', 'Communication', 'Other']
-    const validStatuses = ['Available', 'Reserved', 'Distributed']
+    const validCategories = ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other']
+    const validStatuses = ['Available', 'Low', 'Depleted', 'Reserved']
 
     const imported = []
     const errors = []
@@ -141,6 +142,7 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
         locationName: row.locationName || '',
         lat: row.lat ? Number(row.lat) : undefined,
         lng: row.lng ? Number(row.lng) : undefined,
+        location: (row.lat && row.lng) ? { type: 'Point', coordinates: [Number(row.lng), Number(row.lat)] } : undefined,
       })
       imported.push(doc._id)
     }

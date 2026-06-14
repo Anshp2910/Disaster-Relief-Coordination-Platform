@@ -60,7 +60,7 @@ export function createApp() {
         if (!origin || allowedOrigins.includes(origin)) {
           callback(null, true)
         } else {
-          callback(null, true)
+          callback(new Error('Not allowed by CORS'), false)
         }
       },
       credentials: true,
@@ -98,6 +98,9 @@ export function createApp() {
     }
     if (err.name === 'CastError') {
       return res.status(400).json({ error: 'Invalid ID format' })
+    }
+    if (err.name === 'MulterError') {
+      return res.status(400).json({ error: err.message })
     }
     return res.status(500).json({ error: 'Internal server error' })
   })

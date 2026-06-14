@@ -6,6 +6,10 @@ const ZoneSchema = new mongoose.Schema(
     description: { type: String, trim: true, maxlength: 2000 },
     centerLat: { type: Number, required: true, min: -90, max: 90 },
     centerLng: { type: Number, required: true, min: -180, max: 180 },
+    location: {
+      type: { type: String, enum: ['Point'], default: 'Point' },
+      coordinates: { type: [Number], index: '2dsphere' },
+    },
     radiusKm: { type: Number, required: true, min: 1, max: 500, default: 10 },
     severity: {
       type: String,
@@ -34,6 +38,7 @@ const ZoneSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
+ZoneSchema.index({ location: '2dsphere' })
 ZoneSchema.index({ centerLat: 1, centerLng: 1 })
 ZoneSchema.index({ severity: 1, status: 1 })
 ZoneSchema.index({ name: 'text', description: 'text' })
