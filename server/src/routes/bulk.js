@@ -1,22 +1,13 @@
 import express from 'express'
-import jwt from 'jsonwebtoken'
-import { getEnv } from '../config/env.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { Zone } from '../models/Zone.js'
-import { User } from '../models/User.js'
 
 export const bulkRouter = express.Router()
 
-bulkRouter.get('/requests/export', async (req, res) => {
+bulkRouter.get('/requests/export', requireAuth, async (req, res) => {
   try {
-    const token = req.query.token || req.headers.authorization?.replace('Bearer ', '')
-    if (!token) return res.status(401).json({ error: 'Authentication required' })
-    const decoded = jwt.verify(token, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'))
-    const user = await User.findById(decoded.sub).lean()
-    if (!user) return res.status(401).json({ error: 'Invalid token' })
-
     const items = await Request.find({}).sort({ createdAt: -1 }).lean()
     const headers = ['title', 'description', 'category', 'priority', 'status', 'locationName', 'lat', 'lng', 'createdAt']
     const csv = [headers.join(',')]
@@ -32,14 +23,8 @@ bulkRouter.get('/requests/export', async (req, res) => {
   }
 })
 
-bulkRouter.get('/resources/export', async (req, res) => {
+bulkRouter.get('/resources/export', requireAuth, async (req, res) => {
   try {
-    const token = req.query.token || req.headers.authorization?.replace('Bearer ', '')
-    if (!token) return res.status(401).json({ error: 'Authentication required' })
-    const decoded = jwt.verify(token, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'))
-    const user = await User.findById(decoded.sub).lean()
-    if (!user) return res.status(401).json({ error: 'Invalid token' })
-
     const items = await Resource.find({}).sort({ createdAt: -1 }).lean()
     const headers = ['name', 'category', 'quantity', 'unit', 'status', 'locationName', 'lat', 'lng', 'createdAt']
     const csv = [headers.join(',')]
@@ -114,7 +99,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
     console.error('[bulk] import requests error:', err)
-    res.status(500).json({ error: 'Server error', detail: err.message })
+    res.status(500).json({ error: 'Server error' })
   }
 })
 
@@ -172,6 +157,6 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
     console.error('[bulk] import resources error:', err)
-    res.status(500).json({ error: 'Server error', detail: err.message })
+    res.status(500).json({ error: 'Server error' })
   }
 })

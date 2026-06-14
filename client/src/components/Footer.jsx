@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 export default function Footer() {
@@ -11,11 +12,11 @@ export default function Footer() {
           <div>
             <h4>{t('footer.quickLinks')}</h4>
             <ul>
-              <li><a href="/dashboard">{t('footer.dashboardLink')}</a></li>
-              <li><a href="/zones">{t('nav.zones') || 'Zones'}</a></li>
-              <li><a href="/resources">{t('nav.resources') || 'Resources'}</a></li>
-              <li><a href="/requests/new">{t('footer.newRequestLink')}</a></li>
-              <li><a href="/admin">{t('footer.adminPanel')}</a></li>
+              <li><Link to="/dashboard">{t('footer.dashboardLink')}</Link></li>
+              <li><Link to="/zones">{t('nav.zones') || 'Zones'}</Link></li>
+              <li><Link to="/resources">{t('nav.resources') || 'Resources'}</Link></li>
+              <li><Link to="/requests/new">{t('footer.newRequestLink')}</Link></li>
+              <li><Link to="/admin">{t('footer.adminPanel')}</Link></li>
             </ul>
           </div>
           <div>

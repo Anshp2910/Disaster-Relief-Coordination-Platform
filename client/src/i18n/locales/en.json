@@ -4,6 +4,7 @@
   "topStrip": "An official website of the Disaster Relief Coordination Platform",
   "nav": {
     "dashboard": "Dashboard",
+    "mapView": "Map View",
     "newRequest": "New Request",
     "admin": "Admin",
     "login": "Login",
@@ -46,6 +47,7 @@
     "admin": "Admin",
     "newRequest": "+ New Request",
     "mapView": "Map View",
+    "listView": "List View",
     "filterAll": "All",
     "filterOpen": "Open",
     "filterInProgress": "In Progress",

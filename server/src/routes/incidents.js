@@ -6,6 +6,10 @@ import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export const incidentsRouter = express.Router()
 
 incidentsRouter.get('/', requireAuth, async (req, res) => {
@@ -15,7 +19,10 @@ incidentsRouter.get('/', requireAuth, async (req, res) => {
     if (status && status !== 'All') filter.status = status
     if (severity && severity !== 'All') filter.severity = severity
     if (disasterType && disasterType !== 'All') filter.disasterType = disasterType
-    if (search) filter.$or = [{ name: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }]
+    if (search) {
+      const safeSearch = escapeRegex(String(search))
+      filter.$or = [{ name: { $regex: safeSearch, $options: 'i' } }, { description: { $regex: safeSearch, $options: 'i' } }]
+    }
 
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
     const [items, total] = await Promise.all([

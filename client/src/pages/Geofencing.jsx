@@ -1,8 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { clientApi } from '../api/client'
+
+const DEFAULT_CENTER = [20.5937, 78.9629]
+const SEVERITY_COLORS = { Critical: '#cc0000', High: '#cc6600', Medium: '#FF9933', Low: '#138808' }
+
+function createMapIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:22px;height:22px;background:${color};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  })
+}
 
 export default function Geofencing() {
   const { t } = useTranslation()
@@ -11,35 +22,41 @@ export default function Geofencing() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const circleRef = useRef(null)
   const markersRef = useRef([])
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => setPosition({ lat: 20.5937, lng: 78.9629 })
-      )
-    } else {
-      setPosition({ lat: 20.5937, lng: 78.9629 })
+    if (!navigator.geolocation) {
+      setPosition({ lat: DEFAULT_CENTER[0], lng: DEFAULT_CENTER[1] })
+      return
     }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => setPosition({ lat: DEFAULT_CENTER[0], lng: DEFAULT_CENTER[1] })
+    )
   }, [])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
-    const map = L.map(mapRef.current).setView([20.5937, 78.9629], 5)
+
+    const map = L.map(mapRef.current).setView(DEFAULT_CENTER, 5)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map)
     mapInstanceRef.current = map
+    setTimeout(() => map.invalidateSize(), 100)
 
     map.on('click', (e) => {
       setPosition({ lat: e.latlng.lat, lng: e.latlng.lng })
     })
 
-    return () => { map.remove(); mapInstanceRef.current = null }
+    return () => {
+      map.remove()
+      mapInstanceRef.current = null
+    }
   }, [])
 
   useEffect(() => {
@@ -49,28 +66,33 @@ export default function Geofencing() {
 
     if (circleRef.current) map.removeLayer(circleRef.current)
     circleRef.current = L.circle([position.lat, position.lng], {
-      radius: radius * 1000, fillColor: '#000080', fillOpacity: 0.08, color: '#000080', weight: 2, dashArray: '6,4',
+      radius: radius * 1000,
+      fillColor: '#000080',
+      fillOpacity: 0.08,
+      color: '#000080',
+      weight: 2,
+      dashArray: '6,4',
     }).addTo(map)
 
     markersRef.current.forEach((m) => map.removeLayer(m))
     markersRef.current = []
 
-    if (result) {
-      const addMarker = (lat, lng, popup, color) => {
-        const icon = L.divIcon({
-          className: '',
-          html: `<div style="width:22px;height:22px;background:${color};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>`,
-          iconSize: [22, 22], iconAnchor: [11, 11],
-        })
-        const m = L.marker([lat, lng], { icon }).addTo(map).bindPopup(popup)
-        markersRef.current.push(m)
-      }
+    if (!result) return
 
-      const SEVERITY_COLORS = { Critical: '#cc0000', High: '#cc6600', Medium: '#FF9933', Low: '#138808' }
-      ;(result.zones || []).forEach((z) => addMarker(z.centerLat, z.centerLng, `<b>${z.name}</b><br>${z.severity} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999'))
-      ;(result.requests || []).forEach((r) => { if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${r.title}<br>${r.distanceKm} km away`, '#cc0000') })
-      ;(result.resources || []).forEach((r) => { if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, '#138808') })
+    const addMarker = (lat, lng, popup, color) => {
+      const marker = L.marker([lat, lng], { icon: createMapIcon(color) }).addTo(map).bindPopup(popup)
+      markersRef.current.push(marker)
     }
+
+    ;(result.zones || []).forEach((z) => {
+      addMarker(z.centerLat, z.centerLng, `<b>${z.name}</b><br>${z.severity} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999')
+    })
+    ;(result.requests || []).forEach((r) => {
+      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${r.title}<br>${r.distanceKm} km away`, '#cc0000')
+    })
+    ;(result.resources || []).forEach((r) => {
+      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, '#138808')
+    })
   }, [position, radius, result])
 
   async function checkArea() {
@@ -87,6 +109,18 @@ export default function Geofencing() {
     }
   }
 
+  const renderResultSection = (items, color, bgLight, countLabel, itemRenderer) => (
+    <div className="card" style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: 28, fontWeight: 700, color }}>{items.length}</div>
+      <div className="small muted">{countLabel}</div>
+      {items.map((item) => (
+        <div key={item._id} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: bgLight }}>
+          {itemRenderer(item)}
+        </div>
+      ))}
+    </div>
+  )
+
   return (
     <div className="container">
       <div className="card">
@@ -96,13 +130,28 @@ export default function Geofencing() {
             <div className="small" style={{ marginTop: 4 }}>Click map to set center, then check area</div>
           </div>
         </div>
+
         {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
 
         <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
           <label className="small" style={{ whiteSpace: 'nowrap' }}>Radius (km):</label>
-          <input type="number" value={radius} onChange={(e) => setRadius(Number(e.target.value))} min="1" max="500" style={{ width: 80, padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }} />
+          <input
+            type="number"
+            value={radius}
+            onChange={(e) => setRadius(Number(e.target.value))}
+            min="1"
+            max="500"
+            style={{ width: 80, padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+          />
           {position && <span className="small muted">{position.lat.toFixed(4)}, {position.lng.toFixed(4)}</span>}
-          <button className="btnPrimary" onClick={checkArea} disabled={loading || !position} style={{ fontSize: 12, padding: '6px 16px' }}>{loading ? 'Checking...' : 'Check Area'}</button>
+          <button
+            className="btnPrimary"
+            onClick={checkArea}
+            disabled={loading || !position}
+            style={{ fontSize: 12, padding: '6px 16px' }}
+          >
+            {loading ? 'Checking...' : 'Check Area'}
+          </button>
         </div>
       </div>
 
@@ -112,33 +161,27 @@ export default function Geofencing() {
 
       {result && (
         <div className="grid-3" style={{ marginTop: 12 }}>
-          <div className="card" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--gov-blue)' }}>{(result.zones || []).length}</div>
-            <div className="small muted">Zones in area</div>
-            {(result.zones || []).map((z) => (
-              <div key={z._id} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: 'rgba(0,0,128,.06)' }}>
-                {z.name} <span style={{ color: '#666' }}>({z.distanceKm} km)</span>
-              </div>
-            ))}
-          </div>
-          <div className="card" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 28, fontWeight: 700, color: '#cc0000' }}>{(result.requests || []).length}</div>
-            <div className="small muted">Requests nearby</div>
-            {(result.requests || []).map((r) => (
-              <div key={r._id} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: 'rgba(204,0,0,.06)' }}>
-                {r.title} <span style={{ color: '#666' }}>({r.distanceKm} km)</span>
-              </div>
-            ))}
-          </div>
-          <div className="card" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 28, fontWeight: 700, color: '#138808' }}>{(result.resources || []).length}</div>
-            <div className="small muted">Resources nearby</div>
-            {(result.resources || []).map((r) => (
-              <div key={r._id} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: 'rgba(19,136,8,.06)' }}>
-                {r.name} <span style={{ color: '#666' }}>({r.distanceKm} km)</span>
-              </div>
-            ))}
-          </div>
+          {renderResultSection(
+            result.zones || [],
+            'var(--gov-blue)',
+            'rgba(0,0,128,.06)',
+            'Zones in area',
+            (z) => <>{z.name} <span style={{ color: '#666' }}>({z.distanceKm} km)</span></>
+          )}
+          {renderResultSection(
+            result.requests || [],
+            '#cc0000',
+            'rgba(204,0,0,.06)',
+            'Requests nearby',
+            (r) => <>{r.title} <span style={{ color: '#666' }}>({r.distanceKm} km)</span></>
+          )}
+          {renderResultSection(
+            result.resources || [],
+            '#138808',
+            'rgba(19,136,8,.06)',
+            'Resources nearby',
+            (r) => <>{r.name} <span style={{ color: '#666' }}>({r.distanceKm} km)</span></>
+          )}
         </div>
       )}
     </div>

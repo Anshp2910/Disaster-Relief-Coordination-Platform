@@ -51,15 +51,33 @@ export default function Escalation() {
   return (
     <div className="container">
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('nav.escalation') || 'Request Escalation Pipeline'}</h2>
-        <div className="small muted" style={{ marginBottom: 12 }}>Escalate urgent requests that need immediate admin attention</div>
+        <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>
+          {t('nav.escalation') || 'Request Escalation Pipeline'}
+        </h2>
+        <div className="small muted" style={{ marginBottom: 12 }}>
+          Escalate urgent requests that need immediate admin attention
+        </div>
 
         {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
 
         <form onSubmit={handleEscalate} style={{ display: 'grid', gap: 8, marginBottom: 16 }}>
-          <input placeholder="Request ID" value={requestId} onChange={(e) => setRequestId(e.target.value)} required style={{ fontSize: 13 }} />
-          <textarea placeholder="Reason for escalation" value={reason} onChange={(e) => setReason(e.target.value)} rows={2} style={{ fontSize: 13 }} />
-          <button type="submit" className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px', justifySelf: 'start' }}>Escalate Request</button>
+          <input
+            placeholder="Request ID"
+            value={requestId}
+            onChange={(e) => setRequestId(e.target.value)}
+            required
+            style={{ fontSize: 13 }}
+          />
+          <textarea
+            placeholder="Reason for escalation"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            rows={2}
+            style={{ fontSize: 13 }}
+          />
+          <button type="submit" className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px', justifySelf: 'start' }}>
+            Escalate Request
+          </button>
         </form>
       </div>
 
@@ -74,11 +92,22 @@ export default function Escalation() {
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 14, color: '#000080' }}>{item.title}</div>
-                  <div style={{ fontSize: 12, color: '#cc0000', marginTop: 2 }}>Escalated: {new Date(item.escalatedAt).toLocaleString()}</div>
+                  <div style={{ fontSize: 12, color: '#cc0000', marginTop: 2 }}>
+                    Escalated: {new Date(item.escalatedAt).toLocaleString()}
+                  </div>
                   <div style={{ fontSize: 13, marginTop: 4 }}>{item.escalationReason}</div>
                   <div className="small muted" style={{ marginTop: 4 }}>By: {item.createdBy?.displayName || 'Unknown'}</div>
                 </div>
-                <button onClick={() => handleDeescalate(item._id)} style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(19,136,8,.1)', color: '#138808', border: '1px solid rgba(19,136,8,.3)', borderRadius: 4, cursor: 'pointer', alignSelf: 'start' }}>De-escalate</button>
+                <button
+                  onClick={() => handleDeescalate(item._id)}
+                  style={{
+                    fontSize: 11, padding: '4px 10px', background: 'rgba(19,136,8,.1)',
+                    color: '#138808', border: '1px solid rgba(19,136,8,.3)',
+                    borderRadius: 4, cursor: 'pointer', alignSelf: 'start',
+                  }}
+                >
+                  De-escalate
+                </button>
               </div>
             </div>
           ))}

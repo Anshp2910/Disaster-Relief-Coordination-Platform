@@ -7,24 +7,51 @@ function parseCSV(text) {
   let row = []
   let cell = ''
   let inQuotes = false
+
   for (let i = 0; i < text.length; i++) {
     const char = text[i]
     const next = text[i + 1]
+
     if (char === '"') {
-      if (inQuotes && next === '"') { cell += '"'; i++ }
-      else inQuotes = !inQuotes
-    } else if (char === ',' && !inQuotes) { row.push(cell); cell = '' }
-    else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (inQuotes && next === '"') {
+        cell += '"'
+        i++
+      } else {
+        inQuotes = !inQuotes
+      }
+    } else if (char === ',' && !inQuotes) {
+      row.push(cell)
+      cell = ''
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
       if (char === '\r' && next === '\n') i++
       row.push(cell)
-      if (row.some(f => f.trim())) result.push(row)
-      row = []; cell = ''
-    } else cell += char
+      if (row.some((f) => f.trim())) result.push(row)
+      row = []
+      cell = ''
+    } else {
+      cell += char
+    }
   }
+
   row.push(cell)
-  if (row.some(f => f.trim())) result.push(row)
+  if (row.some((f) => f.trim())) result.push(row)
   return result
 }
+
+function downloadBlob(content, filename, mimeType = 'text/csv') {
+  const blob = new Blob([content], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+const REQUEST_HEADERS = 'title,description,category,priority,status,locationName,lat,lng'
+const RESOURCE_HEADERS = 'name,category,quantity,unit,status,locationName,lat,lng'
+const REQUEST_EXAMPLE = 'Flood relief needed,Water and food needed,Food,High,Open,Chennai,13.0827,80.2707'
+const RESOURCE_EXAMPLE = 'Rice bags,Food,100,kg,Available,Chennai,13.0827,80.2707'
 
 export default function BulkImport() {
   const { t } = useTranslation()
@@ -38,43 +65,77 @@ export default function BulkImport() {
   const [editingRow, setEditingRow] = useState(null)
   const fileRef = useRef(null)
 
+  function cancelPreview() {
+    setPreview(null)
+    setSelected(new Set())
+    setEditingRow(null)
+    setError('')
+  }
+
+  function switchTab(newTab) {
+    setTab(newTab)
+    cancelPreview()
+  }
+
   async function handleImport(e) {
     const file = e.target.files?.[0]
     if (!file) return
-    setImporting(true); setError(''); setResult(null)
+
+    setImporting(true)
+    setError('')
+    setResult(null)
+
     try {
       let text = await file.text()
       text = text.replace(/^\uFEFF/, '')
       const rows = parseCSV(text)
+
       if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
+
       const h = rows[0].map((c) => c.trim().toLowerCase().replace(/^\uFEFF/, ''))
       const isRequestCSV = h.includes('title')
       const isResourceCSV = h.includes('name')
-      if (tab === 'requests' && isResourceCSV && !isRequestCSV) throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
-      if (tab === 'resources' && isRequestCSV && !isResourceCSV) throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
+
+      if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
+        throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
+      }
+      if (tab === 'resources' && isRequestCSV && !isResourceCSV) {
+        throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
+      }
+
       const dataRows = rows.slice(1).map((vals) => {
         const row = {}
         h.forEach((col, i) => { row[col] = vals[i]?.trim() || '' })
         return row
       })
+
       setHeaders(h)
       setPreview(dataRows)
       setSelected(new Set(dataRows.map((_, i) => i)))
       setEditingRow(null)
-    } catch (e) { setError(e.message) }
-    finally { setImporting(false); if (fileRef.current) fileRef.current.value = '' }
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setImporting(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
   }
 
   function toggleSelectAll() {
-    if (selected.size === preview.length) setSelected(new Set())
-    else setSelected(new Set(preview.map((_, i) => i)))
+    if (selected.size === preview.length) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(preview.map((_, i) => i)))
+    }
   }
 
   function toggleRow(i) {
-    const next = new Set(selected)
-    if (next.has(i)) next.delete(i)
-    else next.add(i)
-    setSelected(next)
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(i)) next.delete(i)
+      else next.add(i)
+      return next
+    })
   }
 
   function updateCell(rowIdx, col, val) {
@@ -87,24 +148,33 @@ export default function BulkImport() {
 
   async function handleSubmitImport() {
     const rowsToImport = preview.filter((_, i) => selected.has(i))
-    if (rowsToImport.length === 0) { setError('No rows selected'); return }
-    setImporting(true); setError('')
+    if (rowsToImport.length === 0) {
+      setError('No rows selected')
+      return
+    }
+
+    setImporting(true)
+    setError('')
     try {
-      const data = tab === 'requests' ? await clientApi.importRequests(rowsToImport) : await clientApi.importResources(rowsToImport)
+      const data = tab === 'requests'
+        ? await clientApi.importRequests(rowsToImport)
+        : await clientApi.importResources(rowsToImport)
       setResult(data)
-      if (data.imported > 0) { setPreview(null); setSelected(new Set()) }
-    } catch (e) { setError(e.message) }
-    finally { setImporting(false) }
+      if (data.imported > 0) {
+        setPreview(null)
+        setSelected(new Set())
+      }
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setImporting(false)
+    }
   }
 
   function downloadTemplate() {
-    const h = tab === 'requests' ? 'title,description,category,priority,status,locationName,lat,lng' : 'name,category,quantity,unit,status,locationName,lat,lng'
-    const ex = tab === 'requests' ? 'Flood relief needed,Water and food needed,Food,High,Open,Chennai,13.0827,80.2707' : 'Rice bags,Food,100,kg,Available,Chennai,13.0827,80.2707'
-    const csv = `${h}\n${ex}`
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a'); a.href = url; a.download = `${tab}_template.csv`; a.click()
-    URL.revokeObjectURL(url)
+    const headers = tab === 'requests' ? REQUEST_HEADERS : RESOURCE_HEADERS
+    const example = tab === 'requests' ? REQUEST_EXAMPLE : RESOURCE_EXAMPLE
+    downloadBlob(`${headers}\n${example}`, `${tab}_template.csv`)
   }
 
   function exportData() {
@@ -112,17 +182,14 @@ export default function BulkImport() {
     window.open(url, '_blank')
   }
 
-  function cancelPreview() {
-    setPreview(null); setSelected(new Set()); setEditingRow(null); setError('')
-  }
-
   return (
     <div className="container">
       <div className="card">
         <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('nav.bulkImport') || 'Bulk Import & CSV Export'}</h2>
+
         <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-          <button onClick={() => { setTab('requests'); cancelPreview() }} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>Requests</button>
-          <button onClick={() => { setTab('resources'); cancelPreview() }} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>Resources</button>
+          <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>Requests</button>
+          <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>Resources</button>
         </div>
 
         {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
@@ -130,9 +197,12 @@ export default function BulkImport() {
         {!preview && (
           <>
             <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'white', cursor: 'pointer', fontSize: 13 }}>Download Template</button>
+              <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'white', cursor: 'pointer', fontSize: 13 }}>
+                Download Template
+              </button>
               <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>Export CSV</button>
             </div>
+
             <div style={{ border: '2px dashed var(--gov-border)', borderRadius: 8, padding: 32, textAlign: 'center' }}>
               <div style={{ fontSize: 14, color: 'var(--gov-blue)', marginBottom: 8 }}>Import {tab} from CSV</div>
               <div className="small muted" style={{ marginBottom: 12 }}>Upload a CSV file with the correct headers</div>
@@ -150,7 +220,12 @@ export default function BulkImport() {
               <div style={{ fontSize: 14, fontWeight: 600 }}>{preview.length} rows parsed</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button onClick={cancelPreview} style={{ fontSize: 12, padding: '6px 14px' }}>Cancel</button>
-                <button onClick={handleSubmitImport} disabled={importing || selected.size === 0} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
+                <button
+                  onClick={handleSubmitImport}
+                  disabled={importing || selected.size === 0}
+                  className="btnPrimary"
+                  style={{ fontSize: 12, padding: '6px 14px' }}
+                >
                   {importing ? 'Importing...' : `Import ${selected.size} row${selected.size !== 1 ? 's' : ''}`}
                 </button>
               </div>
@@ -172,7 +247,13 @@ export default function BulkImport() {
                 </thead>
                 <tbody>
                   {preview.map((row, i) => (
-                    <tr key={i} style={{ background: editingRow === i ? 'rgba(0,0,128,0.04)' : selected.has(i) ? 'rgba(19,136,8,0.03)' : '#fafafa', opacity: selected.has(i) ? 1 : 0.5 }}>
+                    <tr
+                      key={i}
+                      style={{
+                        background: editingRow === i ? 'rgba(0,0,128,0.04)' : selected.has(i) ? 'rgba(19,136,8,0.03)' : '#fafafa',
+                        opacity: selected.has(i) ? 1 : 0.5,
+                      }}
+                    >
                       <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)' }}>
                         <input type="checkbox" checked={selected.has(i)} onChange={() => toggleRow(i)} />
                       </td>

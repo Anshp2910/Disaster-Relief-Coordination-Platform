@@ -1,20 +1,9 @@
-const CACHE_VERSION = 'v2'
+const CACHE_VERSION = 'v3'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
 
-const STATIC_ASSETS = [
-  '/',
-  '/dashboard',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-]
-
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS))
-  )
   self.skipWaiting()
 })
 
@@ -44,6 +33,11 @@ self.addEventListener('fetch', (event) => {
 
   if (url.pathname.startsWith('/uploads/')) {
     event.respondWith(cacheFirstStrategy(request, DYNAMIC_CACHE))
+    return
+  }
+
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirstStrategy(request, STATIC_CACHE))
     return
   }
 
@@ -77,15 +71,13 @@ function cacheFirstStrategy(request, cacheName) {
 
 function staleWhileRevalidate(request, cacheName) {
   return caches.match(request).then((cached) => {
-    const fetched = fetch(request)
-      .then((response) => {
-        if (response && response.status === 200) {
-          const clone = response.clone()
-          caches.open(cacheName).then((cache) => cache.put(request, clone))
-        }
-        return response
-      })
-      .catch(() => cached)
+    const fetched = fetch(request).then((response) => {
+      if (response && response.status === 200) {
+        const clone = response.clone()
+        caches.open(cacheName).then((cache) => cache.put(request, clone))
+      }
+      return response
+    })
     return cached || fetched
   })
 }
@@ -95,8 +87,8 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
+      icon: '/icon-192.svg',
+      badge: '/icon-192.svg',
       vibrate: [200, 100, 200],
       data: data.url || '/dashboard',
     })

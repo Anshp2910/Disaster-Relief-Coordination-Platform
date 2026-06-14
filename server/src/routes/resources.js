@@ -4,6 +4,10 @@ import { validate } from '../middleware/validate.js'
 import { Resource } from '../models/Resource.js'
 import { Request } from '../models/Request.js'
 
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 function haversineKm(lat1, lng1, lat2, lng2) {
   const R = 6371
   const toRad = (d) => (d * Math.PI) / 180
@@ -21,7 +25,10 @@ resourcesRouter.get('/', requireAuth, async (req, res) => {
     const filter = {}
     if (category && category !== 'All') filter.category = category
     if (status && status !== 'All') filter.status = status
-    if (search) filter.$or = [{ name: { $regex: search, $options: 'i' } }, { locationName: { $regex: search, $options: 'i' } }]
+    if (search) {
+      const safeSearch = escapeRegex(String(search))
+      filter.$or = [{ name: { $regex: safeSearch, $options: 'i' } }, { locationName: { $regex: safeSearch, $options: 'i' } }]
+    }
 
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
     const [items, total] = await Promise.all([
@@ -49,7 +56,11 @@ resourcesRouter.post('/', requireAuth, validate('createResource'), async (req, r
     if (quantity < 0) return res.status(400).json({ error: 'Quantity must be non-negative' })
 
     const status = quantity === 0 ? 'Depleted' : quantity <= 10 ? 'Low' : 'Available'
-    const resource = new Resource({ name, category, quantity, unit, locationName, lat, lng, location: { type: 'Point', coordinates: [lng, lat] }, notes, status, updatedBy: req.user._id })
+    const resourceData = { name, category, quantity, unit, locationName, lat, lng, notes, status, updatedBy: req.user._id }
+    if (lat != null && lng != null) {
+      resourceData.location = { type: 'Point', coordinates: [lng, lat] }
+    }
+    const resource = new Resource(resourceData)
     await resource.save()
 
     const io = req.app.get('io')
@@ -87,9 +98,11 @@ resourcesRouter.put('/:id', requireAuth, validate('updateResource'), async (req,
     if (locationName !== undefined) resource.locationName = locationName
     if (lat !== undefined) resource.lat = lat
     if (lng !== undefined) resource.lng = lng
-    if (lat !== undefined && lng !== undefined) resource.location = { type: 'Point', coordinates: [lng, lat] }
-    else if (lat !== undefined) resource.location = { type: 'Point', coordinates: [resource.lng, lat] }
-    else if (lng !== undefined) resource.location = { type: 'Point', coordinates: [lng, resource.lat] }
+    const newLat = lat !== undefined ? lat : resource.lat
+    const newLng = lng !== undefined ? lng : resource.lng
+    if (newLat != null && newLng != null) {
+      resource.location = { type: 'Point', coordinates: [newLng, newLat] }
+    }
     if (notes !== undefined) resource.notes = notes
     if (status !== undefined) resource.status = status
     resource.updatedBy = req.user._id

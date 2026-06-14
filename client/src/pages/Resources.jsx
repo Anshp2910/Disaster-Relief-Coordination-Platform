@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
@@ -22,6 +22,9 @@ const STATUS_COLORS = {
   Reserved: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
 }
 
+const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other']
+const STATUSES = ['All', 'Available', 'Low', 'Depleted', 'Reserved']
+
 function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || colors['Other']
   return (
@@ -31,8 +34,11 @@ function Badge({ label, colors, colorKey }) {
   )
 }
 
+const EMPTY_FORM = { name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' }
+
 export default function Resources() {
   const { t } = useTranslation()
+
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -42,18 +48,19 @@ export default function Resources() {
   const [filterCategory, setFilterCategory] = useState('All')
   const [filterStatus, setFilterStatus] = useState('All')
   const [search, setSearch] = useState('')
+  const [searchTrigger, setSearchTrigger] = useState(0)
+  const [summary, setSummary] = useState([])
+
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState(null)
-  const [summary, setSummary] = useState([])
-  const [searchTrigger, setSearchTrigger] = useState(0)
+  const [form, setForm] = useState(EMPTY_FORM)
+
   const [showAllocModal, setShowAllocModal] = useState(null)
   const [allocQty, setAllocQty] = useState('')
   const [allocRequestId, setAllocRequestId] = useState('')
   const [allocating, setAllocating] = useState(false)
 
-  const [form, setForm] = useState({ name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' })
-
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -66,24 +73,24 @@ export default function Resources() {
       setTotalPages(data.pages || 1)
       setTotal(data.total || 0)
       setSummary(data.summary || [])
-    } catch (e) {
-      setError(e.message)
+    } catch (err) {
+      setError(err.message)
     } finally {
       setLoading(false)
     }
-  }
+  }, [page, filterCategory, filterStatus, search, searchTrigger])
 
-  useEffect(() => { load() }, [page, filterCategory, filterStatus, searchTrigger])
+  useEffect(() => { load() }, [load])
 
   function handleSearch(e) {
     e.preventDefault()
     setPage(1)
-    setSearchTrigger((t) => t + 1)
+    setSearchTrigger((prev) => prev + 1)
   }
 
   function openCreate() {
     setEditItem(null)
-    setForm({ name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' })
+    setForm(EMPTY_FORM)
     setShowForm(true)
   }
 
@@ -91,6 +98,10 @@ export default function Resources() {
     setEditItem(item)
     setForm({ name: item.name, category: item.category, quantity: String(item.quantity), unit: item.unit, locationName: item.locationName, notes: item.notes || '' })
     setShowForm(true)
+  }
+
+  function updateForm(field, value) {
+    setForm((prev) => ({ ...prev, [field]: value }))
   }
 
   async function handleSubmit(e) {
@@ -105,8 +116,8 @@ export default function Resources() {
       }
       setShowForm(false)
       load()
-    } catch (e) {
-      setError(e.message)
+    } catch (err) {
+      setError(err.message)
     }
   }
 
@@ -115,8 +126,8 @@ export default function Resources() {
     try {
       await clientApi.deleteResource(id)
       load()
-    } catch (e) {
-      setError(e.message)
+    } catch (err) {
+      setError(err.message)
     }
   }
 
@@ -131,8 +142,8 @@ export default function Resources() {
       setAllocRequestId('')
       load()
       alert('Resource allocated')
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     } finally {
       setAllocating(false)
     }
@@ -141,10 +152,16 @@ export default function Resources() {
   async function handleDeallocate(id) {
     if (!confirm('Deallocate this resource?')) return
     try {
-      await clientApi.deallocateResource(id, { deallocQuantity: 0 })
+      const resource = items.find((r) => r._id === id)
+      const deallocQty = resource?.allocatedQuantity || 0
+      if (deallocQty <= 0) {
+        alert('Nothing to deallocate')
+        return
+      }
+      await clientApi.deallocateResource(id, { deallocQuantity: deallocQty })
       load()
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     }
   }
 
@@ -152,11 +169,9 @@ export default function Resources() {
     window.open(clientApi.exportResourcesCSV(), '_blank')
   }
 
-  const categories = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other']
-  const statuses = ['All', 'Available', 'Low', 'Depleted', 'Reserved']
-
   return (
     <div className="container">
+      {/* Header Card */}
       <div className="card">
         <div className="headerRow">
           <div>
@@ -193,36 +208,48 @@ export default function Resources() {
         </form>
 
         <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
-          {categories.map((c) => (
-            <button key={c} onClick={() => { setFilterCategory(c); setPage(1) }} className={`filter-pill ${filterCategory === c ? 'active' : ''}`}>
+          {CATEGORIES.map((c) => (
+            <button
+              key={c}
+              onClick={() => { setFilterCategory(c); setPage(1) }}
+              className={`filter-pill ${filterCategory === c ? 'active' : ''}`}
+            >
               {c === 'All' ? 'All' : `${CATEGORY_ICONS[c] || ''} ${c}`}
             </button>
           ))}
         </div>
 
         <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
-          {statuses.map((s) => (
-            <button key={s} onClick={() => { setFilterStatus(s); setPage(1) }} className={`filter-pill ${filterStatus === s ? 'active' : ''}`} style={{ fontSize: 11 }}>
+          {STATUSES.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setFilterStatus(s); setPage(1) }}
+              className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
+              style={{ fontSize: 11 }}
+            >
               {s}
             </button>
           ))}
         </div>
       </div>
 
+      {/* Create/Edit Form */}
       {showForm && (
         <div className="card" style={{ marginTop: 12 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{editItem ? 'Edit Resource' : 'Add New Resource'}</h3>
           <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr 1fr' }}>
-            <input placeholder="Resource name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required style={{ gridColumn: '1 / -1' }} />
-            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-              {categories.filter((c) => c !== 'All').map((c) => <option key={c} value={c}>{CATEGORY_ICONS[c]} {c}</option>)}
+            <input placeholder="Resource name" value={form.name} onChange={(e) => updateForm('name', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
+            <select value={form.category} onChange={(e) => updateForm('category', e.target.value)}>
+              {CATEGORIES.filter((c) => c !== 'All').map((c) => (
+                <option key={c} value={c}>{CATEGORY_ICONS[c]} {c}</option>
+              ))}
             </select>
             <div style={{ display: 'flex', gap: 8 }}>
-              <input type="number" placeholder="Qty" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} required min="0" style={{ flex: 1 }} />
-              <input placeholder="Unit (kg, boxes)" value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} required style={{ flex: 1 }} />
+              <input type="number" placeholder="Qty" value={form.quantity} onChange={(e) => updateForm('quantity', e.target.value)} required min="0" style={{ flex: 1 }} />
+              <input placeholder="Unit (kg, boxes)" value={form.unit} onChange={(e) => updateForm('unit', e.target.value)} required style={{ flex: 1 }} />
             </div>
-            <input placeholder="Location" value={form.locationName} onChange={(e) => setForm({ ...form, locationName: e.target.value })} required style={{ gridColumn: '1 / -1' }} />
-            <textarea placeholder="Notes (optional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={2} style={{ gridColumn: '1 / -1' }} />
+            <input placeholder="Location" value={form.locationName} onChange={(e) => updateForm('locationName', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
+            <textarea placeholder="Notes (optional)" value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} style={{ gridColumn: '1 / -1' }} />
             <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 8 }}>
               <button type="submit" className="btnPrimary">{editItem ? 'Update' : 'Create'}</button>
               <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>Cancel</button>
@@ -231,6 +258,7 @@ export default function Resources() {
         </div>
       )}
 
+      {/* Resource List */}
       {loading ? (
         <div className="small muted" style={{ marginTop: 16 }}>Loading...</div>
       ) : (
@@ -264,10 +292,20 @@ export default function Resources() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
                     {r.status === 'Available' && r.quantity > 0 && (
-                      <button onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }} style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(0,0,128,.1)', color: '#000080', border: '1px solid rgba(0,0,128,.3)', borderRadius: 4, cursor: 'pointer' }}>Allocate</button>
+                      <button
+                        onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
+                        style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(0,0,128,.1)', color: '#000080', border: '1px solid rgba(0,0,128,.3)', borderRadius: 4, cursor: 'pointer' }}
+                      >
+                        Allocate
+                      </button>
                     )}
                     {r.allocatedQuantity > 0 && (
-                      <button onClick={() => handleDeallocate(r._id)} style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(204,0,0,.1)', color: '#cc0000', border: '1px solid rgba(204,0,0,.3)', borderRadius: 4, cursor: 'pointer' }}>Deallocate</button>
+                      <button
+                        onClick={() => handleDeallocate(r._id)}
+                        style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(204,0,0,.1)', color: '#cc0000', border: '1px solid rgba(204,0,0,.3)', borderRadius: 4, cursor: 'pointer' }}
+                      >
+                        Deallocate
+                      </button>
                     )}
                     <button onClick={() => openEdit(r)} style={{ fontSize: 12, padding: '4px 10px' }}>Edit</button>
                     <button onClick={() => handleDelete(r._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>Delete</button>
@@ -279,6 +317,7 @@ export default function Resources() {
         </div>
       )}
 
+      {/* Pagination */}
       {totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
           <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Previous</button>
@@ -287,18 +326,23 @@ export default function Resources() {
         </div>
       )}
 
+      {/* Allocation Modal */}
       {showAllocModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 400 }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>Allocate Resource</h3>
-            <div style={{ fontSize: 13, marginBottom: 12 }}><strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available</div>
+            <div style={{ fontSize: 13, marginBottom: 12 }}>
+              <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available
+            </div>
             <form onSubmit={handleAllocate}>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>Request ID</label>
               <input value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder="Paste request ID" required style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>Quantity to allocate</label>
               <input type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} min="1" max={showAllocModal.quantity} required style={{ width: '100%', marginBottom: 12 }} />
               <div style={{ display: 'flex', gap: 8 }}>
-                <button type="submit" disabled={allocating} className="btnPrimary" style={{ fontSize: 13 }}>{allocating ? '...' : 'Allocate'}</button>
+                <button type="submit" disabled={allocating} className="btnPrimary" style={{ fontSize: 13 }}>
+                  {allocating ? '...' : 'Allocate'}
+                </button>
                 <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} style={{ fontSize: 13 }}>Cancel</button>
               </div>
             </form>

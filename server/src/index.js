@@ -30,14 +30,24 @@ async function start() {
     cors: { origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5001'], credentials: true },
   })
 
-  io.on('connection', (socket) => {
-    console.log('[ws] client connected:', socket.id)
-    socket.on('identify', (data) => {
-      console.log('[ws] identified:', data)
-      socket.userId = data.userId
-      socket.userRole = data.role
-    })
+  const { default: jwt } = await import('jsonwebtoken')
+  const { getEnv } = await import('./config/env.js')
 
+  io.use((socket, next) => {
+    const token = socket.handshake.auth?.token || socket.handshake.query?.token
+    if (!token) return next(new Error('Authentication required'))
+    try {
+      const decoded = jwt.verify(token, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'))
+      socket.userId = decoded.sub
+      socket.userRole = decoded.role
+      next()
+    } catch {
+      next(new Error('Invalid token'))
+    }
+  })
+
+  io.on('connection', (socket) => {
+    console.log('[ws] client connected:', socket.id, 'userId:', socket.userId)
     socket.on('chat:join', ({ requestId }) => {
       if (requestId) {
         socket.join(`chat:${requestId}`)

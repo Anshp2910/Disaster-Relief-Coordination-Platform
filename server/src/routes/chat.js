@@ -2,11 +2,15 @@ import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
 import { ChatMessage } from '../models/ChatMessage.js'
+import { Request } from '../models/Request.js'
 
 export const chatRouter = express.Router()
 
 chatRouter.get('/:requestId', requireAuth, async (req, res) => {
   try {
+    const request = await Request.findById(req.params.requestId).select('_id').lean()
+    if (!request) return res.status(404).json({ error: 'Request not found' })
+
     const { page = 1, limit = 50 } = req.query
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
     const [messages, total] = await Promise.all([
@@ -27,6 +31,9 @@ chatRouter.get('/:requestId', requireAuth, async (req, res) => {
 
 chatRouter.post('/:requestId', requireAuth, validate('chatMessage'), async (req, res) => {
   try {
+    const request = await Request.findById(req.params.requestId).select('_id').lean()
+    if (!request) return res.status(404).json({ error: 'Request not found' })
+
     const { text } = req.body
     const message = await ChatMessage.create({
       requestId: req.params.requestId,
@@ -50,7 +57,7 @@ chatRouter.post('/:requestId', requireAuth, validate('chatMessage'), async (req,
 
 chatRouter.delete('/:requestId/:messageId', requireAuth, async (req, res) => {
   try {
-    const message = await ChatMessage.findById(req.params.messageId)
+    const message = await ChatMessage.findOne({ _id: req.params.messageId, requestId: req.params.requestId })
     if (!message) return res.status(404).json({ error: 'Message not found' })
 
     const isAuthor = message.sender.toString() === req.user._id.toString()

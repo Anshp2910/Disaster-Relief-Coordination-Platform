@@ -1,11 +1,10 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
-const pinIcon = L.divIcon({
+const PIN_ICON = L.divIcon({
   className: '',
   iconSize: [30, 42],
   iconAnchor: [15, 42],
@@ -15,8 +14,20 @@ const pinIcon = L.divIcon({
   </svg>`,
 })
 
+const CATEGORIES = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other']
+const PRIORITIES = ['Critical', 'High', 'Medium', 'Low']
+const STATUSES = ['Open', 'In Progress', 'Resolved', 'Fulfilled']
+
+const INITIAL_CENTER = [20.5937, 78.9629]
+
 export default function EditRequest() {
   const { id } = useParams()
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const mapRef = useRef(null)
+  const mapInstance = useRef(null)
+  const markerRef = useRef(null)
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [lat, setLat] = useState('')
@@ -34,32 +45,41 @@ export default function EditRequest() {
   const [fetching, setFetching] = useState(true)
   const [locating, setLocating] = useState(false)
 
-  const navigate = useNavigate()
-  const mapRef = useRef(null)
-  const mapInstance = useRef(null)
-  const marker = useRef(null)
-  const { t } = useTranslation()
+  const placeMarker = useCallback((pLat, pLng) => {
+    setLat(String(pLat))
+    setLng(String(pLng))
+    setLocationName(`${pLat.toFixed(5)}, ${pLng.toFixed(5)}`)
+
+    if (markerRef.current) {
+      markerRef.current.setLatLng([pLat, pLng])
+    } else if (mapInstance.current) {
+      markerRef.current = L.marker([pLat, pLng], { icon: PIN_ICON }).addTo(mapInstance.current)
+    }
+
+    if (mapInstance.current) {
+      mapInstance.current.setView([pLat, pLng], 12)
+      mapInstance.current.invalidateSize()
+    }
+  }, [])
 
   useEffect(() => {
-    if (fetching || mapInstance.current) return
-    if (!mapRef.current) return
-    const map = L.map(mapRef.current).setView([20.5937, 78.9629], 5)
+    if (fetching || mapInstance.current || !mapRef.current) return
+
+    const map = L.map(mapRef.current).setView(INITIAL_CENTER, 5)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map)
 
-    map.on('click', (e) => {
-      const { lat: pLat, lng: pLng } = e.latlng
-      placeMarker(pLat, pLng)
-    })
-
+    map.on('click', (e) => placeMarker(e.latlng.lat, e.latlng.lng))
     mapInstance.current = map
-  }, [fetching])
+  }, [fetching, placeMarker])
 
   useEffect(() => {
+    let cancelled = false
     async function load() {
       try {
         const { item } = await clientApi.getRequest(id)
+        if (cancelled) return
         setTitle(item.title)
         setDescription(item.description)
         setStatus(item.status || 'Open')
@@ -70,48 +90,37 @@ export default function EditRequest() {
         setLat(String(item.lat))
         setLng(String(item.lng))
         setTimeout(() => {
-          if (mapInstance.current) {
-            placeMarker(item.lat, item.lng)
-          }
+          if (!cancelled && mapInstance.current) placeMarker(item.lat, item.lng)
         }, 100)
-      } catch (e2) {
-        setError(e2.message || 'Failed to load request')
+      } catch (err) {
+        if (!cancelled) setError(err.message || 'Failed to load request')
       } finally {
-        setFetching(false)
+        if (!cancelled) setFetching(false)
       }
     }
     load()
-  }, [id])
-
-  function placeMarker(pLat, pLng) {
-    setLat(String(pLat))
-    setLng(String(pLng))
-    setLocationName(`${pLat.toFixed(5)}, ${pLng.toFixed(5)}`)
-    if (marker.current) {
-      marker.current.setLatLng([pLat, pLng])
-    } else {
-      marker.current = L.marker([pLat, pLng], { icon: pinIcon }).addTo(mapInstance.current)
-    }
-    mapInstance.current.setView([pLat, pLng], 12)
-    mapInstance.current.invalidateSize()
-  }
+    return () => { cancelled = true }
+  }, [id, placeMarker])
 
   function useMyLocation() {
-    if (!navigator.geolocation) return setError(t('editRequest.geolocationNotSupported'))
+    if (!navigator.geolocation) {
+      setError(t('editRequest.geolocationNotSupported'))
+      return
+    }
     setLocating(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const { latitude: pLat, longitude: pLng } = pos.coords
-        placeMarker(pLat, pLng)
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pLat}&lon=${pLng}`, {
+        const { latitude, longitude } = pos.coords
+        placeMarker(latitude, longitude)
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`, {
           headers: { 'Accept-Language': 'en' },
         })
           .then((r) => r.json())
           .then((data) => {
-            setLocationName(data.display_name || `${pLat.toFixed(5)}, ${pLng.toFixed(5)}`)
+            setLocationName(data.display_name || `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`)
           })
           .catch(() => {})
-        setLocating(false)
+          .finally(() => setLocating(false))
       },
       () => {
         setError(t('editRequest.unableToRetrieve'))
@@ -130,8 +139,7 @@ export default function EditRequest() {
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchText)}&limit=5`,
         { headers: { 'Accept-Language': 'en' } }
       )
-      const data = await res.json()
-      setSuggestions(data)
+      setSuggestions(await res.json())
     } catch {
       setSuggestions([])
     } finally {
@@ -140,23 +148,22 @@ export default function EditRequest() {
   }
 
   function pickSuggestion(s) {
-    const pLat = parseFloat(s.lat)
-    const pLng = parseFloat(s.lon)
-    placeMarker(pLat, pLng)
+    placeMarker(parseFloat(s.lat), parseFloat(s.lon))
     setLocationName(s.display_name || s.name || searchText)
     setSuggestions([])
     setSearchText('')
-    setTimeout(() => {
-      if (mapInstance.current) mapInstance.current.invalidateSize()
-    }, 0)
+    setTimeout(() => mapInstance.current?.invalidateSize(), 0)
   }
 
   async function onSubmit(e) {
     e.preventDefault()
     setError('')
+    if (!lat || !lng) {
+      setError(t('editRequest.locationError'))
+      return
+    }
     setLoading(true)
     try {
-      if (!lat || !lng) return setError(t('editRequest.locationError'))
       await clientApi.updateRequest(id, {
         title,
         description,
@@ -169,16 +176,12 @@ export default function EditRequest() {
         peopleCount: Number(peopleCount) || 1,
       })
       navigate('/dashboard')
-    } catch (e2) {
-      setError(e2.message || 'Failed to update request')
+    } catch (err) {
+      setError(err.message || 'Failed to update request')
     } finally {
       setLoading(false)
     }
   }
-
-  const categories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other']
-  const priorities = ['Critical', 'High', 'Medium', 'Low']
-  const statuses = ['Open', 'In Progress', 'Resolved', 'Fulfilled']
 
   if (fetching) {
     return (
@@ -198,7 +201,7 @@ export default function EditRequest() {
           {t('editRequest.subtitle')}
         </div>
 
-        {error ? <div className="errorText">{error}</div> : null}
+        {error && <div className="errorText">{error}</div>}
 
         <form onSubmit={onSubmit} className="inputGrid" style={{ marginTop: 16 }}>
           <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -215,36 +218,24 @@ export default function EditRequest() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
             <div>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.categoryLabel')}</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                style={{ width: '100%' }}
-              >
-                {categories.map((c) => (
+              <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%' }}>
+                {CATEGORIES.map((c) => (
                   <option key={c} value={c}>{t(`categories.${c}`)}</option>
                 ))}
               </select>
             </div>
             <div>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.priorityLabel')}</label>
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value)}
-                style={{ width: '100%' }}
-              >
-                {priorities.map((p) => (
+              <select value={priority} onChange={(e) => setPriority(e.target.value)} style={{ width: '100%' }}>
+                {PRIORITIES.map((p) => (
                   <option key={p} value={p}>{t(`priorities.${p}`)}</option>
                 ))}
               </select>
             </div>
             <div>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('editRequest.statusLabel')}</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                style={{ width: '100%' }}
-              >
-                {statuses.map((s) => (
+              <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ width: '100%' }}>
+                {STATUSES.map((s) => (
                   <option key={s} value={s}>{t(`statuses.${s}`)}</option>
                 ))}
               </select>
@@ -253,25 +244,14 @@ export default function EditRequest() {
 
           <div>
             <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.peopleCountLabel')}</label>
-            <input
-              type="number"
-              min="1"
-              max="10000"
-              value={peopleCount}
-              onChange={(e) => setPeopleCount(e.target.value)}
-              style={{ width: '100%' }}
-            />
+            <input type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} style={{ width: '100%' }} />
           </div>
 
           <div className="card" style={{ padding: 12, background: '#f8f8f8' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
               <div>
-                <div className="pageTitle" style={{ marginBottom: 4, fontSize: 15 }}>
-                  {t('createRequest.selectLocation')}
-                </div>
-                <div style={{ color: '#666', fontSize: 13 }}>
-                  {t('createRequest.locationHint')}
-                </div>
+                <div className="pageTitle" style={{ marginBottom: 4, fontSize: 15 }}>{t('createRequest.selectLocation')}</div>
+                <div style={{ color: '#666', fontSize: 13 }}>{t('createRequest.locationHint')}</div>
               </div>
               <div style={{ fontSize: 13, color: '#555' }}>
                 {lat && lng ? (
@@ -285,7 +265,7 @@ export default function EditRequest() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 8, marginBottom: 8, marginTop: 8 }}>
+            <div style={{ display: 'flex', gap: 8, marginBlock: 8 }}>
               <button
                 type="button"
                 onClick={useMyLocation}
@@ -310,8 +290,7 @@ export default function EditRequest() {
                   style={{
                     width: '100%', padding: '10px 12px', paddingRight: 70,
                     borderRadius: 4, border: '1px solid #ccc',
-                    background: '#fff', color: '#333',
-                    fontSize: 14, boxSizing: 'border-box',
+                    background: '#fff', color: '#333', fontSize: 14, boxSizing: 'border-box',
                   }}
                 />
                 <button
@@ -354,12 +333,7 @@ export default function EditRequest() {
               </div>
             </div>
 
-            <div
-              ref={mapRef}
-              className="mapBox"
-              role="application"
-              aria-label="Map for selecting location"
-            />
+            <div ref={mapRef} className="mapBox" role="application" aria-label="Map for selecting location" />
           </div>
 
           <div className="btnRow">

@@ -85,6 +85,10 @@ export function createApp() {
   app.use('/api/geofencing', geofencingRouter)
   app.use('/api/sos', sosRouter)
 
+  app.use('/api', (req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' })
+  })
+
   const clientDist = path.join(__dirname, '../../client/dist')
   app.use(express.static(clientDist))
   app.get('*', (req, res) => {

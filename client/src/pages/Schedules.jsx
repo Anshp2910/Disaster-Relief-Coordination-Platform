@@ -17,6 +17,38 @@ const STATUS_COLORS = {
 }
 
 const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other']
+const SHIFT_OPTIONS = ['Morning', 'Afternoon', 'Night', 'Full Day']
+const STATUS_FILTER_OPTIONS = ['All', 'Scheduled', 'Active', 'Completed', 'Cancelled']
+
+function getCurrentUser() {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null')
+  } catch {
+    return null
+  }
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('en-IN', {
+    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+  })
+}
+
+function StatusButton({ currentStatus, targetStatus, label, color, onStatusChange }) {
+  if (currentStatus !== targetStatus) return null
+  return (
+    <button
+      onClick={() => onStatusChange(targetStatus)}
+      style={{ fontSize: 11, padding: '3px 8px', background: color.bg, color: color.text, border: `1px solid ${color.border}`, borderRadius: 4, cursor: 'pointer' }}
+    >
+      {label}
+    </button>
+  )
+}
+
+const DEFAULT_FORM = {
+  userId: '', zoneId: '', startDate: '', endDate: '', shift: 'Full Day', skills: [], notes: '',
+}
 
 export default function Schedules() {
   const { t } = useTranslation()
@@ -30,14 +62,9 @@ export default function Schedules() {
   const [editItem, setEditItem] = useState(null)
   const [users, setUsers] = useState([])
   const [zones, setZones] = useState([])
+  const [form, setForm] = useState(DEFAULT_FORM)
 
-  const [form, setForm] = useState({
-    userId: '', zoneId: '', startDate: '', endDate: '', shift: 'Full Day', skills: [], notes: '',
-  })
-
-  const currentUser = (() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
+  const currentUser = getCurrentUser()
 
   async function load() {
     setLoading(true)
@@ -70,16 +97,20 @@ export default function Schedules() {
 
   function openCreate() {
     setEditItem(null)
-    setForm({ userId: currentUser?.id || '', zoneId: '', startDate: '', endDate: '', shift: 'Full Day', skills: [], notes: '' })
+    setForm({ ...DEFAULT_FORM, userId: currentUser?.id || '' })
     setShowForm(true)
   }
 
   function openEdit(item) {
     setEditItem(item)
     setForm({
-      userId: item.userId?._id || item.userId, zoneId: item.zoneId?._id || item.zoneId || '',
-      startDate: item.startDate ? item.startDate.slice(0, 16) : '', endDate: item.endDate ? item.endDate.slice(0, 16) : '',
-      shift: item.shift, skills: item.skills || [], notes: item.notes || '',
+      userId: item.userId?._id || item.userId,
+      zoneId: item.zoneId?._id || item.zoneId || '',
+      startDate: item.startDate ? item.startDate.slice(0, 16) : '',
+      endDate: item.endDate ? item.endDate.slice(0, 16) : '',
+      shift: item.shift,
+      skills: item.skills || [],
+      notes: item.notes || '',
     })
     setShowForm(true)
   }
@@ -122,9 +153,14 @@ export default function Schedules() {
     }
   }
 
-  function formatDate(d) {
-    return new Date(d).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+  function toggleSkill(skill) {
+    setForm((prev) => ({
+      ...prev,
+      skills: prev.skills.includes(skill) ? prev.skills.filter((s) => s !== skill) : [...prev.skills, skill],
+    }))
   }
+
+  const updateForm = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   return (
     <div className="container">
@@ -136,10 +172,18 @@ export default function Schedules() {
           </div>
           <button className="btnPrimary" onClick={openCreate}>Create Schedule</button>
         </div>
+
         {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
+
         <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
-          {['All', 'Scheduled', 'Active', 'Completed', 'Cancelled'].map((s) => (
-            <button key={s} onClick={() => { setFilterStatus(s); setPage(1) }} className={`filter-pill ${filterStatus === s ? 'active' : ''}`}>{s}</button>
+          {STATUS_FILTER_OPTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setFilterStatus(s); setPage(1) }}
+              className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
+            >
+              {s}
+            </button>
           ))}
         </div>
       </div>
@@ -148,7 +192,10 @@ export default function Schedules() {
         <div className="small muted" style={{ marginTop: 16 }}>Loading...</div>
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
-          {items.length === 0 && <div className="card" style={{ textAlign: 'center', padding: 24 }}>No schedules found</div>}
+          {items.length === 0 && (
+            <div className="card" style={{ textAlign: 'center', padding: 24 }}>No schedules found</div>
+          )}
+
           {items.map((item) => {
             const shiftC = SHIFT_COLORS[item.shift] || SHIFT_COLORS['Full Day']
             const statusC = STATUS_COLORS[item.status] || STATUS_COLORS.Scheduled
@@ -161,20 +208,41 @@ export default function Schedules() {
                       <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>{item.shift}</span>
                       <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>{item.status}</span>
                     </div>
+
                     <div style={{ fontSize: 13, color: '#555' }}>
                       {formatDate(item.startDate)} &rarr; {formatDate(item.endDate)}
                     </div>
-                    {item.zoneId && <div className="small muted" style={{ marginTop: 4 }}>Zone: {item.zoneId.name || 'Unknown'}</div>}
+
+                    {item.zoneId && (
+                      <div className="small muted" style={{ marginTop: 4 }}>Zone: {item.zoneId.name || 'Unknown'}</div>
+                    )}
+
                     {item.skills?.length > 0 && (
                       <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
-                        {item.skills.map((s) => <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(0,0,128,.08)', color: '#000080' }}>{s}</span>)}
+                        {item.skills.map((s) => (
+                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(0,0,128,.08)', color: '#000080' }}>{s}</span>
+                        ))}
                       </div>
                     )}
+
                     {item.notes && <div className="small muted" style={{ marginTop: 4 }}>{item.notes}</div>}
                   </div>
+
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
-                    {item.status === 'Scheduled' && <button onClick={() => handleStatusChange(item._id, 'Active')} style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(19,136,8,.1)', color: '#138808', border: '1px solid rgba(19,136,8,.3)', borderRadius: 4, cursor: 'pointer' }}>Start</button>}
-                    {item.status === 'Active' && <button onClick={() => handleStatusChange(item._id, 'Completed')} style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(100,100,100,.1)', color: '#666', border: '1px solid rgba(100,100,100,.3)', borderRadius: 4, cursor: 'pointer' }}>Complete</button>}
+                    <StatusButton
+                      currentStatus={item.status}
+                      targetStatus="Scheduled"
+                      label="Start"
+                      color={STATUS_COLORS.Active}
+                      onStatusChange={(s) => handleStatusChange(item._id, s)}
+                    />
+                    <StatusButton
+                      currentStatus={item.status}
+                      targetStatus="Active"
+                      label="Complete"
+                      color={STATUS_COLORS.Completed}
+                      onStatusChange={(s) => handleStatusChange(item._id, s)}
+                    />
                     <button onClick={() => openEdit(item)} style={{ fontSize: 11, padding: '3px 8px' }}>Edit</button>
                     <button onClick={() => handleDelete(item._id)} className="btnDanger" style={{ fontSize: 11, padding: '3px 8px' }}>Delete</button>
                   </div>
@@ -194,53 +262,76 @@ export default function Schedules() {
       )}
 
       {showForm && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>{editItem ? 'Edit Schedule' : 'Create Schedule'}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>Volunteer</label>
-                <select value={form.userId} onChange={(e) => setForm({ ...form, userId: e.target.value })} required style={{ width: '100%' }}>
+                <select value={form.userId} onChange={updateForm('userId')} required style={{ width: '100%' }}>
                   <option value="">Select volunteer</option>
-                  {users.map((u) => <option key={u._id} value={u._id}>{u.displayName} ({u.role})</option>)}
+                  {users.map((u) => (
+                    <option key={u._id} value={u._id}>{u.displayName} ({u.role})</option>
+                  ))}
                 </select>
               </div>
+
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>Zone (optional)</label>
-                <select value={form.zoneId} onChange={(e) => setForm({ ...form, zoneId: e.target.value })} style={{ width: '100%' }}>
+                <select value={form.zoneId} onChange={updateForm('zoneId')} style={{ width: '100%' }}>
                   <option value="">No zone</option>
-                  {zones.map((z) => <option key={z._id} value={z._id}>{z.name}</option>)}
+                  {zones.map((z) => (
+                    <option key={z._id} value={z._id}>{z.name}</option>
+                  ))}
                 </select>
               </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 <div>
                   <label className="small" style={{ display: 'block', marginBottom: 4 }}>Start</label>
-                  <input type="datetime-local" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} required style={{ width: '100%' }} />
+                  <input type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required style={{ width: '100%' }} />
                 </div>
                 <div>
                   <label className="small" style={{ display: 'block', marginBottom: 4 }}>End</label>
-                  <input type="datetime-local" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} required style={{ width: '100%' }} />
+                  <input type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required style={{ width: '100%' }} />
                 </div>
               </div>
+
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>Shift</label>
-                <select value={form.shift} onChange={(e) => setForm({ ...form, shift: e.target.value })} style={{ width: '100%' }}>
-                  {['Morning', 'Afternoon', 'Night', 'Full Day'].map((s) => <option key={s} value={s}>{s}</option>)}
+                <select value={form.shift} onChange={updateForm('shift')} style={{ width: '100%' }}>
+                  {SHIFT_OPTIONS.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
                 </select>
               </div>
+
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>Skills</label>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {SKILL_OPTIONS.map((s) => (
-                    <button key={s} type="button" onClick={() => {
-                      setForm((prev) => ({ ...prev, skills: prev.skills.includes(s) ? prev.skills.filter((x) => x !== s) : [...prev.skills, s] }))
-                    }} style={{ fontSize: 11, padding: '3px 8px', borderRadius: 4, border: '1px solid', cursor: 'pointer', ...(form.skills.includes(s) ? { background: 'var(--gov-blue)', color: 'white', borderColor: 'var(--gov-blue)' } : { background: 'white', color: '#666', borderColor: '#ddd' }) }}>
-                      {s}
-                    </button>
-                  ))}
+                  {SKILL_OPTIONS.map((s) => {
+                    const active = form.skills.includes(s)
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => toggleSkill(s)}
+                        style={{
+                          fontSize: 11, padding: '3px 8px', borderRadius: 4, border: '1px solid', cursor: 'pointer',
+                          ...(active
+                            ? { background: 'var(--gov-blue)', color: 'white', borderColor: 'var(--gov-blue)' }
+                            : { background: 'white', color: '#666', borderColor: '#ddd' }),
+                        }}
+                      >
+                        {s}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
-              <textarea placeholder="Notes (optional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={2} />
+
+              <textarea placeholder="Notes (optional)" value={form.notes} onChange={updateForm('notes')} rows={2} />
+
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="submit" className="btnPrimary">{editItem ? 'Update' : 'Create'}</button>
                 <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>Cancel</button>

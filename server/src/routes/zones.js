@@ -5,6 +5,10 @@ import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export const zonesRouter = express.Router()
 
 function haversineKm(lat1, lng1, lat2, lng2) {
@@ -24,7 +28,10 @@ zonesRouter.get('/', requireAuth, async (req, res) => {
     if (severity && severity !== 'All') filter.severity = severity
     if (status && status !== 'All') filter.status = status
     if (disasterType && disasterType !== 'All') filter.disasterType = disasterType
-    if (search) filter.$or = [{ name: { $regex: search, $options: 'i' } }, { description: { $regex: search, $options: 'i' } }]
+    if (search) {
+      const safeSearch = escapeRegex(String(search))
+      filter.$or = [{ name: { $regex: safeSearch, $options: 'i' } }, { description: { $regex: safeSearch, $options: 'i' } }]
+    }
 
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
     const [items, total] = await Promise.all([
@@ -204,9 +211,9 @@ zonesRouter.put('/:id', requireAuth, requireAdmin, validate('updateZone'), async
     }
     if (req.body.centerLat !== undefined && req.body.centerLng !== undefined) {
       zone.location = { type: 'Point', coordinates: [req.body.centerLng, req.body.centerLat] }
-    } else if (req.body.centerLat !== undefined) {
+    } else if (req.body.centerLat !== undefined && zone.centerLng != null) {
       zone.location = { type: 'Point', coordinates: [zone.centerLng, req.body.centerLat] }
-    } else if (req.body.centerLng !== undefined) {
+    } else if (req.body.centerLng !== undefined && zone.centerLat != null) {
       zone.location = { type: 'Point', coordinates: [req.body.centerLng, zone.centerLat] }
     }
     await zone.save()

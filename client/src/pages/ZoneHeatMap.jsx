@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { clientApi } from '../api/client'
 
 const SEVERITY_COLORS = {
@@ -21,6 +20,52 @@ const COVERAGE_COLORS = {
   Gap: '#cc0000',
 }
 
+const DEFAULT_CENTER = [20.5937, 78.9629]
+
+function getCurrentUser() {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null')
+  } catch {
+    return null
+  }
+}
+
+function buildPopup(zone, color) {
+  const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || '#999'
+  return `
+    <div style="font-family:Arial,sans-serif;min-width:200px">
+      <div style="font-weight:700;font-size:14px;color:#000080;margin-bottom:4px">
+        ${DISASTER_ICONS[zone.disasterType] || ''} ${zone.name}
+      </div>
+      <div style="font-size:12px;margin-bottom:6px">
+        <span style="color:${color.fill};font-weight:600">${zone.severity}</span> severity
+        &middot; ${zone.disasterType}
+      </div>
+      <div style="font-size:12px;margin-bottom:4px">Radius: ${zone.radiusKm} km</div>
+      ${zone.affectedPopulation > 0
+        ? `<div style="font-size:12px;margin-bottom:4px">Affected: ${zone.affectedPopulation.toLocaleString()}</div>`
+        : ''
+      }
+      <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
+      <div style="font-size:12px">
+        <div>Open requests: <strong style="color:#cc0000">${zone.openRequests}</strong></div>
+        <div>Resources: <strong>${zone.totalResources}</strong> units</div>
+        <div style="margin-top:4px">
+          Coverage: <span style="background:${coverageColor};color:white;padding:1px 6px;border-radius:3px;font-size:11px">${zone.coverageStatus}</span>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <button onclick="window.__selectZone('${zone._id}')" style="background:#000080;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
+      </div>
+    </div>
+  `
+}
+
+const DEFAULT_FORM = {
+  name: '', description: '', centerLat: '20.5937', centerLng: '78.9629', radiusKm: '10',
+  severity: 'Medium', status: 'Active', disasterType: 'Other', affectedPopulation: '', notes: '',
+}
+
 export default function ZoneHeatMap() {
   const { t } = useTranslation()
   const [zones, setZones] = useState([])
@@ -28,14 +73,12 @@ export default function ZoneHeatMap() {
   const [selectedZone, setSelectedZone] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editZone, setEditZone] = useState(null)
+  const [form, setForm] = useState(DEFAULT_FORM)
+
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const circlesRef = useRef([])
-
-  const [form, setForm] = useState({
-    name: '', description: '', centerLat: '', centerLng: '', radiusKm: '10',
-    severity: 'Medium', status: 'Active', disasterType: 'Other', affectedPopulation: '', notes: '',
-  })
+  const zonesRef = useRef([])
 
   async function load() {
     setLoading(true)
@@ -52,16 +95,19 @@ export default function ZoneHeatMap() {
   useEffect(() => { load() }, [])
 
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return
-    if (loading) return
+    if (!mapRef.current || mapInstanceRef.current || loading) return
 
-    const map = L.map(mapRef.current).setView([20.5937, 78.9629], 5)
+    const map = L.map(mapRef.current).setView(DEFAULT_CENTER, 5)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map)
     mapInstanceRef.current = map
+    setTimeout(() => map.invalidateSize(), 100)
 
-    return () => { map.remove(); mapInstanceRef.current = null }
+    return () => {
+      map.remove()
+      mapInstanceRef.current = null
+    }
   }, [loading])
 
   useEffect(() => {
@@ -81,44 +127,24 @@ export default function ZoneHeatMap() {
         weight: 2,
       }).addTo(map)
 
-      const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || '#999'
-      const popupContent = `
-        <div style="font-family:Arial,sans-serif;min-width:200px">
-          <div style="font-weight:700;font-size:14px;color:#000080;margin-bottom:4px">${DISASTER_ICONS[zone.disasterType] || ''} ${zone.name}</div>
-          <div style="font-size:12px;margin-bottom:6px">
-            <span style="color:${color.fill};font-weight:600">${zone.severity}</span> severity
-            &middot; ${zone.disasterType}
-          </div>
-          <div style="font-size:12px;margin-bottom:4px">Radius: ${zone.radiusKm} km</div>
-          ${zone.affectedPopulation > 0 ? `<div style="font-size:12px;margin-bottom:4px">Affected: ${zone.affectedPopulation.toLocaleString()}</div>` : ''}
-          <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
-          <div style="font-size:12px">
-            <div>Open requests: <strong style="color:#cc0000">${zone.openRequests}</strong></div>
-            <div>Resources: <strong>${zone.totalResources}</strong> units</div>
-            <div style="margin-top:4px">
-              Coverage: <span style="background:${coverageColor};color:white;padding:1px 6px;border-radius:3px;font-size:11px">${zone.coverageStatus}</span>
-            </div>
-          </div>
-          <div style="margin-top:8px">
-            <button onclick="window.__selectZone('${zone._id}')" style="background:#000080;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
-          </div>
-        </div>
-      `
-
-      circle.bindPopup(popupContent)
+      circle.bindPopup(buildPopup(zone, color))
       circle.on('click', () => setSelectedZone(zone))
       circlesRef.current.push(circle)
     })
 
     window.__selectZone = (id) => {
-      const z = zones.find((z) => z._id === id)
+      const z = zonesRef.current.find((z) => z._id === id)
       if (z) setSelectedZone(z)
     }
   }, [zones])
 
+  useEffect(() => {
+    zonesRef.current = zones
+  }, [zones])
+
   function openCreate() {
     setEditZone(null)
-    setForm({ name: '', description: '', centerLat: '20.5937', centerLng: '78.9629', radiusKm: '10', severity: 'Medium', status: 'Active', disasterType: 'Other', affectedPopulation: '', notes: '' })
+    setForm(DEFAULT_FORM)
     setShowForm(true)
     setSelectedZone(null)
   }
@@ -126,9 +152,16 @@ export default function ZoneHeatMap() {
   function openEdit(zone) {
     setEditZone(zone)
     setForm({
-      name: zone.name, description: zone.description || '', centerLat: String(zone.centerLat), centerLng: String(zone.centerLng),
-      radiusKm: String(zone.radiusKm), severity: zone.severity, status: zone.status, disasterType: zone.disasterType,
-      affectedPopulation: String(zone.affectedPopulation || ''), notes: zone.notes || '',
+      name: zone.name,
+      description: zone.description || '',
+      centerLat: String(zone.centerLat),
+      centerLng: String(zone.centerLng),
+      radiusKm: String(zone.radiusKm),
+      severity: zone.severity,
+      status: zone.status,
+      disasterType: zone.disasterType,
+      affectedPopulation: String(zone.affectedPopulation || ''),
+      notes: zone.notes || '',
     })
     setShowForm(true)
   }
@@ -136,7 +169,13 @@ export default function ZoneHeatMap() {
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      const payload = { ...form, centerLat: Number(form.centerLat), centerLng: Number(form.centerLng), radiusKm: Number(form.radiusKm), affectedPopulation: Number(form.affectedPopulation) || 0 }
+      const payload = {
+        ...form,
+        centerLat: Number(form.centerLat),
+        centerLng: Number(form.centerLng),
+        radiusKm: Number(form.radiusKm),
+        affectedPopulation: Number(form.affectedPopulation) || 0,
+      }
       if (editZone) {
         await clientApi.updateZone(editZone._id, payload)
       } else {
@@ -160,13 +199,12 @@ export default function ZoneHeatMap() {
     }
   }
 
-  const currentUser = (() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
-
+  const currentUser = getCurrentUser()
   const totalOpen = zones.reduce((s, z) => s + z.openRequests, 0)
   const totalGap = zones.filter((z) => z.coverageStatus === 'Gap').length
   const totalAffected = zones.reduce((s, z) => s + (z.affectedPopulation || 0), 0)
+
+  const updateForm = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   return (
     <div className="container">
@@ -190,7 +228,7 @@ export default function ZoneHeatMap() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
             {loading && (
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
                 <div className="small muted">Loading heat map...</div>
               </div>
             )}
@@ -198,7 +236,9 @@ export default function ZoneHeatMap() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 60 }}>
                 <img src="/images/empty-map.svg" alt="No zones" style={{ width: 200, marginBottom: 16 }} />
                 <div className="muted">No disaster zones defined yet.</div>
-                {currentUser?.role === 'admin' && <button className="btnPrimary" onClick={openCreate} style={{ marginTop: 12 }}>Create First Zone</button>}
+                {currentUser?.role === 'admin' && (
+                  <button className="btnPrimary" onClick={openCreate} style={{ marginTop: 12 }}>Create First Zone</button>
+                )}
               </div>
             )}
             <div ref={mapRef} style={{ height: '65vh', width: '100%' }} />
@@ -225,8 +265,12 @@ export default function ZoneHeatMap() {
           <div className="card" style={{ width: 320, flexShrink: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: 15, color: '#000080' }}>{DISASTER_ICONS[selectedZone.disasterType]} {selectedZone.name}</h3>
-                <div style={{ fontSize: 12, marginTop: 4, color: '#666' }}>{selectedZone.disasterType} &middot; {selectedZone.status}</div>
+                <h3 style={{ margin: 0, fontSize: 15, color: '#000080' }}>
+                  {DISASTER_ICONS[selectedZone.disasterType]} {selectedZone.name}
+                </h3>
+                <div style={{ fontSize: 12, marginTop: 4, color: '#666' }}>
+                  {selectedZone.disasterType} &middot; {selectedZone.status}
+                </div>
               </div>
               <button onClick={() => setSelectedZone(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, padding: 0 }}>×</button>
             </div>
@@ -242,18 +286,16 @@ export default function ZoneHeatMap() {
 
             <div style={{ fontSize: 13, lineHeight: 1.8 }}>
               <div>Radius: <strong>{selectedZone.radiusKm} km</strong></div>
-              {selectedZone.affectedPopulation > 0 && <div>Affected: <strong>{selectedZone.affectedPopulation.toLocaleString()}</strong></div>}
+              {selectedZone.affectedPopulation > 0 && (
+                <div>Affected: <strong>{selectedZone.affectedPopulation.toLocaleString()}</strong></div>
+              )}
               <div>Open requests: <strong style={{ color: '#cc0000' }}>{selectedZone.openRequests}</strong></div>
               <div>Total resources: <strong>{selectedZone.totalResources}</strong> units</div>
             </div>
 
-            {selectedZone.stats && (
-              <div style={{ marginTop: 12 }}>
-                {selectedZone.stats.openRequests > 0 && (
-                  <div style={{ padding: '8px 12px', background: 'rgba(204,0,0,0.06)', borderRadius: 6, fontSize: 12, marginBottom: 6 }}>
-                    <strong style={{ color: '#cc0000' }}>Coverage Gap!</strong> {selectedZone.stats.openRequests} requests with no nearby resources.
-                  </div>
-                )}
+            {selectedZone.stats?.openRequests > 0 && (
+              <div style={{ marginTop: 12, padding: '8px 12px', background: 'rgba(204,0,0,0.06)', borderRadius: 6, fontSize: 12 }}>
+                <strong style={{ color: '#cc0000' }}>Coverage Gap!</strong> {selectedZone.stats.openRequests} requests with no nearby resources.
               </div>
             )}
 
@@ -268,32 +310,43 @@ export default function ZoneHeatMap() {
       </div>
 
       {showForm && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 16, color: '#000080' }}>{editZone ? 'Edit Zone' : 'Add Disaster Zone'}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
-              <input placeholder="Zone name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <input placeholder="Zone name" value={form.name} onChange={updateForm('name')} required />
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                <select value={form.disasterType} onChange={(e) => setForm({ ...form, disasterType: e.target.value })}>
-                  {Object.keys(DISASTER_ICONS).map((d) => <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>)}
+                <select value={form.disasterType} onChange={updateForm('disasterType')}>
+                  {Object.keys(DISASTER_ICONS).map((d) => (
+                    <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>
+                  ))}
                 </select>
-                <select value={form.severity} onChange={(e) => setForm({ ...form, severity: e.target.value })}>
-                  {Object.keys(SEVERITY_COLORS).map((s) => <option key={s} value={s}>{s}</option>)}
+                <select value={form.severity} onChange={updateForm('severity')}>
+                  {Object.keys(SEVERITY_COLORS).map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
                 </select>
-                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-                  {['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => <option key={s} value={s}>{s}</option>)}
+                <select value={form.status} onChange={updateForm('status')}>
+                  {['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
                 </select>
               </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                <input type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={(e) => setForm({ ...form, centerLat: e.target.value })} required />
-                <input type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={(e) => setForm({ ...form, centerLng: e.target.value })} required />
+                <input type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
+                <input type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
               </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                <input type="number" placeholder="Radius (km)" value={form.radiusKm} onChange={(e) => setForm({ ...form, radiusKm: e.target.value })} required min="1" />
-                <input type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={(e) => setForm({ ...form, affectedPopulation: e.target.value })} min="0" />
+                <input type="number" placeholder="Radius (km)" value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
+                <input type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
               </div>
-              <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} />
-              <textarea placeholder="Notes" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={2} />
+
+              <textarea placeholder="Description" value={form.description} onChange={updateForm('description')} rows={2} />
+              <textarea placeholder="Notes" value={form.notes} onChange={updateForm('notes')} rows={2} />
+
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="submit" className="btnPrimary">{editZone ? 'Update' : 'Create'}</button>
                 <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>Cancel</button>

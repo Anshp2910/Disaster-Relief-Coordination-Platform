@@ -33,7 +33,7 @@ export default function Layout({ children }) {
               fontSize: 18, cursor: 'pointer', padding: '0 4px',
             }}
           >
-            ×
+            x
           </button>
         </div>
       )}

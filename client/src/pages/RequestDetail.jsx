@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
@@ -20,13 +20,6 @@ const PRIORITY_COLORS = {
   'Low': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
 }
 
-const RESOURCE_STATUS_COLORS = {
-  Available: { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
-  Low: { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  Depleted: { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
-  Reserved: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
-}
-
 function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || colors['Medium']
   return (
@@ -36,10 +29,19 @@ function Badge({ label, colors, colorKey }) {
   )
 }
 
+function useCurrentUser() {
+  return (() => {
+    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
+  })()
+}
+
 export default function RequestDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const currentUser = useCurrentUser()
+  const fileRef = useRef()
+
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -58,58 +60,51 @@ export default function RequestDetail() {
   const [feedbackComment, setFeedbackComment] = useState('')
   const [feedbackLoading, setFeedbackLoading] = useState(false)
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
-  const fileRef = useRef()
 
-  const currentUser = (() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
-
-  async function load() {
+  const load = useCallback(async () => {
     try {
       const data = await clientApi.getRequest(id)
       setItem(data.item)
-    } catch (e) {
-      setError(e.message)
+    } catch (err) {
+      setError(err.message)
     } finally {
       setLoading(false)
     }
-  }
+  }, [id])
 
-  async function loadResources() {
+  const loadResources = useCallback(async () => {
     try {
       const data = await clientApi.getResources({ status: 'Available', limit: 100 })
       setResources(data.items || [])
-    } catch (e) {
+    } catch {
       console.error('Failed to load resources')
     }
-  }
+  }, [])
 
-  useEffect(() => { load(); loadResources() }, [id])
+  const loadFeedback = useCallback(async () => {
+    try {
+      const data = await clientApi.getFeedback(id)
+      setFeedbackList(data.feedback || [])
+    } catch {
+      console.error('Failed to load feedback')
+    }
+  }, [id])
 
-  async function loadMatches() {
+  const loadMatches = useCallback(async () => {
     setLoadingMatches(true)
     try {
       const data = await clientApi.matchResources(id)
       setMatches(data.matches || [])
-    } catch (e) {
+    } catch {
       console.error('Failed to load matches')
     } finally {
       setLoadingMatches(false)
     }
-  }
+  }, [id])
 
-  useEffect(() => { if (item && item.status === 'Open') loadMatches() }, [item?.status])
-
-  async function loadFeedback() {
-    try {
-      const data = await clientApi.getFeedback(id)
-      setFeedbackList(data.feedback || [])
-    } catch (e) {
-      console.error('Failed to load feedback')
-    }
-  }
-
-  useEffect(() => { loadFeedback() }, [id])
+  useEffect(() => { load(); loadResources() }, [load, loadResources])
+  useEffect(() => { loadFeedback() }, [loadFeedback])
+  useEffect(() => { if (item?.status === 'Open') loadMatches() }, [item?.status, loadMatches])
 
   async function handleFeedbackSubmit(e) {
     e.preventDefault()
@@ -121,8 +116,8 @@ export default function RequestDetail() {
       setShowFeedbackForm(false)
       loadFeedback()
       load()
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     } finally {
       setFeedbackLoading(false)
     }
@@ -132,8 +127,8 @@ export default function RequestDetail() {
     try {
       const data = await clientApi.claimRequest(id)
       setItem(data.item)
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     }
   }
 
@@ -141,8 +136,8 @@ export default function RequestDetail() {
     try {
       const data = await clientApi.unclaimRequest(id)
       setItem(data.item)
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     }
   }
 
@@ -152,10 +147,10 @@ export default function RequestDetail() {
     setPosting(true)
     try {
       const data = await clientApi.addComment(id, comment)
-      setItem((prev) => ({ ...prev, comments: data.comments }))
+      setItem((prev) => ({ ...prev, comments: data.comments || prev?.comments || [] }))
       setComment('')
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     } finally {
       setPosting(false)
     }
@@ -168,8 +163,8 @@ export default function RequestDetail() {
     try {
       const data = await clientApi.uploadFiles(id, files)
       setItem((prev) => ({ ...prev, files: data.files }))
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
@@ -180,9 +175,9 @@ export default function RequestDetail() {
     if (!confirm(t('dashboard.deleteConfirm'))) return
     try {
       await clientApi.deleteComment(id, commentId)
-      setItem((prev) => ({ ...prev, comments: prev.comments.filter((c) => c._id !== commentId) }))
-    } catch (e) {
-      alert(e.message)
+      setItem((prev) => ({ ...prev, comments: (prev.comments || []).filter((c) => c._id !== commentId) }))
+    } catch (err) {
+      alert(err.message)
     }
   }
 
@@ -196,10 +191,21 @@ export default function RequestDetail() {
       setAllocQty('')
       loadResources()
       alert('Resource allocated successfully')
-    } catch (e) {
-      alert(e.message)
+    } catch (err) {
+      alert(err.message)
     } finally {
       setAllocating(false)
+    }
+  }
+
+  async function quickAllocate(match) {
+    try {
+      await clientApi.allocateResource(match._id, { requestId: id, allocQuantity: Math.min(match.quantity, 10) })
+      loadResources()
+      loadMatches()
+      alert('Resource allocated')
+    } catch (err) {
+      alert(err.message)
     }
   }
 
@@ -226,6 +232,7 @@ export default function RequestDetail() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
+        {/* Details Card */}
         <div className="card">
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('editRequest.subtitle')}</h3>
           <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>{item.description}</p>
@@ -266,6 +273,7 @@ export default function RequestDetail() {
           </div>
         </div>
 
+        {/* Files Card */}
         <div className="card">
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>Files</h3>
           {item.files?.length > 0 ? (
@@ -296,6 +304,7 @@ export default function RequestDetail() {
           </div>
         </div>
 
+        {/* Allocate Resources Card */}
         <div className="card">
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>Allocate Resources</h3>
           <form onSubmit={handleAllocate} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -316,6 +325,7 @@ export default function RequestDetail() {
         </div>
       </div>
 
+      {/* Suggested Resources */}
       {matches.length > 0 && (
         <div className="card" style={{ marginTop: 16 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>
@@ -339,16 +349,7 @@ export default function RequestDetail() {
                   </div>
                 </div>
                 <button
-                  onClick={async () => {
-                    try {
-                      await clientApi.allocateResource(m._id, { requestId: id, allocQuantity: Math.min(m.quantity, 10) })
-                      loadResources()
-                      loadMatches()
-                      alert('Resource allocated')
-                    } catch (e) {
-                      alert(e.message)
-                    }
-                  }}
+                  onClick={() => quickAllocate(m)}
                   className="btnPrimary"
                   style={{ fontSize: 11, padding: '4px 12px', flexShrink: 0 }}
                 >
@@ -360,6 +361,7 @@ export default function RequestDetail() {
         </div>
       )}
 
+      {/* Comments */}
       <div className="card" style={{ marginTop: 16 }}>
         <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>
           Comments ({item.comments?.length || 0})
@@ -402,6 +404,7 @@ export default function RequestDetail() {
         )}
       </div>
 
+      {/* Activity Log */}
       {item.auditLog?.length > 0 && (
         <div className="card" style={{ marginTop: 16 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>Activity Log</h3>
@@ -418,11 +421,10 @@ export default function RequestDetail() {
         </div>
       )}
 
+      {/* Chat */}
       <div className="card" style={{ marginTop: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: showChat ? 12 : 0 }}>
-          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>
-            Real-time Chat
-          </h3>
+          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>Real-time Chat</h3>
           <button onClick={() => setShowChat(!showChat)} style={{ fontSize: 12, padding: '4px 12px' }}>
             {showChat ? 'Hide Chat' : 'Open Chat'}
           </button>
@@ -434,6 +436,7 @@ export default function RequestDetail() {
         )}
       </div>
 
+      {/* Feedback */}
       <div className="card" style={{ marginTop: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>

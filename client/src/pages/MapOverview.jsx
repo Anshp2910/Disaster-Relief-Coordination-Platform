@@ -1,45 +1,69 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 const STATUS_COLORS = {
-  'Open': '#000080',
+  Open: '#000080',
   'In Progress': '#cc7a00',
-  'Resolved': '#138808',
-  'Fulfilled': '#0d6e06',
+  Resolved: '#138808',
+  Fulfilled: '#0d6e06',
 }
+
+const DEFAULT_CENTER = [20.5937, 78.9629]
+
+const FILTER_OPTIONS_KEYS = ['All', 'Open', 'In Progress', 'Resolved', 'Fulfilled']
 
 export default function MapOverview() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [filterStatus, setFilterStatus] = useState('All')
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
 
   useEffect(() => {
-    clientApi.getRequests({ limit: 500 }).then((data) => {
-      setItems(data.items || [])
-      setLoading(false)
-    }).catch(() => setLoading(false))
+    clientApi
+      .getRequests({ limit: 500 })
+      .then((data) => {
+        setItems(data.items || [])
+        setLoading(false)
+      })
+      .catch((e) => {
+        setError(e.message || 'Failed to load request data')
+        setLoading(false)
+      })
   }, [])
 
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return
-    if (loading) return
+    if (loading || !mapRef.current || mapInstanceRef.current) return
 
-    const map = L.map(mapRef.current).setView([20.5937, 78.9629], 5)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map)
-    mapInstanceRef.current = map
+    let cancelled = false
+    let map = null
 
-    return () => { map.remove(); mapInstanceRef.current = null }
+    const init = () => {
+      if (cancelled || !mapRef.current || mapInstanceRef.current) return
+      map = L.map(mapRef.current).setView(DEFAULT_CENTER, 5)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map)
+      mapInstanceRef.current = map
+      map.invalidateSize()
+    }
+
+    requestAnimationFrame(init)
+
+    return () => {
+      cancelled = true
+      if (map) {
+        map.remove()
+        mapInstanceRef.current = null
+      }
+    }
   }, [loading])
 
   useEffect(() => {
@@ -52,7 +76,8 @@ export default function MapOverview() {
     const filtered = filterStatus === 'All' ? items : items.filter((i) => i.status === filterStatus)
 
     filtered.forEach((item) => {
-      if (!item.lat || !item.lng) return
+      if (item.lat == null || item.lng == null) return
+
       const color = STATUS_COLORS[item.status] || '#000080'
       const marker = L.circleMarker([item.lat, item.lng], {
         radius: 8,
@@ -75,18 +100,18 @@ export default function MapOverview() {
     })
 
     if (filtered.length > 0) {
-      const bounds = L.latLngBounds(filtered.filter((i) => i.lat && i.lng).map((i) => [i.lat, i.lng]))
-      if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
+      const coords = filtered.filter((i) => i.lat != null && i.lng != null).map((i) => [i.lat, i.lng])
+      if (coords.length > 0) {
+        const bounds = L.latLngBounds(coords)
+        if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
+      }
     }
-  }, [items, filterStatus])
+  }, [items, filterStatus, t])
 
-  const filterOptions = [
-    { key: 'All', label: t('dashboard.filterAll') },
-    { key: 'Open', label: t('statuses.Open') },
-    { key: 'In Progress', label: t('statuses.In Progress') },
-    { key: 'Resolved', label: t('statuses.Resolved') },
-    { key: 'Fulfilled', label: t('statuses.Fulfilled') },
-  ]
+  const filterOptions = FILTER_OPTIONS_KEYS.map((key) => ({
+    key,
+    label: key === 'All' ? t('dashboard.filterAll') : t(`statuses.${key}`),
+  }))
 
   return (
     <div className="container">
@@ -110,17 +135,26 @@ export default function MapOverview() {
 
       <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
         {loading && (
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
             <div className="small muted">{t('dashboard.loading')}</div>
           </div>
         )}
-        {!loading && items.length === 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
+
+        <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
+
+        {!loading && error && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
+            <div style={{ fontSize: 16, color: '#cc0000', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
+            <div className="muted">{error}</div>
+          </div>
+        )}
+
+        {!loading && !error && items.length === 0 && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
             <img src="/images/empty-map.svg" alt="No locations" style={{ width: 260, marginBottom: 16 }} />
             <div className="muted">{t('dashboard.noRequests')}</div>
           </div>
         )}
-        <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
       </div>
 
       <div style={{ display: 'flex', gap: 16, marginTop: 12, flexWrap: 'wrap' }}>
