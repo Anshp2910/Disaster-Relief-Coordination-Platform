@@ -53,11 +53,22 @@ export default function BulkImport() {
     setResult(null)
 
     try {
-      const text = await file.text()
-      const rows = parseCSVToRows(text)
+      let text = await file.text()
+      text = text.replace(/^\uFEFF/, '')
+      const rows = parseCSV(text)
       if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
 
-      const headers = rows[0].map((h) => h.trim().toLowerCase())
+      const headers = rows[0].map((h) => h.trim().toLowerCase().replace(/^\uFEFF/, ''))
+
+      const isRequestCSV = headers.includes('title')
+      const isResourceCSV = headers.includes('name')
+      if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
+        throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
+      }
+      if (tab === 'resources' && isRequestCSV && !isResourceCSV) {
+        throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
+      }
+
       const dataRows = rows.slice(1).map((values) => {
         const row = {}
         headers.forEach((h, i) => { row[h] = values[i]?.trim() || '' })
@@ -67,6 +78,7 @@ export default function BulkImport() {
       const data = tab === 'requests' ? await clientApi.importRequests(dataRows) : await clientApi.importResources(dataRows)
       setResult(data)
     } catch (e) {
+      console.error('Import error:', e)
       setError(e.message)
     } finally {
       setImporting(false)
