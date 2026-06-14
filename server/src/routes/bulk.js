@@ -77,8 +77,8 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
       if (row.status && !validStatuses.includes(row.status)) rowErrors.push(`Invalid status: ${row.status}`)
       if (row.priority && !validPriorities.includes(row.priority)) rowErrors.push(`Invalid priority: ${row.priority}`)
       
-      const lat = row.lat ? Number(row.lat) : undefined
-      const lng = row.lng ? Number(row.lng) : undefined
+      let lat = row.lat ? Number(row.lat) : undefined
+      let lng = row.lng ? Number(row.lng) : undefined
       if (lat !== undefined && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
       if (lng !== undefined && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
 
@@ -87,20 +87,28 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
         continue
       }
 
-      const doc = await Request.create({
-        title: row.title.trim(),
-        description: row.description || '',
-        category: row.category,
-        priority: row.priority || 'Medium',
-        status: row.status || 'Open',
-        locationName: row.locationName || '',
-        lat,
-        lng,
-        location: (lat !== undefined && lng !== undefined) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
-        createdBy: req.user._id,
-        auditLog: [{ action: 'created', by: req.user._id }],
-      })
-      imported.push(doc._id)
+      try {
+        if (lat === undefined || lng === undefined) {
+          lat = 0
+          lng = 0
+        }
+        const doc = await Request.create({
+          title: row.title.trim(),
+          description: row.description || '',
+          category: row.category,
+          priority: row.priority || 'Medium',
+          status: row.status || 'Open',
+          locationName: row.locationName || '',
+          lat,
+          lng,
+          location: { type: 'Point', coordinates: [lng, lat] },
+          createdBy: req.user._id,
+          auditLog: [{ action: 'created', by: req.user._id }],
+        })
+        imported.push(doc._id)
+      } catch (rowErr) {
+        errors.push({ row: i + 1, errors: [rowErr.message] })
+      }
     }
 
     return res.status(201).json({ imported: imported.length, errors })
@@ -133,8 +141,8 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
       const quantity = row.quantity ? Number(row.quantity) : 0
       if (isNaN(quantity) || quantity < 0) rowErrors.push('Invalid quantity (must be non-negative)')
       
-      const lat = row.lat ? Number(row.lat) : undefined
-      const lng = row.lng ? Number(row.lng) : undefined
+      let lat = row.lat ? Number(row.lat) : undefined
+      let lng = row.lng ? Number(row.lng) : undefined
       if (lat !== undefined && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
       if (lng !== undefined && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
 
@@ -143,18 +151,22 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
         continue
       }
 
-      const doc = await Resource.create({
-        name: row.name.trim(),
-        category: row.category,
-        quantity,
-        unit: row.unit || 'units',
-        status: row.status || 'Available',
-        locationName: row.locationName || '',
-        lat,
-        lng,
-        location: (lat !== undefined && lng !== undefined) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
-      })
-      imported.push(doc._id)
+      try {
+        const doc = await Resource.create({
+          name: row.name.trim(),
+          category: row.category,
+          quantity,
+          unit: row.unit || 'units',
+          status: row.status || 'Available',
+          locationName: row.locationName || '',
+          lat,
+          lng,
+          location: (lat !== undefined && lng !== undefined) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
+        })
+        imported.push(doc._id)
+      } catch (rowErr) {
+        errors.push({ row: i + 1, errors: [rowErr.message] })
+      }
     }
 
     return res.status(201).json({ imported: imported.length, errors })
