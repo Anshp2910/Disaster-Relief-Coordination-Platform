@@ -10,6 +10,7 @@ import { authRouter } from './routes/auth.js'
 import { requestsRouter } from './routes/requests.js'
 import { adminRouter } from './routes/admin.js'
 import { resourcesRouter } from './routes/resources.js'
+import { zonesRouter } from './routes/zones.js'
 import { getEnv } from './config/env.js'
 
 dotenv.config()
@@ -53,6 +54,7 @@ export function createApp() {
   app.use('/api/requests', requestsRouter)
   app.use('/api/admin', adminRouter)
   app.use('/api/resources', resourcesRouter)
+  app.use('/api/zones', zonesRouter)
 
   app.use((err, req, res, next) => {
     console.error('[error]', err.message)

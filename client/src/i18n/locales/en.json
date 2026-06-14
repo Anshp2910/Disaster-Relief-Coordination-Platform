@@ -10,7 +10,8 @@
     "register": "Register",
     "logout": "Logout",
     "profile": "Profile",
-    "resources": "Resources"
+    "resources": "Resources",
+    "zones": "Zones"
   },
   "auth": {
     "appName": "DisasterRelief",
@@ -203,5 +204,25 @@
     "searchPlaceholder": "Search resources...",
     "noResources": "No resources tracked yet. Add your first resource to get started.",
     "deleteConfirm": "Delete this resource?"
+  },
+  "zones": {
+    "title": "Disaster Zone Heat Map",
+    "addZone": "Add Zone",
+    "editZone": "Edit Zone",
+    "zoneName": "Zone Name",
+    "disasterType": "Disaster Type",
+    "severity": "Severity",
+    "radius": "Radius",
+    "affectedPopulation": "Affected Population",
+    "coverageStatus": "Coverage Status",
+    "covered": "Covered",
+    "partial": "Partial",
+    "gap": "Gap",
+    "noZones": "No disaster zones defined yet.",
+    "deleteConfirm": "Delete this zone?",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
   }
 }

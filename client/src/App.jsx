@@ -9,6 +9,7 @@ import RequestDetail from './pages/RequestDetail'
 import MapOverview from './pages/MapOverview'
 import Profile from './pages/Profile'
 import Resources from './pages/Resources'
+import ZoneHeatMap from './pages/ZoneHeatMap'
 import AdminDashboard from './pages/AdminDashboard'
 
 function RequireAuth({ children }) {
@@ -70,6 +71,15 @@ export default function App() {
           element={
             <RequireAuth>
               <Resources />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/zones"
+          element={
+            <RequireAuth>
+              <ZoneHeatMap />
             </RequireAuth>
           }
         />

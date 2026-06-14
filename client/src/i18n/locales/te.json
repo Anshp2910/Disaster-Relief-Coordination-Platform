@@ -10,7 +10,8 @@
                 "register":  "à°¨à°®à±‹à°¦à±",
                 "logout":  "à°²à°¾à°—à± à°…à°µà±à°Ÿà±",
                 "profile":  "à°ªà±à°°à±Šà°«à±ˆà°²à±",
-                "resources":  "Resources"
+                "resources":  "Resources",
+                "zones":  "Zones"
             },
     "auth":  {
                  "appName":  "à°µà°¿à°ªà°¤à±à°¤à± à°¸à°¹à°¾à°¯à°‚",
@@ -203,5 +204,25 @@
                       "category":  "Category",
                       "noResources":  "No resources tracked yet.",
                       "deleteConfirm":  "Delete this resource?"
-                  }
+                  },
+    "zones":  {
+                  "critical":  "Critical",
+                  "disasterType":  "Disaster Type",
+                  "partial":  "Partial",
+                  "title":  "Disaster Zone Heat Map",
+                  "covered":  "Covered",
+                  "editZone":  "Edit Zone",
+                  "deleteConfirm":  "Delete this zone?",
+                  "radius":  "Radius",
+                  "severity":  "Severity",
+                  "addZone":  "Add Zone",
+                  "high":  "High",
+                  "noZones":  "No disaster zones defined yet.",
+                  "gap":  "Gap",
+                  "medium":  "Medium",
+                  "affectedPopulation":  "Affected Population",
+                  "low":  "Low",
+                  "coverageStatus":  "Coverage Status",
+                  "zoneName":  "Zone Name"
+              }
 }

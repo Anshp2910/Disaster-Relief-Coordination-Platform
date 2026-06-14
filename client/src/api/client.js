@@ -71,4 +71,14 @@ export const clientApi = {
   deleteResource: (id) => apiFetch(`/api/resources/${id}`, { method: 'DELETE' }),
   allocateResource: (id, payload) => apiFetch(`/api/resources/${id}/allocate`, { method: 'POST', body: payload }),
   deallocateResource: (id, payload) => apiFetch(`/api/resources/${id}/deallocate`, { method: 'POST', body: payload }),
+
+  getZones: (params = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return apiFetch(`/api/zones${qs ? '?' + qs : ''}`, { method: 'GET' })
+  },
+  getZoneHeatmap: () => apiFetch('/api/zones/heatmap', { method: 'GET' }),
+  getZone: (id) => apiFetch(`/api/zones/${id}`, { method: 'GET' }),
+  createZone: (payload) => apiFetch('/api/zones', { method: 'POST', body: payload }),
+  updateZone: (id, payload) => apiFetch(`/api/zones/${id}`, { method: 'PUT', body: payload }),
+  deleteZone: (id) => apiFetch(`/api/zones/${id}`, { method: 'DELETE' }),
 }

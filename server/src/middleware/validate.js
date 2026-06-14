@@ -78,6 +78,32 @@ const schemas = {
   deallocateResource: Joi.object({
     deallocQuantity: Joi.number().min(1).required(),
   }),
+
+  createZone: Joi.object({
+    name: Joi.string().min(1).max(200).required().trim(),
+    description: Joi.string().max(2000).trim(),
+    centerLat: Joi.number().min(-90).max(90).required(),
+    centerLng: Joi.number().min(-180).max(180).required(),
+    radiusKm: Joi.number().min(1).max(500).default(10),
+    severity: Joi.string().valid('Critical', 'High', 'Medium', 'Low').default('Medium'),
+    status: Joi.string().valid('Active', 'Monitoring', 'Resolved', 'Closed').default('Active'),
+    disasterType: Joi.string().valid('Flood', 'Earthquake', 'Cyclone', 'Drought', 'Fire', 'Landslide', 'Other').default('Other'),
+    affectedPopulation: Joi.number().min(0).default(0),
+    notes: Joi.string().max(2000).trim(),
+  }),
+
+  updateZone: Joi.object({
+    name: Joi.string().min(1).max(200).trim(),
+    description: Joi.string().max(2000).trim(),
+    centerLat: Joi.number().min(-90).max(90),
+    centerLng: Joi.number().min(-180).max(180),
+    radiusKm: Joi.number().min(1).max(500),
+    severity: Joi.string().valid('Critical', 'High', 'Medium', 'Low'),
+    status: Joi.string().valid('Active', 'Monitoring', 'Resolved', 'Closed'),
+    disasterType: Joi.string().valid('Flood', 'Earthquake', 'Cyclone', 'Drought', 'Fire', 'Landslide', 'Other'),
+    affectedPopulation: Joi.number().min(0),
+    notes: Joi.string().max(2000).trim(),
+  }).min(1),
 }
 
 export function validate(schemaName) {
