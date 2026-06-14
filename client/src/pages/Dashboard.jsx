@@ -34,6 +34,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false)
   const [filterStatus, setFilterStatus] = useState('All')
   const [search, setSearch] = useState('')
+  const [searchTrigger, setSearchTrigger] = useState(0)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
@@ -59,7 +60,7 @@ export default function Dashboard() {
     }
   }
 
-  useEffect(() => { load() }, [page, filterStatus])
+  useEffect(() => { load() }, [page, filterStatus, searchTrigger])
 
   useEffect(() => {
     clientApi.getResources({ limit: 100 }).then((data) => {
@@ -70,7 +71,7 @@ export default function Dashboard() {
   function handleSearch(e) {
     e.preventDefault()
     setPage(1)
-    load()
+    setSearchTrigger((t) => t + 1)
   }
 
   const currentUser = (() => {
@@ -104,7 +105,7 @@ export default function Dashboard() {
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {resourceSummary.map((s) => (
               <div key={s._id} style={{ padding: '6px 12px', borderRadius: 6, fontSize: 12, background: 'rgba(0,0,128,0.05)', border: '1px solid rgba(0,0,128,0.1)' }}>
-                <strong>{s._id}</strong>: {s.totalQty} units ({s.lowCount > 0 && <span style={{ color: '#cc7a00' }}>{s.lowCount} low</span>})
+                <strong>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: '#cc7a00' }}>({s.lowCount} low)</span>}
               </div>
             ))}
           </div>

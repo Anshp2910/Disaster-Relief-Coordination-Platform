@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import Chat from './Chat'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'
 
@@ -51,6 +52,12 @@ export default function RequestDetail() {
   const [allocQty, setAllocQty] = useState('')
   const [matches, setMatches] = useState([])
   const [loadingMatches, setLoadingMatches] = useState(false)
+  const [showChat, setShowChat] = useState(false)
+  const [feedbackList, setFeedbackList] = useState([])
+  const [feedbackRating, setFeedbackRating] = useState(5)
+  const [feedbackComment, setFeedbackComment] = useState('')
+  const [feedbackLoading, setFeedbackLoading] = useState(false)
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const fileRef = useRef()
 
   const currentUser = (() => {
@@ -92,6 +99,34 @@ export default function RequestDetail() {
   }
 
   useEffect(() => { if (item && item.status === 'Open') loadMatches() }, [item?.status])
+
+  async function loadFeedback() {
+    try {
+      const data = await clientApi.getFeedback(id)
+      setFeedbackList(data.feedback || [])
+    } catch (e) {
+      console.error('Failed to load feedback')
+    }
+  }
+
+  useEffect(() => { loadFeedback() }, [id])
+
+  async function handleFeedbackSubmit(e) {
+    e.preventDefault()
+    setFeedbackLoading(true)
+    try {
+      await clientApi.submitFeedback(id, { rating: feedbackRating, comment: feedbackComment, deliveryConfirmed: true })
+      setFeedbackComment('')
+      setFeedbackRating(5)
+      setShowFeedbackForm(false)
+      loadFeedback()
+      load()
+    } catch (e) {
+      alert(e.message)
+    } finally {
+      setFeedbackLoading(false)
+    }
+  }
 
   async function handleClaim() {
     try {
@@ -382,6 +417,76 @@ export default function RequestDetail() {
           </div>
         </div>
       )}
+
+      <div className="card" style={{ marginTop: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: showChat ? 12 : 0 }}>
+          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>
+            Real-time Chat
+          </h3>
+          <button onClick={() => setShowChat(!showChat)} style={{ fontSize: 12, padding: '4px 12px' }}>
+            {showChat ? 'Hide Chat' : 'Open Chat'}
+          </button>
+        </div>
+        {showChat && (
+          <div style={{ height: 350, marginTop: 8, border: '1px solid var(--gov-border)', borderRadius: 6, overflow: 'hidden' }}>
+            <Chat requestId={id} onClose={() => setShowChat(false)} />
+          </div>
+        )}
+      </div>
+
+      <div className="card" style={{ marginTop: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>
+            Feedback ({feedbackList.length})
+          </h3>
+          {!showFeedbackForm && (
+            <button onClick={() => setShowFeedbackForm(true)} className="btnPrimary" style={{ fontSize: 12, padding: '4px 12px' }}>
+              Give Feedback
+            </button>
+          )}
+        </div>
+
+        {showFeedbackForm && (
+          <form onSubmit={handleFeedbackSubmit} style={{ padding: 12, background: 'var(--gov-bg)', borderRadius: 6, marginBottom: 12 }}>
+            <div style={{ marginBottom: 8 }}>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Rating</label>
+              <div style={{ display: 'flex', gap: 4 }}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button key={star} type="button" onClick={() => setFeedbackRating(star)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: star <= feedbackRating ? '#FF9933' : '#ddd', padding: '0 2px' }}>
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
+            <textarea value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder="Your feedback (optional)" rows={2} style={{ width: '100%', fontSize: 13, marginBottom: 8 }} />
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button type="submit" disabled={feedbackLoading} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
+                {feedbackLoading ? '...' : 'Submit'}
+              </button>
+              <button type="button" onClick={() => setShowFeedbackForm(false)} style={{ fontSize: 12 }}>Cancel</button>
+            </div>
+          </form>
+        )}
+
+        {feedbackList.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {feedbackList.map((f) => (
+              <div key={f._id} style={{ padding: '10px 14px', background: 'var(--gov-bg)', borderRadius: 6, fontSize: 13 }}>
+                <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <span key={s} style={{ color: s <= f.rating ? '#FF9933' : '#ddd', fontSize: 14 }}>★</span>
+                  ))}
+                  <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
+                </div>
+                {f.comment && <div>{f.comment}</div>}
+                {f.deliveryConfirmed && <div className="small" style={{ color: '#138808', marginTop: 4 }}>Delivery confirmed</div>}
+              </div>
+            ))}
+          </div>
+        ) : (
+          !showFeedbackForm && <div className="muted" style={{ fontSize: 13 }}>No feedback yet</div>
+        )}
+      </div>
     </div>
   )
 }

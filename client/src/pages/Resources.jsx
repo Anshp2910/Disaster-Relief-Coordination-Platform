@@ -45,6 +45,11 @@ export default function Resources() {
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState(null)
   const [summary, setSummary] = useState([])
+  const [searchTrigger, setSearchTrigger] = useState(0)
+  const [showAllocModal, setShowAllocModal] = useState(null)
+  const [allocQty, setAllocQty] = useState('')
+  const [allocRequestId, setAllocRequestId] = useState('')
+  const [allocating, setAllocating] = useState(false)
 
   const [form, setForm] = useState({ name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' })
 
@@ -68,12 +73,12 @@ export default function Resources() {
     }
   }
 
-  useEffect(() => { load() }, [page, filterCategory, filterStatus])
+  useEffect(() => { load() }, [page, filterCategory, filterStatus, searchTrigger])
 
   function handleSearch(e) {
     e.preventDefault()
     setPage(1)
-    load()
+    setSearchTrigger((t) => t + 1)
   }
 
   function openCreate() {
@@ -115,6 +120,38 @@ export default function Resources() {
     }
   }
 
+  async function handleAllocate(e) {
+    e.preventDefault()
+    if (!showAllocModal || !allocQty || !allocRequestId) return
+    setAllocating(true)
+    try {
+      await clientApi.allocateResource(showAllocModal._id, { requestId: allocRequestId.trim(), allocQuantity: Number(allocQty) })
+      setShowAllocModal(null)
+      setAllocQty('')
+      setAllocRequestId('')
+      load()
+      alert('Resource allocated')
+    } catch (e) {
+      alert(e.message)
+    } finally {
+      setAllocating(false)
+    }
+  }
+
+  async function handleDeallocate(id) {
+    if (!confirm('Deallocate this resource?')) return
+    try {
+      await clientApi.deallocateResource(id, { deallocQuantity: 0 })
+      load()
+    } catch (e) {
+      alert(e.message)
+    }
+  }
+
+  function exportCSV() {
+    window.open(clientApi.exportResourcesCSV(), '_blank')
+  }
+
   const categories = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other']
   const statuses = ['All', 'Available', 'Low', 'Depleted', 'Reserved']
 
@@ -126,7 +163,10 @@ export default function Resources() {
             <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.resources') || 'Resource Inventory'}</h2>
             <div className="small" style={{ marginTop: 4 }}>{total} resources tracked</div>
           </div>
-          <button className="btnPrimary" onClick={openCreate}>Add Resource</button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={exportCSV} style={{ fontSize: 12, padding: '4px 10px' }}>Export CSV</button>
+            <button className="btnPrimary" onClick={openCreate}>Add Resource</button>
+          </div>
         </div>
 
         {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
@@ -223,6 +263,12 @@ export default function Resources() {
                     {r.notes && <div className="small muted" style={{ marginTop: 4 }}>{r.notes}</div>}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
+                    {r.status === 'Available' && r.quantity > 0 && (
+                      <button onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }} style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(0,0,128,.1)', color: '#000080', border: '1px solid rgba(0,0,128,.3)', borderRadius: 4, cursor: 'pointer' }}>Allocate</button>
+                    )}
+                    {r.allocatedQuantity > 0 && (
+                      <button onClick={() => handleDeallocate(r._id)} style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(204,0,0,.1)', color: '#cc0000', border: '1px solid rgba(204,0,0,.3)', borderRadius: 4, cursor: 'pointer' }}>Deallocate</button>
+                    )}
                     <button onClick={() => openEdit(r)} style={{ fontSize: 12, padding: '4px 10px' }}>Edit</button>
                     <button onClick={() => handleDelete(r._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>Delete</button>
                   </div>
@@ -238,6 +284,25 @@ export default function Resources() {
           <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Previous</button>
           <span style={{ fontSize: 13, padding: '6px 12px' }}>{page} / {totalPages}</span>
           <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Next</button>
+        </div>
+      )}
+
+      {showAllocModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="card" style={{ width: 400 }}>
+            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>Allocate Resource</h3>
+            <div style={{ fontSize: 13, marginBottom: 12 }}><strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available</div>
+            <form onSubmit={handleAllocate}>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Request ID</label>
+              <input value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder="Paste request ID" required style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Quantity to allocate</label>
+              <input type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} min="1" max={showAllocModal.quantity} required style={{ width: '100%', marginBottom: 12 }} />
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button type="submit" disabled={allocating} className="btnPrimary" style={{ fontSize: 13 }}>{allocating ? '...' : 'Allocate'}</button>
+                <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} style={{ fontSize: 13 }}>Cancel</button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

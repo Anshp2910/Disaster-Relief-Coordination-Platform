@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
@@ -23,7 +23,7 @@ export default function Escalation() {
     }
   }
 
-  useState(() => { load() }, [])
+  useEffect(() => { load() }, [])
 
   async function handleEscalate(e) {
     e.preventDefault()

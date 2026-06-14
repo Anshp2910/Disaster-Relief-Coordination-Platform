@@ -88,7 +88,7 @@ export default function Chat({ requestId, onClose }) {
         {loading && <div className="small muted" style={{ textAlign: 'center' }}>Loading chat...</div>}
         {!loading && messages.length === 0 && <div className="small muted" style={{ textAlign: 'center' }}>No messages yet</div>}
         {messages.map((m) => {
-          const isMe = m.sender?._id === currentUser?._id
+          const isMe = m.sender?.id === currentUser?.id || m.sender?._id === currentUser?.id
           const isSystem = m.type === 'system'
           return (
             <div key={m._id || m.createdAt} style={{ display: 'flex', justifyContent: isSystem ? 'center' : isMe ? 'flex-end' : 'flex-start' }}>

@@ -70,7 +70,7 @@ export default function Schedules() {
 
   function openCreate() {
     setEditItem(null)
-    setForm({ userId: currentUser?._id || '', zoneId: '', startDate: '', endDate: '', shift: 'Full Day', skills: [], notes: '' })
+    setForm({ userId: currentUser?.id || '', zoneId: '', startDate: '', endDate: '', shift: 'Full Day', skills: [], notes: '' })
     setShowForm(true)
   }
 
@@ -90,7 +90,7 @@ export default function Schedules() {
     try {
       const payload = { ...form }
       if (!payload.zoneId) delete payload.zoneId
-      if (!payload.userId) payload.userId = currentUser?._id
+      if (!payload.userId) payload.userId = currentUser?.id
       if (editItem) {
         await clientApi.updateSchedule(editItem._id, payload)
       } else {
