@@ -37,6 +37,7 @@ export default function Dashboard() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
+  const [resourceSummary, setResourceSummary] = useState([])
   const navigate = useNavigate()
   const { t } = useTranslation()
 
@@ -59,6 +60,12 @@ export default function Dashboard() {
   }
 
   useEffect(() => { load() }, [page, filterStatus])
+
+  useEffect(() => {
+    clientApi.getResources({ limit: 100 }).then((data) => {
+      setResourceSummary(data.summary || [])
+    }).catch(() => {})
+  }, [])
 
   function handleSearch(e) {
     e.preventDefault()
@@ -87,6 +94,22 @@ export default function Dashboard() {
       <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden' }}>
         <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" style={{ width: '100%', display: 'block' }} />
       </div>
+
+      {resourceSummary.length > 0 && (
+        <div className="card" style={{ marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>Resource Inventory</h3>
+            <button onClick={() => navigate('/resources')} style={{ fontSize: 12, padding: '4px 10px' }}>View All</button>
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {resourceSummary.map((s) => (
+              <div key={s._id} style={{ padding: '6px 12px', borderRadius: 6, fontSize: 12, background: 'rgba(0,0,128,0.05)', border: '1px solid rgba(0,0,128,0.1)' }}>
+                <strong>{s._id}</strong>: {s.totalQty} units ({s.lowCount > 0 && <span style={{ color: '#cc7a00' }}>{s.lowCount} low</span>})
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="card">
         <div className="headerRow">
           <div>

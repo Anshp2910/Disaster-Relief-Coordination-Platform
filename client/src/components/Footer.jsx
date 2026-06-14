@@ -12,6 +12,7 @@ export default function Footer() {
             <h4>{t('footer.quickLinks')}</h4>
             <ul>
               <li><a href="/dashboard">{t('footer.dashboardLink')}</a></li>
+              <li><a href="/resources">{t('nav.resources') || 'Resources'}</a></li>
               <li><a href="/requests/new">{t('footer.newRequestLink')}</a></li>
               <li><a href="/admin">{t('footer.adminPanel')}</a></li>
             </ul>

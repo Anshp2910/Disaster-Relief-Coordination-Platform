@@ -19,6 +19,13 @@ const PRIORITY_COLORS = {
   'Low': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
 }
 
+const RESOURCE_STATUS_COLORS = {
+  Available: { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
+  Low: { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
+  Depleted: { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
+  Reserved: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
+}
+
 function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || colors['Medium']
   return (
@@ -38,6 +45,10 @@ export default function RequestDetail() {
   const [comment, setComment] = useState('')
   const [posting, setPosting] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [resources, setResources] = useState([])
+  const [allocating, setAllocating] = useState(false)
+  const [allocResource, setAllocResource] = useState('')
+  const [allocQty, setAllocQty] = useState('')
   const fileRef = useRef()
 
   const currentUser = (() => {
@@ -55,7 +66,16 @@ export default function RequestDetail() {
     }
   }
 
-  useEffect(() => { load() }, [id])
+  async function loadResources() {
+    try {
+      const data = await clientApi.getResources({ status: 'Available', limit: 100 })
+      setResources(data.items || [])
+    } catch (e) {
+      console.error('Failed to load resources')
+    }
+  }
+
+  useEffect(() => { load(); loadResources() }, [id])
 
   async function handleClaim() {
     try {
@@ -112,6 +132,23 @@ export default function RequestDetail() {
       setItem((prev) => ({ ...prev, comments: prev.comments.filter((c) => c._id !== commentId) }))
     } catch (e) {
       alert(e.message)
+    }
+  }
+
+  async function handleAllocate(e) {
+    e.preventDefault()
+    if (!allocResource || !allocQty) return
+    setAllocating(true)
+    try {
+      await clientApi.allocateResource(allocResource, { requestId: id, allocQuantity: Number(allocQty) })
+      setAllocResource('')
+      setAllocQty('')
+      loadResources()
+      alert('Resource allocated successfully')
+    } catch (e) {
+      alert(e.message)
+    } finally {
+      setAllocating(false)
     }
   }
 
@@ -206,6 +243,25 @@ export default function RequestDetail() {
               {uploading ? t('editRequest.saving') : '+ Upload Files'}
             </label>
           </div>
+        </div>
+
+        <div className="card">
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>Allocate Resources</h3>
+          <form onSubmit={handleAllocate} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <select value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required style={{ flex: 1, minWidth: 150, fontSize: 13 }}>
+              <option value="">Select resource...</option>
+              {resources.map((r) => (
+                <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} available)</option>
+              ))}
+            </select>
+            <input type="number" placeholder="Qty" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" style={{ width: 80, fontSize: 13 }} />
+            <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
+              {allocating ? '...' : 'Allocate'}
+            </button>
+          </form>
+          {resources.length === 0 && (
+            <div className="muted small" style={{ marginTop: 8 }}>No available resources. Add resources in the Resources section.</div>
+          )}
         </div>
       </div>
 

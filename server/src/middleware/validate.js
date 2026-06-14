@@ -46,6 +46,38 @@ const schemas = {
   comment: Joi.object({
     text: Joi.string().min(1).max(2000).required().trim(),
   }),
+
+  createResource: Joi.object({
+    name: Joi.string().min(1).max(200).required().trim(),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other').required(),
+    quantity: Joi.number().min(0).required(),
+    unit: Joi.string().min(1).max(50).required().trim(),
+    locationName: Joi.string().min(1).max(500).required().trim(),
+    lat: Joi.number().min(-90).max(90),
+    lng: Joi.number().min(-180).max(180),
+    notes: Joi.string().max(2000).trim(),
+  }),
+
+  updateResource: Joi.object({
+    name: Joi.string().min(1).max(200).trim(),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other'),
+    quantity: Joi.number().min(0),
+    unit: Joi.string().min(1).max(50).trim(),
+    locationName: Joi.string().min(1).max(500).trim(),
+    lat: Joi.number().min(-90).max(90),
+    lng: Joi.number().min(-180).max(180),
+    notes: Joi.string().max(2000).trim(),
+    status: Joi.string().valid('Available', 'Low', 'Depleted', 'Reserved'),
+  }).min(1),
+
+  allocateResource: Joi.object({
+    requestId: Joi.string().required(),
+    allocQuantity: Joi.number().min(1).required(),
+  }),
+
+  deallocateResource: Joi.object({
+    deallocQuantity: Joi.number().min(1).required(),
+  }),
 }
 
 export function validate(schemaName) {

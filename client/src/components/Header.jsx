@@ -43,6 +43,7 @@ export default function Header() {
   const navLinks = token
     ? [
         { path: '/dashboard', label: t('nav.dashboard') },
+        { path: '/resources', label: t('nav.resources') || 'Resources' },
         { path: '/requests/new', label: t('nav.newRequest') },
         ...(currentUser?.role === 'admin' ? [{ path: '/admin', label: t('nav.admin') }] : []),
       ]

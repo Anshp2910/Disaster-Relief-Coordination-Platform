@@ -8,6 +8,7 @@ import EditRequest from './pages/EditRequest'
 import RequestDetail from './pages/RequestDetail'
 import MapOverview from './pages/MapOverview'
 import Profile from './pages/Profile'
+import Resources from './pages/Resources'
 import AdminDashboard from './pages/AdminDashboard'
 
 function RequireAuth({ children }) {
@@ -60,6 +61,15 @@ export default function App() {
           element={
             <RequireAuth>
               <Profile />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/resources"
+          element={
+            <RequireAuth>
+              <Resources />
             </RequireAuth>
           }
         />

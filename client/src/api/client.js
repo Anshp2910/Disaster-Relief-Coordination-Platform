@@ -60,4 +60,15 @@ export const clientApi = {
   adminDeleteUser: (id) => apiFetch(`/api/admin/users/${id}`, { method: 'DELETE' }),
   adminDeleteRequest: (id) => apiFetch(`/api/admin/requests/${id}`, { method: 'DELETE' }),
   adminExportRequests: (format = 'json') => apiFetch(`/api/admin/export/requests?format=${format}`, { method: 'GET' }),
+
+  getResources: (params = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return apiFetch(`/api/resources${qs ? '?' + qs : ''}`, { method: 'GET' })
+  },
+  getResourceStats: () => apiFetch('/api/resources/stats', { method: 'GET' }),
+  createResource: (payload) => apiFetch('/api/resources', { method: 'POST', body: payload }),
+  updateResource: (id, payload) => apiFetch(`/api/resources/${id}`, { method: 'PUT', body: payload }),
+  deleteResource: (id) => apiFetch(`/api/resources/${id}`, { method: 'DELETE' }),
+  allocateResource: (id, payload) => apiFetch(`/api/resources/${id}/allocate`, { method: 'POST', body: payload }),
+  deallocateResource: (id, payload) => apiFetch(`/api/resources/${id}/deallocate`, { method: 'POST', body: payload }),
 }

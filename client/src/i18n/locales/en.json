@@ -9,7 +9,8 @@
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
-    "profile": "Profile"
+    "profile": "Profile",
+    "resources": "Resources"
   },
   "auth": {
     "appName": "DisasterRelief",
@@ -180,5 +181,27 @@
     "newPassword": "New Password",
     "confirmPassword": "Confirm New Password",
     "updatePassword": "Update Password"
+  },
+  "resources": {
+    "title": "Resource Inventory",
+    "addResource": "Add Resource",
+    "editResource": "Edit Resource",
+    "resourceName": "Resource Name",
+    "category": "Category",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "location": "Location",
+    "status": "Status",
+    "notes": "Notes",
+    "available": "Available",
+    "low": "Low",
+    "depleted": "Depleted",
+    "reserved": "Reserved",
+    "allocate": "Allocate",
+    "deallocate": "Deallocate",
+    "allocatedTo": "Allocated To",
+    "searchPlaceholder": "Search resources...",
+    "noResources": "No resources tracked yet. Add your first resource to get started.",
+    "deleteConfirm": "Delete this resource?"
   }
 }
