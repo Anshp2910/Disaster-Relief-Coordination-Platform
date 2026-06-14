@@ -70,7 +70,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 600 }}>
+    <div className="container" style={{ maxWidth: 700, margin: '20px auto' }}>
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="headerRow">
           <h2 className="pageTitle" style={{ fontSize: 20, margin: 0 }}>{t('profile.title')}</h2>

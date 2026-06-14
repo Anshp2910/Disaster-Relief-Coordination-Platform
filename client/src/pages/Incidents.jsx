@@ -174,8 +174,8 @@ export default function Incidents() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
+        <div style={{ flex: '1 1 0', minWidth: 0 }}>
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             <div ref={mapRef} style={{ height: '55vh', width: '100%' }} />
           </div>

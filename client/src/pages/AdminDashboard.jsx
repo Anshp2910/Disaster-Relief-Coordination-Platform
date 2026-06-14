@@ -155,7 +155,7 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="container" style={{ maxWidth: 1100 }}>
+    <div className="container">
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
       )}

@@ -111,7 +111,7 @@ export default function Geofencing() {
       </div>
 
       {result && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginTop: 12 }}>
+        <div className="grid-3" style={{ marginTop: 12 }}>
           <div className="card" style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--gov-blue)' }}>{(result.zones || []).length}</div>
             <div className="small muted">Zones in area</div>

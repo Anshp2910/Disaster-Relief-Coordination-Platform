@@ -57,7 +57,7 @@ export default function BulkImport() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 700 }}>
+    <div className="container">
       <div className="card">
         <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('nav.bulkImport') || 'Bulk Import & CSV Export'}</h2>
         <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>

@@ -116,7 +116,7 @@ export default function Header() {
       </div>
 
       <nav className="gov-nav">
-        <div className="gov-container" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        <div className="gov-nav-inner">
           {navLinks.map((link) => (
             <button
               key={link.path}
@@ -132,7 +132,7 @@ export default function Header() {
               <button
                 onClick={handleSOS}
                 disabled={sosLoading}
-                style={{ background: '#cc0000', color: 'white', border: 'none', borderRadius: 4, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', letterSpacing: 0.5 }}
+                className="sos-btn"
               >
                 {sosLoading ? '...' : 'SOS'}
               </button>

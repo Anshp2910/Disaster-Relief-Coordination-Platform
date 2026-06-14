@@ -49,7 +49,7 @@ export default function Escalation() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 700 }}>
+    <div className="container">
       <div className="card">
         <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('nav.escalation') || 'Request Escalation Pipeline'}</h2>
         <div className="small muted" style={{ marginBottom: 12 }}>Escalate urgent requests that need immediate admin attention</div>
