@@ -2,6 +2,8 @@
 
 MVP scope: **Auth + Disaster Relief Requests + Locations (lat/lng)**.  
 Chat/maps are intentionally skipped for MVP.
+http://localhost:5001/login link
+
 
 ## Prerequisites
 - Node.js 18+ recommended
