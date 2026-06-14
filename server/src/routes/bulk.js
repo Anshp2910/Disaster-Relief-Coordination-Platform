@@ -72,12 +72,15 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]
       const rowErrors = []
-      if (!row.title) rowErrors.push('Title is required')
+      if (!row.title || !row.title.trim()) rowErrors.push('Title is required')
       if (!row.category || !validCategories.includes(row.category)) rowErrors.push(`Invalid category: ${row.category}`)
       if (row.status && !validStatuses.includes(row.status)) rowErrors.push(`Invalid status: ${row.status}`)
       if (row.priority && !validPriorities.includes(row.priority)) rowErrors.push(`Invalid priority: ${row.priority}`)
-      if (row.lat && (isNaN(row.lat) || row.lat < -90 || row.lat > 90)) rowErrors.push('Invalid latitude')
-      if (row.lng && (isNaN(row.lng) || row.lng < -180 || row.lng > 180)) rowErrors.push('Invalid longitude')
+      
+      const lat = row.lat ? Number(row.lat) : undefined
+      const lng = row.lng ? Number(row.lng) : undefined
+      if (lat !== undefined && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
+      if (lng !== undefined && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
 
       if (rowErrors.length > 0) {
         errors.push({ row: i + 1, errors: rowErrors })
@@ -85,15 +88,15 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
       }
 
       const doc = await Request.create({
-        title: row.title,
+        title: row.title.trim(),
         description: row.description || '',
         category: row.category,
         priority: row.priority || 'Medium',
         status: row.status || 'Open',
         locationName: row.locationName || '',
-        lat: row.lat ? Number(row.lat) : undefined,
-        lng: row.lng ? Number(row.lng) : undefined,
-        location: (row.lat && row.lng) ? { type: 'Point', coordinates: [Number(row.lng), Number(row.lat)] } : undefined,
+        lat,
+        lng,
+        location: (lat !== undefined && lng !== undefined) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
         createdBy: req.user._id,
         auditLog: [{ action: 'created', by: req.user._id }],
       })
@@ -102,8 +105,8 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
 
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
-    console.error('[bulk] import requests error:', err.message)
-    res.status(500).json({ error: 'Server error' })
+    console.error('[bulk] import requests error:', err)
+    res.status(500).json({ error: 'Server error', detail: err.message })
   }
 })
 
@@ -123,10 +126,17 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]
       const rowErrors = []
-      if (!row.name) rowErrors.push('Name is required')
+      if (!row.name || !row.name.trim()) rowErrors.push('Name is required')
       if (!row.category || !validCategories.includes(row.category)) rowErrors.push(`Invalid category: ${row.category}`)
       if (row.status && !validStatuses.includes(row.status)) rowErrors.push(`Invalid status: ${row.status}`)
-      if (row.quantity && isNaN(row.quantity)) rowErrors.push('Invalid quantity')
+      
+      const quantity = row.quantity ? Number(row.quantity) : 0
+      if (isNaN(quantity) || quantity < 0) rowErrors.push('Invalid quantity (must be non-negative)')
+      
+      const lat = row.lat ? Number(row.lat) : undefined
+      const lng = row.lng ? Number(row.lng) : undefined
+      if (lat !== undefined && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
+      if (lng !== undefined && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
 
       if (rowErrors.length > 0) {
         errors.push({ row: i + 1, errors: rowErrors })
@@ -134,22 +144,22 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
       }
 
       const doc = await Resource.create({
-        name: row.name,
+        name: row.name.trim(),
         category: row.category,
-        quantity: row.quantity ? Number(row.quantity) : 0,
+        quantity,
         unit: row.unit || 'units',
         status: row.status || 'Available',
         locationName: row.locationName || '',
-        lat: row.lat ? Number(row.lat) : undefined,
-        lng: row.lng ? Number(row.lng) : undefined,
-        location: (row.lat && row.lng) ? { type: 'Point', coordinates: [Number(row.lng), Number(row.lat)] } : undefined,
+        lat,
+        lng,
+        location: (lat !== undefined && lng !== undefined) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
       })
       imported.push(doc._id)
     }
 
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
-    console.error('[bulk] import resources error:', err.message)
-    res.status(500).json({ error: 'Server error' })
+    console.error('[bulk] import resources error:', err)
+    res.status(500).json({ error: 'Server error', detail: err.message })
   }
 })

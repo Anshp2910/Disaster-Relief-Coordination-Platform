@@ -2,6 +2,41 @@ import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
+function parseCSV(text) {
+  const result = []
+  let row = []
+  let cell = ''
+  let inQuotes = false
+  
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
+    const nextChar = text[i + 1]
+    
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        cell += '"'
+        i++
+      } else {
+        inQuotes = !inQuotes
+      }
+    } else if (char === ',' && !inQuotes) {
+      row.push(cell)
+      cell = ''
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && nextChar === '\n') i++
+      row.push(cell)
+      if (row.some(f => f.trim())) result.push(row)
+      row = []
+      cell = ''
+    } else {
+      cell += char
+    }
+  }
+  row.push(cell)
+  if (row.some(f => f.trim())) result.push(row)
+  return result
+}
+
 export default function BulkImport() {
   const { t } = useTranslation()
   const [tab, setTab] = useState('requests')
@@ -19,18 +54,17 @@ export default function BulkImport() {
 
     try {
       const text = await file.text()
-      const lines = text.split('\n').filter((l) => l.trim())
-      if (lines.length < 2) throw new Error('CSV must have a header row and at least one data row')
+      const rows = parseCSVToRows(text)
+      if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
 
-      const headers = lines[0].split(',').map((h) => h.trim().toLowerCase())
-      const rows = lines.slice(1).map((line) => {
-        const values = line.split(',')
+      const headers = rows[0].map((h) => h.trim().toLowerCase())
+      const dataRows = rows.slice(1).map((values) => {
         const row = {}
         headers.forEach((h, i) => { row[h] = values[i]?.trim() || '' })
         return row
       })
 
-      const data = tab === 'requests' ? await clientApi.importRequests(rows) : await clientApi.importResources(rows)
+      const data = tab === 'requests' ? await clientApi.importRequests(dataRows) : await clientApi.importResources(dataRows)
       setResult(data)
     } catch (e) {
       setError(e.message)
