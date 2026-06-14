@@ -62,7 +62,7 @@ async function start() {
 
   app.set('io', io)
 
-  httpServer.listen(PORT, '::', () => {
+  httpServer.listen(PORT, () => {
     console.log(`[server] listening on port ${PORT}`)
   })
 }

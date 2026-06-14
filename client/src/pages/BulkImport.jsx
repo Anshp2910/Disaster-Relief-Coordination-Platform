@@ -7,30 +7,19 @@ function parseCSV(text) {
   let row = []
   let cell = ''
   let inQuotes = false
-  
   for (let i = 0; i < text.length; i++) {
     const char = text[i]
-    const nextChar = text[i + 1]
-    
+    const next = text[i + 1]
     if (char === '"') {
-      if (inQuotes && nextChar === '"') {
-        cell += '"'
-        i++
-      } else {
-        inQuotes = !inQuotes
-      }
-    } else if (char === ',' && !inQuotes) {
-      row.push(cell)
-      cell = ''
-    } else if ((char === '\n' || char === '\r') && !inQuotes) {
-      if (char === '\r' && nextChar === '\n') i++
+      if (inQuotes && next === '"') { cell += '"'; i++ }
+      else inQuotes = !inQuotes
+    } else if (char === ',' && !inQuotes) { row.push(cell); cell = '' }
+    else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && next === '\n') i++
       row.push(cell)
       if (row.some(f => f.trim())) result.push(row)
-      row = []
-      cell = ''
-    } else {
-      cell += char
-    }
+      row = []; cell = ''
+    } else cell += char
   }
   row.push(cell)
   if (row.some(f => f.trim())) result.push(row)
@@ -43,57 +32,78 @@ export default function BulkImport() {
   const [importing, setImporting] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
+  const [preview, setPreview] = useState(null)
+  const [headers, setHeaders] = useState([])
+  const [selected, setSelected] = useState(new Set())
+  const [editingRow, setEditingRow] = useState(null)
   const fileRef = useRef(null)
 
   async function handleImport(e) {
     const file = e.target.files?.[0]
     if (!file) return
-    setImporting(true)
-    setError('')
-    setResult(null)
-
+    setImporting(true); setError(''); setResult(null)
     try {
       let text = await file.text()
       text = text.replace(/^\uFEFF/, '')
       const rows = parseCSV(text)
       if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
-
-      const headers = rows[0].map((h) => h.trim().toLowerCase().replace(/^\uFEFF/, ''))
-
-      const isRequestCSV = headers.includes('title')
-      const isResourceCSV = headers.includes('name')
-      if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
-        throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
-      }
-      if (tab === 'resources' && isRequestCSV && !isResourceCSV) {
-        throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
-      }
-
-      const dataRows = rows.slice(1).map((values) => {
+      const h = rows[0].map((c) => c.trim().toLowerCase().replace(/^\uFEFF/, ''))
+      const isRequestCSV = h.includes('title')
+      const isResourceCSV = h.includes('name')
+      if (tab === 'requests' && isResourceCSV && !isRequestCSV) throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
+      if (tab === 'resources' && isRequestCSV && !isResourceCSV) throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
+      const dataRows = rows.slice(1).map((vals) => {
         const row = {}
-        headers.forEach((h, i) => { row[h] = values[i]?.trim() || '' })
+        h.forEach((col, i) => { row[col] = vals[i]?.trim() || '' })
         return row
       })
+      setHeaders(h)
+      setPreview(dataRows)
+      setSelected(new Set(dataRows.map((_, i) => i)))
+      setEditingRow(null)
+    } catch (e) { setError(e.message) }
+    finally { setImporting(false); if (fileRef.current) fileRef.current.value = '' }
+  }
 
-      const data = tab === 'requests' ? await clientApi.importRequests(dataRows) : await clientApi.importResources(dataRows)
+  function toggleSelectAll() {
+    if (selected.size === preview.length) setSelected(new Set())
+    else setSelected(new Set(preview.map((_, i) => i)))
+  }
+
+  function toggleRow(i) {
+    const next = new Set(selected)
+    if (next.has(i)) next.delete(i)
+    else next.add(i)
+    setSelected(next)
+  }
+
+  function updateCell(rowIdx, col, val) {
+    setPreview((prev) => {
+      const next = [...prev]
+      next[rowIdx] = { ...next[rowIdx], [col]: val }
+      return next
+    })
+  }
+
+  async function handleSubmitImport() {
+    const rowsToImport = preview.filter((_, i) => selected.has(i))
+    if (rowsToImport.length === 0) { setError('No rows selected'); return }
+    setImporting(true); setError('')
+    try {
+      const data = tab === 'requests' ? await clientApi.importRequests(rowsToImport) : await clientApi.importResources(rowsToImport)
       setResult(data)
-    } catch (e) {
-      console.error('Import error:', e)
-      setError(e.message)
-    } finally {
-      setImporting(false)
-      if (fileRef.current) fileRef.current.value = ''
-    }
+      if (data.imported > 0) { setPreview(null); setSelected(new Set()) }
+    } catch (e) { setError(e.message) }
+    finally { setImporting(false) }
   }
 
   function downloadTemplate() {
-    const headers = tab === 'requests' ? 'title,description,category,priority,status,locationName,lat,lng' : 'name,category,quantity,unit,status,locationName,lat,lng'
-    const example = tab === 'requests' ? 'Flood relief needed,Water and food needed,Food,High,Open,Chennai,13.0827,80.2707' : 'Rice bags,Food,100,kg,Available,Chennai,13.0827,80.2707'
-    const csv = `${headers}\n${example}`
+    const h = tab === 'requests' ? 'title,description,category,priority,status,locationName,lat,lng' : 'name,category,quantity,unit,status,locationName,lat,lng'
+    const ex = tab === 'requests' ? 'Flood relief needed,Water and food needed,Food,High,Open,Chennai,13.0827,80.2707' : 'Rice bags,Food,100,kg,Available,Chennai,13.0827,80.2707'
+    const csv = `${h}\n${ex}`
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url; a.download = `${tab}_template.csv`; a.click()
+    const a = document.createElement('a'); a.href = url; a.download = `${tab}_template.csv`; a.click()
     URL.revokeObjectURL(url)
   }
 
@@ -102,30 +112,99 @@ export default function BulkImport() {
     window.open(url, '_blank')
   }
 
+  function cancelPreview() {
+    setPreview(null); setSelected(new Set()); setEditingRow(null); setError('')
+  }
+
   return (
     <div className="container">
       <div className="card">
         <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('nav.bulkImport') || 'Bulk Import & CSV Export'}</h2>
         <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-          <button onClick={() => setTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>Requests</button>
-          <button onClick={() => setTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>Resources</button>
+          <button onClick={() => { setTab('requests'); cancelPreview() }} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>Requests</button>
+          <button onClick={() => { setTab('resources'); cancelPreview() }} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>Resources</button>
         </div>
 
         {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
 
-        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-          <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'white', cursor: 'pointer', fontSize: 13 }}>Download Template</button>
-          <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>Export CSV</button>
-        </div>
+        {!preview && (
+          <>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'white', cursor: 'pointer', fontSize: 13 }}>Download Template</button>
+              <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>Export CSV</button>
+            </div>
+            <div style={{ border: '2px dashed var(--gov-border)', borderRadius: 8, padding: 32, textAlign: 'center' }}>
+              <div style={{ fontSize: 14, color: 'var(--gov-blue)', marginBottom: 8 }}>Import {tab} from CSV</div>
+              <div className="small muted" style={{ marginBottom: 12 }}>Upload a CSV file with the correct headers</div>
+              <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} style={{ display: 'none' }} id="csv-upload" />
+              <label htmlFor="csv-upload" className="btnPrimary" style={{ display: 'inline-block', cursor: 'pointer', fontSize: 13, padding: '8px 20px' }}>
+                {importing ? 'Loading...' : 'Choose CSV File'}
+              </label>
+            </div>
+          </>
+        )}
 
-        <div style={{ border: '2px dashed var(--gov-border)', borderRadius: 8, padding: 32, textAlign: 'center' }}>
-          <div style={{ fontSize: 14, color: 'var(--gov-blue)', marginBottom: 8 }}>Import {tab} from CSV</div>
-          <div className="small muted" style={{ marginBottom: 12 }}>Upload a CSV file with the correct headers</div>
-          <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} style={{ display: 'none' }} id="csv-upload" />
-          <label htmlFor="csv-upload" className="btnPrimary" style={{ display: 'inline-block', cursor: 'pointer', fontSize: 13, padding: '8px 20px' }}>
-            {importing ? 'Importing...' : 'Choose CSV File'}
-          </label>
-        </div>
+        {preview && (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div style={{ fontSize: 14, fontWeight: 600 }}>{preview.length} rows parsed</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={cancelPreview} style={{ fontSize: 12, padding: '6px 14px' }}>Cancel</button>
+                <button onClick={handleSubmitImport} disabled={importing || selected.size === 0} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
+                  {importing ? 'Importing...' : `Import ${selected.size} row${selected.size !== 1 ? 's' : ''}`}
+                </button>
+              </div>
+            </div>
+
+            <div style={{ overflowX: 'auto', border: '1px solid var(--gov-border)', borderRadius: 6 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                <thead>
+                  <tr style={{ background: 'var(--gov-bg)' }}>
+                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', textAlign: 'center', width: 40 }}>
+                      <input type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
+                    </th>
+                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', textAlign: 'center', width: 40 }}>#</th>
+                    {headers.map((h) => (
+                      <th key={h} style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', whiteSpace: 'nowrap' }}>{h}</th>
+                    ))}
+                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 60 }}>Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {preview.map((row, i) => (
+                    <tr key={i} style={{ background: editingRow === i ? 'rgba(0,0,128,0.04)' : selected.has(i) ? 'rgba(19,136,8,0.03)' : '#fafafa', opacity: selected.has(i) ? 1 : 0.5 }}>
+                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)' }}>
+                        <input type="checkbox" checked={selected.has(i)} onChange={() => toggleRow(i)} />
+                      </td>
+                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)', color: '#999' }}>{i + 1}</td>
+                      {headers.map((h) => (
+                        <td key={h} style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {editingRow === i ? (
+                            <input
+                              value={row[h]}
+                              onChange={(e) => updateCell(i, h, e.target.value)}
+                              style={{ width: '100%', padding: '3px 6px', border: '1px solid #ccc', borderRadius: 3, fontSize: 12, boxSizing: 'border-box' }}
+                            />
+                          ) : (
+                            row[h] || <span style={{ color: '#ccc' }}>-</span>
+                          )}
+                        </td>
+                      ))}
+                      <td style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', textAlign: 'center' }}>
+                        <button
+                          onClick={() => setEditingRow(editingRow === i ? null : i)}
+                          style={{ background: 'none', border: 'none', color: 'var(--gov-blue)', cursor: 'pointer', fontSize: 12, padding: 4 }}
+                        >
+                          {editingRow === i ? 'Done' : 'Edit'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
 
         {result && (
           <div style={{ marginTop: 16, padding: 12, borderRadius: 6, background: 'rgba(19,136,8,.06)', border: '1px solid rgba(19,136,8,.2)' }}>
@@ -133,7 +212,7 @@ export default function BulkImport() {
             {result.errors?.length > 0 && (
               <div style={{ marginTop: 8 }}>
                 <div style={{ fontSize: 12, color: '#cc0000', fontWeight: 600 }}>{result.errors.length} rows had errors:</div>
-                {result.errors.slice(0, 5).map((e, i) => (
+                {result.errors.slice(0, 10).map((e, i) => (
                   <div key={i} style={{ fontSize: 12, color: '#666', marginTop: 2 }}>Row {e.row}: {e.errors.join(', ')}</div>
                 ))}
               </div>
