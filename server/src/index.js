@@ -27,7 +27,7 @@ async function start() {
 
   const { Server } = await import('socket.io')
   const io = new Server(httpServer, {
-    cors: { origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true },
+    cors: { origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5001'], credentials: true },
   })
 
   io.on('connection', (socket) => {

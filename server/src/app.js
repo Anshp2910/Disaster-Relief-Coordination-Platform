@@ -42,14 +42,27 @@ export function createApp() {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-        connectSrc: ["'self'", "ws:", "wss:"],
+        connectSrc: ["'self'", "ws:", "wss:", "http://localhost:5001", "http://localhost:5173"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
       },
     },
   }))
+
+  const allowedOrigins = [
+    getEnv('CLIENT_URL', 'http://localhost:5173'),
+    'http://localhost:5173',
+    'http://localhost:5001',
+  ]
+
   app.use(
     cors({
-      origin: getEnv('CLIENT_URL', 'http://localhost:5173'),
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true)
+        } else {
+          callback(null, true)
+        }
+      },
       credentials: true,
     }),
   )

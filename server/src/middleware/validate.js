@@ -37,12 +37,6 @@ const schemas = {
     peopleCount: Joi.number().integer().min(1).max(10000),
   }).min(1),
 
-  updateProfile: Joi.object({
-    displayName: Joi.string().min(1).max(100).trim(),
-    currentPassword: Joi.string(),
-    newPassword: Joi.string().min(6).max(128),
-  }).or('displayName', 'newPassword'),
-
   comment: Joi.object({
     text: Joi.string().min(1).max(2000).required().trim(),
   }),

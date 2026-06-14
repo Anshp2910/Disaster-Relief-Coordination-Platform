@@ -30,7 +30,13 @@ escalationRouter.post('/:requestId', requireAuth, requireAdmin, async (req, res)
     await item.save()
 
     const io = req.app.get('io')
-    if (io) io.emit('request:escalated', { requestId: item._id, title: item.title, reason: item.escalationReason })
+    if (io) {
+      try {
+        io.emit('request:escalated', { requestId: item._id, title: item.title, reason: item.escalationReason })
+      } catch (err) {
+        console.error('[ws] emit request:escalated error:', err.message)
+      }
+    }
 
     return res.json({ item })
   } catch (err) {

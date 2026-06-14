@@ -35,6 +35,7 @@ export default function Header() {
   function logout() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
+    localStorage.removeItem('notifications')
     navigate('/login')
   }
 
@@ -42,6 +43,8 @@ export default function Header() {
     i18n.changeLanguage(langCode)
     localStorage.setItem('language', langCode)
   }
+
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
   const navLinks = token
     ? [
@@ -58,10 +61,7 @@ export default function Header() {
           { path: '/escalation', label: t('nav.escalation') || 'Escalation' },
         ] : []),
       ]
-    : [
-        { path: '/login', label: t('nav.login') },
-        { path: '/register', label: t('nav.register') },
-      ]
+    : []
 
   const [sosLoading, setSosLoading] = useState(false)
 
@@ -115,19 +115,23 @@ export default function Header() {
         </div>
       </div>
 
-      <nav className="gov-nav">
-        <div className="gov-nav-inner">
-          {navLinks.map((link) => (
-            <button
-              key={link.path}
-              onClick={() => navigate(link.path)}
-              className={`gov-nav-link ${location.pathname === link.path ? 'active' : ''}`}
-            >
-              {link.label}
-            </button>
-          ))}
+      {!isAuthPage && (
+        <div style={{ background: 'var(--gov-blue)', display: 'flex', alignItems: 'stretch' }}>
+          <nav className="gov-nav" style={{ flex: 1, overflowX: 'auto' }}>
+            <div className="gov-nav-inner">
+              {navLinks.map((link) => (
+                <button
+                  key={link.path}
+                  onClick={() => navigate(link.path)}
+                  className={`gov-nav-link ${location.pathname === link.path ? 'active' : ''}`}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+          </nav>
           {token && (
-            <>
+            <div className="gov-nav-actions">
               <NotificationBell />
               <button
                 onClick={handleSOS}
@@ -142,10 +146,10 @@ export default function Header() {
               <button onClick={logout} className="gov-nav-link">
                 {t('nav.logout')}
               </button>
-            </>
+            </div>
           )}
         </div>
-      </nav>
+      )}
     </header>
   )
 }

@@ -224,5 +224,15 @@
                   "low":  "Low",
                   "coverageStatus":  "Coverage Status",
                   "zoneName":  "Zone Name"
-              }
+              },
+    "notifications":  {
+                          "title":  "বিজ্ঞপ্তি",
+                          "noNotifications":  "এখনো কোনো বিজ্ঞপ্তি নেই",
+                          "markAllRead":  "সব পড়া হয়েছে চিহ্নিত করুন",
+                          "clear":  "পরিষ্কার করুন",
+                          "newRequest":  "নতুন ত্রাণ অনুরোধ",
+                          "requestUpdated":  "অনুরোধ আপডেট হয়েছে",
+                          "newComment":  "নতুন মন্তব্য",
+                          "resourceAllocated":  "সম্পদ বরাদ্দ"
+                      }
 }

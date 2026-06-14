@@ -223,5 +223,15 @@
                   "low":  "Low",
                   "coverageStatus":  "Coverage Status",
                   "zoneName":  "Zone Name"
-              }
+              },
+    "notifications":  {
+                          "title":  "सूचनाएँ",
+                          "noNotifications":  "अभी कोई सूचना नहीं",
+                          "markAllRead":  "सभी पढ़ें चिन्हित करें",
+                          "clear":  "साफ़ करें",
+                          "newRequest":  "नया राहत अनुरोध",
+                          "requestUpdated":  "अनुरोध अपडेट किया गया",
+                          "newComment":  "नई टिप्पणी",
+                          "resourceAllocated":  "संसाधन आवंटित"
+                      }
 }

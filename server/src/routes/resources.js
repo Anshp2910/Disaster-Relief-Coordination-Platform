@@ -54,7 +54,11 @@ resourcesRouter.post('/', requireAuth, validate('createResource'), async (req, r
 
     const io = req.app.get('io')
     if (io) {
-      io.emit('resource:created', { item: resource })
+      try {
+        io.emit('resource:created', { item: resource })
+      } catch (err) {
+        console.error('[ws] emit resource:created error:', err.message)
+      }
     }
 
     return res.status(201).json({ item: resource })
@@ -138,11 +142,15 @@ resourcesRouter.post('/:id/allocate', requireAuth, validate('allocateResource'),
 
     const io = req.app.get('io')
     if (io) {
-      io.emit('resource:allocated', {
-        resource: { _id: resource._id, name: resource.name },
-        requestId,
-        allocQuantity,
-      })
+      try {
+        io.emit('resource:allocated', {
+          resource: { _id: resource._id, name: resource.name },
+          requestId,
+          allocQuantity,
+        })
+      } catch (err) {
+        console.error('[ws] emit resource:allocated error:', err.message)
+      }
     }
 
     return res.json({ item: resource })

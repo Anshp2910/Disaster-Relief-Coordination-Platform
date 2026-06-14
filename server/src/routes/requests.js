@@ -89,10 +89,11 @@ requestsRouter.post('/', requireAuth, validate('createRequest'), async (req, res
 
   const io = req.app.get('io')
   if (io) {
-    console.log('[ws] emitting request:created for', populated.title)
-    io.emit('request:created', { item: populated })
-  } else {
-    console.log('[ws] io instance not found on app')
+    try {
+      io.emit('request:created', { item: populated })
+    } catch (err) {
+      console.error('[ws] emit request:created error:', err.message)
+    }
   }
 
   return res.status(201).json({ item: populated })
@@ -142,7 +143,11 @@ requestsRouter.put('/:id', requireAuth, validate('updateRequest'), async (req, r
 
   const io = req.app.get('io')
   if (io) {
-    io.emit('request:updated', { item: populated })
+    try {
+      io.emit('request:updated', { item: populated })
+    } catch (err) {
+      console.error('[ws] emit request:updated error:', err.message)
+    }
   }
 
   return res.json({ item: populated })
@@ -161,7 +166,11 @@ requestsRouter.delete('/:id', requireAuth, async (req, res) => {
 
   const io = req.app.get('io')
   if (io) {
-    io.emit('request:deleted', { id })
+    try {
+      io.emit('request:deleted', { id })
+    } catch (err) {
+      console.error('[ws] emit request:deleted error:', err.message)
+    }
   }
 
   return res.json({ deleted: true })
@@ -184,7 +193,11 @@ requestsRouter.post('/:id/claim', requireAuth, async (req, res) => {
 
   const io = req.app.get('io')
   if (io) {
-    io.emit('request:updated', { item: populated })
+    try {
+      io.emit('request:updated', { item: populated })
+    } catch (err) {
+      console.error('[ws] emit request:updated error:', err.message)
+    }
   }
 
   return res.json({ item: populated })
@@ -208,7 +221,11 @@ requestsRouter.post('/:id/unclaim', requireAuth, async (req, res) => {
 
   const io = req.app.get('io')
   if (io) {
-    io.emit('request:updated', { item: populated })
+    try {
+      io.emit('request:updated', { item: populated })
+    } catch (err) {
+      console.error('[ws] emit request:updated error:', err.message)
+    }
   }
 
   return res.json({ item: populated })
@@ -230,10 +247,14 @@ requestsRouter.post('/:id/comments', requireAuth, validate('comment'), async (re
 
   const io = req.app.get('io')
   if (io) {
-    io.emit('request:commented', {
-      requestId: id,
-      comment: populated.comments[populated.comments.length - 1],
-    })
+    try {
+      io.emit('request:commented', {
+        requestId: id,
+        comment: populated.comments[populated.comments.length - 1],
+      })
+    } catch (err) {
+      console.error('[ws] emit request:commented error:', err.message)
+    }
   }
 
   return res.json({ comments: populated.comments })
@@ -279,7 +300,11 @@ requestsRouter.post('/:id/files', requireAuth, upload.array('files', 5), async (
 
   const io = req.app.get('io')
   if (io) {
-    io.emit('request:updated', { item: { _id: id, files: item.files } })
+    try {
+      io.emit('request:updated', { item: { _id: id, files: item.files } })
+    } catch (err) {
+      console.error('[ws] emit request:updated error:', err.message)
+    }
   }
 
   return res.json({ files: item.files })

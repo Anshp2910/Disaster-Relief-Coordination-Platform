@@ -19,7 +19,13 @@ sosRouter.post('/broadcast', requireAuth, validate('sosAlert'), async (req, res)
     }
 
     const io = req.app.get('io')
-    if (io) io.emit('sos:alert', alert)
+    if (io) {
+      try {
+        io.emit('sos:alert', alert)
+      } catch (err) {
+        console.error('[ws] emit sos:alert error:', err.message)
+      }
+    }
 
     return res.status(201).json({ alert })
   } catch (err) {

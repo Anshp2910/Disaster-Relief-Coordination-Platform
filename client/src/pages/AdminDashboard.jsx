@@ -138,13 +138,18 @@ export default function AdminDashboard() {
     const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'
     fetch(`${API_BASE}/api/admin/export/requests?format=${format}`, {
       headers: { Authorization: `Bearer ${token}` },
-    }).then((res) => res.blob()).then((blob) => {
+    }).then((res) => {
+      if (!res.ok) throw new Error('Export failed')
+      return res.blob()
+    }).then((blob) => {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
       a.download = format === 'csv' ? 'requests-export.csv' : 'requests-export.json'
       a.click()
       URL.revokeObjectURL(url)
+    }).catch((err) => {
+      console.error('[export] error:', err.message)
     })
   }
 

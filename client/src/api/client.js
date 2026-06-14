@@ -4,7 +4,7 @@ function getToken() {
   return localStorage.getItem('token')
 }
 
-async function apiFetch(path, { method = 'GET', body, auth = true, formData = false } = {}) {
+async function apiFetch(path, { method = 'GET', body, auth = true, formData = false, timeout = 15000 } = {}) {
   const headers = {}
   if (auth) {
     const token = getToken()
@@ -12,18 +12,35 @@ async function apiFetch(path, { method = 'GET', body, auth = true, formData = fa
   }
   if (!formData) headers['Content-Type'] = 'application/json'
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers,
-    body: formData ? body : body ? JSON.stringify(body) : undefined,
-  })
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeout)
 
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    const msg = data?.error || `Request failed with status ${res.status}`
-    throw new Error(msg)
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method,
+      headers,
+      body: formData ? body : body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    })
+
+    clearTimeout(timer)
+
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      const msg = data?.error || `Request failed with status ${res.status}`
+      throw new Error(msg)
+    }
+    return data
+  } catch (err) {
+    clearTimeout(timer)
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out. Please check your connection and try again.')
+    }
+    if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+      throw new Error('Unable to connect to the server. Please ensure the backend is running and try again.')
+    }
+    throw err
   }
-  return data
 }
 
 export const clientApi = {

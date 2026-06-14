@@ -224,5 +224,15 @@
                   "low":  "Low",
                   "coverageStatus":  "Coverage Status",
                   "zoneName":  "Zone Name"
-              }
+              },
+    "notifications":  {
+                          "title":  "ಅಧಿಸೂಚನೆಗಳು",
+                          "noNotifications":  "ಇನ್ನೂ ಯಾವುದೇ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ",
+                          "markAllRead":  "ಎಲ್ಲವನ್ನೂ ಓದಿದೆ ಎಂದು ಗುರುತಿಸಿ",
+                          "clear":  "ತೆರವುಗೊಳಿಸಿ",
+                          "newRequest":  "ಹೊಸ ಪರಿಹಾರ ವಿನಂತಿ",
+                          "requestUpdated":  "ವಿನಂತಿ ನವೀಕರಿಸಲಾಗಿದೆ",
+                          "newComment":  "ಹೊಸ ಕಾಮೆಂಟ್",
+                          "resourceAllocated":  "ಸಂಪನ್ಮೂಲ ಹಂಚಿಕೆಯಾಗಿದೆ"
+                      }
 }

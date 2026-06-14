@@ -238,7 +238,11 @@
     "newRequest": "New Relief Request",
     "requestUpdated": "Request Updated",
     "newComment": "New Comment",
-    "resourceAllocated": "Resource Allocated"
+    "resourceAllocated": "Resource Allocated",
+    "resourceCreated": "New Resource Added",
+    "escalated": "Request Escalated",
+    "requestDeleted": "Request Deleted",
+    "sosAlert": "SOS Emergency Alert"
   },
   "matching": {
     "suggestedResources": "Suggested Resources",
