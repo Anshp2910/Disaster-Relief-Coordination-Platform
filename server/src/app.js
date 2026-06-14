@@ -72,6 +72,12 @@ export function createApp() {
   app.use('/api/geofencing', geofencingRouter)
   app.use('/api/sos', sosRouter)
 
+  const clientDist = path.join(__dirname, '../../client/dist')
+  app.use(express.static(clientDist))
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'))
+  })
+
   app.use((err, req, res, next) => {
     console.error('[error]', err.message)
     if (err.name === 'ValidationError') {
