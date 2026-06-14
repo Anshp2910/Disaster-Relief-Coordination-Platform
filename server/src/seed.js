@@ -30,7 +30,7 @@ export async function seedAdmin() {
       displayName,
       passwordHash: '',
     })
-    user.setPassword(password)
+    await user.setPassword(password)
     await user.save()
     console.log(`[seed] created admin user ${email}`)
   } catch (err) {

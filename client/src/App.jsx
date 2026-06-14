@@ -5,6 +5,9 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import CreateRequest from './pages/CreateRequest'
 import EditRequest from './pages/EditRequest'
+import RequestDetail from './pages/RequestDetail'
+import MapOverview from './pages/MapOverview'
+import Profile from './pages/Profile'
 import AdminDashboard from './pages/AdminDashboard'
 
 function RequireAuth({ children }) {
@@ -44,10 +47,37 @@ export default function App() {
         />
 
         <Route
+          path="/map"
+          element={
+            <RequireAuth>
+              <MapOverview />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <Profile />
+            </RequireAuth>
+          }
+        />
+
+        <Route
           path="/requests/new"
           element={
             <RequireAuth>
               <CreateRequest />
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/requests/:id"
+          element={
+            <RequireAuth>
+              <RequestDetail />
             </RequireAuth>
           }
         />

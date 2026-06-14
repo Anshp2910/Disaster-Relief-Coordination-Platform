@@ -1,39 +1,43 @@
+import { useTranslation } from 'react-i18next'
+
 export default function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className="gov-footer">
       <div className="gov-container">
         <div className="gov-footer-grid">
           <div>
-            <h4>Quick Links</h4>
+            <h4>{t('footer.quickLinks')}</h4>
             <ul>
-              <li><a href="/dashboard">Dashboard</a></li>
-              <li><a href="/requests/new">New Request</a></li>
-              <li><a href="/admin">Admin Panel</a></li>
+              <li><a href="/dashboard">{t('footer.dashboardLink')}</a></li>
+              <li><a href="/requests/new">{t('footer.newRequestLink')}</a></li>
+              <li><a href="/admin">{t('footer.adminPanel')}</a></li>
             </ul>
           </div>
           <div>
-            <h4>Contact</h4>
+            <h4>{t('footer.contact')}</h4>
             <ul>
-              <li>Emergency Helpline: 112</li>
-              <li>Disaster Helpline: 108</li>
-              <li>Email: relief@gov.in</li>
-              <li>National Disaster Management Authority</li>
+              <li>{t('footer.emergencyHelpline')}</li>
+              <li>{t('footer.disasterHelpline')}</li>
+              <li>{t('footer.email')}</li>
+              <li>{t('footer.ndma')}</li>
             </ul>
           </div>
           <div>
-            <h4>About</h4>
+            <h4>{t('footer.about')}</h4>
             <ul>
-              <li>A platform for coordinating disaster relief efforts across India</li>
-              <li>Connecting volunteers, NGOs, and agencies</li>
-              <li>Built for National Disaster Management</li>
+              <li>{t('footer.aboutText')}</li>
+              <li>{t('footer.connectingVolunteers')}</li>
+              <li>{t('footer.builtFor')}</li>
             </ul>
           </div>
         </div>
       </div>
       <div className="gov-footer-bottom">
         <div className="gov-container">
-          <span>© 2026 Disaster Relief Coordination Platform | Government of India Initiative</span>
-          <span>Last Updated: June 2026</span>
+          <span>{t('footer.copyright')}</span>
+          <span>{t('footer.lastUpdated')}</span>
         </div>
       </div>
     </footer>

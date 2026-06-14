@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 export default function Register() {
@@ -10,6 +11,7 @@ export default function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -51,30 +53,30 @@ export default function Register() {
               })}
             </svg>
           </div>
-          <h1 className="govt-app-title">DisasterRelief</h1>
-          <p className="govt-app-slogan">Coordinating aid when it matters most</p>
+          <h1 className="govt-app-title">{t('auth.appName')}</h1>
+          <p className="govt-app-slogan">{t('auth.slogan')}</p>
           <hr className="govt-divider" />
-          <h2 className="pageTitle" style={{ textAlign: 'left' }}>Register</h2>
+          <h2 className="pageTitle" style={{ textAlign: 'left' }}>{t('auth.registerTitle')}</h2>
 
           <form onSubmit={onSubmit} className="inputGrid">
             {error ? <div className="errorText">{error}</div> : null}
 
             <input
-              placeholder="Display name"
+              placeholder={t('auth.displayName')}
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               type="text"
               required
             />
             <input
-              placeholder="Email"
+              placeholder={t('auth.email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               required
             />
             <input
-              placeholder="Password"
+              placeholder={t('auth.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
@@ -82,27 +84,27 @@ export default function Register() {
             />
 
             <label className="gridGap" style={{ gap: 6 }}>
-              <span className="small">Role</span>
+              <span className="small">{t('auth.role')}</span>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 required
                 style={{ width: '100%' }}
               >
-                <option value="volunteer">Volunteer</option>
-                <option value="ngo">NGO</option>
+                <option value="volunteer">{t('auth.volunteer')}</option>
+                <option value="ngo">{t('auth.ngo')}</option>
               </select>
             </label>
 
             <button disabled={loading} type="submit" className="btnPrimary">
-              {loading ? 'Creating...' : 'Create account'}
+              {loading ? t('auth.creating') : t('auth.createAccount')}
             </button>
           </form>
 
           <p className="muted" style={{ marginTop: 16 }}>
-            Already have an account?{' '}
+            {t('auth.hasAccount')}{' '}
             <a href="/login" onClick={(e) => (e.preventDefault(), navigate('/login'))}>
-              Login
+              {t('auth.loginLink')}
             </a>
           </p>
         </div>

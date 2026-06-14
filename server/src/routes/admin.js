@@ -8,12 +8,22 @@ export const adminRouter = express.Router()
 adminRouter.use(requireAuth, requireAdmin)
 
 adminRouter.get('/stats', async (req, res) => {
-  const [totalUsers, totalRequests, statusCounts, categoryCounts, priorityCounts] = await Promise.all([
+  const [totalUsers, totalRequests, statusCounts, categoryCounts, priorityCounts, dailyRequests] = await Promise.all([
     User.countDocuments(),
     Request.countDocuments(),
     Request.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
     Request.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }]),
     Request.aggregate([{ $group: { _id: '$priority', count: { $sum: 1 } } }]),
+    Request.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+      { $limit: 30 },
+    ]),
   ])
 
   return res.json({
@@ -22,6 +32,7 @@ adminRouter.get('/stats', async (req, res) => {
     byStatus: Object.fromEntries(statusCounts.map((s) => [s._id, s.count])),
     byCategory: Object.fromEntries(categoryCounts.map((c) => [c._id, c.count])),
     byPriority: Object.fromEntries(priorityCounts.map((p) => [p._id, p.count])),
+    dailyRequests: dailyRequests.map((d) => ({ date: d._id, count: d.count })),
   })
 })
 
@@ -68,4 +79,30 @@ adminRouter.delete('/requests/:id', async (req, res) => {
 
   await item.deleteOne()
   return res.json({ deleted: true })
+})
+
+adminRouter.get('/export/requests', async (req, res) => {
+  const { format = 'json' } = req.query
+  const items = await Request.find()
+    .populate('createdBy', 'displayName email role')
+    .populate('claimedBy', 'displayName email role')
+    .sort({ createdAt: -1 })
+    .lean()
+
+  if (format === 'csv') {
+    const headers = ['Title', 'Description', 'Category', 'Priority', 'Status', 'Location', 'Lat', 'Lng', 'People', 'Posted By', 'Claimed By', 'Created At']
+    const rows = items.map((r) => [
+      r.title, r.description, r.category, r.priority, r.status, r.locationName,
+      r.lat, r.lng, r.peopleCount || 1,
+      r.createdBy?.displayName || r.createdBy?.email || '',
+      r.claimedBy?.displayName || r.claimedBy?.email || '',
+      r.createdAt,
+    ])
+    const csv = [headers.join(','), ...rows.map((row) => row.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n')
+    res.setHeader('Content-Type', 'text/csv')
+    res.setHeader('Content-Disposition', 'attachment; filename=requests-export.csv')
+    return res.send(csv)
+  }
+
+  return res.json({ items, total: items.length })
 })

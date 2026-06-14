@@ -1,4 +1,17 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'हिंदी' },
+  { code: 'bn', label: 'বাংলা' },
+  { code: 'ta', label: 'தமிழ்' },
+  { code: 'te', label: 'తెలుగు' },
+  { code: 'mr', label: 'मराठी' },
+  { code: 'gu', label: 'ગુજરાતી' },
+  { code: 'kn', label: 'ಕನ್ನಡ' },
+  { code: 'pa', label: 'ਪੰਜਾਬੀ' },
+]
 
 function AshokaChakra() {
   return (
@@ -26,6 +39,7 @@ function AshokaChakra() {
 export default function Header() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { t, i18n } = useTranslation()
 
   const token = localStorage.getItem('token')
   const currentUser = (() => {
@@ -38,23 +52,42 @@ export default function Header() {
     navigate('/login')
   }
 
+  function changeLanguage(langCode) {
+    i18n.changeLanguage(langCode)
+    localStorage.setItem('language', langCode)
+  }
+
   const navLinks = token
     ? [
-        { path: '/dashboard', label: 'Dashboard' },
-        { path: '/requests/new', label: 'New Request' },
-        ...(currentUser?.role === 'admin' ? [{ path: '/admin', label: 'Admin' }] : []),
+        { path: '/dashboard', label: t('nav.dashboard') },
+        { path: '/requests/new', label: t('nav.newRequest') },
+        ...(currentUser?.role === 'admin' ? [{ path: '/admin', label: t('nav.admin') }] : []),
       ]
     : [
-        { path: '/login', label: 'Login' },
-        { path: '/register', label: 'Register' },
+        { path: '/login', label: t('nav.login') },
+        { path: '/register', label: t('nav.register') },
       ]
 
   return (
     <header>
       <div className="gov-top-strip">
         <div className="gov-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: 12, color: '#ccc' }}>An official website of the Disaster Relief Coordination Platform</span>
-          <span style={{ fontSize: 12, color: '#ccc' }}>हिंदी</span>
+          <span style={{ fontSize: 12, color: '#ccc' }}>{t('topStrip')}</span>
+          <select
+            value={i18n.language}
+            onChange={(e) => changeLanguage(e.target.value)}
+            style={{
+              fontSize: 12, background: 'transparent', color: '#ccc',
+              border: '1px solid rgba(255,255,255,0.2)', borderRadius: 4,
+              padding: '2px 6px', cursor: 'pointer',
+            }}
+          >
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code} style={{ color: '#333' }}>
+                {l.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -63,10 +96,10 @@ export default function Header() {
           <AshokaChakra />
           <div>
             <div style={{ fontSize: 18, fontWeight: 700, color: '#000080', lineHeight: 1.2 }}>
-              Disaster Relief Coordination Platform
+              {t('appTitle')}
             </div>
             <div style={{ fontSize: 12, color: '#555', letterSpacing: 0.5 }}>
-              राहत समन्वय मंच | Government of India Initiative
+              {t('appSubtitle')}
             </div>
           </div>
         </div>
@@ -84,9 +117,14 @@ export default function Header() {
             </button>
           ))}
           {token && (
-            <button onClick={logout} className="gov-nav-link" style={{ marginLeft: 'auto' }}>
-              Logout
-            </button>
+            <>
+              <button onClick={() => navigate('/profile')} className="gov-nav-link">
+                {currentUser?.displayName || t('nav.profile')}
+              </button>
+              <button onClick={logout} className="gov-nav-link">
+                {t('nav.logout')}
+              </button>
+            </>
           )}
         </div>
       </nav>

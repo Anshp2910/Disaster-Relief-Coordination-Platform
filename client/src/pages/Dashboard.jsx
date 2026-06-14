@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 const STATUS_COLORS = {
@@ -16,13 +17,8 @@ const PRIORITY_COLORS = {
   'Low': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
 }
 
-const CATEGORY_ICONS = {
-  'Medical': '🏥', 'Food': '🍲', 'Shelter': '🏠', 'Water': '💧',
-  'Rescue': '🚒', 'Supplies': '📦', 'Other': '📌',
-}
-
-function Badge({ label, colors }) {
-  const c = colors[label] || colors['Medium']
+function Badge({ label, colors, colorKey }) {
+  const c = colors[colorKey || label] || colors['Medium']
   return (
     <span className="govt-badge" style={{
       background: c.bg, border: `1px solid ${c.border}`, color: c.text,
@@ -37,14 +33,24 @@ export default function Dashboard() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [filterStatus, setFilterStatus] = useState('All')
+  const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [total, setTotal] = useState(0)
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   async function load() {
     setLoading(true)
     setError('')
     try {
-      const data = await clientApi.getRequests()
+      const params = { page, limit: 12 }
+      if (filterStatus !== 'All') params.status = filterStatus
+      if (search) params.search = search
+      const data = await clientApi.getRequests(params)
       setItems(data.items || [])
+      setTotalPages(data.pages || 1)
+      setTotal(data.total || 0)
     } catch (e) {
       setError(e.message || 'Failed to load requests')
     } finally {
@@ -52,14 +58,12 @@ export default function Dashboard() {
     }
   }
 
-  useEffect(() => {
-    load()
-  }, [])
+  useEffect(() => { load() }, [page, filterStatus])
 
-  function logout() {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    navigate('/login')
+  function handleSearch(e) {
+    e.preventDefault()
+    setPage(1)
+    load()
   }
 
   const currentUser = (() => {
@@ -70,75 +74,97 @@ export default function Dashboard() {
     }
   })()
 
-  const filtered = filterStatus === 'All' ? items : items.filter((it) => it.status === filterStatus)
+  const filterOptions = [
+    { key: 'All', label: t('dashboard.filterAll') },
+    { key: 'Open', label: t('statuses.Open') },
+    { key: 'In Progress', label: t('statuses.In Progress') },
+    { key: 'Resolved', label: t('statuses.Resolved') },
+    { key: 'Fulfilled', label: t('statuses.Fulfilled') },
+  ]
 
   return (
     <div className="container">
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>Disaster Relief Requests</h2>
+            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('dashboard.title')}</h2>
             <div className="small" style={{ marginTop: 4 }}>
-              {items.length} total requests | {items.filter(i => i.status === 'Open').length} open
+              {total} {t('dashboard.totalRequests')}
             </div>
           </div>
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
               <button onClick={() => navigate('/admin')} style={{ color: '#000080', borderColor: '#000080' }}>
-                Admin
+                {t('dashboard.admin')}
               </button>
             )}
+            <button onClick={() => navigate('/map')} style={{ color: '#000080', borderColor: '#000080' }}>
+              {t('dashboard.mapView')}
+            </button>
             <button className="btnPrimary" onClick={() => navigate('/requests/new')}>
-              + New Request
+              {t('dashboard.newRequest')}
             </button>
           </div>
         </div>
 
         {error ? <div className="errorText">{error}</div> : null}
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 16, flexWrap: 'wrap' }}>
-          {['All', 'Open', 'In Progress', 'Resolved', 'Fulfilled'].map((s) => (
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t('admin.searchRequests')}
+            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+          />
+          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>{t('createRequest.search')}</button>
+        </form>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+          {filterOptions.map((f) => (
             <button
-              key={s}
-              onClick={() => setFilterStatus(s)}
-              className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
+              key={f.key}
+              onClick={() => { setFilterStatus(f.key); setPage(1) }}
+              className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
             >
-              {s} {s === 'All' ? `(${items.length})` : `(${items.filter((i) => i.status === s).length})`}
+              {f.label}
             </button>
           ))}
         </div>
 
         {loading ? (
-          <div className="small muted" style={{ marginTop: 16 }}>Loading requests...</div>
+          <div className="small muted" style={{ marginTop: 16 }}>{t('dashboard.loading')}</div>
         ) : (
           <div className="gridGap" style={{ marginTop: 16 }}>
-            {filtered.length === 0 ? (
-              <div className="muted" style={{ textAlign: 'center', padding: 20 }}>No requests found.</div>
+            {items.length === 0 ? (
+              <div className="muted" style={{ textAlign: 'center', padding: 20 }}>{t('dashboard.noRequests')}</div>
             ) : (
-              filtered.map((it) => (
-                <div key={it._id} className="listCard">
+              items.map((it) => (
+                <div key={it._id} className="listCard" style={{ cursor: 'pointer' }} onClick={() => navigate(`/requests/${it._id}`)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 700, fontSize: 15, color: '#000080' }}>{it.title}</div>
                       <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
-                        <Badge label={it.status || 'Open'} colors={STATUS_COLORS} />
-                        <Badge label={it.priority || 'Medium'} colors={PRIORITY_COLORS} />
+                        <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
+                        <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
                         <span className="govt-badge govt-badge-blue">
-                          {CATEGORY_ICONS[it.category] || '📌'} {it.category || 'Other'}
+                          {t(`categories.${it.category || 'Other'}`)}
                         </span>
                       </div>
                       <div className="muted" style={{ marginTop: 8, fontSize: 13 }}>
-                        {it.description}
+                        {it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}
                       </div>
                       <div className="small" style={{ marginTop: 8 }}>
-                        📍 {it.locationName} ({Number(it.lat).toFixed(4)}, {Number(it.lng).toFixed(4)})
+                        📍 {it.locationName}
                       </div>
                       {it.createdBy && (
                         <div className="small" style={{ marginTop: 4 }}>
-                          Posted by: {it.createdBy.displayName || it.createdBy.email || 'Unknown'}
-                          {it.createdBy.role === 'admin' && (
-                            <span style={{ color: '#000080', marginLeft: 4 }}>(Admin)</span>
-                          )}
+                          {t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}
+                        </div>
+                      )}
+                      {it.claimedBy && (
+                        <div className="small" style={{ marginTop: 2, color: '#cc7a00' }}>
+                          Claimed by {it.claimedBy.displayName || it.claimedBy.email}
                         </div>
                       )}
                     </div>
@@ -150,6 +176,18 @@ export default function Dashboard() {
             )}
           </div>
         )}
+
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
+            <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>
+              Previous
+            </button>
+            <span style={{ fontSize: 13, padding: '6px 12px' }}>{page} / {totalPages}</span>
+            <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -157,6 +195,7 @@ export default function Dashboard() {
 
 function OwnerActions({ id, item, onChanged }) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const user = (() => {
     try {
       return JSON.parse(localStorage.getItem('user') || 'null')
@@ -171,8 +210,9 @@ function OwnerActions({ id, item, onChanged }) {
     : user?.id && String(item.createdBy) === String(user.id)
   const canEdit = isOwner || user?.role === 'admin'
 
-  async function del() {
-    if (!confirm('Delete this request?')) return
+  async function del(e) {
+    e.stopPropagation()
+    if (!confirm(t('dashboard.deleteConfirm'))) return
     setDeleting(true)
     try {
       await clientApi.deleteRequest(id)
@@ -184,26 +224,31 @@ function OwnerActions({ id, item, onChanged }) {
     }
   }
 
+  function edit(e) {
+    e.stopPropagation()
+    navigate(`/requests/${id}/edit`)
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
       <button
         disabled={!canEdit}
-        onClick={() => navigate(`/requests/${id}/edit`)}
+        onClick={edit}
         className="btnPrimary"
         style={{
           opacity: !canEdit ? 0.5 : 1,
           fontSize: 12, padding: '6px 12px',
         }}
       >
-        Edit
+        {t('dashboard.edit')}
       </button>
       <button
         disabled={!canEdit || deleting}
-        onClick={() => del()}
+        onClick={del}
         className="btnDanger"
         style={{ opacity: !canEdit ? 0.5 : 1, fontSize: 12, padding: '6px 12px' }}
       >
-        {deleting ? 'Deleting...' : 'Delete'}
+        {deleting ? t('dashboard.deleting') : t('dashboard.delete')}
       </button>
     </div>
   )

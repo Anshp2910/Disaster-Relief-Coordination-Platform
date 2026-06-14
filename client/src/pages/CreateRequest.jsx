@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 const pinIcon = L.divIcon({
@@ -25,6 +26,7 @@ export default function CreateRequest() {
   const [searching, setSearching] = useState(false)
   const [category, setCategory] = useState('Other')
   const [priority, setPriority] = useState('Medium')
+  const [peopleCount, setPeopleCount] = useState(1)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [locating, setLocating] = useState(false)
@@ -33,6 +35,7 @@ export default function CreateRequest() {
   const mapRef = useRef(null)
   const mapInstance = useRef(null)
   const marker = useRef(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (mapInstance.current) return
@@ -63,7 +66,7 @@ export default function CreateRequest() {
   }
 
   function useMyLocation() {
-    if (!navigator.geolocation) return setError('Geolocation is not supported by your browser.')
+    if (!navigator.geolocation) return setError(t('createRequest.geolocationNotSupported'))
     setLocating(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -80,7 +83,7 @@ export default function CreateRequest() {
         setLocating(false)
       },
       () => {
-        setError('Unable to retrieve your location.')
+        setError(t('createRequest.unableToRetrieve'))
         setLocating(false)
       }
     )
@@ -122,7 +125,7 @@ export default function CreateRequest() {
     setError('')
     setLoading(true)
     try {
-      if (!lat || !lng) return setError('Please select a location by clicking on the map or searching.')
+      if (!lat || !lng) return setError(t('createRequest.locationError'))
       await clientApi.createRequest({
         title,
         description,
@@ -131,6 +134,7 @@ export default function CreateRequest() {
         lng: Number(lng),
         category,
         priority,
+        peopleCount: Number(peopleCount) || 1,
       })
       navigate('/dashboard')
     } catch (e2) {
@@ -140,21 +144,24 @@ export default function CreateRequest() {
     }
   }
 
+  const categories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other']
+  const priorities = ['Critical', 'High', 'Medium', 'Low']
+
   return (
     <div className="container" style={{ maxWidth: 720 }}>
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20 }}>Create Disaster Relief Request</h2>
+        <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('createRequest.title')}</h2>
         <div className="small muted" style={{ marginTop: 4 }}>
-          Fill in the details below to submit a new relief request
+          {t('createRequest.subtitle')}
         </div>
 
         {error ? <div className="errorText">{error}</div> : null}
 
         <form onSubmit={onSubmit} className="inputGrid" style={{ marginTop: 16 }}>
-          <input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required />
 
           <textarea
-            placeholder="Description"
+            placeholder={t('createRequest.descriptionLabel')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
@@ -164,54 +171,61 @@ export default function CreateRequest() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Category</label>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.categoryLabel')}</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 style={{ width: '100%' }}
               >
-                <option value="Medical">Medical</option>
-                <option value="Food">Food</option>
-                <option value="Shelter">Shelter</option>
-                <option value="Water">Water</option>
-                <option value="Rescue">Rescue</option>
-                <option value="Supplies">Supplies</option>
-                <option value="Other">Other</option>
+                {categories.map((c) => (
+                  <option key={c} value={c}>{t(`categories.${c}`)}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Priority</label>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.priorityLabel')}</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
                 style={{ width: '100%' }}
               >
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
+                {priorities.map((p) => (
+                  <option key={p} value={p}>{t(`priorities.${p}`)}</option>
+                ))}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.peopleCountLabel')}</label>
+            <input
+              type="number"
+              min="1"
+              max="10000"
+              value={peopleCount}
+              onChange={(e) => setPeopleCount(e.target.value)}
+              style={{ width: '100%' }}
+            />
           </div>
 
           <div className="card" style={{ padding: 12, background: '#f8f8f8' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
               <div>
                 <div className="pageTitle" style={{ marginBottom: 4, fontSize: 15 }}>
-                  Select Location
+                  {t('createRequest.selectLocation')}
                 </div>
                 <div style={{ color: '#666', fontSize: 13 }}>
-                  Search, use your location, or click on the map.
+                  {t('createRequest.locationHint')}
                 </div>
               </div>
               <div style={{ fontSize: 13, color: '#555' }}>
                 {lat && lng ? (
                   <>
-                    <div><b>Lat:</b> {Number(lat).toFixed(5)}</div>
-                    <div><b>Lng:</b> {Number(lng).toFixed(5)}</div>
+                    <div><b>{t('createRequest.lat')}</b> {Number(lat).toFixed(5)}</div>
+                    <div><b>{t('createRequest.lng')}</b> {Number(lng).toFixed(5)}</div>
                   </>
                 ) : (
-                  <span>Not selected</span>
+                  <span>{t('createRequest.notSelected')}</span>
                 )}
               </div>
             </div>
@@ -228,7 +242,7 @@ export default function CreateRequest() {
                   cursor: locating ? 'wait' : 'pointer',
                 }}
               >
-                {locating ? 'Locating...' : 'Use My Location'}
+                {locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
               </button>
 
               <div style={{ position: 'relative', flex: 1 }}>
@@ -237,7 +251,7 @@ export default function CreateRequest() {
                   value={searchText}
                   onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
-                  placeholder="Search for a place..."
+                  placeholder={t('createRequest.searchPlaceholder')}
                   style={{
                     width: '100%', padding: '10px 12px', paddingRight: 70,
                     borderRadius: 4, border: '1px solid #ccc',
@@ -256,7 +270,7 @@ export default function CreateRequest() {
                     cursor: searching ? 'wait' : 'pointer',
                   }}
                 >
-                  {searching ? '...' : 'Search'}
+                  {searching ? t('createRequest.searching') : t('createRequest.search')}
                 </button>
 
                 {suggestions.length > 0 && (
@@ -295,9 +309,9 @@ export default function CreateRequest() {
 
           <div className="btnRow">
             <button disabled={loading || !lat} type="submit" className="btnPrimary">
-              {loading ? 'Creating...' : !lat ? 'Select a location first' : 'Create Request'}
+              {loading ? t('createRequest.creating') : !lat ? t('createRequest.selectLocationFirst') : t('createRequest.createButton')}
             </button>
-            <button type="button" onClick={() => navigate('/dashboard')}>Cancel</button>
+            <button type="button" onClick={() => navigate('/dashboard')}>{t('createRequest.cancel')}</button>
           </div>
         </form>
       </div>

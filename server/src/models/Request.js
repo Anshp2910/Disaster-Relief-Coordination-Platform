@@ -1,5 +1,17 @@
 import mongoose from 'mongoose'
 
+const CommentSchema = new mongoose.Schema({
+  text: { type: String, required: true, trim: true },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+}, { timestamps: true })
+
+const AuditEntrySchema = new mongoose.Schema({
+  action: { type: String, required: true },
+  by: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  timestamp: { type: Date, default: Date.now },
+  details: { type: String },
+})
+
 const RequestSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
@@ -25,9 +37,30 @@ const RequestSchema = new mongoose.Schema(
       default: 'Medium',
     },
 
+    files: [{
+      url: String,
+      filename: String,
+      mimetype: String,
+      uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      uploadedAt: { type: Date, default: Date.now },
+    }],
+
+    claimedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    claimedAt: { type: Date, default: null },
+    peopleCount: { type: Number, default: 1 },
+
+    comments: [CommentSchema],
+    auditLog: [AuditEntrySchema],
+
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { timestamps: true },
 )
+
+RequestSchema.index({ lat: 1, lng: 1 })
+RequestSchema.index({ status: 1 })
+RequestSchema.index({ category: 1 })
+RequestSchema.index({ createdAt: -1 })
+RequestSchema.index({ title: 'text', description: 'text', locationName: 'text' })
 
 export const Request = mongoose.model('Request', RequestSchema)

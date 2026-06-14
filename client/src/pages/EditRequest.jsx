@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 const pinIcon = L.divIcon({
@@ -24,6 +25,7 @@ export default function EditRequest() {
   const [status, setStatus] = useState('Open')
   const [category, setCategory] = useState('Other')
   const [priority, setPriority] = useState('Medium')
+  const [peopleCount, setPeopleCount] = useState(1)
   const [searchText, setSearchText] = useState('')
   const [suggestions, setSuggestions] = useState([])
   const [searching, setSearching] = useState(false)
@@ -36,6 +38,7 @@ export default function EditRequest() {
   const mapRef = useRef(null)
   const mapInstance = useRef(null)
   const marker = useRef(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (fetching || mapInstance.current) return
@@ -62,6 +65,7 @@ export default function EditRequest() {
         setStatus(item.status || 'Open')
         setCategory(item.category || 'Other')
         setPriority(item.priority || 'Medium')
+        setPeopleCount(item.peopleCount || 1)
         setLocationName(item.locationName)
         setLat(String(item.lat))
         setLng(String(item.lng))
@@ -93,7 +97,7 @@ export default function EditRequest() {
   }
 
   function useMyLocation() {
-    if (!navigator.geolocation) return setError('Geolocation is not supported by your browser.')
+    if (!navigator.geolocation) return setError(t('editRequest.geolocationNotSupported'))
     setLocating(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -110,7 +114,7 @@ export default function EditRequest() {
         setLocating(false)
       },
       () => {
-        setError('Unable to retrieve your location.')
+        setError(t('editRequest.unableToRetrieve'))
         setLocating(false)
       }
     )
@@ -152,7 +156,7 @@ export default function EditRequest() {
     setError('')
     setLoading(true)
     try {
-      if (!lat || !lng) return setError('Please select a location by clicking on the map or searching.')
+      if (!lat || !lng) return setError(t('editRequest.locationError'))
       await clientApi.updateRequest(id, {
         title,
         description,
@@ -162,6 +166,7 @@ export default function EditRequest() {
         status,
         category,
         priority,
+        peopleCount: Number(peopleCount) || 1,
       })
       navigate('/dashboard')
     } catch (e2) {
@@ -171,11 +176,15 @@ export default function EditRequest() {
     }
   }
 
+  const categories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other']
+  const priorities = ['Critical', 'High', 'Medium', 'Low']
+  const statuses = ['Open', 'In Progress', 'Resolved', 'Fulfilled']
+
   if (fetching) {
     return (
       <div className="container" style={{ maxWidth: 720 }}>
         <div className="card">
-          <div className="small muted">Loading request...</div>
+          <div className="small muted">{t('editRequest.loadingRequest')}</div>
         </div>
       </div>
     )
@@ -184,18 +193,18 @@ export default function EditRequest() {
   return (
     <div className="container" style={{ maxWidth: 720 }}>
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20 }}>Edit Request</h2>
+        <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('editRequest.title')}</h2>
         <div className="small muted" style={{ marginTop: 4 }}>
-          Update the details of your relief request
+          {t('editRequest.subtitle')}
         </div>
 
         {error ? <div className="errorText">{error}</div> : null}
 
         <form onSubmit={onSubmit} className="inputGrid" style={{ marginTop: 16 }}>
-          <input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required />
 
           <textarea
-            placeholder="Description"
+            placeholder={t('createRequest.descriptionLabel')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
@@ -205,67 +214,73 @@ export default function EditRequest() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Category</label>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.categoryLabel')}</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 style={{ width: '100%' }}
               >
-                <option value="Medical">Medical</option>
-                <option value="Food">Food</option>
-                <option value="Shelter">Shelter</option>
-                <option value="Water">Water</option>
-                <option value="Rescue">Rescue</option>
-                <option value="Supplies">Supplies</option>
-                <option value="Other">Other</option>
+                {categories.map((c) => (
+                  <option key={c} value={c}>{t(`categories.${c}`)}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Priority</label>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.priorityLabel')}</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
                 style={{ width: '100%' }}
               >
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
+                {priorities.map((p) => (
+                  <option key={p} value={p}>{t(`priorities.${p}`)}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Status</label>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('editRequest.statusLabel')}</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 style={{ width: '100%' }}
               >
-                <option value="Open">Open</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Resolved">Resolved</option>
-                <option value="Fulfilled">Fulfilled</option>
+                {statuses.map((s) => (
+                  <option key={s} value={s}>{t(`statuses.${s}`)}</option>
+                ))}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.peopleCountLabel')}</label>
+            <input
+              type="number"
+              min="1"
+              max="10000"
+              value={peopleCount}
+              onChange={(e) => setPeopleCount(e.target.value)}
+              style={{ width: '100%' }}
+            />
           </div>
 
           <div className="card" style={{ padding: 12, background: '#f8f8f8' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
               <div>
                 <div className="pageTitle" style={{ marginBottom: 4, fontSize: 15 }}>
-                  Select Location
+                  {t('createRequest.selectLocation')}
                 </div>
                 <div style={{ color: '#666', fontSize: 13 }}>
-                  Search, use your location, or click on the map.
+                  {t('createRequest.locationHint')}
                 </div>
               </div>
               <div style={{ fontSize: 13, color: '#555' }}>
                 {lat && lng ? (
                   <>
-                    <div><b>Lat:</b> {Number(lat).toFixed(5)}</div>
-                    <div><b>Lng:</b> {Number(lng).toFixed(5)}</div>
+                    <div><b>{t('createRequest.lat')}</b> {Number(lat).toFixed(5)}</div>
+                    <div><b>{t('createRequest.lng')}</b> {Number(lng).toFixed(5)}</div>
                   </>
                 ) : (
-                  <span>Not selected</span>
+                  <span>{t('createRequest.notSelected')}</span>
                 )}
               </div>
             </div>
@@ -282,7 +297,7 @@ export default function EditRequest() {
                   cursor: locating ? 'wait' : 'pointer',
                 }}
               >
-                {locating ? 'Locating...' : 'Use My Location'}
+                {locating ? t('editRequest.locating') : t('editRequest.useMyLocation')}
               </button>
 
               <div style={{ position: 'relative', flex: 1 }}>
@@ -291,7 +306,7 @@ export default function EditRequest() {
                   value={searchText}
                   onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
-                  placeholder="Search for a place..."
+                  placeholder={t('createRequest.searchPlaceholder')}
                   style={{
                     width: '100%', padding: '10px 12px', paddingRight: 70,
                     borderRadius: 4, border: '1px solid #ccc',
@@ -310,7 +325,7 @@ export default function EditRequest() {
                     cursor: searching ? 'wait' : 'pointer',
                   }}
                 >
-                  {searching ? '...' : 'Search'}
+                  {searching ? t('createRequest.searching') : t('createRequest.search')}
                 </button>
 
                 {suggestions.length > 0 && (
@@ -349,9 +364,9 @@ export default function EditRequest() {
 
           <div className="btnRow">
             <button disabled={loading || !lat} type="submit" className="btnPrimary">
-              {loading ? 'Saving...' : !lat ? 'Select a location first' : 'Save Changes'}
+              {loading ? t('editRequest.saving') : !lat ? t('editRequest.selectLocationFirst') : t('editRequest.saveChanges')}
             </button>
-            <button type="button" onClick={() => navigate('/dashboard')}>Cancel</button>
+            <button type="button" onClick={() => navigate('/dashboard')}>{t('editRequest.cancel')}</button>
           </div>
         </form>
       </div>

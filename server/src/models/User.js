@@ -1,9 +1,7 @@
 import mongoose from 'mongoose'
-import crypto from 'crypto'
+import bcrypt from 'bcrypt'
 
-function sha256(input) {
-  return crypto.createHash('sha256').update(input).digest('hex')
-}
+const SALT_ROUNDS = 12
 
 const UserSchema = new mongoose.Schema(
   {
@@ -15,12 +13,12 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-UserSchema.methods.setPassword = function setPassword(password) {
-  this.passwordHash = sha256(password)
+UserSchema.methods.setPassword = async function setPassword(password) {
+  this.passwordHash = await bcrypt.hash(password, SALT_ROUNDS)
 }
 
-UserSchema.methods.verifyPassword = function verifyPassword(password) {
-  return this.passwordHash === sha256(password)
+UserSchema.methods.verifyPassword = async function verifyPassword(password) {
+  return bcrypt.compare(password, this.passwordHash)
 }
 
 export const User = mongoose.model('User', UserSchema)

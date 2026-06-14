@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 export default function Login() {
@@ -8,6 +9,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -49,23 +51,23 @@ export default function Login() {
               })}
             </svg>
           </div>
-          <h1 className="govt-app-title">DisasterRelief</h1>
-          <p className="govt-app-slogan">Coordinating aid when it matters most</p>
+          <h1 className="govt-app-title">{t('auth.appName')}</h1>
+          <p className="govt-app-slogan">{t('auth.slogan')}</p>
           <hr className="govt-divider" />
-          <h2 className="pageTitle" style={{ textAlign: 'left' }}>Login</h2>
+          <h2 className="pageTitle" style={{ textAlign: 'left' }}>{t('auth.loginTitle')}</h2>
 
           <form onSubmit={onSubmit} className="inputGrid">
             {error ? <div className="errorText">{error}</div> : null}
 
             <input
-              placeholder="Email"
+              placeholder={t('auth.email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               required
             />
             <input
-              placeholder="Password"
+              placeholder={t('auth.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
@@ -73,14 +75,14 @@ export default function Login() {
             />
 
             <button disabled={loading} type="submit" className="btnPrimary">
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? t('auth.loggingIn') : t('auth.loginButton')}
             </button>
           </form>
 
           <p className="muted" style={{ marginTop: 16 }}>
-            No account?{' '}
+            {t('auth.noAccount')}{' '}
             <a href="/register" onClick={(e) => (e.preventDefault(), navigate('/register'))}>
-              Register
+              {t('auth.registerLink')}
             </a>
           </p>
         </div>
