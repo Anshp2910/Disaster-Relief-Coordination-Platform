@@ -36,6 +36,7 @@ const authLimiter = rateLimit({
 
 export function createApp() {
   const app = express()
+  const clientUrl = getEnv('CLIENT_URL', 'http://localhost:5173')
 
   app.use(helmet({
     contentSecurityPolicy: {
@@ -43,14 +44,14 @@ export function createApp() {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-        connectSrc: ["'self'", "ws:", "wss:", "http://localhost:5001", "http://localhost:5173"],
+        connectSrc: ["'self'", "ws:", "wss:", clientUrl, "http://localhost:5001", "http://localhost:5173"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
       },
     },
   }))
 
   const allowedOrigins = [
-    getEnv('CLIENT_URL', 'http://localhost:5173'),
+    clientUrl,
     'http://localhost:5173',
     'http://localhost:5001',
   ]
