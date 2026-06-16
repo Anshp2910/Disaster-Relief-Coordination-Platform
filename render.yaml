@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: disaster-relief-server
+    runtime: node
+    region: oregon
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        value: admin@relief.gov.in
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: ADMIN_DISPLAY_NAME
+        value: Administrator

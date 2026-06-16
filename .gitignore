@@ -1,4 +1,8 @@
 dist
+node_modules
+server/node_modules
+client/node_modules
+server/uploads
 .env
 .env.local
 .env.development.local
