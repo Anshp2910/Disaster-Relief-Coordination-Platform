@@ -59,7 +59,6 @@ export const clientApi = {
   deleteRequest: (id) => apiFetch(`/api/requests/${id}`, { method: 'DELETE' }),
   claimRequest: (id) => apiFetch(`/api/requests/${id}/claim`, { method: 'POST' }),
   unclaimRequest: (id) => apiFetch(`/api/requests/${id}/unclaim`, { method: 'POST' }),
-  getComments: (id) => apiFetch(`/api/requests/${id}`).then((d) => d.item?.comments || []),
   addComment: (id, text) => apiFetch(`/api/requests/${id}/comments`, { method: 'POST', body: { text } }),
   deleteComment: (id, commentId) => apiFetch(`/api/requests/${id}/comments/${commentId}`, { method: 'DELETE' }),
   uploadFiles: (id, files) => {
@@ -135,5 +134,8 @@ export const clientApi = {
   deescalateRequest: (requestId) => apiFetch(`/api/escalation/${requestId}`, { method: 'DELETE' }),
 
   broadcastSOS: (payload) => apiFetch('/api/sos/broadcast', { method: 'POST', body: payload }),
+  getSosAlerts: (params) => apiFetch('/api/sos?' + new URLSearchParams(params || {}).toString()),
+  acknowledgeSos: (id) => apiFetch(`/api/sos/${id}/acknowledge`, { method: 'PUT' }),
+  resolveSos: (id) => apiFetch(`/api/sos/${id}/resolve`, { method: 'PUT' }),
   checkGeofencing: (lat, lng, radiusKm) => apiFetch(`/api/geofencing/check?lat=${lat}&lng=${lng}&radiusKm=${radiusKm}`),
 }

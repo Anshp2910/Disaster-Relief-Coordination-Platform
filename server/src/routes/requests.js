@@ -222,6 +222,9 @@ requestsRouter.post('/:id/claim', requireAuth, async (req, res) => {
     const { id } = req.params
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
+    if (['Resolved', 'Fulfilled'].includes(item.status)) {
+      return res.status(400).json({ error: 'Cannot claim a completed request' })
+    }
     if (item.claimedBy) return res.status(400).json({ error: 'Already claimed' })
 
     item.claimedBy = req.user._id
