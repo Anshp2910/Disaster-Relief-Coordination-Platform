@@ -73,17 +73,18 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
       }
 
       try {
+        const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
         if (lat === undefined || lng === undefined) {
           lat = 0
           lng = 0
         }
         const doc = await Request.create({
           title: row.title.trim(),
-          description: row.description || '',
+          description: row.description || row.desc || '',
           category: row.category,
           priority: row.priority || 'Medium',
           status: row.status || 'Open',
-          locationName: row.locationName || '',
+          locationName,
           lat,
           lng,
           location: { type: 'Point', coordinates: [lng, lat] },

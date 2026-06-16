@@ -48,8 +48,8 @@ function downloadBlob(content, filename, mimeType = 'text/csv') {
   URL.revokeObjectURL(url)
 }
 
-const REQUEST_HEADERS = 'title,description,category,priority,status,locationName,lat,lng'
-const RESOURCE_HEADERS = 'name,category,quantity,unit,status,locationName,lat,lng'
+const REQUEST_HEADERS = 'title,description,category,priority,status,location,locationName,lat,lng'
+const RESOURCE_HEADERS = 'name,category,quantity,unit,status,location,locationName,lat,lng'
 const REQUEST_EXAMPLE = 'Flood relief needed,Water and food needed,Food,High,Open,Chennai,13.0827,80.2707'
 const RESOURCE_EXAMPLE = 'Rice bags,Food,100,kg,Available,Chennai,13.0827,80.2707'
 
