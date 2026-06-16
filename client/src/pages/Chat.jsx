@@ -29,18 +29,29 @@ export default function Chat({ requestId, onClose }) {
   useEffect(() => {
     if (!socket) return
 
-    socket.emit('chat:join', { requestId })
+    function onConnect() {
+      socket.emit('chat:join', { requestId })
+    }
 
     function onMessage(data) {
-      if (data.message?.requestId === requestId) {
-        setMessages((prev) => [...prev, data.message])
+      if (String(data.message?.requestId) === String(requestId)) {
+        setMessages((prev) => {
+          if (prev.some((m) => m._id === data.message._id)) return prev
+          return [...prev, data.message]
+        })
         setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
       }
     }
 
+    if (socket.connected) {
+      socket.emit('chat:join', { requestId })
+    }
+
+    socket.on('connect', onConnect)
     socket.on('chat:message', onMessage)
     return () => {
       socket.emit('chat:leave', { requestId })
+      socket.off('connect', onConnect)
       socket.off('chat:message', onMessage)
     }
   }, [socket, requestId])
@@ -66,11 +77,20 @@ export default function Chat({ requestId, onClose }) {
   async function handleSend(e) {
     e.preventDefault()
     if (!text.trim()) return
+    const msg = text.trim()
+    setText('')
     try {
-      await clientApi.sendChatMessage(requestId, text.trim())
-      setText('')
+      const data = await clientApi.sendChatMessage(requestId, msg)
+      if (data.message) {
+        setMessages((prev) => {
+          if (prev.some((m) => m._id === data.message._id)) return prev
+          return [...prev, data.message]
+        })
+        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+      }
       inputRef.current?.focus()
     } catch (err) {
+      setText(msg)
       alert(err.message)
     }
   }
