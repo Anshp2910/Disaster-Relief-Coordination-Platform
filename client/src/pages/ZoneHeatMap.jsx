@@ -11,7 +11,7 @@ const SEVERITY_COLORS = {
 }
 
 const DISASTER_ICONS = {
-  Flood: '🌊', Earthquake: '🌋', Cyclone: '🌀', Drought: '☀️', Fire: '🔥', Landslide: '⛰️', Other: '⚠️',
+  Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
 }
 
 const COVERAGE_COLORS = {

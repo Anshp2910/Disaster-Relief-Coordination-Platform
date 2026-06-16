@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 const CATEGORY_ICONS = {
-  Food: '🍚', Water: '💧', Medical: '🏥', Shelter: '🏠', Supplies: '📦', Healthcare: '⚕️', Sanitation: '🧹', Clothing: '👕', Transportation: '🚗', Communication: '📡', Power: '⚡', Infrastructure: '🏗️', Other: '📋',
+  Food: '', Water: '', Medical: '', Shelter: '', Supplies: '', Healthcare: '', Sanitation: '', Clothing: '', Transportation: '', Communication: '', Power: '', Infrastructure: '', Other: '',
 }
 
 const CATEGORY_COLORS = {

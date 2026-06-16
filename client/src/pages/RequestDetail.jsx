@@ -284,7 +284,7 @@ export default function RequestDetail() {
                   {f.mimetype?.startsWith('image/') ? (
                     <img src={`${API_BASE}${f.url}`} alt={f.filename} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
                   ) : (
-                    <span style={{ fontSize: 20 }}>📄</span>
+                    <span style={{ fontSize: 20 }}></span>
                   )}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>

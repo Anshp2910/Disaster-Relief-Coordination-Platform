@@ -4,7 +4,7 @@ import L from 'leaflet'
 import { clientApi } from '../api/client'
 
 const DISASTER_ICONS = {
-  Flood: '🌊', Earthquake: '🌋', Cyclone: '🌀', Drought: '☀️', Fire: '🔥', Landslide: '⛰️', Other: '⚠️',
+  Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
 }
 
 const SEVERITY_COLORS = {
@@ -42,7 +42,7 @@ function buildIncidentIcon(inc) {
   const color = SEVERITY_COLORS[inc.severity] || '#999'
   return L.divIcon({
     className: '',
-    html: `<div style="width:28px;height:28px;background:${color};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.3)">${DISASTER_ICONS[inc.disasterType] || '⚠️'}</div>`,
+    html: `<div style="width:28px;height:28px;background:${color};border:2px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
     iconSize: [28, 28],
     iconAnchor: [14, 14],
   })
