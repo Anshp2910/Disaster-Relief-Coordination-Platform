@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "nodemon src/index.js",
+    "build": "echo 'No build step'",
     "start": "node src/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
