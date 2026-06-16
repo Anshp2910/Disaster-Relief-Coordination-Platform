@@ -10,7 +10,7 @@ const ResourceSchema = new mongoose.Schema(
     },
     quantity: { type: Number, required: true, min: 0 },
     unit: { type: String, required: true, trim: true, maxlength: 50 },
-    locationName: { type: String, required: true, trim: true, maxlength: 500 },
+    locationName: { type: String, default: '', trim: true, maxlength: 500 },
     lat: { type: Number, min: -90, max: 90 },
     lng: { type: Number, min: -180, max: 180 },
     location: {

@@ -17,7 +17,7 @@ const RequestSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
 
-    locationName: { type: String, required: true, trim: true },
+    locationName: { type: String, default: '', trim: true },
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
     location: {

@@ -92,9 +92,19 @@ export default function BulkImport() {
 
       if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
 
-      const h = rows[0].map((c) => c.trim().toLowerCase().replace(/^\uFEFF/, ''))
-      const isRequestCSV = h.includes('title')
-      const isResourceCSV = h.includes('name')
+      const h = rows[0].map((c) => c.trim().replace(/^\uFEFF/, ''))
+      const normalizedHeaders = h.map((col) => {
+        const lc = col.toLowerCase()
+        const aliases = {
+          locationname: 'locationName',
+          peoplecount: 'peopleCount',
+          createdat: 'createdAt',
+          updatedat: 'updatedAt',
+        }
+        return aliases[lc] || lc
+      })
+      const isRequestCSV = normalizedHeaders.includes('title')
+      const isResourceCSV = normalizedHeaders.includes('name')
 
       if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
         throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
@@ -105,11 +115,11 @@ export default function BulkImport() {
 
       const dataRows = rows.slice(1).map((vals) => {
         const row = {}
-        h.forEach((col, i) => { row[col] = vals[i]?.trim() || '' })
+        normalizedHeaders.forEach((col, i) => { row[col] = vals[i]?.trim() || '' })
         return row
       })
 
-      setHeaders(h)
+      setHeaders(normalizedHeaders)
       setPreview(dataRows)
       setSelected(new Set(dataRows.map((_, i) => i)))
       setEditingRow(null)
