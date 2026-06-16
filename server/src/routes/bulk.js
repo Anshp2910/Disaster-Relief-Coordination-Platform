@@ -138,13 +138,14 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
       }
 
       try {
+        const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
         const doc = await Resource.create({
           name: row.name.trim(),
           category: row.category,
           quantity,
           unit: row.unit || 'units',
           status: row.status || 'Available',
-          locationName: row.locationName || '',
+          locationName,
           lat,
           lng,
           location: (lat !== undefined && lng !== undefined) ? { type: 'Point', coordinates: [lng, lat] } : undefined,

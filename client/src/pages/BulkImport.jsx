@@ -48,10 +48,10 @@ function downloadBlob(content, filename, mimeType = 'text/csv') {
   URL.revokeObjectURL(url)
 }
 
-const REQUEST_HEADERS = 'title,description,category,priority,status,location,locationName,lat,lng'
-const RESOURCE_HEADERS = 'name,category,quantity,unit,status,location,locationName,lat,lng'
-const REQUEST_EXAMPLE = 'Flood relief needed,Water and food needed,Food,High,Open,Chennai,13.0827,80.2707'
-const RESOURCE_EXAMPLE = 'Rice bags,Food,100,kg,Available,Chennai,13.0827,80.2707'
+const REQUEST_HEADERS = 'title,description,category,priority,status,location,lat,lng'
+const RESOURCE_HEADERS = 'name,category,quantity,unit,status,location,lat,lng'
+const REQUEST_EXAMPLE = 'Flood relief needed,Water and food needed,Food,High,Open,Chennai 13.08 80.27,13.0827,80.2707'
+const RESOURCE_EXAMPLE = 'Rice bags,Food,100,kg,Available,Chennai Depot,13.0827,80.2707'
 
 export default function BulkImport() {
   const { t } = useTranslation()
