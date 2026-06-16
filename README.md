@@ -1,8 +1,9 @@
 # Disaster Relief Cooperation Platform (MERN)
+LINK: https://disasterhelper.dpdns.org  
 
 MVP scope: **Auth + Disaster Relief Requests + Locations (lat/lng)**.  
 Chat/maps are intentionally skipped for MVP.
-https://disaster-relief-coordination-platform-l6mk.onrender.com link
+
 
 
 ## Prerequisites
