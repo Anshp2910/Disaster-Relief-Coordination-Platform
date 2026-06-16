@@ -127,8 +127,8 @@ export const clientApi = {
 
   exportRequestsCSV: () => `${API_BASE}/api/bulk/requests/export?token=${getToken()}`,
   exportResourcesCSV: () => `${API_BASE}/api/bulk/resources/export?token=${getToken()}`,
-  importRequests: (rows) => apiFetch('/api/bulk/requests/import', { method: 'POST', body: { rows } }),
-  importResources: (rows) => apiFetch('/api/bulk/resources/import', { method: 'POST', body: { rows } }),
+  importRequests: (rows) => apiFetch('/api/bulk/requests/import', { method: 'POST', body: { rows }, timeout: 120000 }),
+  importResources: (rows) => apiFetch('/api/bulk/resources/import', { method: 'POST', body: { rows }, timeout: 120000 }),
 
   getEscalated: () => apiFetch('/api/escalation'),
   escalateRequest: (requestId, reason) => apiFetch(`/api/escalation/${requestId}`, { method: 'POST', body: { reason } }),

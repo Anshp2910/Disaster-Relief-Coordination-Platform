@@ -2,7 +2,19 @@ import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
-function parseCSV(text) {
+function detectDelimiter(text) {
+  const firstLine = text.split(/[\r\n]+/)[0] || ''
+  const tabs = (firstLine.match(/\t/g) || []).length
+  const semicolons = (firstLine.match(/;/g) || []).length
+  const pipes = (firstLine.match(/\|/g) || []).length
+  if (tabs >= semicolons && tabs >= pipes && tabs > 0) return '\t'
+  if (semicolons >= tabs && semicolons >= pipes && semicolons > 0) return ';'
+  if (pipes >= tabs && pipes >= semicolons && pipes > 0) return '|'
+  return ','
+}
+
+function parseCSV(text, delimiter) {
+  const delim = delimiter || detectDelimiter(text)
   const result = []
   let row = []
   let cell = ''
@@ -19,7 +31,7 @@ function parseCSV(text) {
       } else {
         inQuotes = !inQuotes
       }
-    } else if (char === ',' && !inQuotes) {
+    } else if (char === delim && !inQuotes) {
       row.push(cell)
       cell = ''
     } else if ((char === '\n' || char === '\r') && !inQuotes) {
@@ -113,13 +125,32 @@ export default function BulkImport() {
         throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
       }
 
-      const dataRows = rows.slice(1).map((vals) => {
-        const row = {}
-        normalizedHeaders.forEach((col, i) => { row[col] = vals[i]?.trim() || '' })
-        return row
+      const validRequestCols = ['title', 'description', 'category', 'priority', 'status', 'location', 'locationname', 'lat', 'lng', 'peoplecount']
+      const validResourceCols = ['name', 'category', 'quantity', 'unit', 'status', 'location', 'locationname', 'lat', 'lng']
+      const validCols = tab === 'requests' ? validRequestCols : validResourceCols
+
+      const cleanHeaders = []
+      const cleanColIndices = []
+      normalizedHeaders.forEach((col, i) => {
+        if (validCols.includes(col) || validCols.includes(col.toLowerCase())) {
+          cleanHeaders.push(col)
+          cleanColIndices.push(i)
+        }
       })
 
-      setHeaders(normalizedHeaders)
+      if (cleanHeaders.length === 0) {
+        throw new Error(`No valid columns found. Expected headers like: ${validCols.slice(0, 5).join(', ')}...`)
+      }
+
+      const dataRows = rows.slice(1).map((vals) => {
+        const row = {}
+        cleanHeaders.forEach((col, i) => { row[col] = vals[cleanColIndices[i]]?.trim() || '' })
+        return row
+      }).filter((row) => {
+        return Object.values(row).some((v) => v.trim() !== '')
+      })
+
+      setHeaders(cleanHeaders)
       setPreview(dataRows)
       setSelected(new Set(dataRows.map((_, i) => i)))
       setEditingRow(null)

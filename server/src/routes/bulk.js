@@ -53,6 +53,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
 
     const imported = []
     const errors = []
+    const docs = []
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]
@@ -62,38 +63,45 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
       if (row.status && !validStatuses.includes(row.status)) rowErrors.push(`Invalid status: ${row.status}`)
       if (row.priority && !validPriorities.includes(row.priority)) rowErrors.push(`Invalid priority: ${row.priority}`)
       
-      let lat = row.lat ? Number(row.lat) : undefined
-      let lng = row.lng ? Number(row.lng) : undefined
-      if (lat !== undefined && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
-      if (lng !== undefined && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
+      let lat = row.lat ? Number(row.lat) : 0
+      let lng = row.lng ? Number(row.lng) : 0
+      if (lat !== 0 && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
+      if (lng !== 0 && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
 
       if (rowErrors.length > 0) {
         errors.push({ row: i + 1, errors: rowErrors })
         continue
       }
 
+      const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
+      docs.push({
+        title: row.title.trim(),
+        description: row.description || row.desc || '',
+        category: row.category,
+        priority: row.priority || 'Medium',
+        status: row.status || 'Open',
+        locationName,
+        lat,
+        lng,
+        location: { type: 'Point', coordinates: [lng, lat] },
+        createdBy: req.user._id,
+        auditLog: [{ action: 'created', by: req.user._id, timestamp: new Date() }],
+      })
+    }
+
+    if (docs.length > 0) {
       try {
-        const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
-        if (lat === undefined || lng === undefined) {
-          lat = 0
-          lng = 0
+        const result = await Request.insertMany(docs, { ordered: false })
+        imported.push(...result.map((d) => d._id))
+      } catch (batchErr) {
+        if (batchErr.insertedDocs) {
+          imported.push(...batchErr.insertedDocs.map((d) => d._id))
         }
-        const doc = await Request.create({
-          title: row.title.trim(),
-          description: row.description || row.desc || '',
-          category: row.category,
-          priority: row.priority || 'Medium',
-          status: row.status || 'Open',
-          locationName,
-          lat,
-          lng,
-          location: { type: 'Point', coordinates: [lng, lat] },
-          createdBy: req.user._id,
-          auditLog: [{ action: 'created', by: req.user._id }],
-        })
-        imported.push(doc._id)
-      } catch (rowErr) {
-        errors.push({ row: i + 1, errors: [rowErr.message] })
+        if (batchErr.writeErrors) {
+          batchErr.writeErrors.forEach((we) => {
+            errors.push({ row: we.index + 1, errors: [we.errmsg] })
+          })
+        }
       }
     }
 
@@ -116,6 +124,7 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
 
     const imported = []
     const errors = []
+    const docs = []
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i]
@@ -127,32 +136,43 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
       const quantity = row.quantity ? Number(row.quantity) : 0
       if (isNaN(quantity) || quantity < 0) rowErrors.push('Invalid quantity (must be non-negative)')
       
-      let lat = row.lat ? Number(row.lat) : undefined
-      let lng = row.lng ? Number(row.lng) : undefined
-      if (lat !== undefined && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
-      if (lng !== undefined && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
+      let lat = row.lat ? Number(row.lat) : 0
+      let lng = row.lng ? Number(row.lng) : 0
+      if (lat !== 0 && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
+      if (lng !== 0 && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
 
       if (rowErrors.length > 0) {
         errors.push({ row: i + 1, errors: rowErrors })
         continue
       }
 
+      const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
+      docs.push({
+        name: row.name.trim(),
+        category: row.category,
+        quantity,
+        unit: row.unit || 'units',
+        status: row.status || 'Available',
+        locationName,
+        lat,
+        lng,
+        location: (lat !== 0 || lng !== 0) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
+      })
+    }
+
+    if (docs.length > 0) {
       try {
-        const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
-        const doc = await Resource.create({
-          name: row.name.trim(),
-          category: row.category,
-          quantity,
-          unit: row.unit || 'units',
-          status: row.status || 'Available',
-          locationName,
-          lat,
-          lng,
-          location: (lat !== undefined && lng !== undefined) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
-        })
-        imported.push(doc._id)
-      } catch (rowErr) {
-        errors.push({ row: i + 1, errors: [rowErr.message] })
+        const result = await Resource.insertMany(docs, { ordered: false })
+        imported.push(...result.map((d) => d._id))
+      } catch (batchErr) {
+        if (batchErr.insertedDocs) {
+          imported.push(...batchErr.insertedDocs.map((d) => d._id))
+        }
+        if (batchErr.writeErrors) {
+          batchErr.writeErrors.forEach((we) => {
+            errors.push({ row: we.index + 1, errors: [we.errmsg] })
+          })
+        }
       }
     }
 
