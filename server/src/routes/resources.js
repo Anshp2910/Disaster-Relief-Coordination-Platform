@@ -21,7 +21,7 @@ export const resourcesRouter = express.Router()
 
 resourcesRouter.get('/', requireAuth, async (req, res) => {
   try {
-    const { page = 1, limit = 20, category, status, search } = req.query
+    const { page = 1, category, status, search } = req.query
     const filter = {}
     if (category && category !== 'All') filter.category = category
     if (status && status !== 'All') filter.status = status
