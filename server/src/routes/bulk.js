@@ -6,7 +6,7 @@ import { Zone } from '../models/Zone.js'
 
 export const bulkRouter = express.Router()
 
-bulkRouter.get('/requests/export', requireAuth, async (req, res) => {
+bulkRouter.get('/requests/export', requireAuth, requireAdmin, async (req, res) => {
   try {
     const items = await Request.find({}).sort({ createdAt: -1 }).lean()
     const headers = ['title', 'description', 'category', 'priority', 'status', 'locationName', 'lat', 'lng', 'createdAt']
@@ -23,7 +23,7 @@ bulkRouter.get('/requests/export', requireAuth, async (req, res) => {
   }
 })
 
-bulkRouter.get('/resources/export', requireAuth, async (req, res) => {
+bulkRouter.get('/resources/export', requireAuth, requireAdmin, async (req, res) => {
   try {
     const items = await Resource.find({}).sort({ createdAt: -1 }).lean()
     const headers = ['name', 'category', 'quantity', 'unit', 'status', 'locationName', 'lat', 'lng', 'createdAt']

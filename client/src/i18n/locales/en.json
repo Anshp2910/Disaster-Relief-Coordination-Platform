@@ -48,6 +48,7 @@
     "newRequest": "+ New Request",
     "mapView": "Map View",
     "listView": "List View",
+    "error": "Failed to load data. Please try again.",
     "filterAll": "All",
     "filterOpen": "Open",
     "filterInProgress": "In Progress",

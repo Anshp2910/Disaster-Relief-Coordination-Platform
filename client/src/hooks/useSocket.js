@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { io } from 'socket.io-client'
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 let socket = null
 
@@ -10,13 +10,21 @@ function getSocket() {
     const token = (() => {
       try { return localStorage.getItem('token') || null } catch { return null }
     })()
-    socket = io(API_BASE, {
+    socket = io(API_BASE || window.location.origin, {
       autoConnect: false,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 20,
       auth: { token },
     })
+  }
+  const storedToken = localStorage.getItem('token')
+  if (socket.auth.token !== storedToken) {
+    socket.auth.token = storedToken
+    if (socket.connected) {
+      socket.disconnect()
+      socket.connect()
+    }
   }
   return socket
 }

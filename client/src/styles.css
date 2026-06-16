@@ -735,7 +735,7 @@ input::placeholder, textarea::placeholder { color: #999; }
   border: 1px solid var(--gov-border);
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
+  z-index: 900;
   max-height: 400px;
   overflow-y: auto;
 }

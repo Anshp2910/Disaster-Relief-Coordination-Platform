@@ -5,7 +5,8 @@ import { User } from '../models/User.js'
 export async function requireAuth(req, res, next) {
   try {
     const auth = req.headers.authorization || ''
-    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null
+    let token = auth.startsWith('Bearer ') ? auth.slice(7) : null
+    if (!token && req.query.token) token = req.query.token
     if (!token) return res.status(401).json({ error: 'Missing token' })
 
     const payload = jwt.verify(token, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'))
