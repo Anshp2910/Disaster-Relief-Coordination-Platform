@@ -54,7 +54,7 @@ requestsRouter.get('/', requireAuth, async (req, res) => {
     }
 
     const pageNum = Math.max(1, Number(page) || 1)
-    const limitNum = Math.min(100, Math.max(1, Number(limit) || 20))
+    const limitNum = Math.min(1000, Math.max(1, Number(limit) || 20))
     const sortStr = ALLOWED_SORT_FIELDS.includes(sort) ? sort : '-createdAt'
     const skip = (pageNum - 1) * limitNum
     const [items, total] = await Promise.all([

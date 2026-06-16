@@ -29,7 +29,7 @@ export default function MapOverview() {
 
   useEffect(() => {
     clientApi
-      .getRequests({ limit: 500 })
+      .getRequests({ limit: 1000 })
       .then((data) => {
         setItems(data.items || [])
         setLoading(false)

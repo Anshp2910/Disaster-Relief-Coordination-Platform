@@ -48,6 +48,8 @@ export default function Dashboard() {
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
 
+  const [mapItems, setMapItems] = useState([])
+
   async function load() {
     setLoading(true)
     setError('')
@@ -66,7 +68,19 @@ export default function Dashboard() {
     }
   }
 
+  async function loadMapItems() {
+    try {
+      const params = { limit: 1000 }
+      if (filterStatus !== 'All') params.status = filterStatus
+      const data = await clientApi.getRequests(params)
+      setMapItems(data.items || [])
+    } catch (e) {
+      setMapItems([])
+    }
+  }
+
   useEffect(() => { load() }, [page, filterStatus, searchTrigger])
+  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus])
 
   useEffect(() => {
     clientApi.getResources({ limit: 100 }).then((data) => {
@@ -91,7 +105,7 @@ export default function Dashboard() {
     if (!map || viewMode !== 'map') return
     markersRef.current.forEach((m) => map.removeLayer(m))
     markersRef.current = []
-    const filtered = filterStatus === 'All' ? items : items.filter((i) => i.status === filterStatus)
+    const filtered = filterStatus === 'All' ? mapItems : mapItems.filter((i) => i.status === filterStatus)
     filtered.forEach((item) => {
       if (item.lat == null || item.lng == null) return
       const color = MAP_MARKER_COLORS[item.status] || '#000080'
@@ -103,7 +117,7 @@ export default function Dashboard() {
       const bounds = L.latLngBounds(filtered.filter((i) => i.lat != null && i.lng != null).map((i) => [i.lat, i.lng]))
       if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
     }
-  }, [items, filterStatus, viewMode])
+  }, [mapItems, filterStatus, viewMode])
 
   function handleSearch(e) {
     e.preventDefault()
