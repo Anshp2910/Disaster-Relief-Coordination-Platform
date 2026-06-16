@@ -3,6 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 
@@ -90,10 +91,12 @@ export function createApp() {
   })
 
   const clientDist = path.join(__dirname, '../../client/dist')
-  app.use(express.static(clientDist))
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(clientDist, 'index.html'))
-  })
+  if (fs.existsSync(clientDist)) {
+    app.use(express.static(clientDist))
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(clientDist, 'index.html'))
+    })
+  }
 
   app.use((err, req, res, next) => {
     console.error('[error]', err.message)
