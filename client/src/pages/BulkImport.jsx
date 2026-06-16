@@ -149,7 +149,7 @@ export default function BulkImport() {
   async function handleSubmitImport() {
     const rowsToImport = preview.filter((_, i) => selected.has(i))
     if (rowsToImport.length === 0) {
-      setError('No rows selected')
+      setError(t('bulkImport.noRowsSelected'))
       return
     }
 
@@ -185,11 +185,11 @@ export default function BulkImport() {
   return (
     <div className="container">
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('nav.bulkImport') || 'Bulk Import & CSV Export'}</h2>
+        <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('bulkImport.title')}</h2>
 
         <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-          <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>Requests</button>
-          <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>Resources</button>
+          <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>{t('bulkImport.requestsTab')}</button>
+          <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>{t('bulkImport.resourcesTab')}</button>
         </div>
 
         {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
@@ -198,17 +198,17 @@ export default function BulkImport() {
           <>
             <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
               <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'white', cursor: 'pointer', fontSize: 13 }}>
-                Download Template
+                {t('bulkImport.downloadTemplate')}
               </button>
-              <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>Export CSV</button>
+              <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>{t('bulkImport.exportCSV')}</button>
             </div>
 
             <div style={{ border: '2px dashed var(--gov-border)', borderRadius: 8, padding: 32, textAlign: 'center' }}>
-              <div style={{ fontSize: 14, color: 'var(--gov-blue)', marginBottom: 8 }}>Import {tab} from CSV</div>
-              <div className="small muted" style={{ marginBottom: 12 }}>Upload a CSV file with the correct headers</div>
+              <div style={{ fontSize: 14, color: 'var(--gov-blue)', marginBottom: 8 }}>{t('bulkImport.importFromCSV', { tab })}</div>
+              <div className="small muted" style={{ marginBottom: 12 }}>{t('bulkImport.uploadHint')}</div>
               <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} style={{ display: 'none' }} id="csv-upload" />
               <label htmlFor="csv-upload" className="btnPrimary" style={{ display: 'inline-block', cursor: 'pointer', fontSize: 13, padding: '8px 20px' }}>
-                {importing ? 'Loading...' : 'Choose CSV File'}
+                {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
               </label>
             </div>
           </>
@@ -217,16 +217,16 @@ export default function BulkImport() {
         {preview && (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>{preview.length} rows parsed</div>
+              <div style={{ fontSize: 14, fontWeight: 600 }}>{t('bulkImport.rowsParsed', { count: preview.length })}</div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={cancelPreview} style={{ fontSize: 12, padding: '6px 14px' }}>Cancel</button>
+                <button onClick={cancelPreview} style={{ fontSize: 12, padding: '6px 14px' }}>{t('bulkImport.cancel')}</button>
                 <button
                   onClick={handleSubmitImport}
                   disabled={importing || selected.size === 0}
                   className="btnPrimary"
                   style={{ fontSize: 12, padding: '6px 14px' }}
                 >
-                  {importing ? 'Importing...' : `Import ${selected.size} row${selected.size !== 1 ? 's' : ''}`}
+                  {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
                 </button>
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function BulkImport() {
                     {headers.map((h) => (
                       <th key={h} style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', whiteSpace: 'nowrap' }}>{h}</th>
                     ))}
-                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 60 }}>Edit</th>
+                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 60 }}>{t('bulkImport.edit')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -276,7 +276,7 @@ export default function BulkImport() {
                           onClick={() => setEditingRow(editingRow === i ? null : i)}
                           style={{ background: 'none', border: 'none', color: 'var(--gov-blue)', cursor: 'pointer', fontSize: 12, padding: 4 }}
                         >
-                          {editingRow === i ? 'Done' : 'Edit'}
+                          {editingRow === i ? t('bulkImport.done') : t('bulkImport.edit')}
                         </button>
                       </td>
                     </tr>
@@ -289,10 +289,10 @@ export default function BulkImport() {
 
         {result && (
           <div style={{ marginTop: 16, padding: 12, borderRadius: 6, background: 'rgba(19,136,8,.06)', border: '1px solid rgba(19,136,8,.2)' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#138808' }}>Import complete: {result.imported} records imported</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#138808' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
             {result.errors?.length > 0 && (
               <div style={{ marginTop: 8 }}>
-                <div style={{ fontSize: 12, color: '#cc0000', fontWeight: 600 }}>{result.errors.length} rows had errors:</div>
+                <div style={{ fontSize: 12, color: '#cc0000', fontWeight: 600 }}>{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>
                 {result.errors.slice(0, 10).map((e, i) => (
                   <div key={i} style={{ fontSize: 12, color: '#666', marginTop: 2 }}>Row {e.row}: {e.errors.join(', ')}</div>
                 ))}

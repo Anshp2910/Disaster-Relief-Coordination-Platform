@@ -122,7 +122,7 @@ export default function Resources() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Delete this resource?')) return
+    if (!confirm(t('resources.deleteConfirm'))) return
     try {
       await clientApi.deleteResource(id)
       load()
@@ -141,7 +141,7 @@ export default function Resources() {
       setAllocQty('')
       setAllocRequestId('')
       load()
-      alert('Resource allocated')
+      alert(t('resources.resourceAllocated'))
     } catch (err) {
       alert(err.message)
     } finally {
@@ -150,12 +150,12 @@ export default function Resources() {
   }
 
   async function handleDeallocate(id) {
-    if (!confirm('Deallocate this resource?')) return
+    if (!confirm(t('resources.deallocatedConfirm'))) return
     try {
       const resource = items.find((r) => r._id === id)
       const deallocQty = resource?.allocatedQuantity || 0
       if (deallocQty <= 0) {
-        alert('Nothing to deallocate')
+        alert(t('resources.nothingToDeallocate'))
         return
       }
       await clientApi.deallocateResource(id, { deallocQuantity: deallocQty })
@@ -176,11 +176,11 @@ export default function Resources() {
         <div className="headerRow">
           <div>
             <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.resources') || 'Resource Inventory'}</h2>
-            <div className="small" style={{ marginTop: 4 }}>{total} resources tracked</div>
+            <div className="small" style={{ marginTop: 4 }}>{total} {t('resources.resourcesTracked')}</div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={exportCSV} style={{ fontSize: 12, padding: '4px 10px' }}>Export CSV</button>
-            <button className="btnPrimary" onClick={openCreate}>Add Resource</button>
+            <button onClick={exportCSV} style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.exportCSV')}</button>
+            <button className="btnPrimary" onClick={openCreate}>{t('resources.addResource')}</button>
           </div>
         </div>
 
@@ -201,10 +201,10 @@ export default function Resources() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search resources..."
+            placeholder={t('resources.searchPlaceholder')}
             style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
           />
-          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>Search</button>
+          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>{t('resources.search')}</button>
         </form>
 
         <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
@@ -236,23 +236,23 @@ export default function Resources() {
       {/* Create/Edit Form */}
       {showForm && (
         <div className="card" style={{ marginTop: 12 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{editItem ? 'Edit Resource' : 'Add New Resource'}</h3>
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{editItem ? t('resources.editResource') : t('resources.addNewResource')}</h3>
           <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr 1fr' }}>
-            <input placeholder="Resource name" value={form.name} onChange={(e) => updateForm('name', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
+            <input placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
             <select value={form.category} onChange={(e) => updateForm('category', e.target.value)}>
               {CATEGORIES.filter((c) => c !== 'All').map((c) => (
                 <option key={c} value={c}>{CATEGORY_ICONS[c]} {c}</option>
               ))}
             </select>
             <div style={{ display: 'flex', gap: 8 }}>
-              <input type="number" placeholder="Qty" value={form.quantity} onChange={(e) => updateForm('quantity', e.target.value)} required min="0" style={{ flex: 1 }} />
-              <input placeholder="Unit (kg, boxes)" value={form.unit} onChange={(e) => updateForm('unit', e.target.value)} required style={{ flex: 1 }} />
+              <input type="number" placeholder={t('resources.quantity')} value={form.quantity} onChange={(e) => updateForm('quantity', e.target.value)} required min="0" style={{ flex: 1 }} />
+              <input placeholder={t('resources.unitPlaceholder')} value={form.unit} onChange={(e) => updateForm('unit', e.target.value)} required style={{ flex: 1 }} />
             </div>
-            <input placeholder="Location" value={form.locationName} onChange={(e) => updateForm('locationName', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
-            <textarea placeholder="Notes (optional)" value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} style={{ gridColumn: '1 / -1' }} />
+            <input placeholder={t('resources.location')} value={form.locationName} onChange={(e) => updateForm('locationName', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
+            <textarea placeholder={t('resources.notesOptional')} value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} style={{ gridColumn: '1 / -1' }} />
             <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 8 }}>
-              <button type="submit" className="btnPrimary">{editItem ? 'Update' : 'Create'}</button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>Cancel</button>
+              <button type="submit" className="btnPrimary">{editItem ? t('resources.update') : t('resources.create')}</button>
+              <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('resources.cancel')}</button>
             </div>
           </form>
         </div>
@@ -260,13 +260,13 @@ export default function Resources() {
 
       {/* Resource List */}
       {loading ? (
-        <div className="small muted" style={{ marginTop: 16 }}>Loading...</div>
+        <div className="small muted" style={{ marginTop: 16 }}>{t('resources.loading')}</div>
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
           {items.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 20 }}>
               <img src="/images/empty-requests.svg" alt="No resources" style={{ width: 200, margin: '0 auto 12px', display: 'block' }} />
-              <div className="muted">No resources tracked yet. Add your first resource to get started.</div>
+              <div className="muted">{t('resources.noResources')}</div>
             </div>
           ) : (
             items.map((r) => (
@@ -280,12 +280,12 @@ export default function Resources() {
                     </div>
                     <div style={{ marginTop: 6, fontSize: 13 }}>
                       <strong>{r.quantity}</strong> {r.unit}
-                      {r.allocatedQuantity > 0 && <span style={{ color: '#cc7a00', marginLeft: 8 }}>({r.allocatedQuantity} allocated)</span>}
+                      {r.allocatedQuantity > 0 && <span style={{ color: '#cc7a00', marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
                     </div>
                     <div className="small muted" style={{ marginTop: 4 }}>📍 {r.locationName}</div>
                     {r.allocatedTo && (
                       <div className="small" style={{ marginTop: 4, color: '#000080' }}>
-                        Allocated to: {r.allocatedTo.title || 'Request'}
+                        {t('resources.allocatedTo')}: {r.allocatedTo.title || 'Request'}
                       </div>
                     )}
                     {r.notes && <div className="small muted" style={{ marginTop: 4 }}>{r.notes}</div>}
@@ -296,7 +296,7 @@ export default function Resources() {
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
                         style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(0,0,128,.1)', color: '#000080', border: '1px solid rgba(0,0,128,.3)', borderRadius: 4, cursor: 'pointer' }}
                       >
-                        Allocate
+                        {t('resources.allocate')}
                       </button>
                     )}
                     {r.allocatedQuantity > 0 && (
@@ -304,11 +304,11 @@ export default function Resources() {
                         onClick={() => handleDeallocate(r._id)}
                         style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(204,0,0,.1)', color: '#cc0000', border: '1px solid rgba(204,0,0,.3)', borderRadius: 4, cursor: 'pointer' }}
                       >
-                        Deallocate
+                        {t('resources.deallocate')}
                       </button>
                     )}
-                    <button onClick={() => openEdit(r)} style={{ fontSize: 12, padding: '4px 10px' }}>Edit</button>
-                    <button onClick={() => handleDelete(r._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>Delete</button>
+                    <button onClick={() => openEdit(r)} style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.editResource')}</button>
+                    <button onClick={() => handleDelete(r._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.deleteConfirm')}</button>
                   </div>
                 </div>
               </div>
@@ -330,20 +330,20 @@ export default function Resources() {
       {showAllocModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 400 }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>Allocate Resource</h3>
+            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>{t('resources.allocateResource')}</h3>
             <div style={{ fontSize: 13, marginBottom: 12 }}>
               <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available
             </div>
             <form onSubmit={handleAllocate}>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Request ID</label>
-              <input value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder="Paste request ID" required style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Quantity to allocate</label>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('resources.requestId')}</label>
+              <input value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder={t('resources.pasteRequestId')} required style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('resources.quantityToAllocate')}</label>
               <input type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} min="1" max={showAllocModal.quantity} required style={{ width: '100%', marginBottom: 12 }} />
               <div style={{ display: 'flex', gap: 8 }}>
                 <button type="submit" disabled={allocating} className="btnPrimary" style={{ fontSize: 13 }}>
-                  {allocating ? '...' : 'Allocate'}
+                  {allocating ? '...' : t('resources.allocate')}
                 </button>
-                <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} style={{ fontSize: 13 }}>Cancel</button>
+                <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} style={{ fontSize: 13 }}>{t('resources.cancel')}</button>
               </div>
             </form>
           </div>

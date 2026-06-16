@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import Chat from './Chat'
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 const STATUS_COLORS = {
   'Open': { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
@@ -190,7 +190,7 @@ export default function RequestDetail() {
       setAllocResource('')
       setAllocQty('')
       loadResources()
-      alert('Resource allocated successfully')
+      alert(t('requestDetail.allocatedSuccessfully'))
     } catch (err) {
       alert(err.message)
     } finally {
@@ -203,7 +203,7 @@ export default function RequestDetail() {
       await clientApi.allocateResource(match._id, { requestId: id, allocQuantity: Math.min(match.quantity, 10) })
       loadResources()
       loadMatches()
-      alert('Resource allocated')
+      alert(t('requestDetail.resourceAllocated'))
     } catch (err) {
       alert(err.message)
     }
@@ -244,7 +244,7 @@ export default function RequestDetail() {
 
           {item.peopleCount > 1 && (
             <div style={{ marginTop: 8, fontSize: 13 }}>
-              People affected: <strong>{item.peopleCount}</strong>
+              {t('requestDetail.peopleAffected')} <strong>{item.peopleCount}</strong>
             </div>
           )}
 
@@ -255,7 +255,7 @@ export default function RequestDetail() {
 
           {item.claimedBy && (
             <div style={{ marginTop: 8, fontSize: 13, padding: '8px 12px', background: 'rgba(255,153,51,0.08)', borderRadius: 6 }}>
-              Claimed by <strong>{item.claimedBy.displayName || item.claimedBy.email}</strong>
+              {t('requestDetail.claimedBy')} <strong>{item.claimedBy.displayName || item.claimedBy.email}</strong>
               {item.claimedAt && <span className="small muted"> - {new Date(item.claimedAt).toLocaleDateString()}</span>}
             </div>
           )}
@@ -275,7 +275,7 @@ export default function RequestDetail() {
 
         {/* Files Card */}
         <div className="card">
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>Files</h3>
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.files')}</h3>
           {item.files?.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {item.files.map((f, i) => (
@@ -289,38 +289,38 @@ export default function RequestDetail() {
                     <div style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
                     <div className="small muted">{new Date(f.uploadedAt).toLocaleDateString()}</div>
                   </div>
-                  <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--gov-blue)' }}>Open</a>
+                  <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--gov-blue)' }}>{t('requestDetail.open')}</a>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="muted" style={{ fontSize: 13 }}>No files uploaded yet</div>
+            <div className="muted" style={{ fontSize: 13 }}>{t('requestDetail.noFiles')}</div>
           )}
           <div style={{ marginTop: 12 }}>
             <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" onChange={handleFileUpload} style={{ display: 'none' }} id="file-upload" />
             <label htmlFor="file-upload" className="btnPrimary" style={{ display: 'inline-block', cursor: 'pointer', fontSize: 12, padding: '6px 14px' }}>
-              {uploading ? t('editRequest.saving') : '+ Upload Files'}
+              {uploading ? t('editRequest.saving') : t('requestDetail.uploadFiles')}
             </label>
           </div>
         </div>
 
         {/* Allocate Resources Card */}
         <div className="card">
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>Allocate Resources</h3>
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.allocateResources')}</h3>
           <form onSubmit={handleAllocate} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <select value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required style={{ flex: 1, minWidth: 150, fontSize: 13 }}>
-              <option value="">Select resource...</option>
+              <option value="">{t('requestDetail.selectResource')}</option>
               {resources.map((r) => (
-                <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} available)</option>
+                <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>
               ))}
             </select>
-            <input type="number" placeholder="Qty" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" style={{ width: 80, fontSize: 13 }} />
+            <input type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" style={{ width: 80, fontSize: 13 }} />
             <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
-              {allocating ? '...' : 'Allocate'}
+              {allocating ? '...' : t('requestDetail.allocate')}
             </button>
           </form>
           {resources.length === 0 && (
-            <div className="muted small" style={{ marginTop: 8 }}>No available resources. Add resources in the Resources section.</div>
+            <div className="muted small" style={{ marginTop: 8 }}>{t('requestDetail.noAvailableResources')}</div>
           )}
         </div>
       </div>
@@ -364,7 +364,7 @@ export default function RequestDetail() {
       {/* Comments */}
       <div className="card" style={{ marginTop: 16 }}>
         <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>
-          Comments ({item.comments?.length || 0})
+          {t('requestDetail.comments')} ({item.comments?.length || 0})
         </h3>
 
         <form onSubmit={handleComment} style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
@@ -372,11 +372,11 @@ export default function RequestDetail() {
             type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Add a comment..."
+            placeholder={t('requestDetail.addComment')}
             style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
           />
           <button type="submit" className="btnPrimary" disabled={posting} style={{ fontSize: 12, padding: '6px 16px' }}>
-            {posting ? '...' : 'Post'}
+            {posting ? '...' : t('requestDetail.post')}
           </button>
         </form>
 
@@ -390,7 +390,7 @@ export default function RequestDetail() {
                     <span className="small muted">{new Date(c.createdAt).toLocaleDateString()}</span>
                     {(currentUser?.id === c.createdBy?._id || currentUser?.role === 'admin') && (
                       <button onClick={() => handleDeleteComment(c._id)} style={{ background: 'none', border: 'none', color: '#cc0000', cursor: 'pointer', fontSize: 11, padding: 0 }}>
-                        Delete
+                        {t('requestDetail.delete')}
                       </button>
                     )}
                   </div>
@@ -400,14 +400,14 @@ export default function RequestDetail() {
             ))}
           </div>
         ) : (
-          <div className="muted" style={{ fontSize: 13 }}>No comments yet</div>
+          <div className="muted" style={{ fontSize: 13 }}>{t('requestDetail.noComments')}</div>
         )}
       </div>
 
       {/* Activity Log */}
       {item.auditLog?.length > 0 && (
         <div className="card" style={{ marginTop: 16 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>Activity Log</h3>
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.activityLog')}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[...item.auditLog].reverse().map((entry, i) => (
               <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--gov-muted)' }}>
@@ -424,9 +424,9 @@ export default function RequestDetail() {
       {/* Chat */}
       <div className="card" style={{ marginTop: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: showChat ? 12 : 0 }}>
-          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>Real-time Chat</h3>
+          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.realTimeChat')}</h3>
           <button onClick={() => setShowChat(!showChat)} style={{ fontSize: 12, padding: '4px 12px' }}>
-            {showChat ? 'Hide Chat' : 'Open Chat'}
+            {showChat ? t('requestDetail.hideChat') : t('requestDetail.openChat')}
           </button>
         </div>
         {showChat && (
@@ -440,11 +440,11 @@ export default function RequestDetail() {
       <div className="card" style={{ marginTop: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>
-            Feedback ({feedbackList.length})
+            {t('requestDetail.feedback')} ({feedbackList.length})
           </h3>
           {!showFeedbackForm && (
             <button onClick={() => setShowFeedbackForm(true)} className="btnPrimary" style={{ fontSize: 12, padding: '4px 12px' }}>
-              Give Feedback
+              {t('requestDetail.giveFeedback')}
             </button>
           )}
         </div>
@@ -452,7 +452,7 @@ export default function RequestDetail() {
         {showFeedbackForm && (
           <form onSubmit={handleFeedbackSubmit} style={{ padding: 12, background: 'var(--gov-bg)', borderRadius: 6, marginBottom: 12 }}>
             <div style={{ marginBottom: 8 }}>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>Rating</label>
+              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('requestDetail.rating')}</label>
               <div style={{ display: 'flex', gap: 4 }}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button key={star} type="button" onClick={() => setFeedbackRating(star)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: star <= feedbackRating ? '#FF9933' : '#ddd', padding: '0 2px' }}>
@@ -461,12 +461,12 @@ export default function RequestDetail() {
                 ))}
               </div>
             </div>
-            <textarea value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder="Your feedback (optional)" rows={2} style={{ width: '100%', fontSize: 13, marginBottom: 8 }} />
+            <textarea value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder={t('requestDetail.feedbackPlaceholder')} rows={2} style={{ width: '100%', fontSize: 13, marginBottom: 8 }} />
             <div style={{ display: 'flex', gap: 8 }}>
               <button type="submit" disabled={feedbackLoading} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
-                {feedbackLoading ? '...' : 'Submit'}
+                {feedbackLoading ? '...' : t('requestDetail.submit')}
               </button>
-              <button type="button" onClick={() => setShowFeedbackForm(false)} style={{ fontSize: 12 }}>Cancel</button>
+              <button type="button" onClick={() => setShowFeedbackForm(false)} style={{ fontSize: 12 }}>{t('editRequest.cancel')}</button>
             </div>
           </form>
         )}
@@ -482,12 +482,12 @@ export default function RequestDetail() {
                   <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
                 </div>
                 {f.comment && <div>{f.comment}</div>}
-                {f.deliveryConfirmed && <div className="small" style={{ color: '#138808', marginTop: 4 }}>Delivery confirmed</div>}
+                {f.deliveryConfirmed && <div className="small" style={{ color: '#138808', marginTop: 4 }}>{t('requestDetail.deliveryConfirmed')}</div>}
               </div>
             ))}
           </div>
         ) : (
-          !showFeedbackForm && <div className="muted" style={{ fontSize: 13 }}>No feedback yet</div>
+          !showFeedbackForm && <div className="muted" style={{ fontSize: 13 }}>{t('requestDetail.noFeedback')}</div>
         )}
       </div>
     </div>

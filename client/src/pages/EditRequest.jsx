@@ -72,6 +72,11 @@ export default function EditRequest() {
 
     map.on('click', (e) => placeMarker(e.latlng.lat, e.latlng.lng))
     mapInstance.current = map
+
+    return () => {
+      map.remove()
+      mapInstance.current = null
+    }
   }, [fetching, placeMarker])
 
   useEffect(() => {

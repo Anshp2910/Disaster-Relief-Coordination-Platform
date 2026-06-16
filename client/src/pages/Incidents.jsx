@@ -169,7 +169,7 @@ export default function Incidents() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Delete this incident?')) return
+    if (!confirm(t('incidents.deleteConfirm'))) return
     try {
       await clientApi.deleteIncident(id)
       setSelectedIncident(null)
@@ -187,10 +187,10 @@ export default function Incidents() {
         <div className="headerRow">
           <div>
             <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.incidents') || 'Incident Grouping'}</h2>
-            <div className="small" style={{ marginTop: 4 }}>{incidents.length} incidents tracked</div>
+            <div className="small" style={{ marginTop: 4 }}>{incidents.length} {t('incidents.incidentsTracked')}</div>
           </div>
           {currentUser?.role === 'admin' && (
-            <button className="btnPrimary" onClick={openCreate}>Create Incident</button>
+            <button className="btnPrimary" onClick={openCreate}>{t('incidents.createIncident')}</button>
           )}
         </div>
 
@@ -200,10 +200,10 @@ export default function Incidents() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search incidents..."
+            placeholder={t('incidents.searchPlaceholder')}
             style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
           />
-          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>Search</button>
+          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>{t('incidents.search')}</button>
         </form>
 
         <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
@@ -262,14 +262,14 @@ export default function Incidents() {
             )}
 
             <div style={{ fontSize: 13, lineHeight: 1.8 }}>
-              <div>Type: <strong>{selectedIncident.disasterType}</strong></div>
+              <div>{t('incidents.type')}: <strong>{selectedIncident.disasterType}</strong></div>
               {selectedIncident.affectedPopulation > 0 && (
                 <div>Affected: <strong>{selectedIncident.affectedPopulation.toLocaleString()}</strong></div>
               )}
               {selectedIncident.stats && (
                 <>
-                  <div>Requests: <strong>{selectedIncident.stats.requestCount || 0}</strong> ({selectedIncident.stats.openRequests || 0} open)</div>
-                  <div>Resources nearby: <strong>{selectedIncident.stats.resourceCount || 0}</strong></div>
+                  <div>{t('incidents.requests')}: <strong>{selectedIncident.stats.requestCount || 0}</strong> ({selectedIncident.stats.openRequests || 0} {t('incidents.open')})</div>
+                  <div>{t('incidents.resourcesNearby')}: <strong>{selectedIncident.stats.resourceCount || 0}</strong></div>
                 </>
               )}
             </div>
@@ -288,10 +288,10 @@ export default function Incidents() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>
-              {editIncident ? 'Edit Incident' : 'Create Incident'}
+              {editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
             </h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
-              <input placeholder="Incident name" value={form.name} onChange={updateForm('name')} required />
+              <input placeholder={t('incidents.incidentName')} value={form.name} onChange={updateForm('name')} required />
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                 <select value={form.disasterType} onChange={updateForm('disasterType')}>
@@ -320,8 +320,8 @@ export default function Incidents() {
               <textarea placeholder="Description" value={form.description} onChange={updateForm('description')} rows={3} />
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="submit" className="btnPrimary">{editIncident ? 'Update' : 'Create'}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>Cancel</button>
+                <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
+                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('incidents.cancel')}</button>
               </div>
             </form>
           </div>

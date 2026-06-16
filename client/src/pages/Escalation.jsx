@@ -39,7 +39,7 @@ export default function Escalation() {
   }
 
   async function handleDeescalate(id) {
-    if (!confirm('De-escalate this request?')) return
+    if (!confirm(t('escalation.deEscalateConfirm'))) return
     try {
       await clientApi.deescalateRequest(id)
       load()
@@ -55,36 +55,36 @@ export default function Escalation() {
           {t('nav.escalation') || 'Request Escalation Pipeline'}
         </h2>
         <div className="small muted" style={{ marginBottom: 12 }}>
-          Escalate urgent requests that need immediate admin attention
+          {t('escalation.subtitle')}
         </div>
 
         {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
 
         <form onSubmit={handleEscalate} style={{ display: 'grid', gap: 8, marginBottom: 16 }}>
           <input
-            placeholder="Request ID"
+            placeholder={t('escalation.requestId')}
             value={requestId}
             onChange={(e) => setRequestId(e.target.value)}
             required
             style={{ fontSize: 13 }}
           />
           <textarea
-            placeholder="Reason for escalation"
+            placeholder={t('escalation.reasonForEscalation')}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             style={{ fontSize: 13 }}
           />
           <button type="submit" className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px', justifySelf: 'start' }}>
-            Escalate Request
+            {t('escalation.escalateRequest')}
           </button>
         </form>
       </div>
 
       {loading ? (
-        <div className="small muted" style={{ marginTop: 16 }}>Loading...</div>
+        <div className="small muted" style={{ marginTop: 16 }}>{t('escalation.loading')}</div>
       ) : items.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: 24 }}>No escalated requests</div>
+        <div className="card" style={{ textAlign: 'center', padding: 24 }}>{t('escalation.noEscalated')}</div>
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
           {items.map((item) => (
@@ -93,10 +93,10 @@ export default function Escalation() {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 14, color: '#000080' }}>{item.title}</div>
                   <div style={{ fontSize: 12, color: '#cc0000', marginTop: 2 }}>
-                    Escalated: {new Date(item.escalatedAt).toLocaleString()}
+                    {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                   </div>
                   <div style={{ fontSize: 13, marginTop: 4 }}>{item.escalationReason}</div>
-                  <div className="small muted" style={{ marginTop: 4 }}>By: {item.createdBy?.displayName || 'Unknown'}</div>
+                  <div className="small muted" style={{ marginTop: 4 }}>{t('escalation.by')} {item.createdBy?.displayName || 'Unknown'}</div>
                 </div>
                 <button
                   onClick={() => handleDeescalate(item._id)}
@@ -106,7 +106,7 @@ export default function Escalation() {
                     borderRadius: 4, cursor: 'pointer', alignSelf: 'start',
                   }}
                 >
-                  De-escalate
+                   {t('escalation.deEscalate')}
                 </button>
               </div>
             </div>

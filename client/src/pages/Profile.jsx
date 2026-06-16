@@ -42,7 +42,7 @@ export default function Profile() {
       if (skills.length > 0) payload.skills = skills
       const data = await clientApi.updateProfile(payload)
       localStorage.setItem('user', JSON.stringify({ ...currentUser, ...data.user }))
-      setSuccess('Profile updated successfully')
+      setSuccess(t('profile.profileUpdated'))
     } catch (err) {
       setError(err.message)
     } finally {
@@ -55,17 +55,17 @@ export default function Profile() {
     setError('')
     setSuccess('')
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('profile.passwordsDoNotMatch'))
       return
     }
     if (newPassword.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError(t('profile.passwordTooShort'))
       return
     }
     setLoading(true)
     try {
       await clientApi.updateProfile({ currentPassword, newPassword })
-      setSuccess('Password changed successfully')
+      setSuccess(t('profile.passwordChanged'))
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
@@ -92,20 +92,20 @@ export default function Profile() {
       <div className="card" style={{ marginBottom: 16 }}>
         <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('profile.accountInfo')}</h3>
         <div style={{ fontSize: 13, marginBottom: 8 }}>
-          <span className="muted">Email:</span> <strong>{currentUser?.email}</strong>
+          <span className="muted">{t('profile.email')}:</span> <strong>{currentUser?.email}</strong>
         </div>
         <div style={{ fontSize: 13, marginBottom: 16 }}>
-          <span className="muted">Role:</span> <strong>{t(`auth.${currentUser?.role}`) || currentUser?.role}</strong>
+          <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${currentUser?.role}`) || currentUser?.role}</strong>
         </div>
 
         <form onSubmit={handleUpdateProfile}>
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('auth.displayName')}</label>
           <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required style={{ width: '100%', marginBottom: 12 }} />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>Phone Number</label>
-          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 XXXXX XXXXX" style={{ width: '100%', marginBottom: 12 }} />
+          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.phone')}</label>
+          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} style={{ width: '100%', marginBottom: 12 }} />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>Skills</label>
+          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.skills')}</label>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
             {SKILL_OPTIONS.map((s) => (
               <button
@@ -125,13 +125,13 @@ export default function Profile() {
             ))}
           </div>
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>Notification Preferences</label>
+          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.notificationPreferences')}</label>
           <div style={{ display: 'flex', gap: 16, marginBottom: 16, fontSize: 13 }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-              <input type="checkbox" checked={notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> Email
+              <input type="checkbox" checked={notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
             </label>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-              <input type="checkbox" checked={notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> SMS
+              <input type="checkbox" checked={notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
             </label>
           </div>
 

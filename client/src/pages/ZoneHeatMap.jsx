@@ -189,7 +189,7 @@ export default function ZoneHeatMap() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Delete this zone?')) return
+    if (!confirm(t('zones.deleteConfirm'))) return
     try {
       await clientApi.deleteZone(id)
       setSelectedZone(null)
@@ -211,14 +211,14 @@ export default function ZoneHeatMap() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>Disaster Zone Heat Map</h2>
+            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('zones.title')}</h2>
             <div className="small" style={{ marginTop: 4 }}>
               {zones.length} zones &middot; {totalOpen} open requests &middot; {totalGap} coverage gaps &middot; {totalAffected.toLocaleString()} affected
             </div>
           </div>
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <button className="btnPrimary" onClick={openCreate}>Add Zone</button>
+              <button className="btnPrimary" onClick={openCreate}>{t('zones.addZone')}</button>
             )}
           </div>
         </div>
@@ -229,15 +229,15 @@ export default function ZoneHeatMap() {
           <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
             {loading && (
               <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
-                <div className="small muted">Loading heat map...</div>
+                <div className="small muted">{t('zones.loadingHeatMap')}</div>
               </div>
             )}
             {!loading && zones.length === 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 60 }}>
                 <img src="/images/empty-map.svg" alt="No zones" style={{ width: 200, marginBottom: 16 }} />
-                <div className="muted">No disaster zones defined yet.</div>
+                <div className="muted">{t('zones.noZones')}</div>
                 {currentUser?.role === 'admin' && (
-                  <button className="btnPrimary" onClick={openCreate} style={{ marginTop: 12 }}>Create First Zone</button>
+                  <button className="btnPrimary" onClick={openCreate} style={{ marginTop: 12 }}>{t('zones.createZone')}</button>
                 )}
               </div>
             )}
@@ -285,17 +285,17 @@ export default function ZoneHeatMap() {
             </div>
 
             <div style={{ fontSize: 13, lineHeight: 1.8 }}>
-              <div>Radius: <strong>{selectedZone.radiusKm} km</strong></div>
+              <div>{t('zones.radiusLabel')} <strong>{selectedZone.radiusKm} {t('zones.km')}</strong></div>
               {selectedZone.affectedPopulation > 0 && (
                 <div>Affected: <strong>{selectedZone.affectedPopulation.toLocaleString()}</strong></div>
               )}
               <div>Open requests: <strong style={{ color: '#cc0000' }}>{selectedZone.openRequests}</strong></div>
-              <div>Total resources: <strong>{selectedZone.totalResources}</strong> units</div>
+              <div>{t('zones.totalResources')}: <strong>{selectedZone.totalResources}</strong> {t('zones.units')}</div>
             </div>
 
             {selectedZone.stats?.openRequests > 0 && (
               <div style={{ marginTop: 12, padding: '8px 12px', background: 'rgba(204,0,0,0.06)', borderRadius: 6, fontSize: 12 }}>
-                <strong style={{ color: '#cc0000' }}>Coverage Gap!</strong> {selectedZone.stats.openRequests} requests with no nearby resources.
+                <strong style={{ color: '#cc0000' }}>{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
               </div>
             )}
 
@@ -312,9 +312,9 @@ export default function ZoneHeatMap() {
       {showForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: '#000080' }}>{editZone ? 'Edit Zone' : 'Add Disaster Zone'}</h3>
+            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: '#000080' }}>{editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
-              <input placeholder="Zone name" value={form.name} onChange={updateForm('name')} required />
+              <input placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                 <select value={form.disasterType} onChange={updateForm('disasterType')}>
@@ -335,21 +335,21 @@ export default function ZoneHeatMap() {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                <input type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
-                <input type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
+                <input type="number" step="any" placeholder={t('zones.centerLat')} value={form.centerLat} onChange={updateForm('centerLat')} required />
+                <input type="number" step="any" placeholder={t('zones.centerLng')} value={form.centerLng} onChange={updateForm('centerLng')} required />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                <input type="number" placeholder="Radius (km)" value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
-                <input type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
+                <input type="number" placeholder={t('zones.radiusKm')} value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
+                <input type="number" placeholder={t('zones.affectedPopulationPlaceholder')} value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
               </div>
 
-              <textarea placeholder="Description" value={form.description} onChange={updateForm('description')} rows={2} />
-              <textarea placeholder="Notes" value={form.notes} onChange={updateForm('notes')} rows={2} />
+              <textarea placeholder={t('zones.description')} value={form.description} onChange={updateForm('description')} rows={2} />
+              <textarea placeholder={t('zones.notes')} value={form.notes} onChange={updateForm('notes')} rows={2} />
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="submit" className="btnPrimary">{editZone ? 'Update' : 'Create'}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>Cancel</button>
+                <button type="submit" className="btnPrimary">{editZone ? t('zones.update') : t('zones.create')}</button>
+                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('zones.cancel')}</button>
               </div>
             </form>
           </div>

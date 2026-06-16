@@ -127,14 +127,14 @@ export default function Geofencing() {
         <div className="headerRow">
           <div>
             <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.geofencing') || 'Geofencing Alerts'}</h2>
-            <div className="small" style={{ marginTop: 4 }}>Click map to set center, then check area</div>
+            <div className="small" style={{ marginTop: 4 }}>{t('geofencing.subtitle')}</div>
           </div>
         </div>
 
         {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
 
         <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
-          <label className="small" style={{ whiteSpace: 'nowrap' }}>Radius (km):</label>
+          <label className="small" style={{ whiteSpace: 'nowrap' }}>{t('geofencing.radiusLabel')}</label>
           <input
             type="number"
             value={radius}
@@ -150,7 +150,7 @@ export default function Geofencing() {
             disabled={loading || !position}
             style={{ fontSize: 12, padding: '6px 16px' }}
           >
-            {loading ? 'Checking...' : 'Check Area'}
+            {loading ? t('geofencing.checking') : t('geofencing.checkArea')}
           </button>
         </div>
       </div>
@@ -165,21 +165,21 @@ export default function Geofencing() {
             result.zones || [],
             'var(--gov-blue)',
             'rgba(0,0,128,.06)',
-            'Zones in area',
+            t('geofencing.zonesInArea'),
             (z) => <>{z.name} <span style={{ color: '#666' }}>({z.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.requests || [],
             '#cc0000',
             'rgba(204,0,0,.06)',
-            'Requests nearby',
+            t('geofencing.requestsNearby'),
             (r) => <>{r.title} <span style={{ color: '#666' }}>({r.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.resources || [],
             '#138808',
             'rgba(19,136,8,.06)',
-            'Resources nearby',
+            t('geofencing.resourcesNearby'),
             (r) => <>{r.name} <span style={{ color: '#666' }}>({r.distanceKm} km)</span></>
           )}
         </div>

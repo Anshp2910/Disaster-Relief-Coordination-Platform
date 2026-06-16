@@ -135,7 +135,7 @@ export default function Schedules() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Delete this schedule?')) return
+    if (!confirm(t('schedules.deleteConfirm'))) return
     try {
       await clientApi.deleteSchedule(id)
       load()
@@ -168,9 +168,9 @@ export default function Schedules() {
         <div className="headerRow">
           <div>
             <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.schedules') || 'Volunteer Scheduling'}</h2>
-            <div className="small" style={{ marginTop: 4 }}>{items.length} schedules</div>
+            <div className="small" style={{ marginTop: 4 }}>{items.length} {t('schedules.schedulesCount')}</div>
           </div>
-          <button className="btnPrimary" onClick={openCreate}>Create Schedule</button>
+          <button className="btnPrimary" onClick={openCreate}>{t('schedules.createSchedule')}</button>
         </div>
 
         {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
@@ -189,11 +189,11 @@ export default function Schedules() {
       </div>
 
       {loading ? (
-        <div className="small muted" style={{ marginTop: 16 }}>Loading...</div>
+        <div className="small muted" style={{ marginTop: 16 }}>{t('schedules.loading')}</div>
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
           {items.length === 0 && (
-            <div className="card" style={{ textAlign: 'center', padding: 24 }}>No schedules found</div>
+            <div className="card" style={{ textAlign: 'center', padding: 24 }}>{t('schedules.noSchedules')}</div>
           )}
 
           {items.map((item) => {
@@ -233,7 +233,7 @@ export default function Schedules() {
                       currentStatus={item.status}
                       expectedStatus="Scheduled"
                       nextStatus="Active"
-                      label="Start"
+                      label={t('schedules.startButton')}
                       color={STATUS_COLORS.Active}
                       onStatusChange={(s) => handleStatusChange(item._id, s)}
                     />
@@ -241,7 +241,7 @@ export default function Schedules() {
                       currentStatus={item.status}
                       expectedStatus="Active"
                       nextStatus="Completed"
-                      label="Complete"
+                      label={t('schedules.completeButton')}
                       color={STATUS_COLORS.Completed}
                       onStatusChange={(s) => handleStatusChange(item._id, s)}
                     />
@@ -266,12 +266,12 @@ export default function Schedules() {
       {showForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>{editItem ? 'Edit Schedule' : 'Create Schedule'}</h3>
+            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>{editItem ? t('schedules.editSchedule') : t('schedules.createSchedule')}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>Volunteer</label>
+                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.volunteer')}</label>
                 <select value={form.userId} onChange={updateForm('userId')} required style={{ width: '100%' }}>
-                  <option value="">Select volunteer</option>
+                  <option value="">{t('schedules.selectVolunteer')}</option>
                   {users.map((u) => (
                     <option key={u._id} value={u._id}>{u.displayName} ({u.role})</option>
                   ))}
@@ -279,9 +279,9 @@ export default function Schedules() {
               </div>
 
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>Zone (optional)</label>
+                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.zoneOptional')}</label>
                 <select value={form.zoneId} onChange={updateForm('zoneId')} style={{ width: '100%' }}>
-                  <option value="">No zone</option>
+                  <option value="">{t('schedules.noZone')}</option>
                   {zones.map((z) => (
                     <option key={z._id} value={z._id}>{z.name}</option>
                   ))}
@@ -290,17 +290,17 @@ export default function Schedules() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 <div>
-                  <label className="small" style={{ display: 'block', marginBottom: 4 }}>Start</label>
+                  <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.start')}</label>
                   <input type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required style={{ width: '100%' }} />
                 </div>
                 <div>
-                  <label className="small" style={{ display: 'block', marginBottom: 4 }}>End</label>
+                  <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.end')}</label>
                   <input type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required style={{ width: '100%' }} />
                 </div>
               </div>
 
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>Shift</label>
+                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.shift')}</label>
                 <select value={form.shift} onChange={updateForm('shift')} style={{ width: '100%' }}>
                   {SHIFT_OPTIONS.map((s) => (
                     <option key={s} value={s}>{s}</option>
@@ -309,7 +309,7 @@ export default function Schedules() {
               </div>
 
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>Skills</label>
+                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.skills')}</label>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {SKILL_OPTIONS.map((s) => {
                     const active = form.skills.includes(s)
@@ -332,11 +332,11 @@ export default function Schedules() {
                 </div>
               </div>
 
-              <textarea placeholder="Notes (optional)" value={form.notes} onChange={updateForm('notes')} rows={2} />
+              <textarea placeholder={t('schedules.notesOptional')} value={form.notes} onChange={updateForm('notes')} rows={2} />
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="submit" className="btnPrimary">{editItem ? 'Update' : 'Create'}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>Cancel</button>
+                <button type="submit" className="btnPrimary">{editItem ? t('schedules.update') : t('schedules.create')}</button>
+                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('schedules.cancel')}</button>
               </div>
             </form>
           </div>

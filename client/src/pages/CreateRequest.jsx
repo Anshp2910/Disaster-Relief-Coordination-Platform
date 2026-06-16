@@ -68,6 +68,11 @@ export default function CreateRequest() {
 
     map.on('click', (e) => placeMarker(e.latlng.lat, e.latlng.lng))
     mapInstance.current = map
+
+    return () => {
+      map.remove()
+      mapInstance.current = null
+    }
   }, [placeMarker])
 
   function useMyLocation() {

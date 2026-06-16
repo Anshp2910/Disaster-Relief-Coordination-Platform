@@ -59,7 +59,7 @@ export default function Dashboard() {
       setTotalPages(data.pages || 1)
       setTotal(data.total || 0)
     } catch (e) {
-      setError(e.message || 'Failed to load requests')
+      setError(e.message || t('dashboard.failedToLoad'))
     } finally {
       setLoading(false)
     }
@@ -130,8 +130,8 @@ export default function Dashboard() {
       {resourceSummary.length > 0 && (
         <div className="card" style={{ marginBottom: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-            <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>Resource Inventory</h3>
-            <button onClick={() => navigate('/resources')} style={{ fontSize: 12, padding: '4px 10px' }}>View All</button>
+            <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>{t('dashboard.resourceInventory')}</h3>
+            <button onClick={() => navigate('/resources')} style={{ fontSize: 12, padding: '4px 10px' }}>{t('dashboard.viewAll')}</button>
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {resourceSummary.map((s) => (
@@ -196,7 +196,7 @@ export default function Dashboard() {
                           <div className="muted" style={{ marginTop: 8, fontSize: 13 }}>{it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
                           <div className="small" style={{ marginTop: 8 }}>{it.locationName}</div>
                           {it.createdBy && <div className="small" style={{ marginTop: 4 }}>{t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}</div>}
-                          {it.claimedBy && <div className="small" style={{ marginTop: 2, color: '#cc7a00' }}>Claimed by {it.claimedBy.displayName || it.claimedBy.email}</div>}
+                          {it.claimedBy && <div className="small" style={{ marginTop: 2, color: '#cc7a00' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
                         </div>
                         <OwnerActions id={it._id} item={it} onChanged={load} />
                       </div>
@@ -207,9 +207,9 @@ export default function Dashboard() {
             )}
             {totalPages > 1 && (
               <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
-                <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Previous</button>
+                <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>{t('dashboard.previous')}</button>
                 <span style={{ fontSize: 13, padding: '6px 12px' }}>{page} / {totalPages}</span>
-                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Next</button>
+                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>{t('dashboard.next')}</button>
               </div>
             )}
           </>

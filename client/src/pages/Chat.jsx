@@ -82,7 +82,7 @@ export default function Chat({ requestId, onClose }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', maxHeight: 500 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderBottom: '1px solid var(--gov-border)' }}>
-        <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>Chat</h3>
+        <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>{t('chat.title')}</h3>
         {onClose && (
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}>
             &times;
@@ -93,11 +93,11 @@ export default function Chat({ requestId, onClose }) {
       <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {hasMore && (
           <button onClick={() => loadMessages(page + 1)} style={{ fontSize: 11, color: 'var(--gov-saffron)', background: 'none', border: 'none', cursor: 'pointer', alignSelf: 'center' }}>
-            Load earlier messages
+            {t('chat.loadEarlier')}
           </button>
         )}
-        {loading && <div className="small muted" style={{ textAlign: 'center' }}>Loading chat...</div>}
-        {!loading && messages.length === 0 && <div className="small muted" style={{ textAlign: 'center' }}>No messages yet</div>}
+        {loading && <div className="small muted" style={{ textAlign: 'center' }}>{t('chat.loadingChat')}</div>}
+        {!loading && messages.length === 0 && <div className="small muted" style={{ textAlign: 'center' }}>{t('chat.noMessages')}</div>}
 
         {messages.map((m) => {
           const isMe = m.sender?.id === currentUser?.id || m.sender?._id === currentUser?.id
@@ -145,11 +145,11 @@ export default function Chat({ requestId, onClose }) {
           ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Type a message..."
+          placeholder={t('chat.typeMessage')}
           style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
         />
         <button type="submit" className="btnPrimary" disabled={!text.trim()} style={{ fontSize: 12, padding: '6px 16px' }}>
-          Send
+          {t('chat.send')}
         </button>
       </form>
     </div>
