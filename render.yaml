@@ -4,7 +4,7 @@ services:
     runtime: node
     region: oregon
     rootDir: server
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: node src/index.js
     envVars:
       - key: NODE_VERSION
@@ -14,7 +14,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CLIENT_URL
-        sync: false
+        value: https://disasterhelper.dpdns.org
       - key: ADMIN_EMAIL
         value: admin@relief.gov.in
       - key: ADMIN_PASSWORD

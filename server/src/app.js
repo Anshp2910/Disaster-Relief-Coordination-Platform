@@ -38,23 +38,28 @@ export function createApp() {
   const app = express()
   const clientUrl = getEnv('CLIENT_URL', 'http://localhost:5173')
 
+  const extraOrigins = clientUrl !== 'http://localhost:5173' ? [clientUrl] : []
+  const allOrigins = [
+    ...extraOrigins,
+    'http://localhost:5173',
+    'http://localhost:5001',
+    'https://disasterhelper.dpdns.org',
+    'https://disaster-relief-coordination-platform-l6mk.onrender.com',
+  ]
+
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-        connectSrc: ["'self'", "ws:", "wss:", clientUrl, "http://localhost:5001", "http://localhost:5173"],
+        connectSrc: ["'self'", "ws:", "wss:", ...allOrigins],
         scriptSrc: ["'self'", "'unsafe-inline'"],
       },
     },
   }))
 
-  const allowedOrigins = [
-    clientUrl,
-    'http://localhost:5173',
-    'http://localhost:5001',
-  ]
+  const allowedOrigins = allOrigins
 
   app.use(
     cors({
