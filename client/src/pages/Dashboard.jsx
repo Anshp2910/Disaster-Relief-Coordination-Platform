@@ -6,12 +6,13 @@ import L from 'leaflet'
 
 const STATUS_COLORS = {
   'Open': { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
+  'Pending': { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' },
   'In Progress': { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
   'Resolved': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
   'Fulfilled': { bg: 'rgba(19,136,8,.15)', border: 'rgba(19,136,8,.4)', text: '#0d6e06' },
 }
 
-const MAP_MARKER_COLORS = { 'Open': '#000080', 'In Progress': '#cc7a00', 'Resolved': '#138808', 'Fulfilled': '#0d6e06' }
+const MAP_MARKER_COLORS = { 'Open': '#000080', 'Pending': '#666', 'In Progress': '#cc7a00', 'Resolved': '#138808', 'Fulfilled': '#0d6e06' }
 
 const PRIORITY_COLORS = {
   'Critical': { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
@@ -117,6 +118,7 @@ export default function Dashboard() {
   const filterOptions = [
     { key: 'All', label: t('dashboard.filterAll') },
     { key: 'Open', label: t('statuses.Open') },
+    { key: 'Pending', label: t('statuses.Pending') },
     { key: 'In Progress', label: t('statuses.In Progress') },
     { key: 'Resolved', label: t('statuses.Resolved') },
     { key: 'Fulfilled', label: t('statuses.Fulfilled') },

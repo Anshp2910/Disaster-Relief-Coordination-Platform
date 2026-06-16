@@ -264,6 +264,7 @@ function RequestsPanel({ requests, onDelete }) {
   const filterOptions = [
     { key: 'All', label: t('dashboard.filterAll') },
     { key: 'Open', label: t('statuses.Open') },
+    { key: 'Pending', label: t('statuses.Pending') },
     { key: 'In Progress', label: t('statuses.In Progress') },
     { key: 'Resolved', label: t('statuses.Resolved') },
     { key: 'Fulfilled', label: t('statuses.Fulfilled') },

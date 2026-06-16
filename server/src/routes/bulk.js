@@ -47,8 +47,8 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
       return res.status(400).json({ error: 'No rows to import' })
     }
 
-    const validCategories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other']
-    const validStatuses = ['Open', 'In Progress', 'Resolved', 'Fulfilled']
+    const validCategories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
+    const validStatuses = ['Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
     const validPriorities = ['Critical', 'High', 'Medium', 'Low']
 
     const imported = []

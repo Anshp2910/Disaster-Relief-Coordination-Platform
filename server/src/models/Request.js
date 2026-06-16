@@ -27,12 +27,12 @@ const RequestSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ['Open', 'In Progress', 'Resolved', 'Fulfilled'],
+      enum: ['Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled'],
       default: 'Open',
     },
     category: {
       type: String,
-      enum: ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other'],
+      enum: ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other'],
       default: 'Other',
     },
     priority: {

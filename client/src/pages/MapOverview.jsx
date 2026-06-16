@@ -6,6 +6,7 @@ import { clientApi } from '../api/client'
 
 const STATUS_COLORS = {
   Open: '#000080',
+  Pending: '#666',
   'In Progress': '#cc7a00',
   Resolved: '#138808',
   Fulfilled: '#0d6e06',
@@ -13,7 +14,7 @@ const STATUS_COLORS = {
 
 const DEFAULT_CENTER = [20.5937, 78.9629]
 
-const FILTER_OPTIONS_KEYS = ['All', 'Open', 'In Progress', 'Resolved', 'Fulfilled']
+const FILTER_OPTIONS_KEYS = ['All', 'Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
 
 export default function MapOverview() {
   const { t } = useTranslation()

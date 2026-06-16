@@ -14,9 +14,9 @@ const PIN_ICON = L.divIcon({
   </svg>`,
 })
 
-const CATEGORIES = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Other']
+const CATEGORIES = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
 const PRIORITIES = ['Critical', 'High', 'Medium', 'Low']
-const STATUSES = ['Open', 'In Progress', 'Resolved', 'Fulfilled']
+const STATUSES = ['Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
 
 const INITIAL_CENTER = [20.5937, 78.9629]
 

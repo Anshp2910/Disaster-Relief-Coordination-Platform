@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 
 const CATEGORY_ICONS = {
-  Food: '🍚', Water: '💧', Medical: '🏥', Shelter: '🏠', Supplies: '📦', Other: '📋',
+  Food: '🍚', Water: '💧', Medical: '🏥', Shelter: '🏠', Supplies: '📦', Healthcare: '⚕️', Sanitation: '🧹', Clothing: '👕', Transportation: '🚗', Communication: '📡', Power: '⚡', Infrastructure: '🏗️', Other: '📋',
 }
 
 const CATEGORY_COLORS = {
@@ -12,6 +12,13 @@ const CATEGORY_COLORS = {
   Medical: { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
   Shelter: { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
   Supplies: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
+  Healthcare: { bg: 'rgba(204,0,102,.1)', border: 'rgba(204,0,102,.3)', text: '#cc0066' },
+  Sanitation: { bg: 'rgba(0,153,153,.1)', border: 'rgba(0,153,153,.3)', text: '#009999' },
+  Clothing: { bg: 'rgba(153,0,153,.1)', border: 'rgba(153,0,153,.3)', text: '#990099' },
+  Transportation: { bg: 'rgba(204,102,0,.1)', border: 'rgba(204,102,0,.3)', text: '#cc6600' },
+  Communication: { bg: 'rgba(0,102,204,.1)', border: 'rgba(0,102,204,.3)', text: '#0066cc' },
+  Power: { bg: 'rgba(204,204,0,.1)', border: 'rgba(204,204,0,.3)', text: '#999900' },
+  Infrastructure: { bg: 'rgba(100,100,100,.1)', border: 'rgba(100,100,100,.3)', text: '#555' },
   Other: { bg: 'rgba(100,100,100,.1)', border: 'rgba(100,100,100,.3)', text: '#666' },
 }
 
@@ -22,7 +29,7 @@ const STATUS_COLORS = {
   Reserved: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
 }
 
-const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other']
+const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
 const STATUSES = ['All', 'Available', 'Low', 'Depleted', 'Reserved']
 
 function Badge({ label, colors, colorKey }) {

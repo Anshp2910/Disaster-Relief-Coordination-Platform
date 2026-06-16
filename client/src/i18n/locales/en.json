@@ -188,6 +188,13 @@
     "Water": "Water",
     "Rescue": "Rescue",
     "Supplies": "Supplies",
+    "Healthcare": "Healthcare",
+    "Sanitation": "Sanitation",
+    "Clothing": "Clothing",
+    "Transportation": "Transportation",
+    "Communication": "Communication",
+    "Power": "Power",
+    "Infrastructure": "Infrastructure",
     "Other": "Other"
   },
   "priorities": {
@@ -198,6 +205,7 @@
   },
   "statuses": {
     "Open": "Open",
+    "Pending": "Pending",
     "In Progress": "In Progress",
     "Resolved": "Resolved",
     "Fulfilled": "Fulfilled"
