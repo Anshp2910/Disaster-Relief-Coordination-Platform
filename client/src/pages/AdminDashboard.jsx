@@ -20,7 +20,7 @@ const PRIORITY_COLORS = {
 const BREAKDOWN_COLORS = ['#000080', '#FF9933', '#138808', '#cc0000', '#1a1a9e', '#cc6600']
 
 function Badge({ label, colors, colorKey }) {
-  const c = colors[colorKey || label] || colors.Medium
+  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' }
   return (
     <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}

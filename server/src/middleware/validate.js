@@ -110,7 +110,7 @@ const schemas = {
   }),
 
   createSchedule: Joi.object({
-    userId: Joi.string().required(),
+    userId: Joi.string(),
     zoneId: Joi.string(),
     startDate: Joi.date().required(),
     endDate: Joi.date().required().greater(Joi.ref('startDate')),

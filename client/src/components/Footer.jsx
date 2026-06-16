@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+function getCurrentUser() {
+  try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
+}
+
 export default function Footer() {
   const { t } = useTranslation()
+  const currentUser = getCurrentUser()
 
   return (
     <footer className="gov-footer">
@@ -16,7 +21,9 @@ export default function Footer() {
               <li><Link to="/zones">{t('nav.zones') || 'Zones'}</Link></li>
               <li><Link to="/resources">{t('nav.resources') || 'Resources'}</Link></li>
               <li><Link to="/requests/new">{t('footer.newRequestLink')}</Link></li>
-              <li><Link to="/admin">{t('footer.adminPanel')}</Link></li>
+              {currentUser?.role === 'admin' && (
+                <li><Link to="/admin">{t('footer.adminPanel')}</Link></li>
+              )}
             </ul>
           </div>
           <div>

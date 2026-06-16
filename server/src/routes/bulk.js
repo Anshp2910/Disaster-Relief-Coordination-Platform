@@ -63,10 +63,10 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
       if (row.status && !validStatuses.includes(row.status)) rowErrors.push(`Invalid status: ${row.status}`)
       if (row.priority && !validPriorities.includes(row.priority)) rowErrors.push(`Invalid priority: ${row.priority}`)
       
-      let lat = row.lat ? Number(row.lat) : 0
-      let lng = row.lng ? Number(row.lng) : 0
-      if (lat !== 0 && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
-      if (lng !== 0 && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
+      let lat = row.lat != null && row.lat !== '' ? Number(row.lat) : null
+      let lng = row.lng != null && row.lng !== '' ? Number(row.lng) : null
+      if (lat == null || isNaN(lat) || lat < -90 || lat > 90) rowErrors.push('Invalid latitude')
+      if (lng == null || isNaN(lng) || lng < -180 || lng > 180) rowErrors.push('Invalid longitude')
 
       if (rowErrors.length > 0) {
         errors.push({ row: i + 1, errors: rowErrors })
@@ -136,10 +136,10 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
       const quantity = row.quantity ? Number(row.quantity) : 0
       if (isNaN(quantity) || quantity < 0) rowErrors.push('Invalid quantity (must be non-negative)')
       
-      let lat = row.lat ? Number(row.lat) : 0
-      let lng = row.lng ? Number(row.lng) : 0
-      if (lat !== 0 && (isNaN(lat) || lat < -90 || lat > 90)) rowErrors.push('Invalid latitude')
-      if (lng !== 0 && (isNaN(lng) || lng < -180 || lng > 180)) rowErrors.push('Invalid longitude')
+      let lat = row.lat != null && row.lat !== '' ? Number(row.lat) : null
+      let lng = row.lng != null && row.lng !== '' ? Number(row.lng) : null
+      if (lat == null || isNaN(lat) || lat < -90 || lat > 90) rowErrors.push('Invalid latitude')
+      if (lng == null || isNaN(lng) || lng < -180 || lng > 180) rowErrors.push('Invalid longitude')
 
       if (rowErrors.length > 0) {
         errors.push({ row: i + 1, errors: rowErrors })
@@ -147,16 +147,18 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res)
       }
 
       const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
+      const autoStatus = row.status || (quantity === 0 ? 'Depleted' : quantity <= 10 ? 'Low' : 'Available')
       docs.push({
         name: row.name.trim(),
         category: row.category,
         quantity,
         unit: row.unit || 'units',
-        status: row.status || 'Available',
+        status: autoStatus,
         locationName,
         lat,
         lng,
-        location: (lat !== 0 || lng !== 0) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
+        location: (lat != null && lng != null) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
+        updatedBy: req.user._id,
       })
     }
 

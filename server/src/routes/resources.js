@@ -30,9 +30,10 @@ resourcesRouter.get('/', requireAuth, async (req, res) => {
       filter.$or = [{ name: { $regex: safeSearch, $options: 'i' } }, { locationName: { $regex: safeSearch, $options: 'i' } }]
     }
 
-    const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20))
+    const skip = (Math.max(1, Number(page)) - 1) * limit
     const [items, total] = await Promise.all([
-      Resource.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(Number(limit)).populate('allocatedTo', 'title status').populate('updatedBy', 'displayName email'),
+      Resource.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(limit).populate('allocatedTo', 'title status').populate('updatedBy', 'displayName email'),
       Resource.countDocuments(filter),
     ])
 
@@ -84,7 +85,11 @@ resourcesRouter.put('/:id', requireAuth, validate('updateResource'), async (req,
     const resource = await Resource.findById(req.params.id)
     if (!resource) return res.status(404).json({ error: 'Resource not found' })
 
-    const { name, category, quantity, unit, locationName, lat, lng, notes, status } = req.body
+    const isOwner = resource.updatedBy?.toString() === req.user._id.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+
+    const { name, category, quantity, unit, locationName, lat, lng, notes } = req.body
     if (name !== undefined) resource.name = name
     if (category !== undefined) resource.category = category
     if (quantity !== undefined) {
@@ -104,7 +109,6 @@ resourcesRouter.put('/:id', requireAuth, validate('updateResource'), async (req,
       resource.location = { type: 'Point', coordinates: [newLng, newLat] }
     }
     if (notes !== undefined) resource.notes = notes
-    if (status !== undefined) resource.status = status
     resource.updatedBy = req.user._id
 
     await resource.save()
@@ -119,6 +123,10 @@ resourcesRouter.delete('/:id', requireAuth, async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id)
     if (!resource) return res.status(404).json({ error: 'Resource not found' })
+
+    const isOwner = resource.updatedBy?.toString() === req.user._id.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
 
     if (resource.allocatedTo) {
       resource.allocatedTo = null
@@ -143,6 +151,11 @@ resourcesRouter.post('/:id/allocate', requireAuth, validate('allocateResource'),
 
     const resource = await Resource.findById(req.params.id)
     if (!resource) return res.status(404).json({ error: 'Resource not found' })
+
+    const isOwner = resource.updatedBy?.toString() === req.user._id.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+
     if (resource.quantity < allocQuantity) return res.status(400).json({ error: 'Insufficient quantity' })
 
     const request = await Request.findById(requestId)
@@ -185,6 +198,11 @@ resourcesRouter.post('/:id/deallocate', requireAuth, validate('deallocateResourc
 
     const resource = await Resource.findById(req.params.id)
     if (!resource) return res.status(404).json({ error: 'Resource not found' })
+
+    const isOwner = resource.updatedBy?.toString() === req.user._id.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+
     if (resource.allocatedQuantity < deallocQuantity) return res.status(400).json({ error: 'Cannot deallocate more than allocated' })
 
     resource.quantity += deallocQuantity

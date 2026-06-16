@@ -22,7 +22,7 @@ const PRIORITY_COLORS = {
 }
 
 function Badge({ label, colors, colorKey }) {
-  const c = colors[colorKey || label] || colors['Medium']
+  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' }
   return (
     <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}

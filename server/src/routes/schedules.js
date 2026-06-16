@@ -58,6 +58,10 @@ schedulesRouter.put('/:id', requireAuth, validate('updateSchedule'), async (req,
     const schedule = await Schedule.findById(req.params.id)
     if (!schedule) return res.status(404).json({ error: 'Schedule not found' })
 
+    const isOwner = schedule.userId?.toString() === req.user._id.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+
     const fields = ['startDate', 'endDate', 'shift', 'skills', 'status', 'notes']
     for (const f of fields) {
       if (req.body[f] !== undefined) schedule[f] = req.body[f]
@@ -75,6 +79,11 @@ schedulesRouter.delete('/:id', requireAuth, async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id)
     if (!schedule) return res.status(404).json({ error: 'Schedule not found' })
+
+    const isOwner = schedule.userId?.toString() === req.user._id.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+
     await schedule.deleteOne()
     return res.json({ ok: true })
   } catch (err) {

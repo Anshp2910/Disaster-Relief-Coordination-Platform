@@ -315,7 +315,7 @@ export default function Resources() {
                       </button>
                     )}
                     <button onClick={() => openEdit(r)} style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.editResource')}</button>
-                    <button onClick={() => handleDelete(r._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.deleteConfirm')}</button>
+                    <button onClick={() => handleDelete(r._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.delete')}</button>
                   </div>
                 </div>
               </div>

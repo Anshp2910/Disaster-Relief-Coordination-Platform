@@ -56,11 +56,11 @@ export default function Header() {
         { path: '/incidents', label: t('nav.incidents') || 'Incidents' },
         { path: '/schedules', label: t('nav.schedules') || 'Schedules' },
         { path: '/geofencing', label: t('nav.geofencing') || 'Geofencing' },
-        { path: '/bulk', label: t('nav.bulkImport') || 'Bulk' },
         { path: '/requests/new', label: t('nav.newRequest') },
         ...(currentUser?.role === 'admin' ? [
           { path: '/admin', label: t('nav.admin') },
           { path: '/escalation', label: t('nav.escalation') || 'Escalation' },
+          { path: '/bulk', label: t('nav.bulkImport') || 'Bulk' },
         ] : []),
       ]
     : []
@@ -68,13 +68,13 @@ export default function Header() {
   const [sosLoading, setSosLoading] = useState(false)
 
   async function handleSOS() {
-    if (!confirm('Send SOS emergency alert to all connected users?')) return
+    if (!confirm(t('sos.confirm'))) return
     setSosLoading(true)
     try {
-      await clientApi.broadcastSOS({ message: `SOS from ${currentUser?.displayName || 'User'}` })
-      alert('SOS alert broadcasted!')
+      await clientApi.broadcastSOS({ message: `${t('sos.from')} ${currentUser?.displayName || t('sos.user')}` })
+      alert(t('sos.broadcastSuccess'))
     } catch (e) {
-      alert('Failed: ' + e.message)
+      alert(t('sos.broadcastFailed', { error: e.message }))
     } finally {
       setSosLoading(false)
     }

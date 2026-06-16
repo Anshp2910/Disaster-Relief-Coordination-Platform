@@ -264,6 +264,7 @@ requestsRouter.post('/:id/unclaim', requireAuth, async (req, res) => {
 
     item.claimedBy = null
     item.claimedAt = null
+    if (item.status === 'In Progress') item.status = 'Open'
     item.auditLog.push({ action: 'unclaimed', by: req.user._id })
     await item.save()
 

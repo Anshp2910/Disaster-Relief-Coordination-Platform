@@ -70,6 +70,7 @@ sosRouter.get('/', requireAuth, async (req, res) => {
 
 sosRouter.put('/:id/acknowledge', requireAuth, async (req, res) => {
   try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Forbidden' })
     const alert = await SosAlert.findByIdAndUpdate(
       req.params.id,
       { status: 'acknowledged', acknowledgedBy: req.user._id, acknowledgedAt: new Date() },
@@ -85,9 +86,10 @@ sosRouter.put('/:id/acknowledge', requireAuth, async (req, res) => {
 
 sosRouter.put('/:id/resolve', requireAuth, async (req, res) => {
   try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Forbidden' })
     const alert = await SosAlert.findByIdAndUpdate(
       req.params.id,
-      { status: 'resolved', acknowledgedBy: req.user._id, acknowledgedAt: new Date() },
+      { status: 'resolved' },
       { new: true },
     )
     if (!alert) return res.status(404).json({ error: 'Alert not found' })
