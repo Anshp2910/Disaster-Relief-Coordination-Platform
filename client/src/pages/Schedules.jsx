@@ -34,11 +34,11 @@ function formatDate(d) {
   })
 }
 
-function StatusButton({ currentStatus, targetStatus, label, color, onStatusChange }) {
-  if (currentStatus !== targetStatus) return null
+function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color, onStatusChange }) {
+  if (currentStatus !== expectedStatus) return null
   return (
     <button
-      onClick={() => onStatusChange(targetStatus)}
+      onClick={() => onStatusChange(nextStatus)}
       style={{ fontSize: 11, padding: '3px 8px', background: color.bg, color: color.text, border: `1px solid ${color.border}`, borderRadius: 4, cursor: 'pointer' }}
     >
       {label}
@@ -231,14 +231,16 @@ export default function Schedules() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
                     <StatusButton
                       currentStatus={item.status}
-                      targetStatus="Scheduled"
+                      expectedStatus="Scheduled"
+                      nextStatus="Active"
                       label="Start"
                       color={STATUS_COLORS.Active}
                       onStatusChange={(s) => handleStatusChange(item._id, s)}
                     />
                     <StatusButton
                       currentStatus={item.status}
-                      targetStatus="Active"
+                      expectedStatus="Active"
+                      nextStatus="Completed"
                       label="Complete"
                       color={STATUS_COLORS.Completed}
                       onStatusChange={(s) => handleStatusChange(item._id, s)}
