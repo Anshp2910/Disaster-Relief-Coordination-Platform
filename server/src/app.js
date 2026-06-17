@@ -36,6 +36,7 @@ const authLimiter = rateLimit({
 
 export function createApp() {
   const app = express()
+  app.set('trust proxy', 1)
   const clientUrl = getEnv('CLIENT_URL', 'http://localhost:5173')
 
   const extraOrigins = clientUrl !== 'http://localhost:5173' ? [clientUrl] : []
