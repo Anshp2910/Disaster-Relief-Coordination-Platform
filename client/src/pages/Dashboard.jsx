@@ -49,6 +49,7 @@ export default function Dashboard() {
   const markersRef = useRef([])
 
   const [mapItems, setMapItems] = useState([])
+  const [mapLoading, setMapLoading] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -69,18 +70,22 @@ export default function Dashboard() {
   }
 
   async function loadMapItems() {
+    setMapLoading(true)
     try {
       const params = { limit: 1000 }
       if (filterStatus !== 'All') params.status = filterStatus
+      if (search) params.search = search
       const data = await clientApi.getRequests(params)
       setMapItems(data.items || [])
     } catch (e) {
       setMapItems([])
+    } finally {
+      setMapLoading(false)
     }
   }
 
   useEffect(() => { load() }, [page, filterStatus, searchTrigger])
-  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus])
+  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, searchTrigger])
 
   useEffect(() => {
     clientApi.getResources({ limit: 100 }).then((data) => {
@@ -232,13 +237,13 @@ export default function Dashboard() {
         ) : (
           <>
             <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative', marginTop: 16 }}>
-              {loading && (
+              {mapLoading && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
                   <div className="small muted">{t('dashboard.loading')}</div>
                 </div>
               )}
               <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
-              {!loading && !error && items.length === 0 && (
+              {!mapLoading && !error && mapItems.length === 0 && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
                   <img src="/images/empty-map.svg" alt="No locations" style={{ width: 260, marginBottom: 16 }} />
                   <div className="muted">{t('dashboard.noRequests')}</div>
