@@ -109,7 +109,13 @@ export default function ZoneHeatMap() {
       setTimeout(() => map.invalidateSize(), 800)
     })
 
+    const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
+    window.addEventListener('resize', onResize)
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
+
     return () => {
+      window.removeEventListener('resize', onResize)
+      if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
       map.remove()
       mapInstanceRef.current = null
     }
@@ -246,7 +252,7 @@ export default function ZoneHeatMap() {
                 )}
               </div>
             )}
-            <div ref={mapRef} style={{ height: '65vh', width: '100%' }} />
+            <div ref={mapRef} className="map-container-full" style={{ height: '65vh', width: '100%', maxWidth: '100%' }} />
           </div>
 
           <div style={{ display: 'flex', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>

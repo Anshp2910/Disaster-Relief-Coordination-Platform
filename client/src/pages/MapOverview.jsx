@@ -63,8 +63,14 @@ export default function MapOverview() {
 
     requestAnimationFrame(init)
 
+    const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
+    window.addEventListener('resize', onResize)
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
+
     return () => {
       cancelled = true
+      window.removeEventListener('resize', onResize)
+      if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
       if (map) {
         map.remove()
         mapInstanceRef.current = null
@@ -146,7 +152,7 @@ export default function MapOverview() {
           </div>
         )}
 
-        <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
+        <div ref={mapRef} className="map-container-full" style={{ height: '70vh', width: '100%', maxWidth: '100%' }} />
 
         {!loading && error && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>

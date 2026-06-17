@@ -107,7 +107,14 @@ export default function Dashboard() {
       setTimeout(() => map.invalidateSize(), 300)
       setTimeout(() => map.invalidateSize(), 800)
     })
-    return () => { map.remove(); mapInstanceRef.current = null }
+    const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
+    window.addEventListener('resize', onResize)
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+      if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
+      map.remove(); mapInstanceRef.current = null
+    }
   }, [viewMode])
 
   useEffect(() => {
@@ -247,7 +254,7 @@ export default function Dashboard() {
                   <div style={{ width: 24, height: 24, border: '3px solid #ccc', borderTopColor: '#000080', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
                 </div>
               )}
-              <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
+              <div ref={mapRef} className="map-container-full" style={{ height: '70vh', width: '100%', maxWidth: '100%' }} />
               {!mapLoading && !error && mapItems.length === 0 && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
                   <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" style={{ width: 260, height: 'auto', marginBottom: 16 }} />

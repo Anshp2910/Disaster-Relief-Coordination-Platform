@@ -108,7 +108,14 @@ export default function Incidents() {
       setTimeout(() => map.invalidateSize(), 300)
       setTimeout(() => map.invalidateSize(), 800)
     })
+
+    const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
+    window.addEventListener('resize', onResize)
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
+
     return () => {
+      window.removeEventListener('resize', onResize)
+      if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
       map.remove()
       mapInstanceRef.current = null
     }
@@ -239,7 +246,7 @@ export default function Incidents() {
       <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 0', minWidth: 0 }}>
           <div className="card" style={{ padding: 0 }}>
-            <div ref={mapRef} style={{ height: '55vh', width: '100%' }} />
+            <div ref={mapRef} className="map-container-full" style={{ height: '55vh', width: '100%', maxWidth: '100%' }} />
           </div>
         </div>
 

@@ -73,7 +73,13 @@ export default function EditRequest() {
     map.on('click', (e) => placeMarker(e.latlng.lat, e.latlng.lng))
     mapInstance.current = map
 
+    const onResize = () => { if (mapInstance.current) mapInstance.current.invalidateSize() }
+    window.addEventListener('resize', onResize)
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
+
     return () => {
+      window.removeEventListener('resize', onResize)
+      if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
       map.remove()
       mapInstance.current = null
     }
