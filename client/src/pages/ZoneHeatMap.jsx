@@ -231,7 +231,7 @@ export default function ZoneHeatMap() {
 
       <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
+          <div className="card" style={{ padding: 0, position: 'relative' }}>
             {loading && (
               <div style={{ position: 'absolute', inset: 0, zIndex: 1000 }}>
                 <SkeletonMap height="65vh" />

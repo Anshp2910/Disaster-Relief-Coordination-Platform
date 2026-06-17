@@ -241,7 +241,7 @@ export default function Dashboard() {
           </>
         ) : (
           <>
-            <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative', marginTop: 16 }}>
+            <div className="card" style={{ padding: 0, position: 'relative', marginTop: 16 }}>
               {mapLoading && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
                   <div style={{ width: 24, height: 24, border: '3px solid #ccc', borderTopColor: '#000080', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />

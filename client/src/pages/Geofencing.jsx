@@ -166,7 +166,7 @@ export default function Geofencing() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: 0, overflow: 'hidden', marginTop: 12 }}>
+      <div className="card" style={{ padding: 0, marginTop: 12 }}>
         <div ref={mapRef} style={{ height: '60vh', width: '100%' }} />
       </div>
 

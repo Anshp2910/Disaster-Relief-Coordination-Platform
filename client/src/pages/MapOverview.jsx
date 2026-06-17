@@ -139,7 +139,7 @@ export default function MapOverview() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
+      <div className="card" style={{ padding: 0, position: 'relative' }}>
         {loading && (
           <div style={{ position: 'absolute', inset: 0, zIndex: 1000 }}>
             <SkeletonMap height="70vh" />
