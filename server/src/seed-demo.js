@@ -84,6 +84,28 @@ const ZONE_NAMES = [
   'Chennai Coastal Flood Zone', 'Mumbai Western Suburbs', 'Kolkata Low-Lying Area',
   'Bhubaneswar Cyclone Corridor', 'Visakhapatnam Port Area', 'Kerala Backwater Region',
   'Delhi Yamuna Floodplain', 'Guwahati Brahmaputra Belt', 'Pune Western Ghats', 'Ahmedabad Drought Area',
+  'Jaipur Heat Wave Belt', 'Patna Ganga Floodplain', 'Hyderabad Urban Flood Zone',
+  'Bengaluru Lake Overflow Zone', 'Lucknow Gomti River Basin', 'Varanasi River Erosion Zone',
+  'Kochi Coastal Erosion Belt', 'Ranchi Tribal Flood Area', 'Nagaland Landslide Corridor',
+  'Darjeeling Flash Flood Zone',
+]
+
+const INCIDENT_DATA = [
+  { name: 'Cyclone Biparjoy - Gujarat Coast', disasterType: 'Cyclone', severity: 'Critical', affectedPopulation: 480000, lat: 22.2587, lng: 68.9631 },
+  { name: 'Assam Brahmaputra Floods', disasterType: 'Flood', severity: 'Critical', affectedPopulation: 320000, lat: 26.2006, lng: 92.9376 },
+  { name: 'Chennai Urban Floods - December', disasterType: 'Flood', severity: 'High', affectedPopulation: 210000, lat: 13.0827, lng: 80.2707 },
+  { name: 'Uttarakhand Glacier Burst', disasterType: 'Landslide', severity: 'Critical', affectedPopulation: 15000, lat: 30.3752, lng: 79.5220 },
+  { name: 'Maharashtra Heatwave', disasterType: 'Drought', severity: 'High', affectedPopulation: 95000, lat: 19.7515, lng: 75.7139 },
+  { name: 'Kerala Monsoon Landslides', disasterType: 'Landslide', severity: 'High', affectedPopulation: 42000, lat: 10.8505, lng: 76.2711 },
+  { name: 'Bihar Ganga Floods', disasterType: 'Flood', severity: 'Critical', affectedPopulation: 560000, lat: 25.0961, lng: 85.3131 },
+  { name: 'Odisha Cyclone Dana', disasterType: 'Cyclone', severity: 'High', affectedPopulation: 280000, lat: 19.8135, lng: 85.8312 },
+  { name: 'Rajasthan Drought Emergency', disasterType: 'Drought', severity: 'High', affectedPopulation: 175000, lat: 27.0238, lng: 74.2179 },
+  { name: 'Himachal Pradesh Flash Floods', disasterType: 'Flood', severity: 'Medium', affectedPopulation: 35000, lat: 31.1048, lng: 77.1734 },
+  { name: 'Delhi Air Pollution Crisis', disasterType: 'Other', severity: 'Medium', affectedPopulation: 1200000, lat: 28.7041, lng: 77.1025 },
+  { name: 'Tamil Nadu Cyclone Mandous', disasterType: 'Cyclone', severity: 'High', affectedPopulation: 190000, lat: 12.2958, lng: 79.0779 },
+  { name: 'Andhra Pradesh Floods - Godavari', disasterType: 'Flood', severity: 'High', affectedPopulation: 310000, lat: 17.1186, lng: 81.3472 },
+  { name: 'West Bengal Sundarbans Cyclone', disasterType: 'Cyclone', severity: 'Critical', affectedPopulation: 420000, lat: 21.9497, lng: 89.1833 },
+  { name: 'Jammu & Kashmir Flash Floods', disasterType: 'Flood', severity: 'High', affectedPopulation: 67000, lat: 33.7782, lng: 76.5762 },
 ]
 
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)] }
@@ -190,18 +212,26 @@ export async function seedDemo() {
   }
 
   console.log('[demo] creating incidents...')
-  for (let i = 0; i < 5; i++) {
-    const loc = LOCATIONS[i]
-    const incidentZones = [zoneDocs[i], zoneDocs[i + 1 % zoneDocs.length]].filter(Boolean)
+  for (let i = 0; i < INCIDENT_DATA.length; i++) {
+    const inc = INCIDENT_DATA[i]
+    const matchedZones = zoneDocs.filter((z) => {
+      const dist = Math.sqrt(Math.pow(z.centerLat - inc.lat, 2) + Math.pow(z.centerLng - inc.lng, 2))
+      return dist < 5
+    })
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - Math.floor(Math.random() * 30))
     await Incident.create({
-      name: `${pick(DISASTER_TYPES)} in ${loc.name}`,
-      description: `A ${pick(DISASTER_TYPES).toLowerCase()} has affected the ${loc.name} region. Relief operations underway.`,
-      disasterType: pick(DISASTER_TYPES), severity: pick(SEVERITIES),
-      status: pick(['Active', 'Monitoring']),
-      zones: incidentZones.map((z) => z._id),
-      startDate: new Date(), affectedPopulation: Math.floor(Math.random() * 100000) + 1000,
-      centerLat: loc.lat, centerLng: loc.lng,
-      location: { type: 'Point', coordinates: [loc.lng, loc.lat] },
+      name: inc.name,
+      description: `A ${inc.disasterType.toLowerCase()} has affected the region around (${inc.lat.toFixed(2)}, ${inc.lng.toFixed(2)}). ${inc.affectedPopulation.toLocaleString()} people affected. Relief operations underway.`,
+      disasterType: inc.disasterType,
+      severity: inc.severity,
+      status: inc.severity === 'Critical' ? 'Active' : pick(['Active', 'Monitoring']),
+      zones: matchedZones.slice(0, 2).map((z) => z._id),
+      startDate,
+      affectedPopulation: inc.affectedPopulation,
+      centerLat: inc.lat,
+      centerLng: inc.lng,
+      location: { type: 'Point', coordinates: [inc.lng, inc.lat] },
       createdBy: admin._id,
     })
   }
@@ -247,7 +277,8 @@ export async function seedDemo() {
     }
   }
 
-  console.log(`[demo] done: ${count} requests, 30 resources, ${zoneDocs.length} zones, 5 incidents, 20 schedules, 50 messages, feedback`)
+  const incCount = await Incident.countDocuments()
+  console.log(`[demo] done: ${count} requests, 30 resources, ${zoneDocs.length} zones, ${incCount} incidents, 20 schedules, 50 messages, feedback`)
 }
 
 async function main() {
