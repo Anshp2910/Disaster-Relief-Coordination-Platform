@@ -103,7 +103,11 @@ export default function ZoneHeatMap() {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map)
     mapInstanceRef.current = map
-    setTimeout(() => map.invalidateSize(), 100)
+    requestAnimationFrame(() => {
+      map.invalidateSize()
+      setTimeout(() => map.invalidateSize(), 300)
+      setTimeout(() => map.invalidateSize(), 800)
+    })
 
     return () => {
       map.remove()
@@ -229,7 +233,9 @@ export default function ZoneHeatMap() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
             {loading && (
-              <SkeletonMap height="65vh" />
+              <div style={{ position: 'absolute', inset: 0, zIndex: 1000 }}>
+                <SkeletonMap height="65vh" />
+              </div>
             )}
             {!loading && zones.length === 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 60 }}>

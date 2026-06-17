@@ -54,7 +54,11 @@ export default function Geofencing() {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map)
     mapInstanceRef.current = map
-    setTimeout(() => map.invalidateSize(), 100)
+    requestAnimationFrame(() => {
+      map.invalidateSize()
+      setTimeout(() => map.invalidateSize(), 300)
+      setTimeout(() => map.invalidateSize(), 800)
+    })
 
     map.on('click', (e) => {
       setPosition({ lat: e.latlng.lat, lng: e.latlng.lng })

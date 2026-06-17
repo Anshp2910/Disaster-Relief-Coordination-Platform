@@ -54,7 +54,11 @@ export default function MapOverview() {
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(map)
       mapInstanceRef.current = map
-      map.invalidateSize()
+      requestAnimationFrame(() => {
+        map.invalidateSize()
+        setTimeout(() => map.invalidateSize(), 300)
+        setTimeout(() => map.invalidateSize(), 800)
+      })
     }
 
     requestAnimationFrame(init)
@@ -137,7 +141,9 @@ export default function MapOverview() {
 
       <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
         {loading && (
-          <SkeletonMap height="70vh" />
+          <div style={{ position: 'absolute', inset: 0, zIndex: 1000 }}>
+            <SkeletonMap height="70vh" />
+          </div>
         )}
 
         <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />

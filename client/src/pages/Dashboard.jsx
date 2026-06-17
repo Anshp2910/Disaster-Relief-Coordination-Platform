@@ -102,7 +102,11 @@ export default function Dashboard() {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map)
     mapInstanceRef.current = map
-    setTimeout(() => map.invalidateSize(), 100)
+    requestAnimationFrame(() => {
+      map.invalidateSize()
+      setTimeout(() => map.invalidateSize(), 300)
+      setTimeout(() => map.invalidateSize(), 800)
+    })
     return () => { map.remove(); mapInstanceRef.current = null }
   }, [viewMode])
 
