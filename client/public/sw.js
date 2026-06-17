@@ -1,7 +1,9 @@
-const CACHE_VERSION = 'v3'
+const CACHE_VERSION = 'v4'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
+const MAX_DYNAMIC_CACHE = 50
+const MAX_API_CACHE = 30
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()
@@ -27,7 +29,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return
 
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(networkFirstStrategy(request, API_CACHE))
+    event.respondWith(networkFirstStrategy(request, API_CACHE, MAX_API_CACHE))
     return
   }
 
@@ -36,20 +38,38 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  if (url.pathname.match(/\.(js|css|woff2?|ttf|eot|svg|png|jpg|gif|webp)$/)) {
+    event.respondWith(cacheFirstStrategy(request, STATIC_CACHE))
+    return
+  }
+
   if (request.mode === 'navigate') {
     event.respondWith(networkFirstStrategy(request, STATIC_CACHE))
     return
   }
 
-  event.respondWith(staleWhileRevalidate(request, STATIC_CACHE))
+  event.respondWith(staleWhileRevalidate(request, DYNAMIC_CACHE))
 })
 
-function networkFirstStrategy(request, cacheName) {
+function limitCache(cacheName, maxItems) {
+  caches.open(cacheName).then((cache) => {
+    cache.keys().then((keys) => {
+      if (keys.length > maxItems) {
+        cache.delete(keys[0]).then(() => limitCache(cacheName, maxItems))
+      }
+    })
+  })
+}
+
+function networkFirstStrategy(request, cacheName, maxItems) {
   return fetch(request)
     .then((response) => {
       if (response && response.status === 200) {
         const clone = response.clone()
-        caches.open(cacheName).then((cache) => cache.put(request, clone))
+        caches.open(cacheName).then((cache) => {
+          cache.put(request, clone)
+          if (maxItems) limitCache(cacheName, maxItems)
+        })
       }
       return response
     })

@@ -1,8 +1,9 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { SkeletonMap } from '../components/Skeleton'
 
 const STATUS_COLORS = {
   Open: '#000080',
@@ -109,10 +110,10 @@ export default function MapOverview() {
     }
   }, [items, filterStatus, t])
 
-  const filterOptions = FILTER_OPTIONS_KEYS.map((key) => ({
+  const filterOptions = useMemo(() => FILTER_OPTIONS_KEYS.map((key) => ({
     key,
     label: key === 'All' ? t('dashboard.filterAll') : t(`statuses.${key}`),
-  }))
+  })), [t])
 
   return (
     <div className="container">
@@ -136,9 +137,7 @@ export default function MapOverview() {
 
       <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
         {loading && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
-            <div className="small muted">{t('dashboard.loading')}</div>
-          </div>
+          <SkeletonMap height="70vh" />
         )}
 
         <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
@@ -152,7 +151,7 @@ export default function MapOverview() {
 
         {!loading && !error && items.length === 0 && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
-            <img src="/images/empty-map.svg" alt="No locations" style={{ width: 260, marginBottom: 16 }} />
+            <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" style={{ width: 260, height: 'auto', marginBottom: 16 }} />
             <div className="muted">{t('dashboard.noRequests')}</div>
           </div>
         )}

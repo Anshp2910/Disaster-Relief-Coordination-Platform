@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useState } from 'react'
+import { useState, useMemo, memo } from 'react'
 import NotificationBell from './NotificationBell'
 import { clientApi } from '../api/client'
 
@@ -23,9 +23,9 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const token = localStorage.getItem('token')
-  const currentUser = (() => {
+  const currentUser = useMemo(() => {
     try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
+  }, [])
 
   function logout() {
     localStorage.removeItem('token')
@@ -47,7 +47,7 @@ export default function Header() {
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
-  const navLinks = token
+  const navLinks = useMemo(() => token
     ? [
         { path: '/dashboard', label: t('nav.dashboard') },
         { path: '/map', label: t('nav.mapView') || 'Map View' },
@@ -64,6 +64,7 @@ export default function Header() {
         ] : []),
       ]
     : []
+  , [token, currentUser, t])
 
   const [sosLoading, setSosLoading] = useState(false)
 

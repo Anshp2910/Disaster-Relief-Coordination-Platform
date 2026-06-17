@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { SkeletonList } from '../components/Skeleton'
 
 const CATEGORY_ICONS = {
   Food: '', Water: '', Medical: '', Shelter: '', Supplies: '', Healthcare: '', Sanitation: '', Clothing: '', Transportation: '', Communication: '', Power: '', Infrastructure: '', Other: '',
@@ -32,14 +33,14 @@ const STATUS_COLORS = {
 const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
 const STATUSES = ['All', 'Available', 'Low', 'Depleted', 'Reserved']
 
-function Badge({ label, colors, colorKey }) {
+const Badge = memo(function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || colors['Other']
   return (
     <span style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text, padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
       {label}
     </span>
   )
-}
+})
 
 const EMPTY_FORM = { name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' }
 
@@ -267,7 +268,7 @@ export default function Resources() {
 
       {/* Resource List */}
       {loading ? (
-        <div className="small muted" style={{ marginTop: 16 }}>{t('resources.loading')}</div>
+        <SkeletonList count={4} lines={3} />
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
           {items.length === 0 ? (

@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { clientApi } from '../api/client'
+import { SkeletonMap } from '../components/Skeleton'
 
 const SEVERITY_COLORS = {
   Critical: { fill: '#cc0000', stroke: '#990000', weight: 0.6 },
@@ -200,9 +201,9 @@ export default function ZoneHeatMap() {
   }
 
   const currentUser = getCurrentUser()
-  const totalOpen = zones.reduce((s, z) => s + z.openRequests, 0)
-  const totalGap = zones.filter((z) => z.coverageStatus === 'Gap').length
-  const totalAffected = zones.reduce((s, z) => s + (z.affectedPopulation || 0), 0)
+  const totalOpen = useMemo(() => zones.reduce((s, z) => s + z.openRequests, 0), [zones])
+  const totalGap = useMemo(() => zones.filter((z) => z.coverageStatus === 'Gap').length, [zones])
+  const totalAffected = useMemo(() => zones.reduce((s, z) => s + (z.affectedPopulation || 0), 0), [zones])
 
   const updateForm = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
@@ -228,9 +229,7 @@ export default function ZoneHeatMap() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
             {loading && (
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
-                <div className="small muted">{t('zones.loadingHeatMap')}</div>
-              </div>
+              <SkeletonMap height="65vh" />
             )}
             {!loading && zones.length === 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 60 }}>

@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import L from 'leaflet'
 
 const STATUS_COLORS = {
@@ -21,14 +22,14 @@ const PRIORITY_COLORS = {
   'Low': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
 }
 
-function Badge({ label, colors, colorKey }) {
+const Badge = memo(function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' }
   return (
     <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
     </span>
   )
-}
+})
 
 export default function Dashboard() {
   const [items, setItems] = useState([])
@@ -51,7 +52,7 @@ export default function Dashboard() {
   const [mapItems, setMapItems] = useState([])
   const [mapLoading, setMapLoading] = useState(false)
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -67,9 +68,9 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [page, filterStatus, search, searchTrigger, t])
 
-  async function loadMapItems() {
+  const loadMapItems = useCallback(async () => {
     setMapLoading(true)
     try {
       const params = { limit: 1000 }
@@ -82,7 +83,7 @@ export default function Dashboard() {
     } finally {
       setMapLoading(false)
     }
-  }
+  }, [filterStatus, search])
 
   useEffect(() => { load() }, [page, filterStatus, searchTrigger])
   useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, searchTrigger])
@@ -130,23 +131,23 @@ export default function Dashboard() {
     setSearchTrigger((t) => t + 1)
   }
 
-  const currentUser = (() => {
+  const currentUser = useMemo(() => {
     try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
+  }, [])
 
-  const filterOptions = [
+  const filterOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
     { key: 'Open', label: t('statuses.Open') },
     { key: 'Pending', label: t('statuses.Pending') },
     { key: 'In Progress', label: t('statuses.In Progress') },
     { key: 'Resolved', label: t('statuses.Resolved') },
     { key: 'Fulfilled', label: t('statuses.Fulfilled') },
-  ]
+  ], [t])
 
   return (
     <div className="container">
-      <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden' }}>
-        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" style={{ width: '100%', display: 'block' }} />
+      <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', background: 'rgba(0,0,128,0.03)' }}>
+        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" loading="eager" fetchpriority="high" width="1200" height="300" style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/1' }} />
       </div>
       {resourceSummary.length > 0 && (
         <div className="card" style={{ marginBottom: 12 }}>
@@ -195,12 +196,12 @@ export default function Dashboard() {
         {viewMode === 'list' ? (
           <>
             {loading ? (
-              <div className="small muted" style={{ marginTop: 16 }}>{t('dashboard.loading')}</div>
+              <SkeletonList count={4} lines={3} />
             ) : (
               <div className="gridGap" style={{ marginTop: 16 }}>
                 {items.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: 20 }}>
-                    <img src="/images/empty-requests.svg" alt="No requests" style={{ width: 200, margin: '0 auto 12px', display: 'block' }} />
+                    <img src="/images/empty-requests.svg" alt="No requests" loading="lazy" width="200" height="150" style={{ width: 200, height: 'auto', margin: '0 auto 12px', display: 'block' }} />
                     <div className="muted">{t('dashboard.noRequests')}</div>
                   </div>
                 ) : (
@@ -239,13 +240,13 @@ export default function Dashboard() {
             <div className="card" style={{ padding: 0, overflow: 'hidden', position: 'relative', marginTop: 16 }}>
               {mapLoading && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
-                  <div className="small muted">{t('dashboard.loading')}</div>
+                  <div style={{ width: 24, height: 24, border: '3px solid #ccc', borderTopColor: '#000080', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
                 </div>
               )}
               <div ref={mapRef} style={{ height: '70vh', width: '100%' }} />
               {!mapLoading && !error && mapItems.length === 0 && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
-                  <img src="/images/empty-map.svg" alt="No locations" style={{ width: 260, marginBottom: 16 }} />
+                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" style={{ width: 260, height: 'auto', marginBottom: 16 }} />
                   <div className="muted">{t('dashboard.noRequests')}</div>
                 </div>
               )}
@@ -265,7 +266,7 @@ export default function Dashboard() {
   )
 }
 
-function OwnerActions({ id, item, onChanged }) {
+const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const user = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null } })()
@@ -288,4 +289,4 @@ function OwnerActions({ id, item, onChanged }) {
       <button disabled={!canEdit || deleting} onClick={del} className="btnDanger" style={{ opacity: !canEdit ? 0.5 : 1, fontSize: 12, padding: '6px 12px' }}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
     </div>
   )
-}
+})

@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { SkeletonList } from '../components/Skeleton'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(255,153,51,.12)', text: '#cc7a00', border: 'rgba(255,153,51,.35)' },
@@ -34,7 +35,7 @@ function formatDate(d) {
   })
 }
 
-function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color, onStatusChange }) {
+const StatusButton = memo(function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color, onStatusChange }) {
   if (currentStatus !== expectedStatus) return null
   return (
     <button
@@ -44,7 +45,7 @@ function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color,
       {label}
     </button>
   )
-}
+})
 
 const DEFAULT_FORM = {
   userId: '', zoneId: '', startDate: '', endDate: '', shift: 'Full Day', skills: [], notes: '',
@@ -189,7 +190,7 @@ export default function Schedules() {
       </div>
 
       {loading ? (
-        <div className="small muted" style={{ marginTop: 16 }}>{t('schedules.loading')}</div>
+        <SkeletonList count={4} lines={3} />
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
           {items.length === 0 && (
