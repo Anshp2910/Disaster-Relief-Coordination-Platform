@@ -9,6 +9,7 @@ export default function Escalation() {
   const [error, setError] = useState('')
   const [requestId, setRequestId] = useState('')
   const [reason, setReason] = useState('')
+  const [allRequests, setAllRequests] = useState([])
 
   async function load() {
     setLoading(true)
@@ -23,7 +24,12 @@ export default function Escalation() {
     }
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    clientApi.getRequests({ limit: 1000 }).then((data) => {
+      setAllRequests(data.items || [])
+    }).catch(() => {})
+  }, [])
 
   async function handleEscalate(e) {
     e.preventDefault()
@@ -61,13 +67,19 @@ export default function Escalation() {
         {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
 
         <form onSubmit={handleEscalate} style={{ display: 'grid', gap: 8, marginBottom: 16 }}>
-          <input
-            placeholder={t('escalation.requestId')}
+          <select
             value={requestId}
             onChange={(e) => setRequestId(e.target.value)}
             required
-            style={{ fontSize: 13 }}
-          />
+            style={{ fontSize: 13, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6 }}
+          >
+            <option value="">{t('escalation.selectRequest') || 'Select a request...'}</option>
+            {allRequests.map((r) => (
+              <option key={r._id} value={r._id}>
+                {r.title} ({r.status || 'Open'}) — {r.locationName || r._id}
+              </option>
+            ))}
+          </select>
           <textarea
             placeholder={t('escalation.reasonForEscalation')}
             value={reason}
