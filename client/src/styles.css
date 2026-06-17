@@ -310,6 +310,12 @@ input::placeholder, textarea::placeholder { color: #999; }
   border: 1px solid var(--gov-border);
   overflow: hidden;
   background: #e8e8e8;
+  position: relative;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
 }
 
 /* Government specific */
@@ -1060,6 +1066,11 @@ button, a, input, select, textarea {
     flex-wrap: wrap;
   }
 
+  .mapBox {
+    height: 260px;
+    min-height: 200px;
+  }
+
   .admin-stats-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -1113,6 +1124,14 @@ button, a, input, select, textarea {
   .notification-dropdown {
     width: calc(100vw - 16px);
     right: -8px;
+  }
+
+  .mapBox {
+    height: 220px;
+    min-height: 180px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 
   .admin-stats-grid {
