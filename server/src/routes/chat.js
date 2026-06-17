@@ -1,12 +1,12 @@
 import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { ChatMessage } from '../models/ChatMessage.js'
 import { Request } from '../models/Request.js'
 
 export const chatRouter = express.Router()
 
-chatRouter.get('/:requestId', requireAuth, async (req, res) => {
+chatRouter.get('/:requestId', requireAuth, validateObjectId('requestId'), validateQuery(querySchemas.chatMessages), async (req, res) => {
   try {
     const request = await Request.findById(req.params.requestId).select('_id').lean()
     if (!request) return res.status(404).json({ error: 'Request not found' })
@@ -29,7 +29,7 @@ chatRouter.get('/:requestId', requireAuth, async (req, res) => {
   }
 })
 
-chatRouter.post('/:requestId', requireAuth, validate('chatMessage'), async (req, res) => {
+chatRouter.post('/:requestId', requireAuth, validateObjectId('requestId'), validate('chatMessage'), async (req, res) => {
   try {
     const request = await Request.findById(req.params.requestId).select('_id').lean()
     if (!request) return res.status(404).json({ error: 'Request not found' })
@@ -55,7 +55,7 @@ chatRouter.post('/:requestId', requireAuth, validate('chatMessage'), async (req,
   }
 })
 
-chatRouter.delete('/:requestId/:messageId', requireAuth, async (req, res) => {
+chatRouter.delete('/:requestId/:messageId', requireAuth, validateObjectId('requestId'), validateObjectId('messageId'), async (req, res) => {
   try {
     const message = await ChatMessage.findOne({ _id: req.params.messageId, requestId: req.params.requestId })
     if (!message) return res.status(404).json({ error: 'Message not found' })

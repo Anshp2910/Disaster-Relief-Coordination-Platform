@@ -1,6 +1,6 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
@@ -21,7 +21,7 @@ function haversineKm(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-zonesRouter.get('/', requireAuth, async (req, res) => {
+zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (req, res) => {
   try {
     const { page = 1, limit = 50, severity, status, disasterType, search } = req.query
     const filter = {}
@@ -142,7 +142,7 @@ zonesRouter.get('/heatmap', requireAuth, async (req, res) => {
   }
 })
 
-zonesRouter.get('/:id', requireAuth, async (req, res) => {
+zonesRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const zone = await Zone.findById(req.params.id).populate('createdBy', 'displayName email')
     if (!zone) return res.status(404).json({ error: 'Zone not found' })
@@ -200,7 +200,7 @@ zonesRouter.post('/', requireAuth, requireAdmin, validate('createZone'), async (
   }
 })
 
-zonesRouter.put('/:id', requireAuth, requireAdmin, validate('updateZone'), async (req, res) => {
+zonesRouter.put('/:id', requireAuth, requireAdmin, validateObjectId('id'), validate('updateZone'), async (req, res) => {
   try {
     const zone = await Zone.findById(req.params.id)
     if (!zone) return res.status(404).json({ error: 'Zone not found' })
@@ -224,7 +224,7 @@ zonesRouter.put('/:id', requireAuth, requireAdmin, validate('updateZone'), async
   }
 })
 
-zonesRouter.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
+zonesRouter.delete('/:id', requireAuth, requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const zone = await Zone.findById(req.params.id)
     if (!zone) return res.status(404).json({ error: 'Zone not found' })

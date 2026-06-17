@@ -3,7 +3,7 @@ import multer from 'multer'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { requireAuth } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Request } from '../models/Request.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -21,10 +21,11 @@ const upload = multer({
   storage,
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|gif|webp|pdf|doc|docx/
-    const ext = allowed.test(path.extname(file.originalname).toLowerCase())
-    const mime = allowed.test(file.mimetype) || file.mimetype.startsWith('application/')
-    cb(null, ext || mime)
+    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    const allowedExt = /jpeg|jpg|png|gif|webp|pdf|doc|docx/
+    const ext = allowedExt.test(path.extname(file.originalname).toLowerCase())
+    const mime = allowedMimes.includes(file.mimetype)
+    cb(null, ext && mime)
   },
 })
 
@@ -32,20 +33,18 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-const ALLOWED_SORT_FIELDS = ['-createdAt', 'createdAt', '-priority', 'priority', '-status', 'status', 'title', '-title']
-
 export const requestsRouter = express.Router()
 
-requestsRouter.get('/', requireAuth, async (req, res) => {
+requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), async (req, res) => {
   try {
-    const { page = 1, limit = 20, status, category, priority, search, sort = '-createdAt' } = req.query
+    const { page, limit, status, category, priority, search, sort } = req.query
     const filter = {}
 
     if (status && status !== 'All') filter.status = status
     if (category && category !== 'All') filter.category = category
     if (priority && priority !== 'All') filter.priority = priority
     if (search) {
-      const safeSearch = escapeRegex(String(search))
+      const safeSearch = escapeRegex(search)
       filter.$or = [
         { title: { $regex: safeSearch, $options: 'i' } },
         { description: { $regex: safeSearch, $options: 'i' } },
@@ -53,9 +52,9 @@ requestsRouter.get('/', requireAuth, async (req, res) => {
       ]
     }
 
-    const pageNum = Math.max(1, Number(page) || 1)
-    const limitNum = Math.min(1000, Math.max(1, Number(limit) || 20))
-    const sortStr = ALLOWED_SORT_FIELDS.includes(sort) ? sort : '-createdAt'
+    const pageNum = page || 1
+    const limitNum = limit || 20
+    const sortStr = sort || '-createdAt'
     const skip = (pageNum - 1) * limitNum
     const [items, total] = await Promise.all([
       Request.find(filter)
@@ -120,7 +119,7 @@ requestsRouter.post('/', requireAuth, validate('createRequest'), async (req, res
   }
 })
 
-requestsRouter.get('/:id', requireAuth, async (req, res) => {
+requestsRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
@@ -136,7 +135,7 @@ requestsRouter.get('/:id', requireAuth, async (req, res) => {
   }
 })
 
-requestsRouter.put('/:id', requireAuth, validate('updateRequest'), async (req, res) => {
+requestsRouter.put('/:id', requireAuth, validateObjectId('id'), validate('updateRequest'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
@@ -189,7 +188,7 @@ requestsRouter.put('/:id', requireAuth, validate('updateRequest'), async (req, r
   }
 })
 
-requestsRouter.delete('/:id', requireAuth, async (req, res) => {
+requestsRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
@@ -217,7 +216,7 @@ requestsRouter.delete('/:id', requireAuth, async (req, res) => {
   }
 })
 
-requestsRouter.post('/:id/claim', requireAuth, async (req, res) => {
+requestsRouter.post('/:id/claim', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
@@ -252,7 +251,7 @@ requestsRouter.post('/:id/claim', requireAuth, async (req, res) => {
   }
 })
 
-requestsRouter.post('/:id/unclaim', requireAuth, async (req, res) => {
+requestsRouter.post('/:id/unclaim', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
@@ -286,7 +285,7 @@ requestsRouter.post('/:id/unclaim', requireAuth, async (req, res) => {
   }
 })
 
-requestsRouter.post('/:id/comments', requireAuth, validate('comment'), async (req, res) => {
+requestsRouter.post('/:id/comments', requireAuth, validateObjectId('id'), validate('comment'), async (req, res) => {
   try {
     const { id } = req.params
     const { text } = req.body || {}
@@ -320,7 +319,7 @@ requestsRouter.post('/:id/comments', requireAuth, validate('comment'), async (re
   }
 })
 
-requestsRouter.delete('/:id/comments/:commentId', requireAuth, async (req, res) => {
+requestsRouter.delete('/:id/comments/:commentId', requireAuth, validateObjectId('id'), validateObjectId('commentId'), async (req, res) => {
   try {
     const { id, commentId } = req.params
     const item = await Request.findById(id)
@@ -343,7 +342,7 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, async (req, res) 
   }
 })
 
-requestsRouter.post('/:id/files', requireAuth, (req, res, next) => {
+requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), (req, res, next) => {
   upload.array('files', 5)(req, res, (err) => {
     if (err) {
       return res.status(400).json({ error: err.message })

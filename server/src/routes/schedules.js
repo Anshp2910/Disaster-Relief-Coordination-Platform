@@ -1,12 +1,12 @@
 import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Schedule } from '../models/Schedule.js'
 import { Zone } from '../models/Zone.js'
 
 export const schedulesRouter = express.Router()
 
-schedulesRouter.get('/', requireAuth, async (req, res) => {
+schedulesRouter.get('/', requireAuth, validateQuery(querySchemas.schedulesList), async (req, res) => {
   try {
     const { page = 1, limit = 20, userId, zoneId, status, startDate, endDate } = req.query
     const filter = {}
@@ -53,7 +53,7 @@ schedulesRouter.post('/', requireAuth, validate('createSchedule'), async (req, r
   }
 })
 
-schedulesRouter.put('/:id', requireAuth, validate('updateSchedule'), async (req, res) => {
+schedulesRouter.put('/:id', requireAuth, validateObjectId('id'), validate('updateSchedule'), async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id)
     if (!schedule) return res.status(404).json({ error: 'Schedule not found' })
@@ -75,7 +75,7 @@ schedulesRouter.put('/:id', requireAuth, validate('updateSchedule'), async (req,
   }
 })
 
-schedulesRouter.delete('/:id', requireAuth, async (req, res) => {
+schedulesRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id)
     if (!schedule) return res.status(404).json({ error: 'Schedule not found' })

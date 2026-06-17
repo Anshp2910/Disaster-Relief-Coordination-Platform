@@ -34,6 +34,14 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 })
 
+const bulkLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: 'Too many import requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
 export function createApp() {
   const app = express()
   app.set('trust proxy', 1)
@@ -96,7 +104,7 @@ export function createApp() {
   app.use('/api/feedback', feedbackRouter)
   app.use('/api/schedules', schedulesRouter)
   app.use('/api/incidents', incidentsRouter)
-  app.use('/api/bulk', bulkRouter)
+  app.use('/api/bulk', bulkLimiter, bulkRouter)
   app.use('/api/escalation', escalationRouter)
   app.use('/api/geofencing', geofencingRouter)
   app.use('/api/sos', sosRouter)

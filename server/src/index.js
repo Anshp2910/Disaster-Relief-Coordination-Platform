@@ -49,22 +49,27 @@ async function start() {
   io.on('connection', (socket) => {
     console.log('[ws] client connected:', socket.id, 'userId:', socket.userId)
     socket.on('chat:join', ({ requestId }) => {
-      if (requestId) {
+      if (requestId && typeof requestId === 'string' && /^[a-f\d]{24}$/i.test(requestId)) {
         socket.join(`chat:${requestId}`)
         console.log('[ws] joined chat room:', requestId)
       }
     })
 
     socket.on('chat:leave', ({ requestId }) => {
-      if (requestId) {
+      if (requestId && typeof requestId === 'string' && /^[a-f\d]{24}$/i.test(requestId)) {
         socket.leave(`chat:${requestId}`)
         console.log('[ws] left chat room:', requestId)
       }
     })
 
     socket.on('geofencing:subscribe', ({ lat, lng, radiusKm }) => {
-      socket.geofencing = { lat, lng, radiusKm }
-      console.log('[ws] subscribed geofencing:', lat, lng, radiusKm)
+      const latNum = Number(lat)
+      const lngNum = Number(lng)
+      const radius = Number(radiusKm)
+      if (Number.isFinite(latNum) && latNum >= -90 && latNum <= 90 && Number.isFinite(lngNum) && lngNum >= -180 && lngNum <= 180 && Number.isFinite(radius) && radius > 0 && radius <= 500) {
+        socket.geofencing = { lat: latNum, lng: lngNum, radiusKm: radius }
+        console.log('[ws] subscribed geofencing:', latNum, lngNum, radius)
+      }
     })
 
     socket.on('disconnect', () => console.log('[ws] client disconnected:', socket.id))

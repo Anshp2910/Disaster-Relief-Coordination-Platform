@@ -1,5 +1,6 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { User } from '../models/User.js'
 import { Request } from '../models/Request.js'
 import { Zone } from '../models/Zone.js'
@@ -56,13 +57,10 @@ adminRouter.get('/users', async (req, res) => {
   }
 })
 
-adminRouter.put('/users/:id/role', async (req, res) => {
+adminRouter.put('/users/:id/role', validateObjectId('id'), validate('updateUserRole'), async (req, res) => {
   try {
     const { id } = req.params
-    const { role } = req.body || {}
-    if (!['volunteer', 'ngo', 'admin'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid role' })
-    }
+    const { role } = req.body
 
     const user = await User.findById(id)
     if (!user) return res.status(404).json({ error: 'User not found' })
@@ -76,7 +74,7 @@ adminRouter.put('/users/:id/role', async (req, res) => {
   }
 })
 
-adminRouter.delete('/users/:id', async (req, res) => {
+adminRouter.delete('/users/:id', validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
     if (id === req.user._id.toString()) {
@@ -94,7 +92,7 @@ adminRouter.delete('/users/:id', async (req, res) => {
   }
 })
 
-adminRouter.delete('/requests/:id', async (req, res) => {
+adminRouter.delete('/requests/:id', validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
@@ -108,7 +106,7 @@ adminRouter.delete('/requests/:id', async (req, res) => {
   }
 })
 
-adminRouter.get('/export/requests', async (req, res) => {
+adminRouter.get('/export/requests', validateQuery(querySchemas.adminExport), async (req, res) => {
   try {
     const { format = 'json' } = req.query
     const items = await Request.find()

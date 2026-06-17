@@ -1,5 +1,6 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
+import { validate, validateObjectId } from '../middleware/validate.js'
 import { Request } from '../models/Request.js'
 
 export const escalationRouter = express.Router()
@@ -17,7 +18,7 @@ escalationRouter.get('/', requireAuth, requireAdmin, async (req, res) => {
   }
 })
 
-escalationRouter.post('/:requestId', requireAuth, requireAdmin, async (req, res) => {
+escalationRouter.post('/:requestId', requireAuth, requireAdmin, validateObjectId('requestId'), validate('escalateRequest'), async (req, res) => {
   try {
     const { reason } = req.body
     const item = await Request.findById(req.params.requestId)
@@ -25,7 +26,7 @@ escalationRouter.post('/:requestId', requireAuth, requireAdmin, async (req, res)
 
     item.escalated = true
     item.escalatedAt = new Date()
-    item.escalationReason = reason || 'No reason provided'
+    item.escalationReason = reason
     item.auditLog.push({ action: 'escalated', by: req.user._id })
     await item.save()
 
@@ -45,7 +46,7 @@ escalationRouter.post('/:requestId', requireAuth, requireAdmin, async (req, res)
   }
 })
 
-escalationRouter.delete('/:requestId', requireAuth, requireAdmin, async (req, res) => {
+escalationRouter.delete('/:requestId', requireAuth, requireAdmin, validateObjectId('requestId'), async (req, res) => {
   try {
     const item = await Request.findById(req.params.requestId)
     if (!item) return res.status(404).json({ error: 'Request not found' })

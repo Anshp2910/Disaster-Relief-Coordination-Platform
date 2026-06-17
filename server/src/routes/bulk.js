@@ -1,5 +1,6 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
+import { validate, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { Zone } from '../models/Zone.js'
@@ -40,7 +41,7 @@ bulkRouter.get('/resources/export', requireAuth, requireAdmin, async (req, res) 
   }
 })
 
-bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) => {
+bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImportRows'), async (req, res) => {
   try {
     const { rows } = req.body
     if (!Array.isArray(rows) || rows.length === 0) {
@@ -112,7 +113,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, async (req, res) 
   }
 })
 
-bulkRouter.post('/resources/import', requireAuth, requireAdmin, async (req, res) => {
+bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkImportRows'), async (req, res) => {
   try {
     const { rows } = req.body
     if (!Array.isArray(rows) || rows.length === 0) {

@@ -1,4 +1,26 @@
 import Joi from 'joi'
+import mongoose from 'mongoose'
+
+export function validateObjectId(paramName = 'id') {
+  return (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params[paramName])) {
+      return res.status(400).json({ error: `Invalid ${paramName} format` })
+    }
+    next()
+  }
+}
+
+export function validateQuery(schema) {
+  return (req, res, next) => {
+    const { error, value } = schema.validate(req.query, { abortEarly: false, stripUnknown: true })
+    if (error) {
+      const msg = error.details.map((d) => d.message).join(', ')
+      return res.status(400).json({ error: msg })
+    }
+    req.query = value
+    return next()
+  }
+}
 
 const schemas = {
   register: Joi.object({
@@ -172,6 +194,87 @@ const schemas = {
       sms: Joi.boolean(),
     }),
   }).or('displayName', 'newPassword', 'phone', 'skills', 'notifications'),
+
+  escalateRequest: Joi.object({
+    reason: Joi.string().min(1).max(2000).required().trim(),
+  }),
+
+  updateUserRole: Joi.object({
+    role: Joi.string().valid('volunteer', 'ngo', 'admin').required(),
+  }),
+
+  geofencingCheck: Joi.object({
+    lat: Joi.number().min(-90).max(90).required(),
+    lng: Joi.number().min(-180).max(180).required(),
+    radiusKm: Joi.number().min(0.1).max(500).default(10),
+  }),
+
+  bulkImportRows: Joi.object({
+    rows: Joi.array().min(1).max(1000).items(Joi.object()).required(),
+  }),
+}
+
+const querySchemas = {
+  requestsList: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(1000).default(20),
+    status: Joi.string().valid('Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled', 'All'),
+    category: Joi.string().valid('Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other', 'All'),
+    priority: Joi.string().valid('Critical', 'High', 'Medium', 'Low', 'All'),
+    search: Joi.string().max(200).trim().allow(''),
+    sort: Joi.string().valid('-createdAt', 'createdAt', '-priority', 'priority', '-status', 'status', 'title', '-title'),
+  }),
+
+  resourcesList: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(20),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other', 'All'),
+    status: Joi.string().valid('Available', 'Low', 'Depleted', 'Reserved', 'All'),
+    search: Joi.string().max(200).trim().allow(''),
+  }),
+
+  zonesList: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(50),
+    severity: Joi.string().valid('Critical', 'High', 'Medium', 'Low', 'All'),
+    status: Joi.string().valid('Active', 'Monitoring', 'Resolved', 'Closed', 'All'),
+    disasterType: Joi.string().valid('Flood', 'Earthquake', 'Cyclone', 'Drought', 'Fire', 'Landslide', 'Other', 'All'),
+    search: Joi.string().max(200).trim().allow(''),
+  }),
+
+  incidentsList: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(20),
+    status: Joi.string().valid('Active', 'Monitoring', 'Resolved', 'Closed', 'All'),
+    severity: Joi.string().valid('Critical', 'High', 'Medium', 'Low', 'All'),
+    disasterType: Joi.string().valid('Flood', 'Earthquake', 'Cyclone', 'Drought', 'Fire', 'Landslide', 'Other', 'All'),
+    search: Joi.string().max(200).trim().allow(''),
+  }),
+
+  schedulesList: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(20),
+    userId: Joi.string().allow(''),
+    zoneId: Joi.string().allow(''),
+    status: Joi.string().valid('Scheduled', 'Active', 'Completed', 'Cancelled', 'All'),
+    startDate: Joi.date().iso(),
+    endDate: Joi.date().iso(),
+  }),
+
+  sosList: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(20),
+    status: Joi.string().valid('active', 'acknowledged', 'resolved'),
+  }),
+
+  chatMessages: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(50),
+  }),
+
+  adminExport: Joi.object({
+    format: Joi.string().valid('json', 'csv').default('json'),
+  }),
 }
 
 export function validate(schemaName) {
@@ -188,3 +291,5 @@ export function validate(schemaName) {
     return next()
   }
 }
+
+export { querySchemas }

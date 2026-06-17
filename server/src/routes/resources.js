@@ -1,6 +1,6 @@
 import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Resource } from '../models/Resource.js'
 import { Request } from '../models/Request.js'
 
@@ -19,7 +19,7 @@ function haversineKm(lat1, lng1, lat2, lng2) {
 
 export const resourcesRouter = express.Router()
 
-resourcesRouter.get('/', requireAuth, async (req, res) => {
+resourcesRouter.get('/', requireAuth, validateQuery(querySchemas.resourcesList), async (req, res) => {
   try {
     const { page = 1, category, status, search } = req.query
     const filter = {}
@@ -80,7 +80,7 @@ resourcesRouter.post('/', requireAuth, validate('createResource'), async (req, r
   }
 })
 
-resourcesRouter.put('/:id', requireAuth, validate('updateResource'), async (req, res) => {
+resourcesRouter.put('/:id', requireAuth, validateObjectId('id'), validate('updateResource'), async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id)
     if (!resource) return res.status(404).json({ error: 'Resource not found' })
@@ -119,7 +119,7 @@ resourcesRouter.put('/:id', requireAuth, validate('updateResource'), async (req,
   }
 })
 
-resourcesRouter.delete('/:id', requireAuth, async (req, res) => {
+resourcesRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id)
     if (!resource) return res.status(404).json({ error: 'Resource not found' })
@@ -142,7 +142,7 @@ resourcesRouter.delete('/:id', requireAuth, async (req, res) => {
   }
 })
 
-resourcesRouter.post('/:id/allocate', requireAuth, validate('allocateResource'), async (req, res) => {
+resourcesRouter.post('/:id/allocate', requireAuth, validateObjectId('id'), validate('allocateResource'), async (req, res) => {
   try {
     const { requestId, allocQuantity } = req.body
     if (!requestId || !allocQuantity || allocQuantity <= 0) {
@@ -189,7 +189,7 @@ resourcesRouter.post('/:id/allocate', requireAuth, validate('allocateResource'),
   }
 })
 
-resourcesRouter.post('/:id/deallocate', requireAuth, validate('deallocateResource'), async (req, res) => {
+resourcesRouter.post('/:id/deallocate', requireAuth, validateObjectId('id'), validate('deallocateResource'), async (req, res) => {
   try {
     const { deallocQuantity } = req.body
     if (!deallocQuantity || deallocQuantity <= 0) {
@@ -219,7 +219,7 @@ resourcesRouter.post('/:id/deallocate', requireAuth, validate('deallocateResourc
   }
 })
 
-resourcesRouter.get('/match/:requestId', requireAuth, async (req, res) => {
+resourcesRouter.get('/match/:requestId', requireAuth, validateObjectId('requestId'), async (req, res) => {
   try {
     const request = await Request.findById(req.params.requestId).lean()
     if (!request) return res.status(404).json({ error: 'Request not found' })

@@ -1,6 +1,6 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Incident } from '../models/Incident.js'
 import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
@@ -12,7 +12,7 @@ function escapeRegex(str) {
 
 export const incidentsRouter = express.Router()
 
-incidentsRouter.get('/', requireAuth, async (req, res) => {
+incidentsRouter.get('/', requireAuth, validateQuery(querySchemas.incidentsList), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, severity, disasterType, search } = req.query
     const filter = {}
@@ -78,7 +78,7 @@ incidentsRouter.get('/', requireAuth, async (req, res) => {
   }
 })
 
-incidentsRouter.get('/:id', requireAuth, async (req, res) => {
+incidentsRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const incident = await Incident.findById(req.params.id)
       .populate('zones', 'name severity status centerLat centerLng radiusKm')
@@ -103,7 +103,7 @@ incidentsRouter.post('/', requireAuth, requireAdmin, validate('createIncident'),
   }
 })
 
-incidentsRouter.put('/:id', requireAuth, requireAdmin, validate('updateIncident'), async (req, res) => {
+incidentsRouter.put('/:id', requireAuth, requireAdmin, validateObjectId('id'), validate('updateIncident'), async (req, res) => {
   try {
     const incident = await Incident.findById(req.params.id)
     if (!incident) return res.status(404).json({ error: 'Incident not found' })
@@ -120,7 +120,7 @@ incidentsRouter.put('/:id', requireAuth, requireAdmin, validate('updateIncident'
   }
 })
 
-incidentsRouter.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
+incidentsRouter.delete('/:id', requireAuth, requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const incident = await Incident.findById(req.params.id)
     if (!incident) return res.status(404).json({ error: 'Incident not found' })

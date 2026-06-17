@@ -1,6 +1,6 @@
 import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { SosAlert } from '../models/SosAlert.js'
 
 export const sosRouter = express.Router()
@@ -43,7 +43,7 @@ sosRouter.post('/broadcast', requireAuth, validate('sosAlert'), async (req, res)
   }
 })
 
-sosRouter.get('/', requireAuth, async (req, res) => {
+sosRouter.get('/', requireAuth, validateQuery(querySchemas.sosList), async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1)
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20))
@@ -68,7 +68,7 @@ sosRouter.get('/', requireAuth, async (req, res) => {
   }
 })
 
-sosRouter.put('/:id/acknowledge', requireAuth, async (req, res) => {
+sosRouter.put('/:id/acknowledge', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     if (req.user.role !== 'admin') return res.status(403).json({ error: 'Forbidden' })
     const alert = await SosAlert.findByIdAndUpdate(
@@ -84,7 +84,7 @@ sosRouter.put('/:id/acknowledge', requireAuth, async (req, res) => {
   }
 })
 
-sosRouter.put('/:id/resolve', requireAuth, async (req, res) => {
+sosRouter.put('/:id/resolve', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     if (req.user.role !== 'admin') return res.status(403).json({ error: 'Forbidden' })
     const alert = await SosAlert.findByIdAndUpdate(
