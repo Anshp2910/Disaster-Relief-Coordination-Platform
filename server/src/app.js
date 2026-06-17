@@ -46,6 +46,7 @@ export function createApp() {
     'http://localhost:5001',
     'https://disasterhelper.dpdns.org',
     'https://disaster-relief-coordination-platform-l6mk.onrender.com',
+    'https://*.vercel.app',
   ]
 
   app.use(helmet({
@@ -54,7 +55,7 @@ export function createApp() {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-        connectSrc: ["'self'", "ws:", "wss:", ...allOrigins],
+        connectSrc: ["'self'", "ws:", "wss:", "https://*.vercel.app", ...allOrigins.filter((o) => !o.includes('*'))],
         scriptSrc: ["'self'", "'unsafe-inline'"],
       },
     },
@@ -62,10 +63,17 @@ export function createApp() {
 
   const allowedOrigins = allOrigins
 
+  function isOriginAllowed(origin) {
+    if (!origin) return true
+    if (allowedOrigins.includes(origin)) return true
+    if (allowedOrigins.some((o) => o.startsWith('*') && origin.endsWith(o.slice(1)))) return true
+    return false
+  }
+
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (isOriginAllowed(origin)) {
           callback(null, true)
         } else {
           callback(new Error('Not allowed by CORS'), false)
