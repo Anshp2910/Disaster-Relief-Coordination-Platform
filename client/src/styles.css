@@ -345,8 +345,7 @@ input::placeholder, textarea::placeholder { color: #999; }
 }
 
 .leaflet-container {
-  touch-action: manipulation;
-  max-width: 100%;
+  box-sizing: content-box;
 }
 
 /* Government specific */
@@ -1285,7 +1284,6 @@ button, a, input, select, textarea {
   width: 100%;
   max-width: 100%;
   touch-action: manipulation;
-  overflow: hidden;
 }
 
 /* Mobile map popup fixes */
