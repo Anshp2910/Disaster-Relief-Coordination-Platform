@@ -2,6 +2,8 @@ import express from 'express'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { User } from '../models/User.js'
 import { Request } from '../models/Request.js'
+import { Zone } from '../models/Zone.js'
+import { Incident } from '../models/Incident.js'
 
 export const adminRouter = express.Router()
 
@@ -134,5 +136,19 @@ adminRouter.get('/export/requests', async (req, res) => {
   } catch (err) {
     console.error('[admin] export error:', err.message)
     return res.status(500).json({ error: 'Server error' })
+  }
+})
+
+adminRouter.post('/seed-demo', async (req, res) => {
+  try {
+    const { seedDemo } = await import('../seed-demo.js')
+    await seedDemo()
+    const zoneCount = await Zone.countDocuments()
+    const incidentCount = await Incident.countDocuments()
+    const requestCount = await Request.countDocuments()
+    return res.json({ message: 'Demo data seeded', zones: zoneCount, incidents: incidentCount, requests: requestCount })
+  } catch (err) {
+    console.error('[admin] seed-demo error:', err.message)
+    return res.status(500).json({ error: 'Seed failed: ' + err.message })
   }
 })

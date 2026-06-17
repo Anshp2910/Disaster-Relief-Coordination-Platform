@@ -118,12 +118,6 @@ function generateLatLng(baseLat, baseLng) {
 }
 
 export async function seedDemo() {
-  const existingCount = await Request.countDocuments()
-  if (existingCount > 50) {
-    console.log(`[demo] ${existingCount} requests already exist, skipping demo seed`)
-    return
-  }
-
   const admin = await User.findOne({ role: 'admin' })
   if (!admin) {
     console.log('[demo] no admin user found, skipping')
@@ -146,25 +140,68 @@ export async function seedDemo() {
   }
   const allUsers = [...volunteers, ...ngoUsers]
 
-  console.log('[demo] creating zones...')
-  const zoneDocs = []
-  for (let i = 0; i < ZONE_NAMES.length; i++) {
-    const loc = LOCATIONS[i % LOCATIONS.length]
-    const existing = await Zone.findOne({ name: ZONE_NAMES[i] })
-    if (existing) { zoneDocs.push(existing); continue }
-    const zone = await Zone.create({
-      name: ZONE_NAMES[i],
-      description: `Disaster zone covering ${loc.name} and surrounding areas`,
-      centerLat: loc.lat, centerLng: loc.lng,
-      location: { type: 'Point', coordinates: [loc.lng, loc.lat] },
-      radiusKm: 15 + Math.floor(Math.random() * 20),
-      severity: pick(SEVERITIES),
-      status: pick(['Active', 'Monitoring']),
-      disasterType: pick(DISASTER_TYPES),
-      affectedPopulation: Math.floor(Math.random() * 50000) + 500,
-      createdBy: admin._id,
-    })
-    zoneDocs.push(zone)
+  const existingZones = await Zone.countDocuments()
+  if (existingZones < ZONE_NAMES.length) {
+    console.log('[demo] creating zones...')
+    const zoneDocs = []
+    for (let i = 0; i < ZONE_NAMES.length; i++) {
+      const loc = LOCATIONS[i % LOCATIONS.length]
+      const existing = await Zone.findOne({ name: ZONE_NAMES[i] })
+      if (existing) { zoneDocs.push(existing); continue }
+      const zone = await Zone.create({
+        name: ZONE_NAMES[i],
+        description: `Disaster zone covering ${loc.name} and surrounding areas`,
+        centerLat: loc.lat, centerLng: loc.lng,
+        location: { type: 'Point', coordinates: [loc.lng, loc.lat] },
+        radiusKm: 15 + Math.floor(Math.random() * 20),
+        severity: pick(SEVERITIES),
+        status: pick(['Active', 'Monitoring']),
+        disasterType: pick(DISASTER_TYPES),
+        affectedPopulation: Math.floor(Math.random() * 50000) + 500,
+        createdBy: admin._id,
+      })
+      zoneDocs.push(zone)
+    }
+  }
+
+  const existingIncidents = await Incident.countDocuments()
+  if (existingIncidents < INCIDENT_DATA.length) {
+    console.log('[demo] creating incidents...')
+    const zoneDocs = await Zone.find()
+    for (let i = 0; i < INCIDENT_DATA.length; i++) {
+      const inc = INCIDENT_DATA[i]
+      const existing = await Incident.findOne({ name: inc.name })
+      if (existing) continue
+      const matchedZones = zoneDocs.filter((z) => {
+        const dist = Math.sqrt(Math.pow(z.centerLat - inc.lat, 2) + Math.pow(z.centerLng - inc.lng, 2))
+        return dist < 5
+      })
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - Math.floor(Math.random() * 30))
+      await Incident.create({
+        name: inc.name,
+        description: `A ${inc.disasterType.toLowerCase()} has affected the region around (${inc.lat.toFixed(2)}, ${inc.lng.toFixed(2)}). ${inc.affectedPopulation.toLocaleString()} people affected. Relief operations underway.`,
+        disasterType: inc.disasterType,
+        severity: inc.severity,
+        status: inc.severity === 'Critical' ? 'Active' : pick(['Active', 'Monitoring']),
+        zones: matchedZones.slice(0, 2).map((z) => z._id),
+        startDate,
+        affectedPopulation: inc.affectedPopulation,
+        centerLat: inc.lat,
+        centerLng: inc.lng,
+        location: { type: 'Point', coordinates: [inc.lng, inc.lat] },
+        createdBy: admin._id,
+      })
+    }
+  }
+
+  const existingCount = await Request.countDocuments()
+  if (existingCount > 50) {
+    console.log(`[demo] ${existingCount} requests already exist, skipping request seed`)
+    const zoneCount = await Zone.countDocuments()
+    const incCount = await Incident.countDocuments()
+    console.log(`[demo] done: ${zoneCount} zones, ${incCount} incidents (requests skipped)`)
+    return
   }
 
   const count = 100
@@ -211,32 +248,8 @@ export async function seedDemo() {
     })
   }
 
-  console.log('[demo] creating incidents...')
-  for (let i = 0; i < INCIDENT_DATA.length; i++) {
-    const inc = INCIDENT_DATA[i]
-    const matchedZones = zoneDocs.filter((z) => {
-      const dist = Math.sqrt(Math.pow(z.centerLat - inc.lat, 2) + Math.pow(z.centerLng - inc.lng, 2))
-      return dist < 5
-    })
-    const startDate = new Date()
-    startDate.setDate(startDate.getDate() - Math.floor(Math.random() * 30))
-    await Incident.create({
-      name: inc.name,
-      description: `A ${inc.disasterType.toLowerCase()} has affected the region around (${inc.lat.toFixed(2)}, ${inc.lng.toFixed(2)}). ${inc.affectedPopulation.toLocaleString()} people affected. Relief operations underway.`,
-      disasterType: inc.disasterType,
-      severity: inc.severity,
-      status: inc.severity === 'Critical' ? 'Active' : pick(['Active', 'Monitoring']),
-      zones: matchedZones.slice(0, 2).map((z) => z._id),
-      startDate,
-      affectedPopulation: inc.affectedPopulation,
-      centerLat: inc.lat,
-      centerLng: inc.lng,
-      location: { type: 'Point', coordinates: [inc.lng, inc.lat] },
-      createdBy: admin._id,
-    })
-  }
-
   console.log('[demo] creating schedules...')
+  const zoneDocs = await Zone.find()
   for (let i = 0; i < 20; i++) {
     const user = pick(allUsers)
     const zone = pick(zoneDocs)
@@ -277,8 +290,7 @@ export async function seedDemo() {
     }
   }
 
-  const incCount = await Incident.countDocuments()
-  console.log(`[demo] done: ${count} requests, 30 resources, ${zoneDocs.length} zones, ${incCount} incidents, 20 schedules, 50 messages, feedback`)
+  console.log('[demo] done: ${count} requests, 30 resources, zones and incidents seeded')
 }
 
 async function main() {

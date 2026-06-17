@@ -73,6 +73,7 @@ export const clientApi = {
   adminDeleteUser: (id) => apiFetch(`/api/admin/users/${id}`, { method: 'DELETE' }),
   adminDeleteRequest: (id) => apiFetch(`/api/admin/requests/${id}`, { method: 'DELETE' }),
   adminExportRequests: (format = 'json') => apiFetch(`/api/admin/export/requests?format=${format}`),
+  adminSeedDemo: () => apiFetch('/api/admin/seed-demo', { method: 'POST', auth: true }),
 
   getResources: (params = {}) => {
     const qs = new URLSearchParams(params).toString()
