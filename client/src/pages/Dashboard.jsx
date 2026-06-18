@@ -9,6 +9,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useToast } from '../components/Toast'
 import L from 'leaflet'
+import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const STATUS_COLORS = {
   'Open': { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
@@ -108,23 +109,15 @@ export default function Dashboard() {
   useEffect(() => {
     if (viewMode !== 'map') return
     if (!mapRef.current || mapInstanceRef.current) return
-    const map = L.map(mapRef.current).setView([20.5937, 78.9629], 5)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map)
+    const map = initLeafletMap(mapRef.current)
     mapInstanceRef.current = map
-    requestAnimationFrame(() => {
-      map.invalidateSize()
-      setTimeout(() => map.invalidateSize(), 300)
-      setTimeout(() => map.invalidateSize(), 800)
-    })
     const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
     window.addEventListener('resize', onResize)
     if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
     return () => {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
-      map.remove(); mapInstanceRef.current = null
+      cleanupLeafletMap(map); mapInstanceRef.current = null
     }
   }, [viewMode])
 

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
+import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
@@ -104,16 +105,8 @@ export default function ZoneHeatMap() {
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current || loading) return
 
-    const map = L.map(mapRef.current).setView(DEFAULT_CENTER, 5)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map)
+    const map = initLeafletMap(mapRef.current)
     mapInstanceRef.current = map
-    requestAnimationFrame(() => {
-      map.invalidateSize()
-      setTimeout(() => map.invalidateSize(), 300)
-      setTimeout(() => map.invalidateSize(), 800)
-    })
 
     const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
     window.addEventListener('resize', onResize)
@@ -122,7 +115,7 @@ export default function ZoneHeatMap() {
     return () => {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
-      map.remove()
+      cleanupLeafletMap(map)
       mapInstanceRef.current = null
     }
   }, [loading])

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const PIN_ICON = L.divIcon({
   className: '',
@@ -61,12 +62,7 @@ export default function CreateRequest() {
   useEffect(() => {
     if (mapInstance.current || !mapRef.current) return
 
-    const map = L.map(mapRef.current).setView(INITIAL_CENTER, 5)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map)
-
-    map.on('click', (e) => placeMarker(e.latlng.lat, e.latlng.lng))
+    const map = initLeafletMap(mapRef.current, { onClick: (e) => placeMarker(e.latlng.lat, e.latlng.lng) })
     mapInstance.current = map
 
     const onResize = () => { if (mapInstance.current) mapInstance.current.invalidateSize() }
@@ -76,7 +72,7 @@ export default function CreateRequest() {
     return () => {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
-      map.remove()
+      cleanupLeafletMap(map)
       mapInstance.current = null
     }
   }, [placeMarker])

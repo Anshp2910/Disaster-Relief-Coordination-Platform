@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
+import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
@@ -53,16 +54,8 @@ export default function MapOverview() {
 
     const init = () => {
       if (cancelled || !mapRef.current || mapInstanceRef.current) return
-      map = L.map(mapRef.current).setView(DEFAULT_CENTER, 5)
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(map)
+      map = initLeafletMap(mapRef.current)
       mapInstanceRef.current = map
-      requestAnimationFrame(() => {
-        map.invalidateSize()
-        setTimeout(() => map.invalidateSize(), 300)
-        setTimeout(() => map.invalidateSize(), 800)
-      })
     }
 
     requestAnimationFrame(init)
@@ -76,7 +69,7 @@ export default function MapOverview() {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
       if (map) {
-        map.remove()
+        cleanupLeafletMap(map)
         mapInstanceRef.current = null
       }
     }

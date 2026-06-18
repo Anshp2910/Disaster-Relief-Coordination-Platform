@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
+import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
@@ -104,25 +105,15 @@ export default function Incidents() {
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
-    const map = L.map(mapRef.current).setView(DEFAULT_CENTER, 5)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(map)
+    const map = initLeafletMap(mapRef.current)
     mapInstanceRef.current = map
-    requestAnimationFrame(() => {
-      map.invalidateSize()
-      setTimeout(() => map.invalidateSize(), 300)
-      setTimeout(() => map.invalidateSize(), 800)
-    })
-
     const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
     window.addEventListener('resize', onResize)
     if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
-
     return () => {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
-      map.remove()
+      cleanupLeafletMap(map)
       mapInstanceRef.current = null
     }
   }, [])
