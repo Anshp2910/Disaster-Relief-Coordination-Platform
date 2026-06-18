@@ -67,6 +67,8 @@ export function createApp() {
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
         connectSrc: ["'self'", "ws:", "wss:", "https://*.vercel.app", ...allOrigins.filter((o) => !o.includes('*'))],
         scriptSrc: ["'self'", "'unsafe-inline'"],
+        formAction: ["'self'"],
+        frameSrc: ["'self'"],
       },
     },
   }))
