@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../components/Toast'
 import { clientApi } from '../api/client'
 
 const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other']
@@ -9,18 +10,20 @@ const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelt
 export default function Profile() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { currentUser, updateUser } = useAuth()
+  const { user, updateUser } = useAuth()
+  const toast = useToast()
 
-  const [displayName, setDisplayName] = useState(currentUser?.displayName || '')
-  const [phone, setPhone] = useState(currentUser?.phone || '')
-  const [skills, setSkills] = useState(currentUser?.skills || [])
-  const [notifications, setNotifications] = useState(currentUser?.notifications || { email: true, sms: false, newRequest: true, statusChange: true, newComment: true })
+  const [displayName, setDisplayName] = useState(user?.displayName || '')
+  const [phone, setPhone] = useState(user?.phone || '')
+  const [skills, setSkills] = useState(user?.skills || [])
+  const [notifications, setNotifications] = useState(() => {
+    const n = user?.notifications || {}
+    return { email: true, sms: false, newRequest: true, statusChange: true, newComment: true, ...n }
+  })
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
 
   function toggleSkill(skill) {
     setSkills((prev) => prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill])
@@ -28,8 +31,6 @@ export default function Profile() {
 
   async function handleUpdateProfile(e) {
     e.preventDefault()
-    setError('')
-    setSuccess('')
     setLoading(true)
     try {
       const payload = { displayName, notifications }
@@ -37,9 +38,9 @@ export default function Profile() {
       if (skills.length > 0) payload.skills = skills
       const data = await clientApi.updateProfile(payload)
       updateUser(data.user)
-      setSuccess(t('profile.profileUpdated'))
+      toast.success(t('profile.profileUpdated'))
     } catch (err) {
-      setError(err.message)
+      toast.error(err.message)
     } finally {
       setLoading(false)
     }
@@ -47,25 +48,23 @@ export default function Profile() {
 
   async function handleChangePassword(e) {
     e.preventDefault()
-    setError('')
-    setSuccess('')
     if (newPassword !== confirmPassword) {
-      setError(t('profile.passwordsDoNotMatch'))
+      toast.error(t('profile.passwordsDoNotMatch'))
       return
     }
     if (newPassword.length < 6) {
-      setError(t('profile.passwordTooShort'))
+      toast.error(t('profile.passwordTooShort'))
       return
     }
     setLoading(true)
     try {
       await clientApi.updateProfile({ currentPassword, newPassword })
-      setSuccess(t('profile.passwordChanged'))
+      toast.success(t('profile.passwordChanged'))
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
     } catch (err) {
-      setError(err.message)
+      toast.error(err.message)
     } finally {
       setLoading(false)
     }
@@ -80,17 +79,14 @@ export default function Profile() {
         </div>
       </div>
 
-      {error && <div className="card"><div className="errorText">{error}</div></div>}
-      {success && <div className="card"><div style={{ color: '#138808', fontSize: 13 }}>{success}</div></div>}
-
       {/* Profile Info */}
       <div className="card" style={{ marginBottom: 16 }}>
         <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('profile.accountInfo')}</h3>
         <div style={{ fontSize: 13, marginBottom: 8 }}>
-          <span className="muted">{t('profile.email')}:</span> <strong>{currentUser?.email}</strong>
+          <span className="muted">{t('profile.email')}:</span> <strong>{user?.email}</strong>
         </div>
         <div style={{ fontSize: 13, marginBottom: 16 }}>
-          <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${currentUser?.role}`) || currentUser?.role}</strong>
+          <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${user?.role}`) || user?.role}</strong>
         </div>
 
         <form onSubmit={handleUpdateProfile}>
@@ -107,13 +103,7 @@ export default function Profile() {
                 key={s}
                 type="button"
                 onClick={() => toggleSkill(s)}
-                style={{
-                  fontSize: 11, padding: '4px 10px', borderRadius: 4,
-                  border: '1px solid', cursor: 'pointer',
-                  ...(skills.includes(s)
-                    ? { background: 'var(--gov-blue)', color: 'white', borderColor: 'var(--gov-blue)' }
-                    : { background: 'white', color: '#666', borderColor: '#ddd' }),
-                }}
+                className={`filter-pill ${skills.includes(s) ? 'active' : ''}`}
               >
                 {s}
               </button>
@@ -124,28 +114,28 @@ export default function Profile() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16, fontSize: 13 }}>
             <div style={{ display: 'flex', gap: 16 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-                <input type="checkbox" checked={notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
+                <input type="checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
               </label>
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-                <input type="checkbox" checked={notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
+                <input type="checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
               </label>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--gov-muted, #666)' }}>Event subscriptions:</div>
+            <div style={{ fontSize: 12, color: 'var(--gov-muted)' }}>{t('profile.eventSubscriptions')}</div>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-                <input type="checkbox" checked={notifications.newRequest !== false} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest') || 'New requests'}
+                <input type="checkbox" checked={notifications.newRequest !== false} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
               </label>
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-                <input type="checkbox" checked={notifications.statusChange !== false} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange') || 'Status changes'}
+                <input type="checkbox" checked={notifications.statusChange !== false} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
               </label>
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-                <input type="checkbox" checked={notifications.newComment !== false} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment') || 'New comments'}
+                <input type="checkbox" checked={notifications.newComment !== false} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
               </label>
             </div>
           </div>
 
           <button type="submit" className="btnPrimary" disabled={loading} style={{ fontSize: 13 }}>
-            {loading ? '...' : t('profile.updateName')}
+            {loading ? '...' : t('profile.updateProfile')}
           </button>
         </form>
       </div>
