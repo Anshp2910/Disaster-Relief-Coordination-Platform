@@ -203,12 +203,6 @@ const schemas = {
     role: Joi.string().valid('volunteer', 'ngo', 'admin').required(),
   }),
 
-  geofencingCheck: Joi.object({
-    lat: Joi.number().min(-90).max(90).required(),
-    lng: Joi.number().min(-180).max(180).required(),
-    radiusKm: Joi.number().min(0.1).max(500).default(10),
-  }),
-
   bulkImportRows: Joi.object({
     rows: Joi.array().min(1).max(1000).items(Joi.object()).required(),
   }),
@@ -274,6 +268,12 @@ const querySchemas = {
 
   adminExport: Joi.object({
     format: Joi.string().valid('json', 'csv').default('json'),
+  }),
+
+  geofencingCheck: Joi.object({
+    lat: Joi.number().min(-90).max(90).required(),
+    lng: Joi.number().min(-180).max(180).required(),
+    radiusKm: Joi.number().min(0.1).max(500).default(10),
   }),
 }
 
