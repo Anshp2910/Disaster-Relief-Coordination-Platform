@@ -342,32 +342,44 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, validateObjectId(
   }
 })
 
-requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), (req, res, next) => {
-  upload.array('files', 5)(req, res, (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message })
-    }
-    next()
-  })
-}, async (req, res) => {
+requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
 
-    if (!req.files || req.files.length === 0) {
+    const { files } = req.body || {}
+    if (!files || !Array.isArray(files) || files.length === 0) {
       return res.status(400).json({ error: 'No files uploaded' })
     }
 
-    const newFiles = req.files.map((f) => ({
-      url: `/uploads/${f.filename}`,
-      filename: f.filename,
-      mimetype: f.mimetype,
-      uploadedBy: req.user._id,
-    }))
+    const uploadsDir = path.join(__dirname, '../../uploads')
+    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true })
+
+    const newFiles = []
+    for (const f of files.slice(0, 5)) {
+      if (!f.data || !f.filename || !f.mimetype) continue
+      const buf = Buffer.from(f.data, 'base64')
+      if (buf.length > 10 * 1024 * 1024) continue
+      const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+      if (!allowedMimes.includes(f.mimetype)) continue
+      const ext = path.extname(f.filename).toLowerCase() || '.' + (f.mimetype.split('/')[1] || 'bin')
+      const unique = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext
+      fs.writeFileSync(path.join(uploadsDir, unique), buf)
+      newFiles.push({
+        url: `/uploads/${unique}`,
+        filename: f.filename,
+        mimetype: f.mimetype,
+        uploadedBy: req.user._id,
+      })
+    }
+
+    if (newFiles.length === 0) {
+      return res.status(400).json({ error: 'No valid files to upload' })
+    }
 
     item.files.push(...newFiles)
-    item.auditLog.push({ action: 'filesUploaded', by: req.user._id, details: `${req.files.length} file(s)` })
+    item.auditLog.push({ action: 'filesUploaded', by: req.user._id, details: `${newFiles.length} file(s)` })
     await item.save()
 
     const io = req.app.get('io')

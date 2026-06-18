@@ -63,10 +63,15 @@ export const clientApi = {
   unclaimRequest: (id) => apiFetch(`/api/requests/${id}/unclaim`, { method: 'POST' }),
   addComment: (id, text) => apiFetch(`/api/requests/${id}/comments`, { method: 'POST', body: { text } }),
   deleteComment: (id, commentId) => apiFetch(`/api/requests/${id}/comments/${commentId}`, { method: 'DELETE' }),
-  uploadFiles: (id, files) => {
-    const fd = new FormData()
-    files.forEach((f) => fd.append('files', f))
-    return apiFetch(`/api/requests/${id}/files`, { method: 'POST', body: fd, formData: true })
+  uploadFiles: async (id, files) => {
+    const toBase64 = (file) => new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve({ data: reader.result.split(',')[1], filename: file.name, mimetype: file.type, size: file.size })
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+    const encoded = await Promise.all(files.map(toBase64))
+    return apiFetch(`/api/requests/${id}/files`, { method: 'POST', body: { files: encoded } })
   },
 
   adminStats: () => apiFetch('/api/admin/stats'),
