@@ -6,6 +6,7 @@ import i18n from './i18n'
 import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './components/Toast'
+import { AuthProvider } from './context/AuthContext'
 import 'leaflet/dist/leaflet.css'
 import './styles.css'
 
@@ -14,9 +15,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <I18nextProvider i18n={i18n}>
         <HashRouter>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <App />
+            </ToastProvider>
+          </AuthProvider>
         </HashRouter>
       </I18nextProvider>
     </ErrorBoundary>

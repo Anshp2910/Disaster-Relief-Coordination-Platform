@@ -1314,3 +1314,26 @@ button, a, input, select, textarea {
     padding: 0 4px;
   }
 }
+
+/* Dark Mode */
+.dark {
+  --gov-bg: #1a1a2e;
+  --gov-text: #e0e0e0;
+  --gov-muted: #a0a0a0;
+  --gov-border: #333355;
+  --gov-card-bg: #16213e;
+  --gov-white: #16213e;
+}
+.dark body { background: var(--gov-bg); color: var(--gov-text); }
+.dark .card, .dark .listCard { background: var(--gov-card-bg); color: var(--gov-text); border-color: var(--gov-border); }
+.dark input, .dark select, .dark textarea { background: #1a1a2e; color: var(--gov-text); border-color: var(--gov-border); }
+.dark .filter-pill { background: rgba(255,255,255,.05); color: var(--gov-muted); border-color: var(--gov-border); }
+.dark .filter-pill.active { background: rgba(0,0,128,.3); color: #fff; border-color: var(--gov-blue); }
+.dark .govt-badge { border-color: var(--gov-border); }
+.dark .admin-table th { background: rgba(255,255,255,.03); color: var(--gov-muted); }
+.dark .admin-table td { border-color: var(--gov-border); }
+.dark .errorText { color: #ff6b6b; }
+.dark .muted, .dark .small { color: var(--gov-muted); }
+.dark .govt-auth-card .card { background: var(--gov-card-bg); }
+.dark hr { border-color: var(--gov-border); }
+.dark button { color: var(--gov-text); }

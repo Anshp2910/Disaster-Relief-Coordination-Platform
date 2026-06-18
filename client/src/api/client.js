@@ -69,6 +69,10 @@ export const clientApi = {
 
   adminStats: () => apiFetch('/api/admin/stats'),
   adminUsers: () => apiFetch('/api/admin/users'),
+  adminRequests: (params = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return apiFetch(`/api/admin/requests${qs ? '?' + qs : ''}`)
+  },
   adminUpdateUserRole: (id, role) => apiFetch(`/api/admin/users/${id}/role`, { method: 'PUT', body: { role } }),
   adminDeleteUser: (id) => apiFetch(`/api/admin/users/${id}`, { method: 'DELETE' }),
   adminDeleteRequest: (id) => apiFetch(`/api/admin/requests/${id}`, { method: 'DELETE' }),
@@ -125,8 +129,38 @@ export const clientApi = {
   updateIncident: (id, payload) => apiFetch(`/api/incidents/${id}`, { method: 'PUT', body: payload }),
   deleteIncident: (id) => apiFetch(`/api/incidents/${id}`, { method: 'DELETE' }),
 
-  exportRequestsCSV: () => `${API_BASE}/api/bulk/requests/export?token=${getToken()}`,
-  exportResourcesCSV: () => `${API_BASE}/api/bulk/resources/export?token=${getToken()}`,
+  exportRequestsCSV: () => {
+    const token = getToken()
+    return fetch(`${API_BASE}/api/bulk/requests/export`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then((res) => {
+      if (!res.ok) throw new Error('Export failed')
+      return res.blob()
+    }).then((blob) => {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'requests-export.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    })
+  },
+  exportResourcesCSV: () => {
+    const token = getToken()
+    return fetch(`${API_BASE}/api/bulk/resources/export`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then((res) => {
+      if (!res.ok) throw new Error('Export failed')
+      return res.blob()
+    }).then((blob) => {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'resources-export.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    })
+  },
   importRequests: (rows) => apiFetch('/api/bulk/requests/import', { method: 'POST', body: { rows }, timeout: 120000 }),
   importResources: (rows) => apiFetch('/api/bulk/resources/import', { method: 'POST', body: { rows }, timeout: 120000 }),
 

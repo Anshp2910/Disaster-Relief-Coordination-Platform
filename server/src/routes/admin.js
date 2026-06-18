@@ -137,6 +137,37 @@ adminRouter.get('/export/requests', validateQuery(querySchemas.adminExport), asy
   }
 })
 
+adminRouter.get('/requests', async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, search } = req.query
+    const filter = {}
+    if (status && status !== 'All') filter.status = status
+    if (search) {
+      const safeSearch = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      filter.$or = [
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { locationName: { $regex: safeSearch, $options: 'i' } },
+      ]
+    }
+    const skip = (Math.max(1, Number(page)) - 1) * Math.min(100, Math.max(1, Number(limit) || 20))
+    const lim = Math.min(100, Math.max(1, Number(limit) || 20))
+    const [items, total] = await Promise.all([
+      Request.find(filter)
+        .populate('createdBy', 'displayName email')
+        .populate('claimedBy', 'displayName email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(lim)
+        .lean(),
+      Request.countDocuments(filter),
+    ])
+    return res.json({ items, total, pages: Math.ceil(total / lim) })
+  } catch (err) {
+    console.error('[admin] requests list error:', err.message)
+    return res.status(500).json({ error: 'Server error' })
+  }
+})
+
 adminRouter.post('/seed-demo', async (req, res) => {
   try {
     const { seedDemo } = await import('../seed-demo.js')

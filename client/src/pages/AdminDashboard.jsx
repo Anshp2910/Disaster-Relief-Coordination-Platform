@@ -368,7 +368,7 @@ export default function AdminDashboard() {
       const [s, u, r] = await Promise.all([
         clientApi.adminStats(),
         clientApi.adminUsers(),
-        clientApi.getRequests({ limit: 500 }),
+        clientApi.adminRequests({ limit: 100 }),
       ])
       setStats(s)
       setUsers(u.users || [])
@@ -423,32 +423,27 @@ export default function AdminDashboard() {
   }
 
   function handleExport(format) {
-    const token = localStorage.getItem('token')
-    const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 30000)
-
-    fetch(`${API_BASE}/api/admin/export/requests?format=${format}`, {
-      headers: { Authorization: `Bearer ${token}` },
-      signal: controller.signal,
-    })
-      .then((res) => {
-        clearTimeout(timer)
-        if (!res.ok) throw new Error('Export failed')
-        return res.blob()
+    clientApi.adminExportRequests(format)
+      .then((data) => {
+        if (format === 'csv') {
+          const blob = new Blob([data], { type: 'text/csv' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'requests-export.csv'
+          a.click()
+          URL.revokeObjectURL(url)
+        } else {
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'requests-export.json'
+          a.click()
+          URL.revokeObjectURL(url)
+        }
       })
-      .then((blob) => {
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = format === 'csv' ? 'requests-export.csv' : 'requests-export.json'
-        a.click()
-        URL.revokeObjectURL(url)
-      })
-      .catch((err) => {
-        clearTimeout(timer)
-        if (err.name !== 'AbortError') console.error('[export] error:', err.message)
-      })
+      .catch(() => {})
   }
 
   const tabs = [

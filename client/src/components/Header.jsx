@@ -5,6 +5,7 @@ import NotificationBell from './NotificationBell'
 import { clientApi } from '../api/client'
 import { useSocket } from '../hooks/useSocket'
 import { useToast } from './Toast'
+import { useAuth } from '../context/AuthContext'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -25,23 +26,14 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { socket, connected } = useSocket()
   const toast = useToast()
-
-  const token = localStorage.getItem('token')
-  const [currentUser, setCurrentUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })
-
-  useEffect(() => {
-    try { setCurrentUser(JSON.parse(localStorage.getItem('user') || 'null')) } catch { setCurrentUser(null) }
-  }, [location.pathname])
+  const { user: currentUser, isAuthenticated, logout: authLogout } = useAuth()
 
   function logout() {
     if (socket?.connected) {
       socket.disconnect()
     }
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
     localStorage.removeItem('notifications')
+    authLogout()
     navigate('/login')
     setMobileMenuOpen(false)
   }
@@ -58,7 +50,7 @@ export default function Header() {
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
-  const navLinks = useMemo(() => token
+  const navLinks = useMemo(() => isAuthenticated
     ? [
         { path: '/dashboard', label: t('nav.dashboard') },
         { path: '/map', label: t('nav.mapView') || 'Map View' },
@@ -75,9 +67,21 @@ export default function Header() {
         ] : []),
       ]
     : []
-  , [token, currentUser, t])
+  , [isAuthenticated, currentUser, t])
 
   const [sosLoading, setSosLoading] = useState(false)
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode') === 'true'
+    if (saved) document.documentElement.classList.add('dark')
+    return saved
+  })
+
+  function toggleDarkMode() {
+    const next = !darkMode
+    setDarkMode(next)
+    localStorage.setItem('darkMode', String(next))
+    document.documentElement.classList.toggle('dark', next)
+  }
 
   async function handleSOS() {
     if (!confirm(t('sos.confirm'))) return
@@ -136,9 +140,12 @@ export default function Header() {
               ))}
             </div>
           </nav>
-          {token && (
+          {isAuthenticated && (
             <div className="gov-nav-actions">
               <div title={connected ? 'Connected' : 'Disconnected'} style={{ width: 8, height: 8, borderRadius: '50%', background: connected ? '#138808' : '#cc0000', flexShrink: 0 }} />
+              <button onClick={toggleDarkMode} title={darkMode ? 'Light mode' : 'Dark mode'} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }}>
+                {darkMode ? '\u2600' : '\u263E'}
+              </button>
               <NotificationBell />
               <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">
                 {sosLoading ? '...' : 'SOS'}
@@ -151,7 +158,7 @@ export default function Header() {
               </button>
             </div>
           )}
-          {token && (
+          {isAuthenticated && (
             <button
               className="gov-hamburger"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -163,7 +170,7 @@ export default function Header() {
         </div>
       )}
 
-      {mobileMenuOpen && token && (
+      {mobileMenuOpen && isAuthenticated && (
         <div className="gov-mobile-menu">
           {navLinks.map((link) => (
             <button

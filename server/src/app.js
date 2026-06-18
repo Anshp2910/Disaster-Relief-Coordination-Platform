@@ -21,6 +21,7 @@ import { escalationRouter } from './routes/escalation.js'
 import { geofencingRouter } from './routes/geofencing.js'
 import { sosRouter } from './routes/sos.js'
 import { getEnv } from './config/env.js'
+import { sanitizeBody } from './middleware/sanitize.js'
 
 dotenv.config()
 
@@ -91,6 +92,7 @@ export function createApp() {
     }),
   )
   app.use(express.json({ limit: '10mb' }))
+  app.use(sanitizeBody)
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
   app.get('/health', (req, res) => res.json({ ok: true }))

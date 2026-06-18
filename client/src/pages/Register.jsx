@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { useAuth } from '../context/AuthContext'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -12,6 +13,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { login } = useAuth()
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -19,8 +21,7 @@ export default function Register() {
     setLoading(true)
     try {
       const { token, user } = await clientApi.register({ email, password, role, displayName })
-      localStorage.setItem('token', token)
-      localStorage.setItem('user', JSON.stringify(user))
+      login(token, user)
       navigate('/dashboard')
     } catch (err) {
       setError(err.message || 'Register failed')

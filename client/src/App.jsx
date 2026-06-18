@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
+import { useAuth } from './context/AuthContext'
 
 const Login = lazy(() => import('./pages/Login'))
 const Register = lazy(() => import('./pages/Register'))
@@ -30,20 +31,15 @@ function PageLoader() {
 }
 
 function RequireAuth({ children }) {
-  const token = localStorage.getItem('token')
-  if (!token) return <Navigate to="/login" replace />
+  const { isAuthenticated } = useAuth()
+  if (!isAuthenticated) return <Navigate to="/login" replace />
   return children
 }
 
 function RequireAdmin({ children }) {
-  const token = localStorage.getItem('token')
-  if (!token) return <Navigate to="/login" replace />
-  try {
-    const user = JSON.parse(localStorage.getItem('user') || 'null')
-    if (!user || user.role !== 'admin') return <Navigate to="/dashboard" replace />
-  } catch {
-    return <Navigate to="/dashboard" replace />
-  }
+  const { isAuthenticated, isAdmin } = useAuth()
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (!isAdmin) return <Navigate to="/dashboard" replace />
   return children
 }
 
