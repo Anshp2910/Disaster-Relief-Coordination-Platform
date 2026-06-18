@@ -2,6 +2,8 @@ import { useEffect, useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 
 const STATUS_COLORS = {
   Open: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
@@ -392,6 +394,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     loadData()
   }, [])
+
+  useAutoRefresh(loadData, { interval: 20000 })
+
+  useEffect(() => {
+    return registerRefreshListener(['request:created', 'request:updated', 'request:deleted', 'resource:created', 'resource:allocated'], loadData)
+  }, [loadData])
 
   function showToast(message, type = 'success') {
     setToast({ message, type })

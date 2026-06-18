@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { clientApi } from '../api/client'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
 
 const DISASTER_ICONS = {
   Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
@@ -95,6 +96,8 @@ export default function Incidents() {
   }
 
   useEffect(() => { load() }, [page, filterSeverity, filterDisaster, filterStatus])
+
+  useAutoRefresh(load, { interval: 20000 })
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return

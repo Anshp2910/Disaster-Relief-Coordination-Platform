@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 import L from 'leaflet'
 
 const STATUS_COLORS = {
@@ -87,6 +89,12 @@ export default function Dashboard() {
 
   useEffect(() => { load() }, [page, filterStatus, searchTrigger])
   useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, searchTrigger])
+
+  useAutoRefresh(load, { interval: 20000 })
+
+  useEffect(() => {
+    return registerRefreshListener(['request:created', 'request:updated', 'request:deleted', 'request:commented', 'resource:allocated'], load)
+  }, [load])
 
   useEffect(() => {
     clientApi.getResources({ limit: 100 }).then((data) => {

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(255,153,51,.12)', text: '#cc7a00', border: 'rgba(255,153,51,.35)' },
@@ -95,6 +96,8 @@ export default function Schedules() {
 
   useEffect(() => { load() }, [page, filterStatus])
   useEffect(() => { loadDropdowns() }, [])
+
+  useAutoRefresh(load, { interval: 20000 })
 
   function openCreate() {
     setEditItem(null)

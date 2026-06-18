@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback, useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 
 const CATEGORY_ICONS = {
   Food: '', Water: '', Medical: '', Shelter: '', Supplies: '', Healthcare: '', Sanitation: '', Clothing: '', Transportation: '', Communication: '', Power: '', Infrastructure: '', Other: '',
@@ -89,6 +91,12 @@ export default function Resources() {
   }, [page, filterCategory, filterStatus, search, searchTrigger])
 
   useEffect(() => { load() }, [load])
+
+  useAutoRefresh(load, { interval: 20000 })
+
+  useEffect(() => {
+    return registerRefreshListener(['resource:created', 'resource:allocated', 'request:created', 'request:updated'], load)
+  }, [load])
 
   function handleSearch(e) {
     e.preventDefault()

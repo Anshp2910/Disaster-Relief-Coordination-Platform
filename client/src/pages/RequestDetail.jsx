@@ -2,6 +2,8 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 import Chat from './Chat'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
@@ -106,6 +108,12 @@ export default function RequestDetail() {
   useEffect(() => { load(); loadResources() }, [load, loadResources])
   useEffect(() => { loadFeedback() }, [loadFeedback])
   useEffect(() => { if (item?.status === 'Open') loadMatches() }, [item?.status, loadMatches])
+
+  useAutoRefresh(load, { interval: 20000 })
+
+  useEffect(() => {
+    return registerRefreshListener(['request:updated', 'request:commented'], load)
+  }, [load])
 
   async function handleFeedbackSubmit(e) {
     e.preventDefault()

@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef, useMemo, memo } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
 
 const STATUS_COLORS = {
   Open: '#000080',
@@ -28,18 +29,20 @@ export default function MapOverview() {
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
 
-  useEffect(() => {
-    clientApi
-      .getRequests({ limit: 1000 })
-      .then((data) => {
-        setItems(data.items || [])
-        setLoading(false)
-      })
-      .catch((e) => {
-        setError(e.message || 'Failed to load request data')
-        setLoading(false)
-      })
+  const load = useCallback(async () => {
+    try {
+      const data = await clientApi.getRequests({ limit: 1000 })
+      setItems(data.items || [])
+      setLoading(false)
+    } catch (e) {
+      setError(e.message || 'Failed to load request data')
+      setLoading(false)
+    }
   }, [])
+
+  useEffect(() => { load() }, [load])
+
+  useAutoRefresh(load, { interval: 20000 })
 
   useEffect(() => {
     if (loading || !mapRef.current || mapInstanceRef.current) return

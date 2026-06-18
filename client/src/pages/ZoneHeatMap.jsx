@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
 
 const SEVERITY_COLORS = {
   Critical: { fill: '#cc0000', stroke: '#990000', weight: 0.6 },
@@ -94,6 +95,8 @@ export default function ZoneHeatMap() {
   }
 
   useEffect(() => { load() }, [])
+
+  useAutoRefresh(load, { interval: 20000 })
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current || loading) return

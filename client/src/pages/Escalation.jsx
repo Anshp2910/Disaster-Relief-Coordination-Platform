@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 
 export default function Escalation() {
   const { t } = useTranslation()
@@ -30,6 +32,12 @@ export default function Escalation() {
       setAllRequests(data.items || [])
     }).catch(() => {})
   }, [])
+
+  useAutoRefresh(load, { interval: 20000 })
+
+  useEffect(() => {
+    return registerRefreshListener(['request:escalated', 'request:updated'], load)
+  }, [load])
 
   async function handleEscalate(e) {
     e.preventDefault()
