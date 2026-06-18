@@ -4,6 +4,7 @@ import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 
@@ -102,6 +103,10 @@ export default function Incidents() {
   useEffect(() => { load() }, [page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
 
   useAutoRefresh(load, { interval: 20000 })
+
+  useEffect(() => {
+    return registerRefreshListener(['request:created', 'request:updated', 'request:deleted'], load)
+  }, [load])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return

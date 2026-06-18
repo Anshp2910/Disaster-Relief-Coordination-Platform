@@ -241,18 +241,30 @@ resourcesRouter.get('/match/:requestId', requireAuth, validateObjectId('requestI
 
     let resources
     if (lat != null && lng != null) {
-      resources = await Resource.find({
-        category: { $in: matchedCategories },
-        status: { $in: ['Available', 'Low'] },
-        quantity: { $gt: 0 },
-        allocatedTo: null,
-        location: {
-          $near: {
-            $geometry: { type: 'Point', coordinates: [lng, lat] },
-            $maxDistance: MAX_DISTANCE_KM * 1000,
+      try {
+        resources = await Resource.find({
+          category: { $in: matchedCategories },
+          status: { $in: ['Available', 'Low'] },
+          quantity: { $gt: 0 },
+          allocatedTo: null,
+          'location.coordinates': { $exists: true, $ne: [] },
+          location: {
+            $near: {
+              $geometry: { type: 'Point', coordinates: [lng, lat] },
+              $maxDistance: MAX_DISTANCE_KM * 1000,
+            },
           },
-        },
-      }).lean()
+        }).lean()
+      } catch (geoErr) {
+        console.error('[resources] match geo fallback:', geoErr.message)
+        resources = await Resource.find({
+          category: { $in: matchedCategories },
+          status: { $in: ['Available', 'Low'] },
+          quantity: { $gt: 0 },
+          allocatedTo: null,
+        }).lean()
+        resources = resources.filter((r) => r.lat != null && r.lng != null && haversineKm(lat, lng, r.lat, r.lng) <= MAX_DISTANCE_KM)
+      }
     } else {
       resources = await Resource.find({
         category: { $in: matchedCategories },

@@ -79,6 +79,7 @@ export default function ZoneHeatMap() {
   const [editZone, setEditZone] = useState(null)
   const [form, setForm] = useState(DEFAULT_FORM)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)

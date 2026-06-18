@@ -1,9 +1,10 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
+import { useToast } from '../components/Toast'
 
 const STATUS_COLORS = {
   Open: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
@@ -28,18 +29,6 @@ function Badge({ label, colors, colorKey }) {
       {label}
     </span>
   )
-}
-
-function Toast({ message, type, onClose }) {
-  const onCloseRef = useRef(onClose)
-  onCloseRef.current = onClose
-
-  useEffect(() => {
-    const t = setTimeout(() => onCloseRef.current(), 3000)
-    return () => clearTimeout(t)
-  }, [])
-
-  return <div className={`admin-toast admin-toast-${type}`}>{message}</div>
 }
 
 function MiniBarChart({ data, maxVal }) {
@@ -368,9 +357,9 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('stats')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
-  const [toast, setToast] = useState(null)
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const toast = useToast()
 
   async function loadData() {
     setLoading(true)
@@ -401,17 +390,13 @@ export default function AdminDashboard() {
     return registerRefreshListener(['request:created', 'request:updated', 'request:deleted', 'resource:created', 'resource:allocated'], loadData)
   }, [loadData])
 
-  function showToast(message, type = 'success') {
-    setToast({ message, type })
-  }
-
   async function changeRole(userId, newRole) {
     try {
       await clientApi.adminUpdateUserRole(userId, newRole)
       setUsers((prev) => prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u)))
-      showToast(t('admin.roleUpdated'))
+      toast.success(t('admin.roleUpdated'))
     } catch (e) {
-      showToast(e.message || 'Failed to update role', 'error')
+      toast.error(e.message || 'Failed to update role')
     }
   }
 
@@ -420,9 +405,9 @@ export default function AdminDashboard() {
     try {
       await clientApi.adminDeleteUser(userId)
       setUsers((prev) => prev.filter((u) => u._id !== userId))
-      showToast(t('admin.userDeleted'))
+      toast.success(t('admin.userDeleted'))
     } catch (e) {
-      showToast(e.message || 'Failed to delete user', 'error')
+      toast.error(e.message || 'Failed to delete user')
     }
   }
 
@@ -431,9 +416,9 @@ export default function AdminDashboard() {
     try {
       await clientApi.adminDeleteRequest(requestId)
       setRequests((prev) => prev.filter((r) => r._id !== requestId))
-      showToast(t('admin.requestDeleted'))
+      toast.success(t('admin.requestDeleted'))
     } catch (e) {
-      showToast(e.message || 'Failed to delete request', 'error')
+      toast.error(e.message || 'Failed to delete request')
     }
   }
 
@@ -474,8 +459,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="container">
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-
       <div className="card" style={{ marginBottom: 20 }}>
         <div className="headerRow">
           <div>

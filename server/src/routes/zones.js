@@ -43,24 +43,37 @@ zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (
 
     const zonesWithStats = await Promise.all(activeZones.map(async (zone) => {
       const radiusMeters = (zone.radiusKm || 10) * 1000
-      const center = zone.location?.coordinates ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
+      const center = zone.location?.coordinates?.length === 2 ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
 
-      const [requestsInRange, resourcesInRange] = await Promise.all([
-        Request.find({
-          location: {
-            $geoWithin: {
-              $centerSphere: [center, radiusMeters / 6371000],
+      let requestsInRange = []
+      let resourcesInRange = []
+
+      try {
+        ;[requestsInRange, resourcesInRange] = await Promise.all([
+          Request.find({
+            'location.coordinates': { $exists: true, $ne: [] },
+            location: {
+              $geoWithin: {
+                $centerSphere: [center, radiusMeters / 6371000],
+              },
             },
-          },
-        }).select('lat lng status category priority').lean(),
-        Resource.find({
-          location: {
-            $geoWithin: {
-              $centerSphere: [center, radiusMeters / 6371000],
+          }).select('lat lng status category priority').lean(),
+          Resource.find({
+            'location.coordinates': { $exists: true, $ne: [] },
+            location: {
+              $geoWithin: {
+                $centerSphere: [center, radiusMeters / 6371000],
+              },
             },
-          },
-        }).select('lat lng category quantity status').lean(),
-      ])
+          }).select('lat lng category quantity status').lean(),
+        ])
+      } catch (geoErr) {
+        console.error('[zones] geo query fallback:', geoErr.message)
+        const allR = await Request.find({}).select('lat lng status category priority').lean()
+        const allRes = await Resource.find({}).select('lat lng category quantity status').lean()
+        requestsInRange = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
+        resourcesInRange = allRes.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
+      }
 
       const openRequests = requestsInRange.filter((r) => r.status === 'Open').length
       const totalResources = resourcesInRange.reduce((sum, r) => sum + (r.quantity || 0), 0)
@@ -96,24 +109,37 @@ zonesRouter.get('/heatmap', requireAuth, async (req, res) => {
 
     const heatData = await Promise.all(zones.map(async (zone) => {
       const radiusMeters = (zone.radiusKm || 10) * 1000
-      const center = zone.location?.coordinates ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
+      const center = zone.location?.coordinates?.length === 2 ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
 
-      const [requests, resources] = await Promise.all([
-        Request.find({
-          location: {
-            $geoWithin: {
-              $centerSphere: [center, radiusMeters / 6371000],
+      let requests = []
+      let resources = []
+
+      try {
+        ;[requests, resources] = await Promise.all([
+          Request.find({
+            'location.coordinates': { $exists: true, $ne: [] },
+            location: {
+              $geoWithin: {
+                $centerSphere: [center, radiusMeters / 6371000],
+              },
             },
-          },
-        }).select('lat lng status').lean(),
-        Resource.find({
-          location: {
-            $geoWithin: {
-              $centerSphere: [center, radiusMeters / 6371000],
+          }).select('lat lng status').lean(),
+          Resource.find({
+            'location.coordinates': { $exists: true, $ne: [] },
+            location: {
+              $geoWithin: {
+                $centerSphere: [center, radiusMeters / 6371000],
+              },
             },
-          },
-        }).select('lat lng category quantity status').lean(),
-      ])
+          }).select('lat lng category quantity status').lean(),
+        ])
+      } catch (geoErr) {
+        console.error('[zones] heatmap geo fallback:', geoErr.message)
+        const allR = await Request.find({}).select('lat lng status').lean()
+        const allRes = await Resource.find({}).select('lat lng category quantity status').lean()
+        requests = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
+        resources = allRes.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
+      }
 
       const openCount = requests.filter((r) => r.status === 'Open').length
       const totalRes = resources.reduce((sum, r) => sum + (r.quantity || 0), 0)
@@ -148,24 +174,37 @@ zonesRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) =>
     if (!zone) return res.status(404).json({ error: 'Zone not found' })
 
     const radiusMeters = (zone.radiusKm || 10) * 1000
-    const center = zone.location?.coordinates ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
+    const center = zone.location?.coordinates?.length === 2 ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
 
-    const [requestsInRange, resourcesInRange] = await Promise.all([
-      Request.find({
-        location: {
-          $geoWithin: {
-            $centerSphere: [center, radiusMeters / 6371000],
+    let requestsInRange = []
+    let resourcesInRange = []
+
+    try {
+      ;[requestsInRange, resourcesInRange] = await Promise.all([
+        Request.find({
+          'location.coordinates': { $exists: true, $ne: [] },
+          location: {
+            $geoWithin: {
+              $centerSphere: [center, radiusMeters / 6371000],
+            },
           },
-        },
-      }).select('lat lng status category priority title').lean(),
-      Resource.find({
-        location: {
-          $geoWithin: {
-            $centerSphere: [center, radiusMeters / 6371000],
+        }).select('lat lng status category priority title').lean(),
+        Resource.find({
+          'location.coordinates': { $exists: true, $ne: [] },
+          location: {
+            $geoWithin: {
+              $centerSphere: [center, radiusMeters / 6371000],
+            },
           },
-        },
-      }).select('lat lng category quantity status name unit').lean(),
-    ])
+        }).select('lat lng category quantity status name unit').lean(),
+      ])
+    } catch (geoErr) {
+      console.error('[zones] detail geo fallback:', geoErr.message)
+      const allR = await Request.find({}).select('lat lng status category priority title').lean()
+      const allRes = await Resource.find({}).select('lat lng category quantity status name unit').lean()
+      requestsInRange = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
+      resourcesInRange = allRes.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
+    }
 
     res.json({
       item: zone,

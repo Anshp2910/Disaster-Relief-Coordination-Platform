@@ -28,7 +28,6 @@ export default function Geofencing() {
   const mapInstanceRef = useRef(null)
   const circleRef = useRef(null)
   const markersRef = useRef([])
-  const positionRef = useRef(null)
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -42,8 +41,7 @@ export default function Geofencing() {
   }, [])
 
   useEffect(() => {
-    if (!position || positionRef.current) return
-    positionRef.current = position
+    if (!position) return
     checkArea()
   }, [position])
 

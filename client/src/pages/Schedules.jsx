@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(255,153,51,.12)', text: '#cc7a00', border: 'rgba(255,153,51,.35)' },
@@ -86,11 +87,20 @@ export default function Schedules() {
 
   async function loadDropdowns() {
     try {
-      const [usersData, zonesData] = await Promise.all([clientApi.adminUsers(), clientApi.getZones()])
-      setUsers(usersData.users || usersData.items || [])
+      const zonesData = await clientApi.getZones()
       setZones(zonesData.items || [])
     } catch (e) {
-      console.error('Failed to load dropdowns:', e)
+      console.error('Failed to load zones:', e)
+    }
+    if (currentUser?.role === 'admin') {
+      try {
+        const usersData = await clientApi.adminUsers()
+        setUsers(usersData.users || [])
+      } catch (e) {
+        console.error('Failed to load users:', e)
+      }
+    } else {
+      setUsers([{ _id: currentUser?.id, displayName: currentUser?.displayName || currentUser?.email, role: currentUser?.role }])
     }
   }
 
@@ -98,6 +108,10 @@ export default function Schedules() {
   useEffect(() => { loadDropdowns() }, [])
 
   useAutoRefresh(load, { interval: 20000 })
+
+  useEffect(() => {
+    return registerRefreshListener(['request:created', 'request:updated'], load)
+  }, [load])
 
   function openCreate() {
     setEditItem(null)

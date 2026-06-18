@@ -44,28 +44,41 @@ incidentsRouter.get('/', requireAuth, validateQuery(querySchemas.incidentsList),
 
       for (const z of zones) {
         const radiusMeters = (z.radiusKm || 10) * 1000
-        const center = z.location?.coordinates ? [z.location.coordinates[0], z.location.coordinates[1]] : [z.centerLng, z.centerLat]
+        const center = z.location?.coordinates?.length === 2 ? [z.location.coordinates[0], z.location.coordinates[1]] : [z.centerLng, z.centerLat]
 
-        const [requests, resources] = await Promise.all([
-          Request.find({
-            location: {
-              $geoWithin: {
-                $centerSphere: [center, radiusMeters / 6371000],
-              },
-            },
-          }).select('status').lean(),
-          Resource.find({
-            location: {
-              $geoWithin: {
-                $centerSphere: [center, radiusMeters / 6371000],
-              },
-            },
-          }).select('quantity').lean(),
-        ])
+        let zoneRequests = []
+        let zoneResources = []
 
-        requestCount += requests.length
-        openRequests += requests.filter((r) => r.status === 'Open').length
-        resourceCount += resources.length
+        try {
+          ;[zoneRequests, zoneResources] = await Promise.all([
+            Request.find({
+              'location.coordinates': { $exists: true, $ne: [] },
+              location: {
+                $geoWithin: {
+                  $centerSphere: [center, radiusMeters / 6371000],
+                },
+              },
+            }).select('status').lean(),
+            Resource.find({
+              'location.coordinates': { $exists: true, $ne: [] },
+              location: {
+                $geoWithin: {
+                  $centerSphere: [center, radiusMeters / 6371000],
+                },
+              },
+            }).select('quantity').lean(),
+          ])
+        } catch (geoErr) {
+          console.error('[incidents] geo fallback:', geoErr.message)
+          const allR = await Request.find({}).select('lat lng status').lean()
+          const allRes = await Resource.find({}).select('lat lng quantity').lean()
+          zoneRequests = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (z.radiusKm || 10))
+          zoneResources = allRes.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (z.radiusKm || 10))
+        }
+
+        requestCount += zoneRequests.length
+        openRequests += zoneRequests.filter((r) => r.status === 'Open').length
+        resourceCount += zoneResources.length
       }
 
       return { ...inc, stats: { requestCount, openRequests, resourceCount } }
