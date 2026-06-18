@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 
 const DISASTER_ICONS = {
@@ -66,6 +67,7 @@ export default function Incidents() {
   const [filterDisaster, setFilterDisaster] = useState('All')
   const [filterStatus, setFilterStatus] = useState('All')
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 300)
   const [selectedIncident, setSelectedIncident] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editIncident, setEditIncident] = useState(null)
@@ -85,7 +87,7 @@ export default function Incidents() {
       if (filterSeverity !== 'All') params.severity = filterSeverity
       if (filterDisaster !== 'All') params.disasterType = filterDisaster
       if (filterStatus !== 'All') params.status = filterStatus
-      if (search) params.search = search
+      if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getIncidents(params)
       setIncidents(data.items || [])
       setTotalPages(data.pages || 1)
@@ -94,9 +96,9 @@ export default function Incidents() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterSeverity, filterDisaster, filterStatus, search])
+  }, [page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
 
-  useEffect(() => { load() }, [page, filterSeverity, filterDisaster, filterStatus])
+  useEffect(() => { load() }, [page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
 
   useAutoRefresh(load, { interval: 20000 })
 

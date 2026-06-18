@@ -1,9 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useState, useMemo, memo } from 'react'
+import { useState, useMemo, useEffect, memo } from 'react'
 import NotificationBell from './NotificationBell'
 import { clientApi } from '../api/client'
 import { useSocket } from '../hooks/useSocket'
+import { useToast } from './Toast'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -22,12 +23,17 @@ export default function Header() {
   const location = useLocation()
   const { t, i18n } = useTranslation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { socket } = useSocket()
+  const { socket, connected } = useSocket()
+  const toast = useToast()
 
   const token = localStorage.getItem('token')
-  const currentUser = useMemo(() => {
+  const [currentUser, setCurrentUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  }, [])
+  })
+
+  useEffect(() => {
+    try { setCurrentUser(JSON.parse(localStorage.getItem('user') || 'null')) } catch { setCurrentUser(null) }
+  }, [location.pathname])
 
   function logout() {
     if (socket?.connected) {
@@ -78,9 +84,9 @@ export default function Header() {
     setSosLoading(true)
     try {
       await clientApi.broadcastSOS({ message: `${t('sos.from')} ${currentUser?.displayName || t('sos.user')}` })
-      alert(t('sos.broadcastSuccess'))
+      toast.success(t('sos.broadcastSuccess'))
     } catch (e) {
-      alert(t('sos.broadcastFailed', { error: e.message }))
+      toast.error(t('sos.broadcastFailed', { error: e.message }))
     } finally {
       setSosLoading(false)
     }
@@ -132,6 +138,7 @@ export default function Header() {
           </nav>
           {token && (
             <div className="gov-nav-actions">
+              <div title={connected ? 'Connected' : 'Disconnected'} style={{ width: 8, height: 8, borderRadius: '50%', background: connected ? '#138808' : '#cc0000', flexShrink: 0 }} />
               <NotificationBell />
               <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">
                 {sosLoading ? '...' : 'SOS'}

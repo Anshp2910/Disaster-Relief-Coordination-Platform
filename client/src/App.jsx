@@ -18,6 +18,7 @@ const BulkImport = lazy(() => import('./pages/BulkImport'))
 const Escalation = lazy(() => import('./pages/Escalation'))
 const Geofencing = lazy(() => import('./pages/Geofencing'))
 const MapOverview = lazy(() => import('./pages/MapOverview'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 function PageLoader() {
   return (
@@ -65,10 +66,10 @@ export default function App() {
           <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
           <Route path="/incidents" element={<RequireAuth><Incidents /></RequireAuth>} />
           <Route path="/schedules" element={<RequireAuth><Schedules /></RequireAuth>} />
-          <Route path="/bulk" element={<RequireAuth><BulkImport /></RequireAuth>} />
+          <Route path="/bulk" element={<RequireAdmin><BulkImport /></RequireAdmin>} />
           <Route path="/escalation" element={<RequireAdmin><Escalation /></RequireAdmin>} />
           <Route path="/geofencing" element={<RequireAuth><Geofencing /></RequireAuth>} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </Layout>

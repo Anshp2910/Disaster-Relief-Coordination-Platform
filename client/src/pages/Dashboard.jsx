@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { useDebounce } from '../hooks/useDebounce'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { escapeHtml } from '../utils/escapeHtml'
+import { useToast } from '../components/Toast'
 import L from 'leaflet'
 
 const STATUS_COLORS = {
@@ -40,7 +42,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false)
   const [filterStatus, setFilterStatus] = useState('All')
   const [search, setSearch] = useState('')
-  const [searchTrigger, setSearchTrigger] = useState(0)
+  const debouncedSearch = useDebounce(search, 300)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
@@ -61,7 +63,7 @@ export default function Dashboard() {
     try {
       const params = { page, limit: 12 }
       if (filterStatus !== 'All') params.status = filterStatus
-      if (search) params.search = search
+      if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getRequests(params)
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
@@ -71,14 +73,14 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, search, searchTrigger, t])
+  }, [page, filterStatus, debouncedSearch, t])
 
   const loadMapItems = useCallback(async () => {
     setMapLoading(true)
     try {
       const params = { limit: 1000 }
       if (filterStatus !== 'All') params.status = filterStatus
-      if (search) params.search = search
+      if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getRequests(params)
       setMapItems(data.items || [])
     } catch (e) {
@@ -86,10 +88,10 @@ export default function Dashboard() {
     } finally {
       setMapLoading(false)
     }
-  }, [filterStatus, search])
+  }, [filterStatus, debouncedSearch])
 
-  useEffect(() => { load() }, [page, filterStatus, searchTrigger])
-  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, searchTrigger])
+  useEffect(() => { load() }, [page, filterStatus, debouncedSearch])
+  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, debouncedSearch])
 
   useAutoRefresh(load, { interval: 20000 })
 
@@ -148,7 +150,6 @@ export default function Dashboard() {
   function handleSearch(e) {
     e.preventDefault()
     setPage(1)
-    setSearchTrigger((t) => t + 1)
   }
 
   const currentUser = useMemo(() => {
@@ -289,6 +290,7 @@ export default function Dashboard() {
 const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const toast = useToast()
   const user = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null } })()
   const [deleting, setDeleting] = useState(false)
   const isOwner = user?.id && item.createdBy && item.createdBy._id ? item.createdBy._id === user.id : user?.id && String(item.createdBy) === String(user.id)
@@ -298,7 +300,7 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
     e.stopPropagation()
     if (!confirm(t('dashboard.deleteConfirm'))) return
     setDeleting(true)
-    try { await clientApi.deleteRequest(id); onChanged() } catch (e) { alert(e.message || 'Failed to delete') } finally { setDeleting(false) }
+    try { await clientApi.deleteRequest(id); onChanged() } catch (e) { toast.error(e.message || 'Failed to delete') } finally { setDeleting(false) }
   }
 
   function edit(e) { e.stopPropagation(); navigate(`/requests/${id}/edit`) }

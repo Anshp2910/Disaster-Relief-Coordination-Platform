@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { useDebounce } from '../hooks/useDebounce'
 import { registerRefreshListener } from '../hooks/useSocket'
+import { useToast } from '../components/Toast'
 
 const CATEGORY_ICONS = {
   Food: '', Water: '', Medical: '', Shelter: '', Supplies: '', Healthcare: '', Sanitation: '', Clothing: '', Transportation: '', Communication: '', Power: '', Infrastructure: '', Other: '',
@@ -48,6 +50,7 @@ const EMPTY_FORM = { name: '', category: 'Food', quantity: '', unit: '', locatio
 
 export default function Resources() {
   const { t } = useTranslation()
+  const toast = useToast()
 
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
@@ -58,7 +61,7 @@ export default function Resources() {
   const [filterCategory, setFilterCategory] = useState('All')
   const [filterStatus, setFilterStatus] = useState('All')
   const [search, setSearch] = useState('')
-  const [searchTrigger, setSearchTrigger] = useState(0)
+  const debouncedSearch = useDebounce(search, 300)
   const [summary, setSummary] = useState([])
 
   const [showForm, setShowForm] = useState(false)
@@ -77,7 +80,7 @@ export default function Resources() {
       const params = { page, limit: 20 }
       if (filterCategory !== 'All') params.category = filterCategory
       if (filterStatus !== 'All') params.status = filterStatus
-      if (search) params.search = search
+      if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getResources(params)
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
@@ -88,7 +91,7 @@ export default function Resources() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterCategory, filterStatus, search, searchTrigger])
+  }, [page, filterCategory, filterStatus, debouncedSearch])
 
   useEffect(() => { load() }, [load])
 
@@ -101,7 +104,6 @@ export default function Resources() {
   function handleSearch(e) {
     e.preventDefault()
     setPage(1)
-    setSearchTrigger((prev) => prev + 1)
   }
 
   function openCreate() {
@@ -157,9 +159,9 @@ export default function Resources() {
       setAllocQty('')
       setAllocRequestId('')
       load()
-      alert(t('resources.resourceAllocated'))
+      toast.success(t('resources.resourceAllocated'))
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setAllocating(false)
     }
@@ -171,13 +173,13 @@ export default function Resources() {
       const resource = items.find((r) => r._id === id)
       const deallocQty = resource?.allocatedQuantity || 0
       if (deallocQty <= 0) {
-        alert(t('resources.nothingToDeallocate'))
+        toast.warning(t('resources.nothingToDeallocate'))
         return
       }
       await clientApi.deallocateResource(id, { deallocQuantity: deallocQty })
       load()
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     }
   }
 

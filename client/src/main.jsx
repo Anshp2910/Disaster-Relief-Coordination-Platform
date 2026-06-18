@@ -5,6 +5,7 @@ import { I18nextProvider } from 'react-i18next'
 import i18n from './i18n'
 import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
+import { ToastProvider } from './components/Toast'
 import 'leaflet/dist/leaflet.css'
 import './styles.css'
 
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <I18nextProvider i18n={i18n}>
         <BrowserRouter>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </BrowserRouter>
       </I18nextProvider>
     </ErrorBoundary>

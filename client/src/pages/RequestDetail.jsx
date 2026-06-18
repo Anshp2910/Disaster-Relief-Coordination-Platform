@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
+import { useToast } from '../components/Toast'
 import Chat from './Chat'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
@@ -44,6 +45,7 @@ export default function RequestDetail() {
   const { t } = useTranslation()
   const currentUser = useCurrentUser()
   const fileRef = useRef()
+  const toast = useToast()
 
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -126,8 +128,9 @@ export default function RequestDetail() {
       setShowFeedbackForm(false)
       loadFeedback()
       load()
+      toast.success(t('requestDetail.feedbackSubmitted') || 'Feedback submitted')
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setFeedbackLoading(false)
     }
@@ -138,8 +141,9 @@ export default function RequestDetail() {
     try {
       const data = await clientApi.claimRequest(id)
       setItem(data.item)
+      toast.success(t('requestDetail.claimed') || 'Request claimed')
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setClaiming(false)
     }
@@ -151,8 +155,9 @@ export default function RequestDetail() {
     try {
       const data = await clientApi.unclaimRequest(id)
       setItem(data.item)
+      toast.success(t('requestDetail.unclaimed') || 'Request unclaimed')
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setClaiming(false)
     }
@@ -167,7 +172,7 @@ export default function RequestDetail() {
       setItem((prev) => ({ ...prev, comments: data.comments || prev?.comments || [] }))
       setComment('')
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setPosting(false)
     }
@@ -180,8 +185,9 @@ export default function RequestDetail() {
     try {
       const data = await clientApi.uploadFiles(id, files)
       setItem((prev) => ({ ...prev, files: data.files }))
+      toast.success(t('requestDetail.filesUploaded') || 'Files uploaded')
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
@@ -193,8 +199,9 @@ export default function RequestDetail() {
     try {
       await clientApi.deleteComment(id, commentId)
       setItem((prev) => ({ ...prev, comments: (prev.comments || []).filter((c) => c._id !== commentId) }))
+      toast.success(t('requestDetail.commentDeleted') || 'Comment deleted')
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     }
   }
 
@@ -207,9 +214,9 @@ export default function RequestDetail() {
       setAllocResource('')
       setAllocQty('')
       loadResources()
-      alert(t('requestDetail.allocatedSuccessfully'))
+      toast.success(t('requestDetail.allocatedSuccessfully'))
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setAllocating(false)
     }
@@ -220,9 +227,9 @@ export default function RequestDetail() {
       await clientApi.allocateResource(match._id, { requestId: id, allocQuantity: Math.min(match.quantity, 10) })
       loadResources()
       loadMatches()
-      alert(t('requestDetail.resourceAllocated'))
+      toast.success(t('requestDetail.resourceAllocated'))
     } catch (err) {
-      alert(err.message)
+      toast.error(err.message)
     }
   }
 

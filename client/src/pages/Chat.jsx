@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSocket } from '../hooks/useSocket'
 import { clientApi } from '../api/client'
+import { useToast } from '../components/Toast'
 
 function useCurrentUser() {
   return (() => {
@@ -15,6 +16,7 @@ export default function Chat({ requestId, onClose }) {
   const { socket } = useSocket()
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
+  const toast = useToast()
 
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
@@ -93,7 +95,7 @@ export default function Chat({ requestId, onClose }) {
       inputRef.current?.focus()
     } catch (err) {
       setText(msg)
-      alert(err.message)
+      toast.error(err.message)
     } finally {
       setSending(false)
     }
