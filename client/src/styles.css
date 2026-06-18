@@ -1337,3 +1337,4 @@ button, a, input, select, textarea {
 .dark .govt-auth-card .card { background: var(--gov-card-bg); }
 .dark hr { border-color: var(--gov-border); }
 .dark button { color: var(--gov-text); }
+.dark .gov-logo { background: rgba(255,255,255,0.92); border-radius: 6px; padding: 4px 8px; }
