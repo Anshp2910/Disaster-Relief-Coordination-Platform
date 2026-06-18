@@ -48,6 +48,8 @@ export const clientApi = {
   login: (payload) => apiFetch('/api/auth/login', { method: 'POST', body: payload, auth: false }),
   me: () => apiFetch('/api/auth/me'),
   updateProfile: (payload) => apiFetch('/api/auth/profile', { method: 'PUT', body: payload }),
+  getNotifications: () => apiFetch('/api/auth/notifications'),
+  updateNotifications: (payload) => apiFetch('/api/auth/notifications', { method: 'PUT', body: payload }),
 
   getRequests: (params = {}) => {
     const qs = new URLSearchParams(params).toString()

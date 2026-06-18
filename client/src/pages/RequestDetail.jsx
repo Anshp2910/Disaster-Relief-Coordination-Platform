@@ -66,6 +66,7 @@ export default function RequestDetail() {
   const [feedbackLoading, setFeedbackLoading] = useState(false)
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const [claiming, setClaiming] = useState(false)
+  const [previewFile, setPreviewFile] = useState(null)
 
   const load = useCallback(async () => {
     try {
@@ -305,14 +306,19 @@ export default function RequestDetail() {
               {item.files.map((f, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--gov-bg)', borderRadius: 6 }}>
                   {f.mimetype?.startsWith('image/') ? (
-                    <img src={`${API_BASE}${f.url}`} alt={f.filename} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+                    <img src={`${API_BASE}${f.url}`} alt={f.filename} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, cursor: 'pointer' }} onClick={() => setPreviewFile(f)} />
+                  ) : f.mimetype === 'application/pdf' ? (
+                    <span style={{ fontSize: 20, cursor: 'pointer' }} onClick={() => setPreviewFile(f)}>&#128196;</span>
                   ) : (
-                    <span style={{ fontSize: 20 }}></span>
+                    <span style={{ fontSize: 20 }}>&#128196;</span>
                   )}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
                     <div className="small muted">{new Date(f.uploadedAt).toLocaleDateString()}</div>
                   </div>
+                  {(f.mimetype?.startsWith('image/') || f.mimetype === 'application/pdf') && (
+                    <button onClick={() => setPreviewFile(f)} style={{ fontSize: 11, padding: '3px 8px' }}>{t('requestDetail.preview') || 'Preview'}</button>
+                  )}
                   <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--gov-blue)' }}>{t('requestDetail.open')}</a>
                 </div>
               ))}
@@ -515,6 +521,27 @@ export default function RequestDetail() {
           !showFeedbackForm && <div className="muted" style={{ fontSize: 13 }}>{t('requestDetail.noFeedback')}</div>
         )}
       </div>
+
+      {/* File Preview Modal */}
+      {previewFile && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 20 }} onClick={() => setPreviewFile(null)}>
+          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '85vh' }} onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setPreviewFile(null)} style={{ position: 'absolute', top: -32, right: 0, background: 'none', border: 'none', color: 'white', fontSize: 24, cursor: 'pointer' }}>✕</button>
+            {previewFile.mimetype?.startsWith('image/') ? (
+              <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: 8 }} />
+            ) : previewFile.mimetype === 'application/pdf' ? (
+              <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile.filename} style={{ width: '80vw', height: '80vh', border: 'none', borderRadius: 8, background: 'white' }} />
+            ) : (
+              <div style={{ background: 'white', padding: 32, borderRadius: 8, textAlign: 'center', color: '#333' }}>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>&#128196;</div>
+                <div style={{ fontSize: 14, marginBottom: 16 }}>{previewFile.filename}</div>
+                <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary" style={{ padding: '8px 20px', fontSize: 13 }}>Download</a>
+              </div>
+            )}
+            <div style={{ textAlign: 'center', color: '#aaa', fontSize: 12, marginTop: 8 }}>{previewFile.filename}</div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

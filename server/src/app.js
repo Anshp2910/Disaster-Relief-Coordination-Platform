@@ -22,6 +22,7 @@ import { geofencingRouter } from './routes/geofencing.js'
 import { sosRouter } from './routes/sos.js'
 import { getEnv } from './config/env.js'
 import { sanitizeBody } from './middleware/sanitize.js'
+import { rateLimitUser } from './middleware/rateLimitUser.js'
 
 dotenv.config()
 
@@ -98,18 +99,20 @@ export function createApp() {
   app.get('/health', (req, res) => res.json({ ok: true }))
 
   app.use('/api/auth', authLimiter, authRouter)
+  const writeLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many write requests, please slow down' })
+
   app.use('/api/requests', requestsRouter)
-  app.use('/api/admin', adminRouter)
-  app.use('/api/resources', resourcesRouter)
-  app.use('/api/zones', zonesRouter)
-  app.use('/api/chat', chatRouter)
-  app.use('/api/feedback', feedbackRouter)
-  app.use('/api/schedules', schedulesRouter)
-  app.use('/api/incidents', incidentsRouter)
+  app.use('/api/admin', rateLimitUser({ windowMs: 60 * 1000, max: 50 }), adminRouter)
+  app.use('/api/resources', writeLimiter, resourcesRouter)
+  app.use('/api/zones', writeLimiter, zonesRouter)
+  app.use('/api/chat', writeLimiter, chatRouter)
+  app.use('/api/feedback', writeLimiter, feedbackRouter)
+  app.use('/api/schedules', writeLimiter, schedulesRouter)
+  app.use('/api/incidents', writeLimiter, incidentsRouter)
   app.use('/api/bulk', bulkLimiter, bulkRouter)
-  app.use('/api/escalation', escalationRouter)
+  app.use('/api/escalation', writeLimiter, escalationRouter)
   app.use('/api/geofencing', geofencingRouter)
-  app.use('/api/sos', sosRouter)
+  app.use('/api/sos', writeLimiter, sosRouter)
 
   app.use('/api', (req, res) => {
     res.status(404).json({ error: 'API endpoint not found' })

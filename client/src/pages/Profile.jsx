@@ -1,25 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../context/AuthContext'
 import { clientApi } from '../api/client'
 
 const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other']
 
-function useCurrentUser() {
-  return (() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
-}
-
 export default function Profile() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const currentUser = useCurrentUser()
+  const { currentUser, updateUser } = useAuth()
 
   const [displayName, setDisplayName] = useState(currentUser?.displayName || '')
   const [phone, setPhone] = useState(currentUser?.phone || '')
   const [skills, setSkills] = useState(currentUser?.skills || [])
-  const [notifications, setNotifications] = useState(currentUser?.notifications || { email: true, sms: false })
+  const [notifications, setNotifications] = useState(currentUser?.notifications || { email: true, sms: false, newRequest: true, statusChange: true, newComment: true })
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -41,7 +36,7 @@ export default function Profile() {
       if (phone) payload.phone = phone
       if (skills.length > 0) payload.skills = skills
       const data = await clientApi.updateProfile(payload)
-      localStorage.setItem('user', JSON.stringify({ ...currentUser, ...data.user }))
+      updateUser(data.user)
       setSuccess(t('profile.profileUpdated'))
     } catch (err) {
       setError(err.message)
@@ -126,13 +121,27 @@ export default function Profile() {
           </div>
 
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.notificationPreferences')}</label>
-          <div style={{ display: 'flex', gap: 16, marginBottom: 16, fontSize: 13 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-              <input type="checkbox" checked={notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
-              <input type="checkbox" checked={notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
-            </label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16, fontSize: 13 }}>
+            <div style={{ display: 'flex', gap: 16 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                <input type="checkbox" checked={notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                <input type="checkbox" checked={notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
+              </label>
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--gov-muted, #666)' }}>Event subscriptions:</div>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                <input type="checkbox" checked={notifications.newRequest !== false} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest') || 'New requests'}
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                <input type="checkbox" checked={notifications.statusChange !== false} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange') || 'Status changes'}
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                <input type="checkbox" checked={notifications.newComment !== false} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment') || 'New comments'}
+              </label>
+            </div>
           </div>
 
           <button type="submit" className="btnPrimary" disabled={loading} style={{ fontSize: 13 }}>

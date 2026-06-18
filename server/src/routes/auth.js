@@ -75,6 +75,32 @@ authRouter.get('/me', requireAuth, async (req, res) => {
   })
 })
 
+authRouter.get('/notifications', requireAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('notifications')
+    return res.json({ notifications: user?.notifications || { email: true, sms: false, newRequest: true, statusChange: true, newComment: true } })
+  } catch (err) {
+    return res.status(500).json({ error: 'Server error' })
+  }
+})
+
+authRouter.put('/notifications', requireAuth, async (req, res) => {
+  try {
+    const { email, sms, newRequest, statusChange, newComment } = req.body || {}
+    const notifications = {}
+    if (email !== undefined) notifications.email = Boolean(email)
+    if (sms !== undefined) notifications.sms = Boolean(sms)
+    if (newRequest !== undefined) notifications.newRequest = Boolean(newRequest)
+    if (statusChange !== undefined) notifications.statusChange = Boolean(statusChange)
+    if (newComment !== undefined) notifications.newComment = Boolean(newComment)
+
+    await User.findByIdAndUpdate(req.user._id, { $set: { notifications } }, { new: true })
+    return res.json({ notifications })
+  } catch (err) {
+    return res.status(500).json({ error: 'Server error' })
+  }
+})
+
 authRouter.put('/profile', requireAuth, validate('updateProfile'), async (req, res) => {
   try {
     const { displayName, currentPassword, newPassword, phone, skills, notifications } = req.body || {}
