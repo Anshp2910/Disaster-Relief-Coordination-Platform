@@ -19,6 +19,7 @@ export default function Chat({ requestId, onClose }) {
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
   const [loading, setLoading] = useState(true)
+  const [sending, setSending] = useState(false)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
 
@@ -76,9 +77,10 @@ export default function Chat({ requestId, onClose }) {
 
   async function handleSend(e) {
     e.preventDefault()
-    if (!text.trim()) return
+    if (!text.trim() || sending) return
     const msg = text.trim()
     setText('')
+    setSending(true)
     try {
       const data = await clientApi.sendChatMessage(requestId, msg)
       if (data.message) {
@@ -92,6 +94,8 @@ export default function Chat({ requestId, onClose }) {
     } catch (err) {
       setText(msg)
       alert(err.message)
+    } finally {
+      setSending(false)
     }
   }
 
@@ -166,10 +170,12 @@ export default function Chat({ requestId, onClose }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={t('chat.typeMessage')}
+          maxLength={2000}
           style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
         />
-        <button type="submit" className="btnPrimary" disabled={!text.trim()} style={{ fontSize: 12, padding: '6px 16px' }}>
-          {t('chat.send')}
+        <span style={{ fontSize: 11, color: '#999', alignSelf: 'center' }}>{text.length}/2000</span>
+        <button type="submit" className="btnPrimary" disabled={!text.trim() || sending} style={{ fontSize: 12, padding: '6px 16px' }}>
+          {sending ? '...' : t('chat.send')}
         </button>
       </form>
     </div>

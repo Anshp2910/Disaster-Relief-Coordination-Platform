@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useState, useMemo, memo } from 'react'
 import NotificationBell from './NotificationBell'
 import { clientApi } from '../api/client'
+import { useSocket } from '../hooks/useSocket'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -21,6 +22,7 @@ export default function Header() {
   const location = useLocation()
   const { t, i18n } = useTranslation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { socket } = useSocket()
 
   const token = localStorage.getItem('token')
   const currentUser = useMemo(() => {
@@ -28,6 +30,9 @@ export default function Header() {
   }, [])
 
   function logout() {
+    if (socket?.connected) {
+      socket.disconnect()
+    }
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     localStorage.removeItem('notifications')

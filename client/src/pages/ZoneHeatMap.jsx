@@ -4,6 +4,7 @@ import L from 'leaflet'
 import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { escapeHtml } from '../utils/escapeHtml'
 
 const SEVERITY_COLORS = {
   Critical: { fill: '#cc0000', stroke: '#990000', weight: 0.6 },
@@ -37,11 +38,11 @@ function buildPopup(zone, color) {
   return `
     <div style="font-family:Arial,sans-serif;min-width:200px">
       <div style="font-weight:700;font-size:14px;color:#000080;margin-bottom:4px">
-        ${DISASTER_ICONS[zone.disasterType] || ''} ${zone.name}
+        ${DISASTER_ICONS[zone.disasterType] || ''} ${escapeHtml(zone.name)}
       </div>
       <div style="font-size:12px;margin-bottom:6px">
-        <span style="color:${color.fill};font-weight:600">${zone.severity}</span> severity
-        &middot; ${zone.disasterType}
+        <span style="color:${color.fill};font-weight:600">${escapeHtml(zone.severity)}</span> severity
+        &middot; ${escapeHtml(zone.disasterType)}
       </div>
       <div style="font-size:12px;margin-bottom:4px">Radius: ${zone.radiusKm} km</div>
       ${zone.affectedPopulation > 0
@@ -53,11 +54,11 @@ function buildPopup(zone, color) {
         <div>Open requests: <strong style="color:#cc0000">${zone.openRequests}</strong></div>
         <div>Resources: <strong>${zone.totalResources}</strong> units</div>
         <div style="margin-top:4px">
-          Coverage: <span style="background:${coverageColor};color:white;padding:1px 6px;border-radius:3px;font-size:11px">${zone.coverageStatus}</span>
+          Coverage: <span style="background:${coverageColor};color:white;padding:1px 6px;border-radius:3px;font-size:11px">${escapeHtml(zone.coverageStatus)}</span>
         </div>
       </div>
       <div style="margin-top:8px">
-        <button onclick="window.__selectZone('${zone._id}')" style="background:#000080;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
+        <button onclick="window.__selectZone('${escapeHtml(zone._id)}')" style="background:#000080;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
       </div>
     </div>
   `
@@ -76,6 +77,7 @@ export default function ZoneHeatMap() {
   const [showForm, setShowForm] = useState(false)
   const [editZone, setEditZone] = useState(null)
   const [form, setForm] = useState(DEFAULT_FORM)
+  const [saving, setSaving] = useState(false)
 
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
@@ -84,11 +86,12 @@ export default function ZoneHeatMap() {
 
   async function load() {
     setLoading(true)
+    setError('')
     try {
       const data = await clientApi.getZoneHeatmap()
       setZones(data.zones || [])
     } catch (e) {
-      console.error('Failed to load zones')
+      setError(e.message || 'Failed to load zones')
     } finally {
       setLoading(false)
     }
@@ -150,6 +153,10 @@ export default function ZoneHeatMap() {
       const z = zonesRef.current.find((z) => z._id === id)
       if (z) setSelectedZone(z)
     }
+
+    return () => {
+      delete window.__selectZone
+    }
   }, [zones])
 
   useEffect(() => {
@@ -182,6 +189,7 @@ export default function ZoneHeatMap() {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    setSaving(true)
     try {
       const payload = {
         ...form,
@@ -198,7 +206,9 @@ export default function ZoneHeatMap() {
       setShowForm(false)
       load()
     } catch (e) {
-      alert(e.message)
+      setError(e.message)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -209,7 +219,7 @@ export default function ZoneHeatMap() {
       setSelectedZone(null)
       load()
     } catch (e) {
-      alert(e.message)
+      setError(e.message)
     }
   }
 
@@ -236,6 +246,7 @@ export default function ZoneHeatMap() {
             )}
           </div>
         </div>
+        {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
       </div>
 
       <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
@@ -362,7 +373,7 @@ export default function ZoneHeatMap() {
               <textarea placeholder={t('zones.notes')} value={form.notes} onChange={updateForm('notes')} rows={2} />
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="submit" className="btnPrimary">{editZone ? t('zones.update') : t('zones.create')}</button>
+                <button type="submit" className="btnPrimary" disabled={saving}>{saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}</button>
                 <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('zones.cancel')}</button>
               </div>
             </form>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
@@ -13,7 +13,7 @@ export default function Escalation() {
   const [reason, setReason] = useState('')
   const [allRequests, setAllRequests] = useState([])
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -24,7 +24,7 @@ export default function Escalation() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     load()
@@ -93,6 +93,8 @@ export default function Escalation() {
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             rows={2}
+            required
+            maxLength={2000}
             style={{ fontSize: 13 }}
           />
           <button type="submit" className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px', justifySelf: 'start' }}>

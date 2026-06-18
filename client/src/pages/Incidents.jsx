@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { escapeHtml } from '../utils/escapeHtml'
 
 const DISASTER_ICONS = {
   Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
@@ -29,9 +30,9 @@ function buildIncidentPopup(inc) {
   const stats = inc.stats || {}
   return `
     <div style="font-family:Arial,sans-serif;min-width:180px">
-      <div style="font-weight:700;font-size:13px;color:#000080;margin-bottom:4px">${DISASTER_ICONS[inc.disasterType]} ${inc.name}</div>
+      <div style="font-weight:700;font-size:13px;color:#000080;margin-bottom:4px">${DISASTER_ICONS[inc.disasterType] || ''} ${escapeHtml(inc.name)}</div>
       <div style="font-size:12px;margin-bottom:6px">
-        <span style="color:${color};font-weight:600">${inc.severity}</span> &middot; ${inc.status}
+        <span style="color:${color};font-weight:600">${escapeHtml(inc.severity)}</span> &middot; ${escapeHtml(inc.status)}
       </div>
       <div style="font-size:12px">Requests: <strong>${stats.requestCount || 0}</strong> (${stats.openRequests || 0} open)</div>
       <div style="font-size:12px">Resources: <strong>${stats.resourceCount || 0}</strong></div>
@@ -76,7 +77,7 @@ export default function Incidents() {
 
   const currentUser = getCurrentUser()
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -93,7 +94,7 @@ export default function Incidents() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [page, filterSeverity, filterDisaster, filterStatus, search])
 
   useEffect(() => { load() }, [page, filterSeverity, filterDisaster, filterStatus])
 

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { escapeHtml } from '../utils/escapeHtml'
 
 const STATUS_COLORS = {
   Open: '#000080',
@@ -104,10 +105,10 @@ export default function MapOverview() {
 
       marker.bindPopup(`
         <div style="min-width:180px">
-          <div style="font-weight:700;font-size:13px;margin-bottom:4px">${item.title}</div>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div>
           <div style="font-size:12px;color:#666;margin-bottom:4px">${t(`statuses.${item.status}`)} | ${t(`priorities.${item.priority}`)}</div>
-          <div style="font-size:12px;color:#666;margin-bottom:8px">${item.locationName}</div>
-          <a href="/requests/${item._id}" style="display:inline-block;background:#000080;color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a>
+          <div style="font-size:12px;color:#666;margin-bottom:8px">${escapeHtml(item.locationName)}</div>
+          <a href="/requests/${escapeHtml(item._id)}" style="display:inline-block;background:#000080;color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a>
         </div>
       `)
 

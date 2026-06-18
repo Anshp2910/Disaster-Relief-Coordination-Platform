@@ -172,7 +172,7 @@ export default function CreateRequest() {
         {error && <div className="errorText">{error}</div>}
 
         <form onSubmit={onSubmit} className="inputGrid" style={{ marginTop: 16 }}>
-          <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={200} />
 
           <textarea
             placeholder={t('createRequest.descriptionLabel')}
@@ -180,6 +180,7 @@ export default function CreateRequest() {
             onChange={(e) => setDescription(e.target.value)}
             required
             rows={4}
+            maxLength={5000}
             style={{ resize: 'vertical' }}
           />
 

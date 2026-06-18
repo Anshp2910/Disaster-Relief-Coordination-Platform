@@ -63,6 +63,7 @@ export default function RequestDetail() {
   const [feedbackComment, setFeedbackComment] = useState('')
   const [feedbackLoading, setFeedbackLoading] = useState(false)
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
+  const [claiming, setClaiming] = useState(false)
 
   const load = useCallback(async () => {
     try {
@@ -133,20 +134,27 @@ export default function RequestDetail() {
   }
 
   async function handleClaim() {
+    setClaiming(true)
     try {
       const data = await clientApi.claimRequest(id)
       setItem(data.item)
     } catch (err) {
       alert(err.message)
+    } finally {
+      setClaiming(false)
     }
   }
 
   async function handleUnclaim() {
+    if (!confirm(t('dashboard.unclaimConfirm') || 'Are you sure you want to unclaim this request?')) return
+    setClaiming(true)
     try {
       const data = await clientApi.unclaimRequest(id)
       setItem(data.item)
     } catch (err) {
       alert(err.message)
+    } finally {
+      setClaiming(false)
     }
   }
 
@@ -271,10 +279,10 @@ export default function RequestDetail() {
 
           <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
             {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
-              <button className="btnPrimary" onClick={handleClaim}>{t('dashboard.claim')}</button>
+              <button className="btnPrimary" onClick={handleClaim} disabled={claiming}>{claiming ? '...' : t('dashboard.claim')}</button>
             )}
             {item.claimedBy?._id === currentUser?.id && (
-              <button className="btnDanger" onClick={handleUnclaim}>{t('dashboard.unclaim')}</button>
+              <button className="btnDanger" onClick={handleUnclaim} disabled={claiming}>{claiming ? '...' : t('dashboard.unclaim')}</button>
             )}
             {(currentUser?.id === item.createdBy?._id || currentUser?.role === 'admin') && (
               <button onClick={() => navigate(`/requests/${id}/edit`)}>{t('dashboard.edit')}</button>
@@ -382,6 +390,7 @@ export default function RequestDetail() {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder={t('requestDetail.addComment')}
+            maxLength={2000}
             style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
           />
           <button type="submit" className="btnPrimary" disabled={posting} style={{ fontSize: 12, padding: '6px 16px' }}>

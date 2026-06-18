@@ -5,7 +5,7 @@ const ResourceSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, maxlength: 200 },
     category: {
       type: String,
-      enum: ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other'],
+      enum: ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other'],
       required: true,
     },
     quantity: { type: Number, required: true, min: 0 },

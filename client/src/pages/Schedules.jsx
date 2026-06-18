@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, memo } from 'react'
+import { useState, useEffect, useRef, useMemo, memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
@@ -68,7 +68,7 @@ export default function Schedules() {
 
   const currentUser = getCurrentUser()
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -82,7 +82,7 @@ export default function Schedules() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [page, filterStatus])
 
   async function loadDropdowns() {
     try {

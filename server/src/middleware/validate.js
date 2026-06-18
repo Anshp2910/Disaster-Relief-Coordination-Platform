@@ -65,7 +65,7 @@ const schemas = {
 
   createResource: Joi.object({
     name: Joi.string().min(1).max(200).required().trim(),
-    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other').required(),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other').required(),
     quantity: Joi.number().min(0).required(),
     unit: Joi.string().min(1).max(50).required().trim(),
     locationName: Joi.string().min(1).max(500).required().trim(),
@@ -76,7 +76,7 @@ const schemas = {
 
   updateResource: Joi.object({
     name: Joi.string().min(1).max(200).trim(),
-    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Other'),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other'),
     quantity: Joi.number().min(0),
     unit: Joi.string().min(1).max(50).trim(),
     locationName: Joi.string().min(1).max(500).trim(),
