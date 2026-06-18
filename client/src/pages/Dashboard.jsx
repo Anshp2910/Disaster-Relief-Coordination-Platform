@@ -131,7 +131,7 @@ export default function Dashboard() {
       if (item.lat == null || item.lng == null) return
       const color = MAP_MARKER_COLORS[item.status] || '#000080'
       const marker = L.circleMarker([item.lat, item.lng], { radius: 8, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.9 }).addTo(map)
-      marker.bindPopup(`<div style="min-width:180px"><div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div><div style="font-size:12px;color:#666;margin-bottom:4px">${escapeHtml(item.status)} | ${escapeHtml(item.priority)}</div><div style="font-size:12px;color:#666;margin-bottom:8px">${escapeHtml(item.locationName)}</div><a href="/requests/${escapeHtml(item._id)}" style="display:inline-block;background:#000080;color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a></div>`)
+      marker.bindPopup(`<div style="min-width:180px"><div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div><div style="font-size:12px;color:#666;margin-bottom:4px">${escapeHtml(item.status)} | ${escapeHtml(item.priority)}</div><div style="font-size:12px;color:#666;margin-bottom:8px">${escapeHtml(item.locationName)}</div><a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:#000080;color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a></div>`)
       markersRef.current.push(marker)
     })
     if (filtered.length > 0) {
