@@ -191,7 +191,7 @@ a:hover { text-decoration: underline; color: var(--gov-blue-light); }
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: #aaa;
+  color: #b0b0b0;
 }
 
 /* Container - full width with padding */

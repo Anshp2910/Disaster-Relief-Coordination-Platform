@@ -181,7 +181,7 @@ export default function Dashboard() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('dashboard.title')}</h2>
+            <h1 className="pageTitle" style={{ fontSize: 20 }}>{t('dashboard.title')}</h1>
             <div className="small" style={{ marginTop: 4 }}>{total} {t('dashboard.totalRequests')}</div>
           </div>
           <div className="btnRow">

@@ -193,7 +193,7 @@ export default function Resources() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.resources') || 'Resource Inventory'}</h2>
+            <h1 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.resources') || 'Resource Inventory'}</h1>
             <div className="small" style={{ marginTop: 4 }}>{total} {t('resources.resourcesTracked')}</div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>

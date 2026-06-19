@@ -229,7 +229,7 @@ export default function ZoneHeatMap() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('zones.title')}</h2>
+            <h1 className="pageTitle" style={{ fontSize: 20 }}>{t('zones.title')}</h1>
             <div className="small" style={{ marginTop: 4 }}>
               {zones.length} zones &middot; {totalOpen} open requests &middot; {totalGap} coverage gaps &middot; {totalAffected.toLocaleString()} affected
             </div>

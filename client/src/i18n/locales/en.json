@@ -2,6 +2,9 @@
   "appTitle": "Disaster Relief Coordination Platform",
   "appSubtitle": "Government of India Initiative",
   "topStrip": "An official website of the Disaster Relief Coordination Platform",
+  "header": {
+    "selectLanguage": "Select Language"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "mapView": "Map View",

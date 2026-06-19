@@ -105,6 +105,7 @@ export default function Header() {
             value={i18n.language}
             onChange={(e) => changeLanguage(e.target.value)}
             className="lang-select"
+            aria-label={t('header.selectLanguage', 'Select Language')}
           >
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code} style={{ color: '#333' }}>

@@ -160,7 +160,7 @@ export default function CreateRequest() {
   return (
     <div className="container" style={{ maxWidth: 720 }}>
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('createRequest.title')}</h2>
+        <h1 className="pageTitle" style={{ fontSize: 20 }}>{t('createRequest.title')}</h1>
         <div className="small muted" style={{ marginTop: 4 }}>
           {t('createRequest.subtitle')}
         </div>
