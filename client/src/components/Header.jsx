@@ -108,7 +108,7 @@ export default function Header() {
             aria-label={t('header.selectLanguage', 'Select Language')}
           >
             {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code} style={{ color: '#333' }}>
+              <option key={l.code} value={l.code}>
                 {l.label}
               </option>
             ))}
