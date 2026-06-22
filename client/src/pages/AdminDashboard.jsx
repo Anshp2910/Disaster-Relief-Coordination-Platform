@@ -7,20 +7,20 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 
 const STATUS_COLORS = {
-  Open: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
-  'In Progress': { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  Resolved: { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
-  Fulfilled: { bg: 'rgba(19,136,8,.15)', border: 'rgba(19,136,8,.4)', text: '#0d6e06' },
+  Open: { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
+  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  Resolved: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  Fulfilled: { bg: 'rgba(48,209,88,.1)', border: 'rgba(48,209,88,.25)', text: '#30d158' },
 }
 
 const PRIORITY_COLORS = {
-  Critical: { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
-  High: { bg: 'rgba(204,102,0,.1)', border: 'rgba(204,102,0,.3)', text: '#cc6600' },
-  Medium: { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  Low: { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
+  Critical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
+  High: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  Medium: { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
+  Low: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
 }
 
-const BREAKDOWN_COLORS = ['#000080', '#FF9933', '#138808', '#cc0000', '#1a1a9e', '#cc6600']
+const BREAKDOWN_COLORS = ['#00d4ff', '#7c3aed', '#10b981', '#ef4444', '#ec4899', '#f97316']
 
 function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' }
@@ -87,14 +87,14 @@ function StatsPanel({ stats }) {
   const totalAll = stats.byStatus ? Object.values(stats.byStatus).reduce((a, b) => a + b, 0) : 0
 
   const summaryCards = [
-    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(0,0,128,0.08)', color: '#000080' },
-    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(255,153,51,0.12)', color: '#cc7a00' },
-    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(0,0,128,0.08)', color: '#000080' },
+    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(0,212,255,0.08)', color: '#00d4ff' },
+    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(124,58,237,0.08)', color: '#7c3aed' },
+    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(0,212,255,0.08)', color: '#00d4ff' },
     {
       label: t('admin.resolved'),
       value: (stats.byStatus?.Resolved || 0) + (stats.byStatus?.Fulfilled || 0),
-      bg: 'rgba(19,136,8,0.1)',
-      color: '#138808',
+      bg: 'rgba(16,185,129,0.08)',
+      color: '#10b981',
     },
   ]
 
@@ -454,7 +454,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="container">
-      <div className="card" style={{ marginBottom: 20 }}>
+      <div className="card" style={{ marginBottom: 24 }}>
         <div className="headerRow">
           <div>
             <h2 className="pageTitle" style={{ fontSize: 22, margin: 0 }}>{t('admin.title')}</h2>
@@ -462,28 +462,29 @@ export default function AdminDashboard() {
           </div>
           <div className="btnRow">
             <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
-            <button onClick={() => handleExport('csv')} style={{ color: '#138808', borderColor: '#138808' }}>Export CSV</button>
+            <button onClick={() => handleExport('csv')} style={{ color: 'var(--neon-green)', borderColor: 'rgba(16,185,129,0.3)' }}>Export CSV</button>
           </div>
         </div>
 
         {error && <div className="errorText" style={{ marginTop: 12 }}>{error}</div>}
 
-        <div style={{ display: 'flex', gap: 4, marginTop: 16, borderBottom: '2px solid var(--gov-border)' }}>
+        <div style={{ display: 'flex', gap: 4, marginTop: 20, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
-                padding: '10px 18px',
-                borderRadius: '6px 6px 0 0',
+                padding: '12px 20px',
+                borderRadius: '10px 10px 0 0',
                 fontSize: 13,
                 fontWeight: 600,
                 border: '1px solid transparent',
-                borderBottom: activeTab === tab.id ? '2px solid var(--gov-blue)' : '2px solid transparent',
-                marginBottom: activeTab === tab.id ? -2 : 0,
-                background: activeTab === tab.id ? 'rgba(0,0,128,0.04)' : 'transparent',
-                color: activeTab === tab.id ? 'var(--gov-blue)' : 'var(--gov-muted)',
-                transition: 'all 0.15s',
+                borderBottom: activeTab === tab.id ? '2px solid var(--neon-cyan)' : '2px solid transparent',
+                marginBottom: activeTab === tab.id ? -1 : 0,
+                background: activeTab === tab.id ? 'rgba(0,212,255,0.06)' : 'transparent',
+                color: activeTab === tab.id ? 'var(--neon-cyan)' : 'var(--gov-muted)',
+                transition: 'all 0.2s',
+                boxShadow: activeTab === tab.id ? '0 0 12px rgba(0,212,255,0.1)' : 'none',
               }}
             >
               {tab.label}
@@ -491,10 +492,10 @@ export default function AdminDashboard() {
                 <span
                   style={{
                     marginLeft: 6,
-                    background: activeTab === tab.id ? 'var(--gov-blue)' : 'var(--gov-border)',
-                    color: activeTab === tab.id ? '#fff' : 'var(--gov-text)',
+                    background: activeTab === tab.id ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.06)',
+                    color: activeTab === tab.id ? 'var(--neon-cyan)' : 'var(--gov-muted)',
                     borderRadius: 10,
-                    padding: '1px 7px',
+                    padding: '2px 8px',
                     fontSize: 11,
                     fontWeight: 700,
                   }}

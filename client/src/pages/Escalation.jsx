@@ -113,7 +113,7 @@ export default function Escalation() {
             <div key={item._id} className="listCard" style={{ borderLeft: '4px solid #cc0000' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: '#000080' }}>{item.title}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--neon-cyan)' }}>{item.title}</div>
                   <div style={{ fontSize: 12, color: '#cc0000', marginTop: 2 }}>
                     {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                   </div>

@@ -12,26 +12,26 @@ const CATEGORY_ICONS = {
 }
 
 const CATEGORY_COLORS = {
-  Food: { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  Water: { bg: 'rgba(0,128,255,.1)', border: 'rgba(0,128,255,.3)', text: '#0066cc' },
-  Medical: { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
-  Shelter: { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
-  Supplies: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
-  Healthcare: { bg: 'rgba(204,0,102,.1)', border: 'rgba(204,0,102,.3)', text: '#cc0066' },
-  Sanitation: { bg: 'rgba(0,153,153,.1)', border: 'rgba(0,153,153,.3)', text: '#009999' },
-  Clothing: { bg: 'rgba(153,0,153,.1)', border: 'rgba(153,0,153,.3)', text: '#990099' },
-  Transportation: { bg: 'rgba(204,102,0,.1)', border: 'rgba(204,102,0,.3)', text: '#cc6600' },
-  Communication: { bg: 'rgba(0,102,204,.1)', border: 'rgba(0,102,204,.3)', text: '#0066cc' },
-  Power: { bg: 'rgba(204,204,0,.1)', border: 'rgba(204,204,0,.3)', text: '#999900' },
-  Infrastructure: { bg: 'rgba(100,100,100,.1)', border: 'rgba(100,100,100,.3)', text: '#555' },
-  Other: { bg: 'rgba(100,100,100,.1)', border: 'rgba(100,100,100,.3)', text: '#666' },
+  Food: { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
+  Water: { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
+  Medical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
+  Shelter: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  Supplies: { bg: 'rgba(124,58,237,.1)', border: 'rgba(124,58,237,.25)', text: '#7c3aed' },
+  Healthcare: { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: '#ec4899' },
+  Sanitation: { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: '#06b6d4' },
+  Clothing: { bg: 'rgba(168,85,247,.1)', border: 'rgba(168,85,247,.25)', text: '#a855f7' },
+  Transportation: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  Communication: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: '#3b82f6' },
+  Power: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: '#eab308' },
+  Infrastructure: { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
+  Other: { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
 }
 
 const STATUS_COLORS = {
-  Available: { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
-  Low: { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  Depleted: { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
-  Reserved: { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
+  Available: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  Low: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
+  Reserved: { bg: 'rgba(124,58,237,.1)', border: 'rgba(124,58,237,.25)', text: '#7c3aed' },
 }
 
 const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
@@ -292,17 +292,17 @@ export default function Resources() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 700, fontSize: 15, color: '#000080' }}>{r.name}</span>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--neon-cyan)' }}>{r.name}</span>
                       <Badge label={r.category} colors={CATEGORY_COLORS} colorKey={r.category} />
                       <Badge label={r.status} colors={STATUS_COLORS} colorKey={r.status} />
                     </div>
                     <div style={{ marginTop: 6, fontSize: 13 }}>
                       <strong>{r.quantity}</strong> {r.unit}
-                      {r.allocatedQuantity > 0 && <span style={{ color: '#cc7a00', marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
+                      {r.allocatedQuantity > 0 && <span style={{ color: 'var(--neon-orange)', marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
                     </div>
                     <div className="small muted" style={{ marginTop: 4 }}>📍 {r.locationName}</div>
                     {r.allocatedTo && (
-                      <div className="small" style={{ marginTop: 4, color: '#000080' }}>
+                      <div className="small" style={{ marginTop: 4, color: 'var(--neon-cyan)' }}>
                         {t('resources.allocatedTo')}: {r.allocatedTo.title || 'Request'}
                       </div>
                     )}
@@ -312,7 +312,7 @@ export default function Resources() {
                     {r.status === 'Available' && r.quantity > 0 && (
                       <button
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
-                        style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(0,0,128,.1)', color: '#000080', border: '1px solid rgba(0,0,128,.3)', borderRadius: 4, cursor: 'pointer' }}
+                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(0,212,255,.1)', color: 'var(--neon-cyan)', border: '1px solid rgba(0,212,255,.25)', borderRadius: 6, cursor: 'pointer' }}
                       >
                         {t('resources.allocate')}
                       </button>
@@ -320,7 +320,7 @@ export default function Resources() {
                     {r.allocatedQuantity > 0 && (
                       <button
                         onClick={() => handleDeallocate(r._id)}
-                        style={{ fontSize: 11, padding: '3px 8px', background: 'rgba(204,0,0,.1)', color: '#cc0000', border: '1px solid rgba(204,0,0,.3)', borderRadius: 4, cursor: 'pointer' }}
+                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(239,68,68,.1)', color: 'var(--neon-red)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 6, cursor: 'pointer' }}
                       >
                         {t('resources.deallocate')}
                       </button>

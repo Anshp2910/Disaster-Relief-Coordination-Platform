@@ -10,18 +10,18 @@ import Chat from './Chat'
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
-  'Pending': { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' },
-  'In Progress': { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  'Resolved': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
-  'Fulfilled': { bg: 'rgba(19,136,8,.15)', border: 'rgba(19,136,8,.4)', text: '#0d6e06' },
+  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
+  'Pending': { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
+  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  'Fulfilled': { bg: 'rgba(48,209,88,.1)', border: 'rgba(48,209,88,.25)', text: '#30d158' },
 }
 
 const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
-  'High': { bg: 'rgba(204,102,0,.1)', border: 'rgba(204,102,0,.3)', text: '#cc6600' },
-  'Medium': { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  'Low': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
+  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
+  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  'Medium': { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
+  'Low': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
 }
 
 function Badge({ label, colors, colorKey }) {
@@ -259,7 +259,7 @@ export default function RequestDetail() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
         {/* Details Card */}
         <div className="card">
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('editRequest.subtitle')}</h3>
+          <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 700, color: 'var(--neon-cyan)' }}>{t('editRequest.subtitle')}</h3>
           <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>{item.description}</p>
 
           <div style={{ marginTop: 16, fontSize: 13 }}>
@@ -285,7 +285,7 @@ export default function RequestDetail() {
             </div>
           )}
 
-          <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
             {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
               <button className="btnPrimary" onClick={handleClaim} disabled={claiming}>{claiming ? '...' : t('dashboard.claim')}</button>
             )}

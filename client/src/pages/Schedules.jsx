@@ -6,9 +6,9 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 
 const SHIFT_COLORS = {
-  Morning: { bg: 'rgba(255,153,51,.12)', text: '#cc7a00', border: 'rgba(255,153,51,.35)' },
+  Morning: { bg: 'rgba(249,115,22,.1)', text: '#f97316', border: 'rgba(249,115,22,.25)' },
   Afternoon: { bg: 'rgba(0,128,255,.1)', text: '#0066cc', border: 'rgba(0,128,255,.3)' },
-  Night: { bg: 'rgba(0,0,128,.1)', text: '#000080', border: 'rgba(0,0,128,.3)' },
+  Night: { bg: 'rgba(124,58,237,.1)', text: '#7c3aed', border: 'rgba(124,58,237,.25)' },
   'Full Day': { bg: 'rgba(19,136,8,.1)', text: '#138808', border: 'rgba(19,136,8,.3)' },
 }
 
@@ -238,7 +238,7 @@ export default function Schedules() {
                     {item.skills?.length > 0 && (
                       <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
                         {item.skills.map((s) => (
-                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(0,0,128,.08)', color: '#000080' }}>{s}</span>
+                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(124,58,237,.08)', color: '#7c3aed' }}>{s}</span>
                         ))}
                       </div>
                     )}

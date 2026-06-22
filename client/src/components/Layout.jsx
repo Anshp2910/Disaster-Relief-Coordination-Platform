@@ -16,12 +16,19 @@ export default function Layout({ children }) {
       <Footer />
       {canInstall && !dismissed && (
         <div className="pwa-install-banner">
-          <span style={{ fontSize: 14 }}>Install this app for offline access</span>
+          <span style={{ fontSize: 14, fontWeight: 500 }}>Install this app for offline access</span>
           <button
             onClick={install}
             style={{
-              background: 'var(--gov-saffron)', color: '#000', border: 'none',
-              padding: '6px 16px', borderRadius: 4, fontWeight: 700, fontSize: 13, cursor: 'pointer',
+              background: 'linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.2))',
+              color: 'var(--neon-cyan)',
+              border: '1px solid rgba(0,212,255,0.3)',
+              padding: '6px 18px',
+              borderRadius: 8,
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: 'pointer',
+              boxShadow: '0 0 12px rgba(0,212,255,0.2)',
             }}
           >
             Install
@@ -29,8 +36,12 @@ export default function Layout({ children }) {
           <button
             onClick={() => setDismissed(true)}
             style={{
-              background: 'none', border: 'none', color: '#ccc',
-              fontSize: 18, cursor: 'pointer', padding: '0 4px',
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: 18,
+              cursor: 'pointer',
+              padding: '0 4px',
             }}
           >
             x

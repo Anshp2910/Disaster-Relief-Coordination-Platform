@@ -33,7 +33,7 @@ function buildIncidentPopup(inc) {
   const stats = inc.stats || {}
   return `
     <div style="font-family:Arial,sans-serif;min-width:180px">
-      <div style="font-weight:700;font-size:13px;color:#000080;margin-bottom:4px">${DISASTER_ICONS[inc.disasterType] || ''} ${escapeHtml(inc.name)}</div>
+      <div style="font-weight:700;font-size:13px;color:#00d4ff;margin-bottom:4px">${DISASTER_ICONS[inc.disasterType] || ''} ${escapeHtml(inc.name)}</div>
       <div style="font-size:12px;margin-bottom:6px">
         <span style="color:${color};font-weight:600">${escapeHtml(inc.severity)}</span> &middot; ${escapeHtml(inc.status)}
       </div>
@@ -265,7 +265,7 @@ export default function Incidents() {
               <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: SEVERITY_COLORS[selectedIncident.severity] + '20', color: SEVERITY_COLORS[selectedIncident.severity], border: `1px solid ${SEVERITY_COLORS[selectedIncident.severity]}40` }}>
                 {selectedIncident.severity}
               </span>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: 'rgba(0,0,128,.1)', color: '#000080', border: '1px solid rgba(0,0,128,.3)' }}>
+              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: 'rgba(0,212,255,.1)', color: '#00d4ff', border: '1px solid rgba(0,212,255,.25)' }}>
                 {selectedIncident.status}
               </span>
             </div>

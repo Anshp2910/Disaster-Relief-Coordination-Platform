@@ -75,9 +75,9 @@ export default function Geofencing() {
     if (circleRef.current) map.removeLayer(circleRef.current)
     circleRef.current = L.circle([position.lat, position.lng], {
       radius: radius * 1000,
-      fillColor: '#000080',
+      fillColor: '#00d4ff',
       fillOpacity: 0.08,
-      color: '#000080',
+      color: '#00d4ff',
       weight: 2,
       dashArray: '6,4',
     }).addTo(map)

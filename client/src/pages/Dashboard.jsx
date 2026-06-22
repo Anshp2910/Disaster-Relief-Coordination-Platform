@@ -12,20 +12,20 @@ import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(0,0,128,.1)', border: 'rgba(0,0,128,.3)', text: '#000080' },
-  'Pending': { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' },
-  'In Progress': { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  'Resolved': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
-  'Fulfilled': { bg: 'rgba(19,136,8,.15)', border: 'rgba(19,136,8,.4)', text: '#0d6e06' },
+  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
+  'Pending': { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
+  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  'Fulfilled': { bg: 'rgba(48,209,88,.1)', border: 'rgba(48,209,88,.25)', text: '#30d158' },
 }
 
-const MAP_MARKER_COLORS = { 'Open': '#000080', 'Pending': '#666', 'In Progress': '#cc7a00', 'Resolved': '#138808', 'Fulfilled': '#0d6e06' }
+const MAP_MARKER_COLORS = { 'Open': '#00d4ff', 'Pending': '#8e8e93', 'In Progress': '#f97316', 'Resolved': '#10b981', 'Fulfilled': '#30d158' }
 
 const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(204,0,0,.1)', border: 'rgba(204,0,0,.3)', text: '#cc0000' },
-  'High': { bg: 'rgba(204,102,0,.1)', border: 'rgba(204,102,0,.3)', text: '#cc6600' },
-  'Medium': { bg: 'rgba(255,153,51,.12)', border: 'rgba(255,153,51,.35)', text: '#cc7a00' },
-  'Low': { bg: 'rgba(19,136,8,.1)', border: 'rgba(19,136,8,.3)', text: '#138808' },
+  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
+  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
+  'Medium': { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
+  'Low': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
 }
 
 const Badge = memo(function Badge({ label, colors, colorKey }) {
@@ -160,19 +160,20 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', background: 'rgba(0,0,128,0.03)' }}>
+      <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(0,212,255,0.1)', position: 'relative' }}>
         <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" loading="eager" fetchpriority="high" width="1200" height="300" style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/1' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05))', pointerEvents: 'none' }} />
       </div>
       {resourceSummary.length > 0 && (
-        <div className="card" style={{ marginBottom: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-            <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>{t('dashboard.resourceInventory')}</h3>
-            <button onClick={() => navigate('/resources')} style={{ fontSize: 12, padding: '4px 10px' }}>{t('dashboard.viewAll')}</button>
+        <div className="card" style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--neon-cyan)' }}>{t('dashboard.resourceInventory')}</h3>
+            <button onClick={() => navigate('/resources')} style={{ fontSize: 12, padding: '5px 12px' }}>{t('dashboard.viewAll')}</button>
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {resourceSummary.map((s) => (
-              <div key={s._id} style={{ padding: '6px 12px', borderRadius: 6, fontSize: 12, background: 'rgba(0,0,128,0.05)', border: '1px solid rgba(0,0,128,0.1)' }}>
-                <strong>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: '#cc7a00' }}>({s.lowCount} low)</span>}
+              <div key={s._id} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 12, background: 'rgba(0,212,255,0.06)', border: '1px solid rgba(0,212,255,0.12)', backdropFilter: 'blur(4px)' }}>
+                <strong style={{ color: 'var(--neon-cyan)' }}>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: 'var(--neon-orange)' }}>({s.lowCount} low)</span>}
               </div>
             ))}
           </div>
@@ -223,7 +224,7 @@ export default function Dashboard() {
                     <div key={it._id} className="listCard" style={{ cursor: 'pointer' }} onClick={() => navigate(`/requests/${it._id}`)}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: 15, color: '#000080' }}>{it.title}</div>
+                          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--neon-cyan)' }}>{it.title}</div>
                           <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
                             <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
                             <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
@@ -232,7 +233,7 @@ export default function Dashboard() {
                           <div className="muted" style={{ marginTop: 8, fontSize: 13 }}>{it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
                           <div className="small" style={{ marginTop: 8 }}>{it.locationName}</div>
                           {it.createdBy && <div className="small" style={{ marginTop: 4 }}>{t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}</div>}
-                          {it.claimedBy && <div className="small" style={{ marginTop: 2, color: '#cc7a00' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
+                          {it.claimedBy && <div className="small" style={{ marginTop: 2, color: 'var(--neon-orange)' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
                         </div>
                         <OwnerActions id={it._id} item={it} onChanged={load} />
                       </div>

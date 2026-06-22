@@ -33,20 +33,28 @@ export default function Login() {
       <div className="govt-auth-card">
         <div className="card">
           <div className="govt-emblem">
-            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="25" cy="25" r="22" stroke="#000080" strokeWidth="2.5" fill="none" />
-              <circle cx="25" cy="25" r="5" fill="#000080" />
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="emblemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#00d4ff" />
+                  <stop offset="100%" stopColor="#7c3aed" />
+                </linearGradient>
+              </defs>
+              <circle cx="28" cy="28" r="25" stroke="url(#emblemGrad)" strokeWidth="2" fill="none" opacity="0.6" />
+              <circle cx="28" cy="28" r="18" stroke="url(#emblemGrad)" strokeWidth="1" fill="none" opacity="0.3" />
+              <circle cx="28" cy="28" r="5" fill="url(#emblemGrad)" />
               {[...Array(24)].map((_, i) => {
                 const angle = (i * 15 * Math.PI) / 180
                 return (
                   <line
                     key={i}
-                    x1={25}
-                    y1={25}
-                    x2={25 + 20 * Math.sin(angle)}
-                    y2={25 - 20 * Math.cos(angle)}
-                    stroke="#000080"
-                    strokeWidth="1"
+                    x1={28}
+                    y1={28}
+                    x2={28 + 22 * Math.sin(angle)}
+                    y2={28 - 22 * Math.cos(angle)}
+                    stroke="url(#emblemGrad)"
+                    strokeWidth="0.8"
+                    opacity="0.4"
                   />
                 )
               })}
@@ -55,7 +63,7 @@ export default function Login() {
           <h1 className="govt-app-title">{t('auth.appName')}</h1>
           <p className="govt-app-slogan">{t('auth.slogan')}</p>
           <hr className="govt-divider" />
-          <h2 className="pageTitle" style={{ textAlign: 'left' }}>{t('auth.loginTitle')}</h2>
+          <h2 className="pageTitle" style={{ textAlign: 'left', fontSize: 18 }}>{t('auth.loginTitle')}</h2>
 
           <form onSubmit={onSubmit} className="inputGrid">
             {error ? <div className="errorText">{error}</div> : null}
@@ -80,7 +88,7 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="muted" style={{ marginTop: 16 }}>
+          <p className="muted" style={{ marginTop: 20 }}>
             {t('auth.noAccount')}{' '}
             <a href="/register" onClick={(e) => (e.preventDefault(), navigate('/register'))}>
               {t('auth.registerLink')}

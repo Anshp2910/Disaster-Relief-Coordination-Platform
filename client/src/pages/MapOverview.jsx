@@ -9,7 +9,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { escapeHtml } from '../utils/escapeHtml'
 
 const STATUS_COLORS = {
-  Open: '#000080',
+  Open: '#00d4ff',
   Pending: '#666',
   'In Progress': '#cc7a00',
   Resolved: '#138808',
@@ -87,7 +87,7 @@ export default function MapOverview() {
     filtered.forEach((item) => {
       if (item.lat == null || item.lng == null) return
 
-      const color = STATUS_COLORS[item.status] || '#000080'
+      const color = STATUS_COLORS[item.status] || '#00d4ff'
       const marker = L.circleMarker([item.lat, item.lng], {
         radius: 8,
         fillColor: color,
@@ -101,7 +101,7 @@ export default function MapOverview() {
           <div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div>
           <div style="font-size:12px;color:#666;margin-bottom:4px">${t(`statuses.${item.status}`)} | ${t(`priorities.${item.priority}`)}</div>
           <div style="font-size:12px;color:#666;margin-bottom:8px">${escapeHtml(item.locationName)}</div>
-          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:#000080;color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a>
+          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:linear-gradient(135deg,rgba(0,212,255,0.9),rgba(124,58,237,0.9));color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a>
         </div>
       `)
 

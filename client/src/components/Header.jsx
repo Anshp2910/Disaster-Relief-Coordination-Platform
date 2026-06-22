@@ -143,9 +143,31 @@ export default function Header() {
           </nav>
           {isAuthenticated && (
             <div className="gov-nav-actions">
-              <div title={connected ? 'Connected' : 'Disconnected'} style={{ width: 8, height: 8, borderRadius: '50%', background: connected ? '#138808' : '#cc0000', flexShrink: 0 }} />
-              <button onClick={toggleDarkMode} title={darkMode ? 'Light mode' : 'Dark mode'} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }}>
-                {darkMode ? '\u2600' : '\u263E'}
+              <div
+                title={connected ? 'Connected' : 'Disconnected'}
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: connected ? 'var(--neon-green)' : 'var(--neon-red)',
+                  flexShrink: 0,
+                  boxShadow: connected ? '0 0 8px var(--neon-green)' : '0 0 8px var(--neon-red)',
+                }}
+              />
+              <button
+                onClick={toggleDarkMode}
+                title={darkMode ? 'Light mode' : 'Dark mode'}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 16,
+                  padding: '4px 8px',
+                  borderRadius: 8,
+                  transition: 'all 0.2s',
+                }}
+              >
+                {darkMode ? '\u2600\uFE0F' : '\u{1F319}'}
               </button>
               <NotificationBell />
               <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">
