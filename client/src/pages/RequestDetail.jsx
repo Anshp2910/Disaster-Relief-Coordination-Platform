@@ -256,7 +256,7 @@ export default function RequestDetail() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 16 }}>
         {/* Details Card */}
         <div className="card">
           <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 700, color: 'var(--neon-cyan)' }}>{t('editRequest.subtitle')}</h3>

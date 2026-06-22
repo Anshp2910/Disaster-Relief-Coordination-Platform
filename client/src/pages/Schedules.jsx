@@ -306,7 +306,7 @@ export default function Schedules() {
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 8 }}>
                 <div>
                   <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.start')}</label>
                   <input type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required style={{ width: '100%' }} />

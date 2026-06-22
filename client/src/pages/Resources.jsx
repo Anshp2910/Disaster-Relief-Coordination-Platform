@@ -255,7 +255,7 @@ export default function Resources() {
       {showForm && (
         <div className="card" style={{ marginTop: 12 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{editItem ? t('resources.editResource') : t('resources.addNewResource')}</h3>
-          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8, gridTemplateColumns: '1fr 1fr' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))' }}>
             <input placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required maxLength={200} style={{ gridColumn: '1 / -1' }} />
             <select value={form.category} onChange={(e) => updateForm('category', e.target.value)}>
               {CATEGORIES.filter((c) => c !== 'All').map((c) => (

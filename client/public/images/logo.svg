@@ -1,24 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
   <defs>
-    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="g" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#00d4ff"/>
-      <stop offset="50%" stop-color="#3b82f6"/>
       <stop offset="100%" stop-color="#7c3aed"/>
     </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="1.5" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
   </defs>
-  <!-- Shield -->
-  <path d="M24 4 L40 12 L40 28 C40 36 32 42 24 44 C16 42 8 36 8 28 L8 12 Z" 
-        fill="url(#shieldGrad)" opacity="0.9" filter="url(#glow)"/>
-  <path d="M24 8 L36 14 L36 28 C36 34 30 38 24 40 C18 38 12 34 12 28 L12 14 Z" 
-        fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
-  <!-- Cross -->
-  <rect x="22" y="15" width="4" height="18" rx="1.5" fill="white" opacity="0.95"/>
-  <rect x="16" y="21" width="16" height="4" rx="1.5" fill="white" opacity="0.95"/>
+  <path d="M24 3L42 11v17c0 9-8 15-18 18C14 43 6 37 6 28V11L24 3z" fill="url(#g)"/>
+  <path d="M24 7l14 6v14c0 7-6 12-14 14-8-2-14-7-14-14V13l14-6z" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <rect x="21.5" y="14" width="5" height="20" rx="2" fill="#fff"/>
+  <rect x="14" y="21.5" width="20" height="5" rx="2" fill="#fff"/>
 </svg>

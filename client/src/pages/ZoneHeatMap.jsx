@@ -335,7 +335,7 @@ export default function ZoneHeatMap() {
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
               <input placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))', gap: 8 }}>
                 <select value={form.disasterType} onChange={updateForm('disasterType')}>
                   {Object.keys(DISASTER_ICONS).map((d) => (
                     <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>
@@ -353,12 +353,12 @@ export default function ZoneHeatMap() {
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 8 }}>
                 <input type="number" step="any" placeholder={t('zones.centerLat')} value={form.centerLat} onChange={updateForm('centerLat')} required />
                 <input type="number" step="any" placeholder={t('zones.centerLng')} value={form.centerLng} onChange={updateForm('centerLng')} required />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 8 }}>
                 <input type="number" placeholder={t('zones.radiusKm')} value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
                 <input type="number" placeholder={t('zones.affectedPopulationPlaceholder')} value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
               </div>

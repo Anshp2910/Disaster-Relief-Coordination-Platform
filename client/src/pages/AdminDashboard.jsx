@@ -468,7 +468,7 @@ export default function AdminDashboard() {
 
         {error && <div className="errorText" style={{ marginTop: 12 }}>{error}</div>}
 
-        <div style={{ display: 'flex', gap: 4, marginTop: 20, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ display: 'flex', gap: 4, marginTop: 20, borderBottom: '1px solid rgba(255,255,255,0.06)', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {tabs.map((tab) => (
             <button
               key={tab.id}

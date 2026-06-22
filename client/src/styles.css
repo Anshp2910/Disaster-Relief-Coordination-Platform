@@ -513,6 +513,8 @@ input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.25); }
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.grid-2-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px; }
+.grid-3-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 14px; }
 
 /* === List Card === */
 .listCard {
@@ -1298,21 +1300,145 @@ button, a, input, select, textarea { touch-action: manipulation; }
 
 /* ============================
    RESPONSIVE BREAKPOINTS
+   Universal device coverage:
+   320px  - Small phones (iPhone SE, Galaxy Mini)
+   360px  - Standard phones (Pixel, Galaxy S)
+   390px  - iPhone 14/15
+   428px  - Large phones (iPhone Plus/Max)
+   480px  - Small tablets / large phones landscape
+   600px  - Tablets portrait (iPad Mini, Kindle)
+   768px  - Tablets (iPad, Android tablets)
+   900px  - Small laptops
+   1024px - Tablets landscape / small laptops
+   1200px - Laptops
+   1440px - Desktops
+   1920px - Large screens
    ============================ */
 
-@media (max-width: 1200px) {
-  .container { max-width: 100%; }
-  .gov-container { max-width: 100%; }
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+/* === Base: Ensure no overflow on any device === */
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-@media (max-width: 900px) {
-  .gov-footer-grid { grid-template-columns: 1fr; gap: 24px; }
-  .grid-3 { grid-template-columns: repeat(2, 1fr); }
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
-  .gov-header-main .gov-container { flex-wrap: wrap; }
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
+img, video, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* === Small Phones (320px-359px) === */
+@media (max-width: 359px) {
+  .gov-container { padding: 0 12px; }
+  .container { padding: 0 10px; margin: 8px auto; }
+  .card { padding: 12px; border-radius: 8px; }
+  .listCard { padding: 10px; }
+  .gov-logo { height: 28px; }
+  .gov-app-title { font-size: 13px; }
+  .gov-app-subtitle { font-size: 9px; letter-spacing: 0.3px; }
+  .gov-header-main { padding: 8px 0; }
+  .gov-header-main .gov-container { gap: 8px; }
+  .gov-top-strip { font-size: 10px; padding: 3px 0; }
+  .gov-nav-link { padding: 10px 10px; font-size: 11px; }
+  .gov-mobile-link { padding: 10px 14px; font-size: 12px; }
+  .pageTitle { font-size: 16px !important; }
+  .filter-pill { padding: 4px 8px; font-size: 10px; }
+  .btnPrimary, .btnDanger, button { padding: 8px 12px; font-size: 13px; }
+  .inputGrid { gap: 10px; }
+  input, textarea, select { padding: 10px 10px; font-size: 13px; }
+  .govt-auth-wrapper { padding: 12px 8px; min-height: auto; }
+  .govt-app-title { font-size: 20px; }
+  .govt-app-slogan { font-size: 11px; }
+  .govt-divider { margin: 0 0 16px; }
+  .admin-stats-grid { grid-template-columns: 1fr; gap: 10px; }
+  .admin-stat-card { padding: 14px; gap: 10px; }
+  .admin-stat-value { font-size: 24px; }
+  .admin-table-wrapper { font-size: 12px; }
+  .admin-table th, .admin-table td { padding: 6px 8px; font-size: 11px; }
+  .admin-toolbar { gap: 8px; }
+  .admin-search { min-width: 0; width: 100%; font-size: 12px; padding: 8px 10px; }
+  .notification-dropdown { width: calc(100vw - 8px); right: -4px; max-height: 70vh; }
+  .pwa-install-banner { padding: 10px 12px; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .pwa-install-banner span { font-size: 12px !important; }
+  .mapBox { height: 200px; min-height: 160px; }
+  .map-container-full { height: 40vh !important; min-height: 180px; }
+  .govt-auth-card { max-width: 100%; }
+}
+
+/* === Standard Phones (360px-389px) === */
+@media (min-width: 360px) and (max-width: 389px) {
+  .gov-container { padding: 0 14px; }
+  .container { padding: 0 12px; margin: 10px auto; }
+  .card { padding: 14px; }
+  .gov-logo { height: 30px; }
+  .gov-app-title { font-size: 14px; }
+  .gov-app-subtitle { font-size: 10px; }
+  .gov-header-main { padding: 8px 0; }
+  .gov-nav-link { padding: 10px 12px; font-size: 12px; }
+  .gov-mobile-link { padding: 12px 16px; font-size: 13px; }
+  .filter-pill { padding: 4px 10px; font-size: 11px; }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .admin-stat-card { padding: 16px; }
+  .notification-dropdown { width: calc(100vw - 16px); right: -8px; }
+  .mapBox { height: 220px; min-height: 180px; }
+  .map-container-full { height: 45vh !important; min-height: 200px; }
+}
+
+/* === iPhone 14/15 & Standard (390px-427px) === */
+@media (min-width: 390px) and (max-width: 427px) {
+  .gov-logo { height: 32px; }
+  .gov-app-title { font-size: 14px; }
+  .gov-app-subtitle { font-size: 10px; }
+  .gov-nav-link { padding: 10px 12px; font-size: 12px; }
+  .container { margin: 12px auto; }
+  .notification-dropdown { width: calc(100vw - 24px); right: -12px; }
+}
+
+/* === Large Phones (428px-479px) === */
+@media (min-width: 428px) and (max-width: 479px) {
+  .gov-logo { height: 34px; }
+  .gov-app-title { font-size: 15px; }
+  .notification-dropdown { width: 340px; right: 0; }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* === 480px - Small Tablets / Large Phones === */
+@media (max-width: 480px) {
+  .gov-top-strip { font-size: 11px; padding: 4px 0; }
+  .gov-logo { height: 30px; }
+  .gov-app-title { font-size: 14px; }
+  .gov-app-subtitle { font-size: 10px; }
+  .gov-mobile-link { padding: 12px 18px; font-size: 13px; }
+  .notification-dropdown { width: calc(100vw - 16px); right: -8px; }
+  .mapBox { height: 220px; min-height: 180px; border-radius: 0; border-left: none; border-right: none; }
+  .map-container-full { height: 45vh !important; min-height: 220px; }
+  .admin-stats-grid { grid-template-columns: 1fr; }
+  .card { padding: 14px; border-radius: var(--radius-sm); }
+  .listCard { padding: 12px; }
+  .filter-pill { padding: 5px 12px; font-size: 11px; }
+  .govt-auth-wrapper { min-height: auto; padding: 16px 12px; }
+  .headerRow { gap: 8px; }
+  .btnRow { gap: 6px; }
+  .btnRow button { flex: 1; min-width: 0; white-space: nowrap; font-size: 12px; padding: 8px 10px; }
+}
+
+/* === 600px - Tablets Portrait === */
+@media (min-width: 481px) and (max-width: 600px) {
+  .gov-logo { height: 34px; }
+  .gov-app-title { font-size: 15px; }
+  .container { margin: 16px auto; padding: 0 16px; }
+  .card { padding: 18px; }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .notification-dropdown { width: 340px; right: 0; }
+}
+
+/* === 768px - Tablets === */
 @media (max-width: 768px) {
   .gov-hamburger { display: block; }
   .gov-mobile-menu { display: block; }
@@ -1343,20 +1469,81 @@ button, a, input, select, textarea { touch-action: manipulation; }
   .govt-auth-card { max-width: 100%; }
 }
 
-@media (max-width: 480px) {
-  .gov-top-strip { font-size: 11px; padding: 4px 0; }
-  .gov-logo { height: 30px; }
-  .gov-app-title { font-size: 14px; }
-  .gov-app-subtitle { font-size: 10px; }
-  .gov-mobile-link { padding: 12px 18px; font-size: 13px; }
-  .notification-dropdown { width: calc(100vw - 16px); right: -8px; }
-  .mapBox { height: 220px; min-height: 180px; border-radius: 0; border-left: none; border-right: none; }
-  .map-container-full { height: 45vh !important; min-height: 220px; }
-  .admin-stats-grid { grid-template-columns: 1fr; }
-  .card { padding: 14px; border-radius: var(--radius-sm); }
-  .listCard { padding: 12px; }
-  .filter-pill { padding: 5px 12px; font-size: 11px; }
-  .govt-auth-wrapper { min-height: auto; padding: 16px 12px; }
+/* === 900px - Small Laptops === */
+@media (max-width: 900px) {
+  .gov-footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .gov-header-main .gov-container { flex-wrap: wrap; }
+  .gov-footer { padding: 36px 0 0; }
+}
+
+/* === 1024px - Tablets Landscape / Small Laptops === */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .gov-container { padding: 0 20px; }
+  .container { padding: 0 20px; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .gov-footer-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-breakdown-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* === 1200px - Laptops === */
+@media (max-width: 1200px) {
+  .container { max-width: 100%; }
+  .gov-container { max-width: 100%; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .admin-stats-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+
+/* === 1440px+ Desktops === */
+@media (min-width: 1440px) {
+  .gov-container { padding: 0 32px; }
+  .container { padding: 0 32px; }
+  .admin-stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* === 1920px+ Large Screens === */
+@media (min-width: 1920px) {
+  .gov-container { max-width: 1600px; padding: 0 48px; }
+  .container { max-width: 1600px; padding: 0 48px; }
+  .gov-app-title { font-size: 20px; }
+  .gov-logo { height: 52px; }
+  .card { padding: 28px; }
+  .admin-stat-value { font-size: 36px; }
+}
+
+/* === Landscape Phone === */
+@media (max-height: 500px) and (orientation: landscape) {
+  .govt-auth-wrapper { min-height: auto; padding: 10px 16px; }
+  .govt-auth-card .card { padding: 16px; }
+  .govt-emblem { margin-bottom: 8px; }
+  .govt-emblem svg { width: 36px; height: 36px; }
+  .govt-app-title { font-size: 18px; }
+  .govt-app-slogan { margin-bottom: 12px; }
+  .map-container-full { height: 55vh !important; }
+}
+
+/* === Touch Device Optimizations === */
+@media (hover: none) and (pointer: coarse) {
+  button, .filter-pill, .gov-nav-link, .gov-mobile-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .gov-nav-link { padding: 14px 16px; }
+  input, textarea, select {
+    min-height: 44px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+  .filter-pill { padding: 8px 16px; }
+  .sos-btn { min-height: 44px !important; padding: 10px 18px !important; }
+}
+
+/* === High DPI / Retina Displays === */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .card, .listCard, .admin-stat-card, .admin-breakdown-card, .admin-table-wrapper {
+    border-width: 0.5px;
+  }
 }
 
 /* === Skeleton Loading === */
@@ -1428,6 +1615,49 @@ button, a, input, select, textarea { touch-action: manipulation; }
     color: rgba(255, 255, 255, 0.3) !important;
   }
   .leaflet-control-attribution a { color: rgba(0, 212, 255, 0.5) !important; }
+}
+
+/* === Universal Overflow Fixes === */
+.admin-table-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/* Prevent text overflow everywhere */
+.gov-app-title,
+.gov-app-subtitle,
+.pageTitle,
+.admin-stat-label,
+.admin-request-title,
+.notification-title,
+.notification-message {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gov-app-subtitle {
+  white-space: nowrap;
+}
+
+/* Form elements never overflow their container */
+input, textarea, select {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Buttons never overflow */
+button {
+  box-sizing: border-box;
+}
+
+/* Fix flex items shrinking too much */
+.btnRow > button,
+.btnRow > a {
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 /* === Dark Mode Overrides (Light Mode as Alternative) === */

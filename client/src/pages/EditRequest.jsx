@@ -228,7 +228,7 @@ export default function EditRequest() {
             style={{ resize: 'vertical' }}
           />
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))', gap: 12 }}>
             <div>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.categoryLabel')}</label>
               <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%' }}>
