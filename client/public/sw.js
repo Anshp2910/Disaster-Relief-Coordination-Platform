@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v6'
+const CACHE_VERSION = 'v7'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
@@ -44,7 +44,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(networkOnlyForHtml(request))
+    event.respondWith(staleWhileRevalidateHtml(request))
     return
   }
 
@@ -61,16 +61,33 @@ function limitCache(cacheName, maxItems) {
   })
 }
 
-function networkOnlyForHtml(request) {
-  return fetch(request).then((response) => {
-    if (response && response.status === 200) {
-      const clone = response.clone()
-      caches.open(STATIC_CACHE).then((cache) => {
-        cache.put(request, clone)
+function staleWhileRevalidateHtml(request) {
+  return caches.match(request).then((cached) => {
+    const fetched = fetch(request).then((response) => {
+      if (response && response.status === 200) {
+        const clone = response.clone()
+        caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone))
+      }
+      return response
+    }).catch(() => cached)
+
+    if (cached) {
+      fetched.then((freshResponse) => {
+        if (freshResponse && freshResponse.ok) {
+          caches.match(request).then((latestCached) => {
+            if (!latestCached || latestCached.headers.get('etag') !== freshResponse.headers.get('etag')) {
+              self.clients.matchAll({ type: 'window' }).then((clients) => {
+                clients.forEach((client) => client.postMessage({ type: 'NEW_VERSION' }))
+              })
+            }
+          })
+        }
       })
+      return cached
     }
-    return response
-  }).catch(() => caches.match(request))
+
+    return fetched
+  })
 }
 
 function networkFirstStrategy(request, cacheName, maxItems) {

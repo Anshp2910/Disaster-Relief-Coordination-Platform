@@ -2,27 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [
-    react(),
-    {
-      name: 'build-version',
-      transformIndexHtml(html) {
-        const timestamp = Date.now()
-        return html.replace(
-          '</head>',
-          `<meta name="build-version" content="${timestamp}" />\n  </head>`
-        )
-      },
-      generateBundle() {
-        const timestamp = Date.now()
-        this.emitFile({
-          type: 'asset',
-          fileName: 'version.json',
-          source: JSON.stringify({ version: timestamp, buildTime: new Date().toISOString() }),
-        })
-      },
-    },
-  ],
+  plugins: [react()],
   server: {
     port: 5173,
   },
