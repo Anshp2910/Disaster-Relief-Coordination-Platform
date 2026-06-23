@@ -70,6 +70,16 @@
         </div>
       </div>
     </div>
+    <script>
+      (function() {
+        var saved = localStorage.getItem('theme');
+        var isLight;
+        if (saved === 'light') isLight = true;
+        else if (saved === 'dark') isLight = false;
+        else isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (isLight) document.documentElement.classList.add('dark');
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
     <script>
       if ('serviceWorker' in navigator) {

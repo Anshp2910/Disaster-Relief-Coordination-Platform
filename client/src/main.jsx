@@ -7,6 +7,7 @@ import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './components/Toast'
 import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import { useVersionCheck } from './hooks/useVersionCheck'
 import 'leaflet/dist/leaflet.css'
 import './styles.css'
@@ -20,14 +21,16 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       <I18nextProvider i18n={i18n}>
-        <HashRouter>
-          <AuthProvider>
-            <ToastProvider>
-              <VersionChecker />
-              <App />
-            </ToastProvider>
-          </AuthProvider>
-        </HashRouter>
+        <ThemeProvider>
+          <HashRouter>
+            <AuthProvider>
+              <ToastProvider>
+                <VersionChecker />
+                <App />
+              </ToastProvider>
+            </AuthProvider>
+          </HashRouter>
+        </ThemeProvider>
       </I18nextProvider>
     </ErrorBoundary>
   </React.StrictMode>,
