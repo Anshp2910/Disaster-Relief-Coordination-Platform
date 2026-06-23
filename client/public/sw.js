@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5'
+const CACHE_VERSION = 'v6'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
@@ -44,7 +44,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(networkFirstStrategy(request, STATIC_CACHE))
+    event.respondWith(networkOnlyForHtml(request))
     return
   }
 
@@ -59,6 +59,18 @@ function limitCache(cacheName, maxItems) {
       }
     })
   })
+}
+
+function networkOnlyForHtml(request) {
+  return fetch(request).then((response) => {
+    if (response && response.status === 200) {
+      const clone = response.clone()
+      caches.open(STATIC_CACHE).then((cache) => {
+        cache.put(request, clone)
+      })
+    }
+    return response
+  }).catch(() => caches.match(request))
 }
 
 function networkFirstStrategy(request, cacheName, maxItems) {

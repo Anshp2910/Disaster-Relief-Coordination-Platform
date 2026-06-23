@@ -7,8 +7,14 @@ import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './components/Toast'
 import { AuthProvider } from './context/AuthContext'
+import { useVersionCheck } from './hooks/useVersionCheck'
 import 'leaflet/dist/leaflet.css'
 import './styles.css'
+
+function VersionChecker() {
+  useVersionCheck()
+  return null
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -17,6 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <HashRouter>
           <AuthProvider>
             <ToastProvider>
+              <VersionChecker />
               <App />
             </ToastProvider>
           </AuthProvider>
