@@ -260,13 +260,13 @@ export default function EditRequest() {
             <input type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} style={{ width: '100%' }} />
           </div>
 
-          <div className="card" style={{ padding: 12, background: '#f8f8f8' }}>
+          <div className="card" style={{ padding: 12, background: 'var(--gov-bg)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
               <div>
                 <div className="pageTitle" style={{ marginBottom: 4, fontSize: 15 }}>{t('createRequest.selectLocation')}</div>
-                <div style={{ color: '#666', fontSize: 13 }}>{t('createRequest.locationHint')}</div>
+                <div style={{ color: 'var(--gov-muted)', fontSize: 13 }}>{t('createRequest.locationHint')}</div>
               </div>
-              <div style={{ fontSize: 13, color: '#555' }}>
+              <div style={{ fontSize: 13, color: 'var(--gov-muted)' }}>
                 {lat && lng ? (
                   <>
                     <div><b>{t('createRequest.lat')}</b> {Number(lat).toFixed(5)}</div>
@@ -285,8 +285,8 @@ export default function EditRequest() {
                 disabled={locating}
                 style={{
                   flex: '0 0 auto', padding: '8px 14px', borderRadius: 4,
-                  border: '1px solid #ccc', background: '#fff',
-                  color: '#333', fontSize: 13, whiteSpace: 'nowrap',
+                  border: '1px solid var(--gov-border)', background: 'var(--gov-white)',
+                  color: 'var(--gov-text)', fontSize: 13, whiteSpace: 'nowrap',
                   cursor: locating ? 'wait' : 'pointer',
                 }}
               >
@@ -302,8 +302,8 @@ export default function EditRequest() {
                   placeholder={t('createRequest.searchPlaceholder')}
                   style={{
                     width: '100%', padding: '10px 12px', paddingRight: 70,
-                    borderRadius: 4, border: '1px solid #ccc',
-                    background: '#fff', color: '#333', fontSize: 14, boxSizing: 'border-box',
+                    borderRadius: 4, border: '1px solid var(--gov-border)',
+                    background: 'var(--gov-white)', color: 'var(--gov-text)', fontSize: 14, boxSizing: 'border-box',
                   }}
                 />
                 <button
@@ -323,7 +323,7 @@ export default function EditRequest() {
                 {suggestions.length > 0 && (
                   <div style={{
                     position: 'absolute', zIndex: 1000, top: '100%', left: 0, right: 0,
-                    background: '#fff', border: '1px solid #ccc',
+                    background: 'var(--gov-white)', border: '1px solid var(--gov-border)',
                     borderRadius: 4, marginTop: 4, maxHeight: 200, overflowY: 'auto',
                   }}>
                     {suggestions.map((s, i) => (
@@ -332,10 +332,10 @@ export default function EditRequest() {
                         onClick={() => pickSuggestion(s)}
                         style={{
                           padding: '8px 12px', cursor: 'pointer',
-                          borderBottom: i < suggestions.length - 1 ? '1px solid #eee' : 'none',
-                          color: '#333', fontSize: 13,
+                          borderBottom: i < suggestions.length - 1 ? '1px solid var(--gov-border)' : 'none',
+                          color: 'var(--gov-text)', fontSize: 13,
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = '#f0f0f0'}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--gov-bg)'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                       >
                         {s.display_name}

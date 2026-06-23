@@ -348,7 +348,7 @@ export default function Incidents() {
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('incidents.cancel')}</button>
+                <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('incidents.cancel')}</button>
               </div>
             </form>
           </div>

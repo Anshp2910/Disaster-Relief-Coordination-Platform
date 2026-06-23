@@ -195,7 +195,7 @@ export default function MapOverview() {
 
         {!loading && error && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
-            <div style={{ fontSize: 16, color: '#cc0000', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
+            <div style={{ fontSize: 16, color: 'var(--gov-danger)', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
             <div className="muted">{error}</div>
           </div>
         )}

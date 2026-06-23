@@ -333,7 +333,7 @@ export default function ZoneHeatMap() {
                 <span>{sev}</span>
               </div>
             ))}
-            <span style={{ fontSize: 12, color: '#999' }}>&middot;</span>
+            <span style={{ fontSize: 12, color: 'var(--gov-muted)' }}>&middot;</span>
             {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
               <div key={cov} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: c }} />
@@ -350,7 +350,7 @@ export default function ZoneHeatMap() {
                 <h3 style={{ margin: 0, fontSize: 15, color: '#00d4ff' }}>
                   {DISASTER_ICONS[selectedZone.disasterType]} {selectedZone.name}
                 </h3>
-                <div style={{ fontSize: 12, marginTop: 4, color: '#666' }}>
+                <div style={{ fontSize: 12, marginTop: 4, color: 'var(--gov-muted)' }}>
                   {selectedZone.disasterType} &middot; {selectedZone.status}
                 </div>
               </div>
@@ -371,13 +371,13 @@ export default function ZoneHeatMap() {
               {selectedZone.affectedPopulation > 0 && (
                 <div>Affected: <strong>{selectedZone.affectedPopulation.toLocaleString()}</strong></div>
               )}
-              <div>Open requests: <strong style={{ color: '#cc0000' }}>{selectedZone.openRequests}</strong></div>
+              <div>Open requests: <strong style={{ color: 'var(--gov-danger)' }}>{selectedZone.openRequests}</strong></div>
               <div>{t('zones.totalResources')}: <strong>{selectedZone.totalResources}</strong> {t('zones.units')}</div>
             </div>
 
             {selectedZone.stats?.openRequests > 0 && (
               <div style={{ marginTop: 12, padding: '8px 12px', background: 'rgba(239,68,68,0.06)', borderRadius: 6, fontSize: 12 }}>
-                <strong style={{ color: '#cc0000' }}>{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
+                <strong style={{ color: 'var(--gov-danger)' }}>{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
               </div>
             )}
 
@@ -431,7 +431,7 @@ export default function ZoneHeatMap() {
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="submit" className="btnPrimary" disabled={saving}>{saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('zones.cancel')}</button>
+                <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('zones.cancel')}</button>
               </div>
             </form>
           </div>

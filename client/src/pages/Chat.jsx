@@ -132,7 +132,7 @@ export default function Chat({ requestId, onClose }) {
           if (isSystem) {
             return (
               <div key={m._id || m.createdAt} style={{ display: 'flex', justifyContent: 'center' }}>
-                <div style={{ fontSize: 11, color: '#999', background: 'rgba(0,0,0,.04)', padding: '3px 10px', borderRadius: 12 }}>
+                <div style={{ fontSize: 11, color: 'var(--gov-muted)', background: 'rgba(0,0,0,.04)', padding: '3px 10px', borderRadius: 12 }}>
                   {m.text}
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function Chat({ requestId, onClose }) {
                 }}>
                   {m.text}
                 </div>
-                <div style={{ fontSize: 10, color: '#999', marginTop: 2, textAlign: isMe ? 'right' : 'left' }}>
+                <div style={{ fontSize: 10, color: 'var(--gov-muted)', marginTop: 2, textAlign: isMe ? 'right' : 'left' }}>
                   {formatTime(m.createdAt)}
                 </div>
               </div>
@@ -175,7 +175,7 @@ export default function Chat({ requestId, onClose }) {
           maxLength={2000}
           style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
         />
-        <span style={{ fontSize: 11, color: '#999', alignSelf: 'center' }}>{text.length}/2000</span>
+        <span style={{ fontSize: 11, color: 'var(--gov-muted)', alignSelf: 'center' }}>{text.length}/2000</span>
         <button type="submit" className="btnPrimary" disabled={!text.trim() || sending} style={{ fontSize: 12, padding: '6px 16px' }}>
           {sending ? '...' : t('chat.send')}
         </button>

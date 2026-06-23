@@ -270,7 +270,7 @@ export default function Resources() {
             <textarea placeholder={t('resources.notesOptional')} value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} style={{ gridColumn: '1 / -1' }} />
             <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 8 }}>
               <button type="submit" className="btnPrimary">{editItem ? t('resources.update') : t('resources.create')}</button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('resources.cancel')}</button>
+              <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('resources.cancel')}</button>
             </div>
           </form>
         </div>

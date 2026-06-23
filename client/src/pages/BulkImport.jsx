@@ -238,7 +238,7 @@ export default function BulkImport() {
         {!preview && (
           <>
             <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'white', cursor: 'pointer', fontSize: 13 }}>
+              <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'var(--gov-white)', cursor: 'pointer', fontSize: 13 }}>
                 {t('bulkImport.downloadTemplate')}
               </button>
               <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>{t('bulkImport.exportCSV')}</button>
@@ -291,24 +291,24 @@ export default function BulkImport() {
                     <tr
                       key={i}
                       style={{
-                        background: editingRow === i ? 'rgba(0,0,128,0.04)' : selected.has(i) ? 'rgba(19,136,8,0.03)' : '#fafafa',
+                        background: editingRow === i ? 'rgba(0,0,128,0.04)' : selected.has(i) ? 'rgba(19,136,8,0.03)' : 'var(--gov-bg)',
                         opacity: selected.has(i) ? 1 : 0.5,
                       }}
                     >
                       <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)' }}>
                         <input type="checkbox" checked={selected.has(i)} onChange={() => toggleRow(i)} />
                       </td>
-                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)', color: '#999' }}>{i + 1}</td>
+                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)', color: 'var(--gov-muted)' }}>{i + 1}</td>
                       {headers.map((h) => (
                         <td key={h} style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {editingRow === i ? (
                             <input
                               value={row[h]}
                               onChange={(e) => updateCell(i, h, e.target.value)}
-                              style={{ width: '100%', padding: '3px 6px', border: '1px solid #ccc', borderRadius: 3, fontSize: 12, boxSizing: 'border-box' }}
+                              style={{ width: '100%', padding: '3px 6px', border: '1px solid var(--gov-border)', borderRadius: 3, fontSize: 12, boxSizing: 'border-box' }}
                             />
                           ) : (
-                            row[h] || <span style={{ color: '#ccc' }}>-</span>
+                            row[h] || <span style={{ color: 'var(--gov-muted)' }}>-</span>
                           )}
                         </td>
                       ))}
@@ -330,12 +330,12 @@ export default function BulkImport() {
 
         {result && (
           <div style={{ marginTop: 16, padding: 12, borderRadius: 6, background: 'rgba(19,136,8,.06)', border: '1px solid rgba(19,136,8,.2)' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#138808' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--neon-green)' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
             {result.errors?.length > 0 && (
               <div style={{ marginTop: 8 }}>
-                <div style={{ fontSize: 12, color: '#cc0000', fontWeight: 600 }}>{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>
+                <div style={{ fontSize: 12, color: 'var(--gov-danger)', fontWeight: 600 }}>{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>
                 {result.errors.slice(0, 10).map((e, i) => (
-                  <div key={i} style={{ fontSize: 12, color: '#666', marginTop: 2 }}>Row {e.row}: {e.errors.join(', ')}</div>
+                  <div key={i} style={{ fontSize: 12, color: 'var(--gov-muted)', marginTop: 2 }}>Row {e.row}: {e.errors.join(', ')}</div>
                 ))}
               </div>
             )}

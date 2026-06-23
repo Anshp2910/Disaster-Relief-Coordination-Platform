@@ -229,11 +229,11 @@ export default function Dashboard() {
           </div>
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <button onClick={() => navigate('/admin')} style={{ color: '#000080', borderColor: '#000080' }}>{t('dashboard.admin')}</button>
+              <button onClick={() => navigate('/admin')} style={{ color: 'var(--gov-blue)', borderColor: 'var(--gov-blue)' }}>{t('dashboard.admin')}</button>
             )}
             <button
               onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-              style={{ color: '#000080', borderColor: viewMode === 'map' ? '#000080' : 'var(--gov-border)', background: viewMode === 'map' ? 'rgba(0,0,128,0.08)' : undefined, fontWeight: viewMode === 'map' ? 600 : 400 }}
+              style={{ color: 'var(--gov-blue)', borderColor: viewMode === 'map' ? 'var(--gov-blue)' : 'var(--gov-border)', background: viewMode === 'map' ? 'rgba(0,0,128,0.08)' : undefined, fontWeight: viewMode === 'map' ? 600 : 400 }}
             >
               {viewMode === 'list' ? t('dashboard.mapView') : t('dashboard.listView')}
             </button>
@@ -314,7 +314,7 @@ export default function Dashboard() {
             <div className="card" style={{ padding: 0, position: 'relative', marginTop: 16 }}>
               {mapLoading && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
-                  <div style={{ width: 24, height: 24, border: '3px solid #ccc', borderTopColor: '#000080', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
+                  <div style={{ width: 24, height: 24, border: '3px solid var(--gov-border)', borderTopColor: 'var(--gov-blue)', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
                 </div>
               )}
               <div ref={mapRef} className="map-container-full" style={{ height: '70vh', width: '100%', maxWidth: '100%' }} />

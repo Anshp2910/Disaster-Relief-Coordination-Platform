@@ -420,7 +420,7 @@ export default function RequestDetail() {
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <span className="small muted">{new Date(c.createdAt).toLocaleDateString()}</span>
                     {(currentUser?.id === c.createdBy?._id || currentUser?.role === 'admin') && (
-                      <button onClick={() => handleDeleteComment(c._id)} style={{ background: 'none', border: 'none', color: '#cc0000', cursor: 'pointer', fontSize: 11, padding: 0 }}>
+                      <button onClick={() => handleDeleteComment(c._id)} style={{ background: 'none', border: 'none', color: 'var(--gov-danger)', cursor: 'pointer', fontSize: 11, padding: 0 }}>
                         {t('requestDetail.delete')}
                       </button>
                     )}
@@ -513,7 +513,7 @@ export default function RequestDetail() {
                   <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
                 </div>
                 {f.comment && <div>{f.comment}</div>}
-                {f.deliveryConfirmed && <div className="small" style={{ color: '#138808', marginTop: 4 }}>{t('requestDetail.deliveryConfirmed')}</div>}
+                {f.deliveryConfirmed && <div className="small" style={{ color: 'var(--neon-green)', marginTop: 4 }}>{t('requestDetail.deliveryConfirmed')}</div>}
               </div>
             ))}
           </div>
@@ -530,15 +530,15 @@ export default function RequestDetail() {
             {previewFile.mimetype?.startsWith('image/') ? (
               <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: 8 }} />
             ) : previewFile.mimetype === 'application/pdf' ? (
-              <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile.filename} style={{ width: '80vw', height: '80vh', border: 'none', borderRadius: 8, background: 'white' }} />
+              <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile.filename} style={{ width: '80vw', height: '80vh', border: 'none', borderRadius: 8, background: 'var(--gov-white)' }} />
             ) : (
-              <div style={{ background: 'white', padding: 32, borderRadius: 8, textAlign: 'center', color: '#333' }}>
+              <div style={{ background: 'var(--gov-white)', padding: 32, borderRadius: 8, textAlign: 'center', color: 'var(--gov-text)' }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>&#128196;</div>
                 <div style={{ fontSize: 14, marginBottom: 16 }}>{previewFile.filename}</div>
                 <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary" style={{ padding: '8px 20px', fontSize: 13 }}>Download</a>
               </div>
             )}
-            <div style={{ textAlign: 'center', color: '#aaa', fontSize: 12, marginTop: 8 }}>{previewFile.filename}</div>
+            <div style={{ textAlign: 'center', color: 'var(--gov-muted)', fontSize: 12, marginTop: 8 }}>{previewFile.filename}</div>
           </div>
         </div>
       )}

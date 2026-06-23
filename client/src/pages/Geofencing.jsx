@@ -174,21 +174,21 @@ export default function Geofencing() {
             'var(--gov-blue)',
             'rgba(0,0,128,.06)',
             t('geofencing.zonesInArea'),
-            (z) => <>{z.name} <span style={{ color: '#666' }}>({z.distanceKm} km)</span></>
+            (z) => <>{z.name} <span style={{ color: 'var(--gov-muted)' }}>({z.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.requests || [],
             '#cc0000',
             'rgba(204,0,0,.06)',
             t('geofencing.requestsNearby'),
-            (r) => <>{r.title} <span style={{ color: '#666' }}>({r.distanceKm} km)</span></>
+            (r) => <>{r.title} <span style={{ color: 'var(--gov-muted)' }}>({r.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.resources || [],
             '#138808',
             'rgba(19,136,8,.06)',
             t('geofencing.resourcesNearby'),
-            (r) => <>{r.name} <span style={{ color: '#666' }}>({r.distanceKm} km)</span></>
+            (r) => <>{r.name} <span style={{ color: 'var(--gov-muted)' }}>({r.distanceKm} km)</span></>
           )}
         </div>
       )}

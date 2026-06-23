@@ -8,10 +8,10 @@ export default function NotFound() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', padding: 40, textAlign: 'center' }}>
       <div style={{ fontSize: 80, fontWeight: 800, background: 'linear-gradient(135deg, var(--neon-cyan), var(--neon-purple))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1, marginBottom: 8 }}>404</div>
-      <div style={{ fontSize: 18, fontWeight: 600, color: '#333', marginBottom: 8 }}>
+      <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--gov-text)', marginBottom: 8 }}>
         {t('notFound.title') || 'Page Not Found'}
       </div>
-      <div style={{ fontSize: 14, color: '#666', maxWidth: 400, marginBottom: 24 }}>
+      <div style={{ fontSize: 14, color: 'var(--gov-muted)', maxWidth: 400, marginBottom: 24 }}>
         {t('notFound.description') || 'The page you are looking for doesn\'t exist or has been moved.'}
       </div>
       <div style={{ display: 'flex', gap: 12 }}>

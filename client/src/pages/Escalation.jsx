@@ -137,7 +137,7 @@ export default function Escalation() {
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--neon-cyan)' }}>{item.title}</div>
-                  <div style={{ fontSize: 12, color: '#cc0000', marginTop: 2 }}>
+                  <div style={{ fontSize: 12, color: 'var(--gov-danger)', marginTop: 2 }}>
                     {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                   </div>
                   <div style={{ fontSize: 13, marginTop: 4 }}>{item.escalationReason}</div>

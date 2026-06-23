@@ -268,7 +268,7 @@ export default function Schedules() {
                       <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>{item.status}</span>
                     </div>
 
-                    <div style={{ fontSize: 13, color: '#555' }}>
+                    <div style={{ fontSize: 13, color: 'var(--gov-muted)' }}>
                       {formatDate(item.startDate)} &rarr; {formatDate(item.endDate)}
                     </div>
 
@@ -381,7 +381,7 @@ export default function Schedules() {
                           fontSize: 11, padding: '3px 8px', borderRadius: 4, border: '1px solid', cursor: 'pointer',
                           ...(active
                             ? { background: 'var(--gov-blue)', color: 'white', borderColor: 'var(--gov-blue)' }
-                            : { background: 'white', color: '#666', borderColor: '#ddd' }),
+                            : { background: 'var(--gov-white)', color: 'var(--gov-muted)', borderColor: 'var(--gov-border)' }),
                         }}
                       >
                         {s}
@@ -395,7 +395,7 @@ export default function Schedules() {
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="submit" className="btnPrimary">{editItem ? t('schedules.update') : t('schedules.create')}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: '#666' }}>{t('schedules.cancel')}</button>
+                <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('schedules.cancel')}</button>
               </div>
             </form>
           </div>
