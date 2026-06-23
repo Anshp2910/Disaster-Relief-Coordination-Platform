@@ -256,12 +256,12 @@ export default function Dashboard() {
           ))}
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12, background: 'var(--card-bg, #fff)', color: 'var(--text, #333)' }}>
+          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }}>
             {categoryOptions.map((c) => (
               <option key={c.key} value={c.key}>{c.key === 'All' ? t('dashboard.allCategories') : c.label}</option>
             ))}
           </select>
-          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12, background: 'var(--card-bg, #fff)', color: 'var(--text, #333)' }}>
+          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }}>
             {sortOptions.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
             ))}

@@ -230,7 +230,7 @@ export default function Schedules() {
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <select value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12, background: 'var(--card-bg, #fff)', color: 'var(--text, #333)' }}>
+          <select value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }}>
             <option value="All">{t('schedules.allZones')}</option>
             {zones.map((z) => (
               <option key={z._id} value={z._id}>{z.name}</option>
