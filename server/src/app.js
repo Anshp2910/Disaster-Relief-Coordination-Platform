@@ -64,9 +64,11 @@ export function createApp() {
       directives: {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
-        connectSrc: ["'self'", "ws:", "wss:", "https://*.vercel.app", ...allOrigins.filter((o) => !o.includes('*'))],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://fonts.googleapis.com"],
+        connectSrc: ["'self'", "ws:", "wss:", "https://*.vercel.app", "https://*.tile.openstreetmap.org", "https://nominatim.openstreetmap.org", ...allOrigins.filter((o) => !o.includes('*'))],
         scriptSrc: ["'self'", "'unsafe-inline'"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+        workerSrc: ["'self'"],
         formAction: ["'self'"],
         frameSrc: ["'self'"],
       },
