@@ -5,7 +5,7 @@ import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
 
 const DEFAULT_CENTER = [20.5937, 78.9629]
-const SEVERITY_COLORS = { Critical: '#cc0000', High: '#cc6600', Medium: '#FF9933', Low: '#138808' }
+const SEVERITY_COLORS = { Critical: 'var(--severity-critical)', High: 'var(--severity-high)', Medium: 'var(--severity-medium)', Low: 'var(--severity-low)' }
 
 function createMapIcon(color) {
   return L.divIcon({
@@ -75,9 +75,9 @@ export default function Geofencing() {
     if (circleRef.current) map.removeLayer(circleRef.current)
     circleRef.current = L.circle([position.lat, position.lng], {
       radius: radius * 1000,
-      fillColor: '#00d4ff',
+      fillColor: 'var(--gov-blue)',
       fillOpacity: 0.08,
-      color: '#00d4ff',
+      color: 'var(--gov-blue)',
       weight: 2,
       dashArray: '6,4',
     }).addTo(map)
@@ -96,10 +96,10 @@ export default function Geofencing() {
       addMarker(z.centerLat, z.centerLng, `<b>${z.name}</b><br>${z.severity} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999')
     })
     ;(result.requests || []).forEach((r) => {
-      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${r.title}<br>${r.distanceKm} km away`, '#cc0000')
+      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${r.title}<br>${r.distanceKm} km away`, 'var(--gov-danger)')
     })
     ;(result.resources || []).forEach((r) => {
-      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, '#138808')
+      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, 'var(--gov-green)')
     })
   }, [position, radius, result])
 
@@ -178,15 +178,15 @@ export default function Geofencing() {
           )}
           {renderResultSection(
             result.requests || [],
-            '#cc0000',
-            'rgba(204,0,0,.06)',
+            'var(--gov-danger)',
+            'rgba(239,68,68,.06)',
             t('geofencing.requestsNearby'),
             (r) => <>{r.title} <span style={{ color: 'var(--gov-muted)' }}>({r.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.resources || [],
-            '#138808',
-            'rgba(19,136,8,.06)',
+            'var(--gov-green)',
+            'rgba(16,185,129,.06)',
             t('geofencing.resourcesNearby'),
             (r) => <>{r.name} <span style={{ color: 'var(--gov-muted)' }}>({r.distanceKm} km)</span></>
           )}

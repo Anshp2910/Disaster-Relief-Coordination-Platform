@@ -12,24 +12,41 @@ import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
-  'Pending': { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
-  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
-  'Fulfilled': { bg: 'rgba(48,209,88,.1)', border: 'rgba(48,209,88,.25)', text: '#30d158' },
+  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: 'var(--color-open)' },
+  'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
+  'In Progress': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-progress)' },
+  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: 'var(--color-resolved)' },
+  'Fulfilled': { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
 }
 
-const MAP_MARKER_COLORS = { 'Open': '#00d4ff', 'Pending': '#8e8e93', 'In Progress': '#f97316', 'Resolved': '#10b981', 'Fulfilled': '#30d158' }
+const MAP_MARKER_COLORS = { 'Open': 'var(--color-open)', 'Pending': 'var(--color-pending)', 'In Progress': 'var(--color-progress)', 'Resolved': 'var(--color-resolved)', 'Fulfilled': 'var(--color-fulfilled)' }
 
 const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
-  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  'Medium': { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
-  'Low': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
+  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
+  'Medium': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
+  'Low': { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
+}
+
+const CATEGORY_COLORS = {
+  'Medical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--cat-medical)' },
+  'Food': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
+  'Shelter': { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-shelter)' },
+  'Water': { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
+  'Rescue': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--cat-rescue)' },
+  'Supplies': { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
+  'Healthcare': { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: 'var(--cat-healthcare)' },
+  'Sanitation': { bg: 'rgba(20,184,166,.1)', border: 'rgba(20,184,166,.25)', text: 'var(--cat-sanitation)' },
+  'Clothing': { bg: 'rgba(168,85,247,.1)', border: 'rgba(168,85,247,.25)', text: 'var(--cat-clothing)' },
+  'Transportation': { bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.25)', text: 'var(--cat-transportation)' },
+  'Communication': { bg: 'rgba(14,165,233,.1)', border: 'rgba(14,165,233,.25)', text: 'var(--cat-communication)' },
+  'Power': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--cat-power)' },
+  'Infrastructure': { bg: 'rgba(100,116,139,.1)', border: 'rgba(100,116,139,.25)', text: 'var(--cat-infrastructure)' },
+  'Other': { bg: 'rgba(156,163,175,.1)', border: 'rgba(156,163,175,.25)', text: 'var(--cat-other)' },
 }
 
 const Badge = memo(function Badge({ label, colors, colorKey }) {
-  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' }
+  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: 'var(--gov-muted)' }
   return (
     <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
@@ -136,9 +153,9 @@ export default function Dashboard() {
     const filtered = filterStatus === 'All' ? mapItems : mapItems.filter((i) => i.status === filterStatus)
     filtered.forEach((item) => {
       if (item.lat == null || item.lng == null) return
-      const color = MAP_MARKER_COLORS[item.status] || '#000080'
-      const marker = L.circleMarker([item.lat, item.lng], { radius: 8, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.9 }).addTo(map)
-      marker.bindPopup(`<div style="min-width:180px"><div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div><div style="font-size:12px;color:#666;margin-bottom:4px">${escapeHtml(item.status)} | ${escapeHtml(item.priority)}</div><div style="font-size:12px;color:#666;margin-bottom:8px">${escapeHtml(item.locationName)}</div><a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:#000080;color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a></div>`)
+      const color = MAP_MARKER_COLORS[item.status] || 'var(--gov-muted)'
+      const marker = L.circleMarker([item.lat, item.lng], { radius: 8, fillColor: color, color: 'var(--gov-white)', weight: 2, fillOpacity: 0.9 }).addTo(map)
+      marker.bindPopup(`<div style="min-width:180px"><div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div><div style="font-size:12px;color:var(--gov-muted);margin-bottom:4px">${escapeHtml(item.status)} | ${escapeHtml(item.priority)}</div><div style="font-size:12px;color:var(--gov-muted);margin-bottom:8px">${escapeHtml(item.locationName)}</div><a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:var(--gov-blue);color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a></div>`)
       markersRef.current.push(marker)
     })
     if (filtered.length > 0) {

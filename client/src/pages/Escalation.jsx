@@ -133,7 +133,7 @@ export default function Escalation() {
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
           {filteredItems.map((item) => (
-            <div key={item._id} className="listCard" style={{ borderLeft: '4px solid #cc0000' }}>
+            <div key={item._id} className="listCard" style={{ borderLeft: '4px solid var(--gov-danger)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--neon-cyan)' }}>{item.title}</div>
@@ -146,8 +146,8 @@ export default function Escalation() {
                 <button
                   onClick={() => handleDeescalate(item._id)}
                   style={{
-                    fontSize: 11, padding: '4px 10px', background: 'rgba(19,136,8,.1)',
-                    color: '#138808', border: '1px solid rgba(19,136,8,.3)',
+                    fontSize: 11, padding: '4px 10px', background: 'rgba(16,185,129,.1)',
+                    color: 'var(--neon-green)', border: '1px solid rgba(16,185,129,.3)',
                     borderRadius: 4, cursor: 'pointer', alignSelf: 'start',
                   }}
                 >

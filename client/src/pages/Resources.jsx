@@ -12,26 +12,26 @@ const CATEGORY_ICONS = {
 }
 
 const CATEGORY_COLORS = {
-  Food: { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
-  Water: { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
-  Medical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
-  Shelter: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
-  Supplies: { bg: 'rgba(124,58,237,.1)', border: 'rgba(124,58,237,.25)', text: '#7c3aed' },
-  Healthcare: { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: '#ec4899' },
-  Sanitation: { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: '#06b6d4' },
-  Clothing: { bg: 'rgba(168,85,247,.1)', border: 'rgba(168,85,247,.25)', text: '#a855f7' },
-  Transportation: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  Communication: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: '#3b82f6' },
-  Power: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: '#eab308' },
-  Infrastructure: { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
-  Other: { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
+  Food: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
+  Water: { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
+  Medical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--cat-medical)' },
+  Shelter: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-shelter)' },
+  Supplies: { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
+  Healthcare: { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: 'var(--cat-healthcare)' },
+  Sanitation: { bg: 'rgba(20,184,166,.1)', border: 'rgba(20,184,166,.25)', text: 'var(--cat-sanitation)' },
+  Clothing: { bg: 'rgba(168,85,247,.1)', border: 'rgba(168,85,247,.25)', text: 'var(--cat-clothing)' },
+  Transportation: { bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.25)', text: 'var(--cat-transportation)' },
+  Communication: { bg: 'rgba(14,165,233,.1)', border: 'rgba(14,165,233,.25)', text: 'var(--cat-communication)' },
+  Power: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--cat-power)' },
+  Infrastructure: { bg: 'rgba(100,116,139,.1)', border: 'rgba(100,116,139,.25)', text: 'var(--cat-infrastructure)' },
+  Other: { bg: 'rgba(156,163,175,.1)', border: 'rgba(156,163,175,.25)', text: 'var(--cat-other)' },
 }
 
 const STATUS_COLORS = {
-  Available: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
-  Low: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
-  Reserved: { bg: 'rgba(124,58,237,.1)', border: 'rgba(124,58,237,.25)', text: '#7c3aed' },
+  Available: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
+  Low: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
+  Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
+  Reserved: { bg: 'rgba(124,58,237,.1)', border: 'rgba(124,58,237,.25)', text: 'var(--neon-purple)' },
 }
 
 const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']

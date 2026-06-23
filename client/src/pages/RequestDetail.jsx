@@ -10,22 +10,22 @@ import Chat from './Chat'
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
-  'Pending': { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
-  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
-  'Fulfilled': { bg: 'rgba(48,209,88,.1)', border: 'rgba(48,209,88,.25)', text: '#30d158' },
+  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: 'var(--color-open)' },
+  'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
+  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-progress)' },
+  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: 'var(--color-resolved)' },
+  'Fulfilled': { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
 }
 
 const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
-  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  'Medium': { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
-  'Low': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
+  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
+  'Medium': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
+  'Low': { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
 }
 
 function Badge({ label, colors, colorKey }) {
-  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' }
+  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: 'var(--gov-muted)' }
   return (
     <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
@@ -486,7 +486,7 @@ export default function RequestDetail() {
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('requestDetail.rating')}</label>
               <div style={{ display: 'flex', gap: 4 }}>
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} type="button" onClick={() => setFeedbackRating(star)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: star <= feedbackRating ? '#FF9933' : '#ddd', padding: '0 2px' }}>
+                   <button key={star} type="button" onClick={() => setFeedbackRating(star)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--gov-border)', padding: '0 2px' }}>
                     ★
                   </button>
                 ))}
@@ -508,7 +508,7 @@ export default function RequestDetail() {
               <div key={f._id} style={{ padding: '10px 14px', background: 'var(--gov-bg)', borderRadius: 6, fontSize: 13 }}>
                 <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <span key={s} style={{ color: s <= f.rating ? '#FF9933' : '#ddd', fontSize: 14 }}>★</span>
+                     <span key={s} style={{ color: s <= f.rating ? 'var(--gov-saffron)' : 'var(--gov-border)', fontSize: 14 }}>★</span>
                   ))}
                   <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
                 </div>

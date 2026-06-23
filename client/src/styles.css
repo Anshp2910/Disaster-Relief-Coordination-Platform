@@ -26,6 +26,46 @@
   --neon-orange: #f97316;
   --neon-red: #ef4444;
 
+  /* === Status Colors === */
+  --color-open: #00d4ff;
+  --color-pending: #a78bfa;
+  --color-progress: #f59e0b;
+  --color-resolved: #10b981;
+  --color-fulfilled: #34d399;
+
+  /* === Priority Colors === */
+  --color-critical: #ef4444;
+  --color-high: #f97316;
+  --color-medium: #eab308;
+  --color-low: #22c55e;
+
+  /* === Severity Colors === */
+  --severity-critical: #dc2626;
+  --severity-high: #ea580c;
+  --severity-medium: #d97706;
+  --severity-low: #16a34a;
+
+  /* === Coverage Colors === */
+  --coverage-covered: #22c55e;
+  --coverage-partial: #eab308;
+  --coverage-gap: #ef4444;
+
+  /* === Category Colors === */
+  --cat-medical: #ef4444;
+  --cat-food: #f59e0b;
+  --cat-shelter: #3b82f6;
+  --cat-water: #06b6d4;
+  --cat-rescue: #f97316;
+  --cat-supplies: #8b5cf6;
+  --cat-healthcare: #ec4899;
+  --cat-sanitation: #14b8a6;
+  --cat-clothing: #a855f7;
+  --cat-transportation: #6366f1;
+  --cat-communication: #0ea5e9;
+  --cat-power: #eab308;
+  --cat-infrastructure: #64748b;
+  --cat-other: #9ca3af;
+
   /* === Glass Effects === */
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-bg-strong: rgba(255, 255, 255, 0.08);
@@ -1688,12 +1728,56 @@ button {
   --gov-border: #e2e8f0;
   --gov-card-bg: #ffffff;
   --gov-white: #ffffff;
+  --gov-blue: #2563eb;
+  --gov-saffron: #ea580c;
+  --gov-green: #16a34a;
+  --gov-danger: #dc2626;
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-bg-strong: rgba(255, 255, 255, 0.95);
   --glass-border: rgba(0, 0, 0, 0.06);
   --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
   --gradient-main: linear-gradient(160deg, #f4f6f9 0%, #e8ecf4 40%, #f0f2f8 100%);
   --gradient-card: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,0.8) 100%);
+
+  /* Status Colors - deeper for light mode */
+  --color-open: #0284c7;
+  --color-pending: #7c3aed;
+  --color-progress: #d97706;
+  --color-resolved: #059669;
+  --color-fulfilled: #059669;
+
+  /* Priority Colors - deeper for light mode */
+  --color-critical: #dc2626;
+  --color-high: #ea580c;
+  --color-medium: #ca8a04;
+  --color-low: #16a34a;
+
+  /* Severity Colors - deeper for light mode */
+  --severity-critical: #b91c1c;
+  --severity-high: #c2410c;
+  --severity-medium: #b45309;
+  --severity-low: #15803d;
+
+  /* Coverage Colors */
+  --coverage-covered: #16a34a;
+  --coverage-partial: #ca8a04;
+  --coverage-gap: #dc2626;
+
+  /* Category Colors - deeper for light mode */
+  --cat-medical: #dc2626;
+  --cat-food: #d97706;
+  --cat-shelter: #2563eb;
+  --cat-water: #0891b2;
+  --cat-rescue: #ea580c;
+  --cat-supplies: #7c3aed;
+  --cat-healthcare: #db2777;
+  --cat-sanitation: #0d9488;
+  --cat-clothing: #9333ea;
+  --cat-transportation: #4f46e5;
+  --cat-communication: #0284c7;
+  --cat-power: #ca8a04;
+  --cat-infrastructure: #475569;
+  --cat-other: #6b7280;
 }
 
 .dark body {

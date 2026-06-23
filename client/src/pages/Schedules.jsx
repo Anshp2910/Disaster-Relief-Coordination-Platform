@@ -7,17 +7,17 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 
 const SHIFT_COLORS = {
-  Morning: { bg: 'rgba(249,115,22,.1)', text: '#f97316', border: 'rgba(249,115,22,.25)' },
-  Afternoon: { bg: 'rgba(0,128,255,.1)', text: '#0066cc', border: 'rgba(0,128,255,.3)' },
-  Night: { bg: 'rgba(124,58,237,.1)', text: '#7c3aed', border: 'rgba(124,58,237,.25)' },
-  'Full Day': { bg: 'rgba(19,136,8,.1)', text: '#138808', border: 'rgba(19,136,8,.3)' },
+  Morning: { bg: 'rgba(249,115,22,.1)', text: 'var(--neon-orange)', border: 'rgba(249,115,22,.25)' },
+  Afternoon: { bg: 'rgba(59,130,246,.1)', text: 'var(--neon-blue)', border: 'rgba(59,130,246,.3)' },
+  Night: { bg: 'rgba(124,58,237,.1)', text: 'var(--neon-purple)', border: 'rgba(124,58,237,.25)' },
+  'Full Day': { bg: 'rgba(16,185,129,.1)', text: 'var(--neon-green)', border: 'rgba(16,185,129,.3)' },
 }
 
 const STATUS_COLORS = {
-  Scheduled: { bg: 'rgba(0,128,255,.1)', text: '#0066cc', border: 'rgba(0,128,255,.3)' },
-  Active: { bg: 'rgba(19,136,8,.1)', text: '#138808', border: 'rgba(19,136,8,.3)' },
-  Completed: { bg: 'rgba(100,100,100,.1)', text: '#666', border: 'rgba(100,100,100,.3)' },
-  Cancelled: { bg: 'rgba(204,0,0,.1)', text: '#cc0000', border: 'rgba(204,0,0,.3)' },
+  Scheduled: { bg: 'rgba(59,130,246,.1)', text: 'var(--neon-blue)', border: 'rgba(59,130,246,.3)' },
+  Active: { bg: 'rgba(16,185,129,.1)', text: 'var(--neon-green)', border: 'rgba(16,185,129,.3)' },
+  Completed: { bg: 'rgba(100,116,139,.1)', text: 'var(--gov-muted)', border: 'rgba(100,116,139,.3)' },
+  Cancelled: { bg: 'rgba(239,68,68,.1)', text: 'var(--neon-red)', border: 'rgba(239,68,68,.3)' },
 }
 
 const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other']
@@ -279,7 +279,7 @@ export default function Schedules() {
                     {item.skills?.length > 0 && (
                       <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
                         {item.skills.map((s) => (
-                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(124,58,237,.08)', color: '#7c3aed' }}>{s}</span>
+                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(124,58,237,.08)', color: 'var(--neon-purple)' }}>{s}</span>
                         ))}
                       </div>
                     )}

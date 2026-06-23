@@ -9,18 +9,18 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { escapeHtml } from '../utils/escapeHtml'
 
 const STATUS_COLORS = {
-  Open: '#00d4ff',
-  Pending: '#666',
-  'In Progress': '#cc7a00',
-  Resolved: '#138808',
-  Fulfilled: '#0d6e06',
+  Open: 'var(--color-open)',
+  Pending: 'var(--color-pending)',
+  'In Progress': 'var(--color-progress)',
+  Resolved: 'var(--color-resolved)',
+  Fulfilled: 'var(--color-fulfilled)',
 }
 
 const PRIORITY_COLORS = {
-  Critical: '#ef4444',
-  High: '#f97316',
-  Medium: '#ff6d2e',
-  Low: '#10b981',
+  Critical: 'var(--color-critical)',
+  High: 'var(--color-high)',
+  Medium: 'var(--color-medium)',
+  Low: 'var(--color-low)',
 }
 
 const DEFAULT_CENTER = [20.5937, 78.9629]
@@ -103,11 +103,11 @@ export default function MapOverview() {
     filtered.forEach((item) => {
       if (item.lat == null || item.lng == null) return
 
-      const color = STATUS_COLORS[item.status] || '#00d4ff'
+      const color = STATUS_COLORS[item.status] || 'var(--color-open)'
       const marker = L.circleMarker([item.lat, item.lng], {
         radius: 8,
         fillColor: color,
-        color: '#fff',
+        color: 'var(--gov-white)',
         weight: 2,
         fillOpacity: 0.9,
       }).addTo(map)
@@ -115,9 +115,9 @@ export default function MapOverview() {
       marker.bindPopup(`
         <div style="min-width:180px">
           <div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div>
-          <div style="font-size:12px;color:#666;margin-bottom:4px">${t(`statuses.${item.status}`)} | ${t(`priorities.${item.priority}`)}</div>
-          <div style="font-size:12px;color:#666;margin-bottom:8px">${escapeHtml(item.locationName)}</div>
-          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:linear-gradient(135deg,rgba(0,212,255,0.9),rgba(124,58,237,0.9));color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a>
+          <div style="font-size:12px;color:var(--gov-muted);margin-bottom:4px">${t(`statuses.${item.status}`)} | ${t(`priorities.${item.priority}`)}</div>
+          <div style="font-size:12px;color:var(--gov-muted);margin-bottom:8px">${escapeHtml(item.locationName)}</div>
+          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-purple));color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a>
         </div>
       `)
 

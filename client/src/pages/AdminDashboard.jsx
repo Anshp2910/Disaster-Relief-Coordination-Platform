@@ -7,23 +7,23 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 
 const STATUS_COLORS = {
-  Open: { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: '#00d4ff' },
-  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  Resolved: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
-  Fulfilled: { bg: 'rgba(48,209,88,.1)', border: 'rgba(48,209,88,.25)', text: '#30d158' },
+  Open: { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: 'var(--color-open)' },
+  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-progress)' },
+  Resolved: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: 'var(--color-resolved)' },
+  Fulfilled: { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
 }
 
 const PRIORITY_COLORS = {
-  Critical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: '#ef4444' },
-  High: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: '#f97316' },
-  Medium: { bg: 'rgba(255,109,46,.1)', border: 'rgba(255,109,46,.25)', text: '#ff6d2e' },
-  Low: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: '#10b981' },
+  Critical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
+  High: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
+  Medium: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
+  Low: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
 }
 
-const BREAKDOWN_COLORS = ['#00d4ff', '#7c3aed', '#10b981', '#ef4444', '#ec4899', '#f97316']
+const BREAKDOWN_COLORS = ['var(--color-open)', 'var(--neon-purple)', 'var(--color-resolved)', 'var(--color-critical)', 'var(--neon-pink)', 'var(--color-high)']
 
 function Badge({ label, colors, colorKey }) {
-  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: '#666' }
+  const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: 'var(--gov-muted)' }
   return (
     <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
@@ -87,14 +87,14 @@ function StatsPanel({ stats }) {
   const totalAll = stats.byStatus ? Object.values(stats.byStatus).reduce((a, b) => a + b, 0) : 0
 
   const summaryCards = [
-    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(0,212,255,0.08)', color: '#00d4ff' },
-    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(124,58,237,0.08)', color: '#7c3aed' },
-    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(0,212,255,0.08)', color: '#00d4ff' },
+    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(0,212,255,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(124,58,237,0.08)', color: 'var(--neon-purple)' },
+    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(0,212,255,0.08)', color: 'var(--color-open)' },
     {
       label: t('admin.resolved'),
       value: (stats.byStatus?.Resolved || 0) + (stats.byStatus?.Fulfilled || 0),
       bg: 'rgba(16,185,129,0.08)',
-      color: '#10b981',
+      color: 'var(--color-resolved)',
     },
   ]
 

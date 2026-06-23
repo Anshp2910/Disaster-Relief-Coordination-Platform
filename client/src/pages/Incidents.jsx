@@ -13,7 +13,7 @@ const DISASTER_ICONS = {
 }
 
 const SEVERITY_COLORS = {
-  Critical: '#cc0000', High: '#cc6600', Medium: '#FF9933', Low: '#138808',
+  Critical: 'var(--severity-critical)', High: 'var(--severity-high)', Medium: 'var(--severity-medium)', Low: 'var(--severity-low)',
 }
 
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']

@@ -9,10 +9,10 @@ import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 
 const SEVERITY_COLORS = {
-  Critical: { fill: '#cc0000', stroke: '#990000', weight: 0.6 },
-  High: { fill: '#cc6600', stroke: '#994d00', weight: 0.5 },
-  Medium: { fill: '#FF9933', stroke: '#cc7a00', weight: 0.4 },
-  Low: { fill: '#138808', stroke: '#0d6e06', weight: 0.3 },
+  Critical: { fill: 'var(--severity-critical)', stroke: '#990000', weight: 0.6 },
+  High: { fill: 'var(--severity-high)', stroke: '#994d00', weight: 0.5 },
+  Medium: { fill: 'var(--severity-medium)', stroke: '#cc7a00', weight: 0.4 },
+  Low: { fill: 'var(--severity-low)', stroke: '#0d6e06', weight: 0.3 },
 }
 
 const DISASTER_ICONS = {
@@ -20,9 +20,9 @@ const DISASTER_ICONS = {
 }
 
 const COVERAGE_COLORS = {
-  Covered: '#138808',
-  Partial: '#FF9933',
-  Gap: '#cc0000',
+  Covered: 'var(--coverage-covered)',
+  Partial: 'var(--coverage-partial)',
+  Gap: 'var(--coverage-gap)',
 }
 
 const DEFAULT_CENTER = [20.5937, 78.9629]
