@@ -4,6 +4,7 @@ import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
+import { useDebounce } from '../hooks/useDebounce'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(249,115,22,.1)', text: '#f97316', border: 'rgba(249,115,22,.25)' },
@@ -61,6 +62,12 @@ export default function Schedules() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [filterStatus, setFilterStatus] = useState('All')
+  const [filterShift, setFilterShift] = useState('All')
+  const [filterZone, setFilterZone] = useState('All')
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 300)
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState(null)
   const [users, setUsers] = useState([])
@@ -75,6 +82,10 @@ export default function Schedules() {
     try {
       const params = { page, limit: 20 }
       if (filterStatus !== 'All') params.status = filterStatus
+      if (filterShift !== 'All') params.shift = filterShift
+      if (filterZone !== 'All') params.zoneId = filterZone
+      if (dateFrom) params.startDate = dateFrom
+      if (dateTo) params.endDate = dateTo
       const data = await clientApi.getSchedules(params)
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
@@ -83,7 +94,7 @@ export default function Schedules() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus])
+  }, [page, filterStatus, filterShift, filterZone, dateFrom, dateTo])
 
   async function loadDropdowns() {
     try {
@@ -104,7 +115,7 @@ export default function Schedules() {
     }
   }
 
-  useEffect(() => { load() }, [page, filterStatus])
+  useEffect(() => { load() }, [page, filterStatus, filterShift, filterZone, dateFrom, dateTo])
   useEffect(() => { loadDropdowns() }, [])
 
   useAutoRefresh(load, { interval: 20000 })
@@ -203,6 +214,36 @@ export default function Schedules() {
               {s}
             </button>
           ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+          {['All', ...SHIFT_OPTIONS].map((s) => (
+            <button
+              key={s}
+              onClick={() => { setFilterShift(s); setPage(1) }}
+              className={`filter-pill ${filterShift === s ? 'active' : ''}`}
+              style={{ fontSize: 11 }}
+            >
+              {s === 'All' ? t('dashboard.filterAll') : s}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <select value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12, background: 'var(--card-bg, #fff)', color: 'var(--text, #333)' }}>
+            <option value="All">{t('schedules.allZones')}</option>
+            {zones.map((z) => (
+              <option key={z._id} value={z._id}>{z.name}</option>
+            ))}
+          </select>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
+            <span style={{ color: 'var(--gov-muted)' }}>{t('schedules.from')}:</span>
+            <input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} style={{ padding: '5px 8px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
+            <span style={{ color: 'var(--gov-muted)' }}>{t('schedules.to')}:</span>
+            <input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} style={{ padding: '5px 8px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }} />
+          </div>
         </div>
       </div>
 

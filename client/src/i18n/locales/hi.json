@@ -69,7 +69,14 @@
     "claimedBy": "द्वारा दावा किया गया",
     "previous": "पिछला",
     "next": "अगला",
-    "failedToLoad": "अनुरोध लोड करने में विफल"
+    "failedToLoad": "अनुरोध लोड करने में विफल",
+    "allCategories": "सभी श्रेणियाँ",
+    "sortNewest": "नवीनतम पहले",
+    "sortOldest": "पुराने पहले",
+    "sortPriorityDesc": "प्राथमिकता: उच्च से निम्न",
+    "sortPriorityAsc": "प्राथमिकता: निम्न से उच्च",
+    "sortTitleAsc": "शीर्षक: A-Z",
+    "sortTitleDesc": "शीर्षक: Z-A"
   },
   "createRequest": {
     "title": "आपदा राहत अनुरोध बनाएं",
@@ -297,7 +304,8 @@
     "severityCritical": "अत्यावश्यक",
     "severityHigh": "उच्च",
     "severityMedium": "मध्यम",
-    "severityLow": "निम्न"
+    "severityLow": "निम्न",
+    "searchPlaceholder": "क्षेत्र खोजें..."
   },
   "incidents": {
     "title": "घटना समूह",
@@ -337,7 +345,10 @@
     "cancel": "रद्द करें",
     "deleteConfirm": "यह समय-सारणी हटाएं?",
     "startButton": "शुरू करें",
-    "completeButton": "पूर्ण करें"
+    "completeButton": "पूर्ण करें",
+    "allZones": "सभी क्षेत्र",
+    "from": "से",
+    "to": "तक"
   },
   "bulkImport": {
     "title": "बल्क आयात और CSV निर्यात",
@@ -374,7 +385,9 @@
     "escalated": "तरक्की प्राप्त:",
     "by": "द्वारा:",
     "deEscalate": "तरक्की रद्द करें",
-    "deEscalateConfirm": "इस अनुरोध की तरक्की रद्द करें?"
+    "deEscalateConfirm": "इस अनुरोध की तरक्की रद्द करें?",
+    "searchPlaceholder": "शीर्षक, कारण या उपयोगकर्ता से खोजें...",
+    "noMatch": "कोई तरक्की प्राप्त अनुरोध आपकी खोज से मेल नहीं खाता"
   },
   "geofencing": {
     "title": "भौगोलिक चेतावनी",

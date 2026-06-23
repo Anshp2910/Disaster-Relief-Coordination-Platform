@@ -16,9 +16,18 @@ const STATUS_COLORS = {
   Fulfilled: '#0d6e06',
 }
 
+const PRIORITY_COLORS = {
+  Critical: '#ef4444',
+  High: '#f97316',
+  Medium: '#ff6d2e',
+  Low: '#10b981',
+}
+
 const DEFAULT_CENTER = [20.5937, 78.9629]
 
 const FILTER_OPTIONS_KEYS = ['All', 'Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
+const PRIORITY_FILTER_KEYS = ['All', 'Critical', 'High', 'Medium', 'Low']
+const CATEGORY_FILTER_KEYS = ['All', 'Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
 
 export default function MapOverview() {
   const { t } = useTranslation()
@@ -27,6 +36,8 @@ export default function MapOverview() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filterStatus, setFilterStatus] = useState('All')
+  const [filterPriority, setFilterPriority] = useState('All')
+  const [filterCategory, setFilterCategory] = useState('All')
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
@@ -82,7 +93,12 @@ export default function MapOverview() {
     markersRef.current.forEach((m) => map.removeLayer(m))
     markersRef.current = []
 
-    const filtered = filterStatus === 'All' ? items : items.filter((i) => i.status === filterStatus)
+    const filtered = items.filter((i) => {
+      if (filterStatus !== 'All' && i.status !== filterStatus) return false
+      if (filterPriority !== 'All' && i.priority !== filterPriority) return false
+      if (filterCategory !== 'All' && i.category !== filterCategory) return false
+      return true
+    })
 
     filtered.forEach((item) => {
       if (item.lat == null || item.lng == null) return
@@ -115,7 +131,7 @@ export default function MapOverview() {
         if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
       }
     }
-  }, [items, filterStatus, t])
+  }, [items, filterStatus, filterPriority, filterCategory, t])
 
   const filterOptions = useMemo(() => FILTER_OPTIONS_KEYS.map((key) => ({
     key,
@@ -137,6 +153,32 @@ export default function MapOverview() {
               className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
             >
               {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+          {PRIORITY_FILTER_KEYS.map((p) => (
+            <button
+              key={p}
+              onClick={() => setFilterPriority(p)}
+              className={`filter-pill ${filterPriority === p ? 'active' : ''}`}
+              style={{ fontSize: 11, ...(p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : {}) }}
+            >
+              {p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+          {CATEGORY_FILTER_KEYS.map((c) => (
+            <button
+              key={c}
+              onClick={() => setFilterCategory(c)}
+              className={`filter-pill ${filterCategory === c ? 'active' : ''}`}
+              style={{ fontSize: 11 }}
+            >
+              {c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}
             </button>
           ))}
         </div>

@@ -42,6 +42,9 @@ export default function Dashboard() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [filterStatus, setFilterStatus] = useState('All')
+  const [filterPriority, setFilterPriority] = useState('All')
+  const [filterCategory, setFilterCategory] = useState('All')
+  const [sortBy, setSortBy] = useState('-createdAt')
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
   const [page, setPage] = useState(1)
@@ -62,8 +65,10 @@ export default function Dashboard() {
     setLoading(true)
     setError('')
     try {
-      const params = { page, limit: 12 }
+      const params = { page, limit: 12, sort: sortBy }
       if (filterStatus !== 'All') params.status = filterStatus
+      if (filterPriority !== 'All') params.priority = filterPriority
+      if (filterCategory !== 'All') params.category = filterCategory
       if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getRequests(params)
       setItems(data.items || [])
@@ -74,13 +79,15 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, debouncedSearch, t])
+  }, [page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch, t])
 
   const loadMapItems = useCallback(async () => {
     setMapLoading(true)
     try {
       const params = { limit: 1000 }
       if (filterStatus !== 'All') params.status = filterStatus
+      if (filterPriority !== 'All') params.priority = filterPriority
+      if (filterCategory !== 'All') params.category = filterCategory
       if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getRequests(params)
       setMapItems(data.items || [])
@@ -89,10 +96,10 @@ export default function Dashboard() {
     } finally {
       setMapLoading(false)
     }
-  }, [filterStatus, debouncedSearch])
+  }, [filterStatus, filterPriority, filterCategory, debouncedSearch])
 
-  useEffect(() => { load() }, [page, filterStatus, debouncedSearch])
-  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, debouncedSearch])
+  useEffect(() => { load() }, [page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch])
+  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, filterPriority, filterCategory, debouncedSearch])
 
   useAutoRefresh(load, { interval: 20000 })
 
@@ -158,6 +165,41 @@ export default function Dashboard() {
     { key: 'Fulfilled', label: t('statuses.Fulfilled') },
   ], [t])
 
+  const priorityOptions = useMemo(() => [
+    { key: 'All', label: t('dashboard.filterAll') },
+    { key: 'Critical', label: t('priorities.Critical') },
+    { key: 'High', label: t('priorities.High') },
+    { key: 'Medium', label: t('priorities.Medium') },
+    { key: 'Low', label: t('priorities.Low') },
+  ], [t])
+
+  const categoryOptions = useMemo(() => [
+    { key: 'All', label: t('dashboard.filterAll') },
+    { key: 'Medical', label: t('categories.Medical') },
+    { key: 'Food', label: t('categories.Food') },
+    { key: 'Shelter', label: t('categories.Shelter') },
+    { key: 'Water', label: t('categories.Water') },
+    { key: 'Rescue', label: t('categories.Rescue') },
+    { key: 'Supplies', label: t('categories.Supplies') },
+    { key: 'Healthcare', label: t('categories.Healthcare') },
+    { key: 'Sanitation', label: t('categories.Sanitation') },
+    { key: 'Clothing', label: t('categories.Clothing') },
+    { key: 'Transportation', label: t('categories.Transportation') },
+    { key: 'Communication', label: t('categories.Communication') },
+    { key: 'Power', label: t('categories.Power') },
+    { key: 'Infrastructure', label: t('categories.Infrastructure') },
+    { key: 'Other', label: t('categories.Other') },
+  ], [t])
+
+  const sortOptions = useMemo(() => [
+    { key: '-createdAt', label: t('dashboard.sortNewest') },
+    { key: 'createdAt', label: t('dashboard.sortOldest') },
+    { key: '-priority', label: t('dashboard.sortPriorityDesc') },
+    { key: 'priority', label: t('dashboard.sortPriorityAsc') },
+    { key: 'title', label: t('dashboard.sortTitleAsc') },
+    { key: '-title', label: t('dashboard.sortTitleDesc') },
+  ], [t])
+
   return (
     <div className="container">
       <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(0,212,255,0.1)', position: 'relative' }}>
@@ -207,6 +249,23 @@ export default function Dashboard() {
           {filterOptions.map((f) => (
             <button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}>{f.label}</button>
           ))}
+        </div>
+        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+          {priorityOptions.map((p) => (
+            <button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''}`} style={{ fontSize: 11 }}>{p.label}</button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12, background: 'var(--card-bg, #fff)', color: 'var(--text, #333)' }}>
+            {categoryOptions.map((c) => (
+              <option key={c.key} value={c.key}>{c.key === 'All' ? t('dashboard.allCategories') : c.label}</option>
+            ))}
+          </select>
+          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12, background: 'var(--card-bg, #fff)', color: 'var(--text, #333)' }}>
+            {sortOptions.map((s) => (
+              <option key={s.key} value={s.key}>{s.label}</option>
+            ))}
+          </select>
         </div>
         {viewMode === 'list' ? (
           <>

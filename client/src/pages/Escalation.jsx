@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
+import { useDebounce } from '../hooks/useDebounce'
 
 export default function Escalation() {
   const { t } = useTranslation()
@@ -12,6 +13,8 @@ export default function Escalation() {
   const [requestId, setRequestId] = useState('')
   const [reason, setReason] = useState('')
   const [allRequests, setAllRequests] = useState([])
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 300)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -38,6 +41,16 @@ export default function Escalation() {
   useEffect(() => {
     return registerRefreshListener(['request:escalated', 'request:updated'], load)
   }, [load])
+
+  const filteredItems = useMemo(() => {
+    if (!debouncedSearch) return items
+    const q = debouncedSearch.toLowerCase()
+    return items.filter((item) =>
+      (item.title || '').toLowerCase().includes(q) ||
+      (item.escalationReason || '').toLowerCase().includes(q) ||
+      (item.createdBy?.displayName || '').toLowerCase().includes(q)
+    )
+  }, [items, debouncedSearch])
 
   async function handleEscalate(e) {
     e.preventDefault()
@@ -101,15 +114,25 @@ export default function Escalation() {
             {t('escalation.escalateRequest')}
           </button>
         </form>
+
+        <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t('escalation.searchPlaceholder') || 'Search by title, reason, or user...'}
+            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+          />
+        </div>
       </div>
 
       {loading ? (
         <div className="small muted" style={{ marginTop: 16 }}>{t('escalation.loading')}</div>
-      ) : items.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: 24 }}>{t('escalation.noEscalated')}</div>
+      ) : filteredItems.length === 0 ? (
+        <div className="card" style={{ textAlign: 'center', padding: 24 }}>{search ? t('escalation.noMatch') : t('escalation.noEscalated')}</div>
       ) : (
         <div className="gridGap" style={{ marginTop: 12 }}>
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <div key={item._id} className="listCard" style={{ borderLeft: '4px solid #cc0000' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                 <div style={{ flex: 1 }}>

@@ -72,7 +72,14 @@
     "claimedBy": "Claimed by",
     "previous": "Previous",
     "next": "Next",
-    "failedToLoad": "Failed to load requests"
+    "failedToLoad": "Failed to load requests",
+    "allCategories": "All Categories",
+    "sortNewest": "Newest First",
+    "sortOldest": "Oldest First",
+    "sortPriorityDesc": "Priority: High to Low",
+    "sortPriorityAsc": "Priority: Low to High",
+    "sortTitleAsc": "Title: A-Z",
+    "sortTitleDesc": "Title: Z-A"
   },
   "createRequest": {
     "title": "Create Disaster Relief Request",
@@ -300,7 +307,8 @@
     "severityCritical": "Critical",
     "severityHigh": "High",
     "severityMedium": "Medium",
-    "severityLow": "Low"
+    "severityLow": "Low",
+    "searchPlaceholder": "Search zones..."
   },
   "incidents": {
     "title": "Incident Grouping",
@@ -340,7 +348,10 @@
     "cancel": "Cancel",
     "deleteConfirm": "Delete this schedule?",
     "startButton": "Start",
-    "completeButton": "Complete"
+    "completeButton": "Complete",
+    "allZones": "All Zones",
+    "from": "From",
+    "to": "To"
   },
   "bulkImport": {
     "title": "Bulk Import & CSV Export",
@@ -377,7 +388,9 @@
     "escalated": "Escalated:",
     "by": "By:",
     "deEscalate": "De-escalate",
-    "deEscalateConfirm": "De-escalate this request?"
+    "deEscalateConfirm": "De-escalate this request?",
+    "searchPlaceholder": "Search by title, reason, or user...",
+    "noMatch": "No escalated requests match your search"
   },
   "geofencing": {
     "title": "Geofencing Alerts",

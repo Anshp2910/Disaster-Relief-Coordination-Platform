@@ -18,6 +18,7 @@ const SEVERITY_COLORS = {
 
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
+const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DEFAULT_CENTER = [20.5937, 78.9629]
 
 function getCurrentUser() {
@@ -225,6 +226,19 @@ export default function Incidents() {
               key={s}
               onClick={() => { setFilterStatus(s); setPage(1) }}
               className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+          {SEVERITY_OPTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setFilterSeverity(s); setPage(1) }}
+              className={`filter-pill ${filterSeverity === s ? 'active' : ''}`}
+              style={{ fontSize: 11, ...(s !== 'All' ? { borderLeft: `3px solid ${SEVERITY_COLORS[s] || '#999'}` } : {}) }}
             >
               {s}
             </button>

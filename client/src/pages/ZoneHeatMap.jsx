@@ -1,10 +1,11 @@
-import { useEffect, useState, useRef, useMemo, memo } from 'react'
+import { useEffect, useState, useRef, useMemo, memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 
 const SEVERITY_COLORS = {
@@ -25,6 +26,10 @@ const COVERAGE_COLORS = {
 }
 
 const DEFAULT_CENTER = [20.5937, 78.9629]
+
+const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
+const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
+const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 
 function getCurrentUser() {
   try {
@@ -80,26 +85,36 @@ export default function ZoneHeatMap() {
   const [form, setForm] = useState(DEFAULT_FORM)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [filterSeverity, setFilterSeverity] = useState('All')
+  const [filterDisaster, setFilterDisaster] = useState('All')
+  const [filterStatus, setFilterStatus] = useState('All')
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 300)
 
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const circlesRef = useRef([])
   const zonesRef = useRef([])
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const data = await clientApi.getZoneHeatmap()
-      setZones(data.zones || [])
+      const params = { limit: 100 }
+      if (filterSeverity !== 'All') params.severity = filterSeverity
+      if (filterDisaster !== 'All') params.disasterType = filterDisaster
+      if (filterStatus !== 'All') params.status = filterStatus
+      if (debouncedSearch) params.search = debouncedSearch
+      const data = await clientApi.getZones(params)
+      setZones(data.items || [])
     } catch (e) {
       setError(e.message || 'Failed to load zones')
     } finally {
       setLoading(false)
     }
-  }
+  }, [filterSeverity, filterDisaster, filterStatus, debouncedSearch])
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
 
   useAutoRefresh(load, { interval: 20000 })
 
@@ -241,6 +256,54 @@ export default function ZoneHeatMap() {
           </div>
         </div>
         {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
+
+        <form onSubmit={(e) => { e.preventDefault(); load() }} style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t('zones.searchPlaceholder') || 'Search zones...'}
+            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+          />
+        </form>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+          {STATUS_OPTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setFilterStatus(s) }}
+              className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
+              style={{ fontSize: 11 }}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+          {SEVERITY_OPTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setFilterSeverity(s) }}
+              className={`filter-pill ${filterSeverity === s ? 'active' : ''}`}
+              style={{ fontSize: 11, ...(s !== 'All' && SEVERITY_COLORS[s] ? { borderLeft: `3px solid ${SEVERITY_COLORS[s].fill}` } : {}) }}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+          {DISASTER_OPTIONS.map((d) => (
+            <button
+              key={d}
+              onClick={() => { setFilterDisaster(d) }}
+              className={`filter-pill ${filterDisaster === d ? 'active' : ''}`}
+              style={{ fontSize: 11 }}
+            >
+              {d !== 'All' ? `${DISASTER_ICONS[d]} ` : ''}{d}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
