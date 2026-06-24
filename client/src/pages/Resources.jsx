@@ -14,8 +14,8 @@ const CATEGORY_ICONS = {
 const CATEGORY_COLORS = {
   Food: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
   Water: { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
-  Medical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--cat-medical)' },
-  Shelter: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-shelter)' },
+  Medical: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--cat-medical)' },
+  Shelter: { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--cat-shelter)' },
   Supplies: { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
   Healthcare: { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: 'var(--cat-healthcare)' },
   Sanitation: { bg: 'rgba(20,184,166,.1)', border: 'rgba(20,184,166,.25)', text: 'var(--cat-sanitation)' },
@@ -29,9 +29,9 @@ const CATEGORY_COLORS = {
 
 const STATUS_COLORS = {
   Available: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
-  Low: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
-  Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
-  Reserved: { bg: 'rgba(124,58,237,.1)', border: 'rgba(124,58,237,.25)', text: 'var(--neon-purple)' },
+  Low: { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
+  Depleted: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
+  Reserved: { bg: 'rgba(124,141,240,.1)', border: 'rgba(124,141,240,.25)', text: 'var(--accent-indigo)' },
 }
 
 const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
@@ -292,17 +292,17 @@ export default function Resources() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--neon-cyan)' }}>{r.name}</span>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--accent-blue)' }}>{r.name}</span>
                       <Badge label={r.category} colors={CATEGORY_COLORS} colorKey={r.category} />
                       <Badge label={r.status} colors={STATUS_COLORS} colorKey={r.status} />
                     </div>
                     <div style={{ marginTop: 6, fontSize: 13 }}>
                       <strong>{r.quantity}</strong> {r.unit}
-                      {r.allocatedQuantity > 0 && <span style={{ color: 'var(--neon-orange)', marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
+                      {r.allocatedQuantity > 0 && <span style={{ color: 'var(--accent-orange)', marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
                     </div>
                     <div className="small muted" style={{ marginTop: 4 }}>📍 {r.locationName}</div>
                     {r.allocatedTo && (
-                      <div className="small" style={{ marginTop: 4, color: 'var(--neon-cyan)' }}>
+                      <div className="small" style={{ marginTop: 4, color: 'var(--accent-blue)' }}>
                         {t('resources.allocatedTo')}: {r.allocatedTo.title || 'Request'}
                       </div>
                     )}
@@ -312,7 +312,7 @@ export default function Resources() {
                     {r.status === 'Available' && r.quantity > 0 && (
                       <button
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
-                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(0,212,255,.1)', color: 'var(--neon-cyan)', border: '1px solid rgba(0,212,255,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(91,154,255,.1)', color: 'var(--accent-blue)', border: '1px solid rgba(91,154,255,.25)', borderRadius: 6, cursor: 'pointer' }}
                       >
                         {t('resources.allocate')}
                       </button>
@@ -320,7 +320,7 @@ export default function Resources() {
                     {r.allocatedQuantity > 0 && (
                       <button
                         onClick={() => handleDeallocate(r._id)}
-                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(239,68,68,.1)', color: 'var(--neon-red)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(248,81,73,.1)', color: 'var(--accent-red)', border: '1px solid rgba(248,81,73,.25)', borderRadius: 6, cursor: 'pointer' }}
                       >
                         {t('resources.deallocate')}
                       </button>

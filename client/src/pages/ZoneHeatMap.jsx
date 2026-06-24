@@ -43,7 +43,7 @@ function buildPopup(zone, color) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || '#999'
   return `
     <div style="font-family:Arial,sans-serif;min-width:200px">
-      <div style="font-weight:700;font-size:14px;color:#00d4ff;margin-bottom:4px">
+      <div style="font-weight:700;font-size:14px;color:#5b9aff;margin-bottom:4px">
         ${DISASTER_ICONS[zone.disasterType] || ''} ${escapeHtml(zone.name)}
       </div>
       <div style="font-size:12px;margin-bottom:6px">
@@ -64,7 +64,7 @@ function buildPopup(zone, color) {
         </div>
       </div>
       <div style="margin-top:8px">
-        <button onclick="window.__selectZone('${escapeHtml(zone._id)}')" style="background:#00d4ff;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
+        <button onclick="window.__selectZone('${escapeHtml(zone._id)}')" style="background:#5b9aff;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
       </div>
     </div>
   `
@@ -347,7 +347,7 @@ export default function ZoneHeatMap() {
           <div className="card" style={{ width: 320, flexShrink: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: 15, color: '#00d4ff' }}>
+                <h3 style={{ margin: 0, fontSize: 15, color: '#5b9aff' }}>
                   {DISASTER_ICONS[selectedZone.disasterType]} {selectedZone.name}
                 </h3>
                 <div style={{ fontSize: 12, marginTop: 4, color: 'var(--gov-muted)' }}>
@@ -376,7 +376,7 @@ export default function ZoneHeatMap() {
             </div>
 
             {selectedZone.stats?.openRequests > 0 && (
-              <div style={{ marginTop: 12, padding: '8px 12px', background: 'rgba(239,68,68,0.06)', borderRadius: 6, fontSize: 12 }}>
+              <div style={{ marginTop: 12, padding: '8px 12px', background: 'rgba(248,81,73,0.06)', borderRadius: 6, fontSize: 12 }}>
                 <strong style={{ color: 'var(--gov-danger)' }}>{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
               </div>
             )}
@@ -394,7 +394,7 @@ export default function ZoneHeatMap() {
       {showForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: '#00d4ff' }}>{editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}</h3>
+            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: '#5b9aff' }}>{editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
               <input placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />
 

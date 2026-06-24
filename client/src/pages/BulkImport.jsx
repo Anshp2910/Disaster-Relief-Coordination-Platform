@@ -330,7 +330,7 @@ export default function BulkImport() {
 
         {result && (
           <div style={{ marginTop: 16, padding: 12, borderRadius: 6, background: 'rgba(19,136,8,.06)', border: '1px solid rgba(19,136,8,.2)' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--neon-green)' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent-green)' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
             {result.errors?.length > 0 && (
               <div style={{ marginTop: 8 }}>
                 <div style={{ fontSize: 12, color: 'var(--gov-danger)', fontWeight: 600 }}>{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>

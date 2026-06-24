@@ -7,20 +7,20 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 
 const STATUS_COLORS = {
-  Open: { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: 'var(--color-open)' },
-  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-progress)' },
-  Resolved: { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: 'var(--color-resolved)' },
+  Open: { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--color-open)' },
+  'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-progress)' },
+  Resolved: { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
   Fulfilled: { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
 }
 
 const PRIORITY_COLORS = {
-  Critical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
-  High: { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
+  Critical: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
+  High: { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
   Medium: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
   Low: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
 }
 
-const BREAKDOWN_COLORS = ['var(--color-open)', 'var(--neon-purple)', 'var(--color-resolved)', 'var(--color-critical)', 'var(--neon-pink)', 'var(--color-high)']
+const BREAKDOWN_COLORS = ['var(--color-open)', 'var(--accent-indigo)', 'var(--color-resolved)', 'var(--color-critical)', 'var(--accent-purple)', 'var(--color-high)']
 
 function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: 'var(--gov-muted)' }
@@ -87,13 +87,13 @@ function StatsPanel({ stats }) {
   const totalAll = stats.byStatus ? Object.values(stats.byStatus).reduce((a, b) => a + b, 0) : 0
 
   const summaryCards = [
-    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(0,212,255,0.08)', color: 'var(--color-open)' },
-    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(124,58,237,0.08)', color: 'var(--neon-purple)' },
-    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(0,212,255,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(91,154,255,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(124,141,240,0.08)', color: 'var(--accent-indigo)' },
+    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(91,154,255,0.08)', color: 'var(--color-open)' },
     {
       label: t('admin.resolved'),
       value: (stats.byStatus?.Resolved || 0) + (stats.byStatus?.Fulfilled || 0),
-      bg: 'rgba(16,185,129,0.08)',
+      bg: 'rgba(63,185,80,0.08)',
       color: 'var(--color-resolved)',
     },
   ]
@@ -462,7 +462,7 @@ export default function AdminDashboard() {
           </div>
           <div className="btnRow">
             <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
-            <button onClick={() => handleExport('csv')} style={{ color: 'var(--neon-green)', borderColor: 'rgba(16,185,129,0.3)' }}>Export CSV</button>
+            <button onClick={() => handleExport('csv')} style={{ color: 'var(--accent-green)', borderColor: 'rgba(63,185,80,0.3)' }}>Export CSV</button>
           </div>
         </div>
 
@@ -479,12 +479,12 @@ export default function AdminDashboard() {
                 fontSize: 13,
                 fontWeight: 600,
                 border: '1px solid transparent',
-                borderBottom: activeTab === tab.id ? '2px solid var(--neon-cyan)' : '2px solid transparent',
+                borderBottom: activeTab === tab.id ? '2px solid var(--accent-blue)' : '2px solid transparent',
                 marginBottom: activeTab === tab.id ? -1 : 0,
-                background: activeTab === tab.id ? 'rgba(0,212,255,0.06)' : 'transparent',
-                color: activeTab === tab.id ? 'var(--neon-cyan)' : 'var(--gov-muted)',
+                background: activeTab === tab.id ? 'rgba(91,154,255,0.06)' : 'transparent',
+                color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--gov-muted)',
                 transition: 'all 0.2s',
-                boxShadow: activeTab === tab.id ? '0 0 12px rgba(0,212,255,0.1)' : 'none',
+                boxShadow: activeTab === tab.id ? '0 0 12px rgba(91,154,255,0.1)' : 'none',
               }}
             >
               {tab.label}
@@ -492,8 +492,8 @@ export default function AdminDashboard() {
                 <span
                   style={{
                     marginLeft: 6,
-                    background: activeTab === tab.id ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.06)',
-                    color: activeTab === tab.id ? 'var(--neon-cyan)' : 'var(--gov-muted)',
+                    background: activeTab === tab.id ? 'rgba(91,154,255,0.15)' : 'rgba(255,255,255,0.06)',
+                    color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--gov-muted)',
                     borderRadius: 10,
                     padding: '2px 8px',
                     fontSize: 11,

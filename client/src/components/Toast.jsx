@@ -51,7 +51,7 @@ export function ToastProvider({ children }) {
               alignItems: 'center',
               gap: 8,
               color: '#fff',
-              background: t.type === 'success' ? '#10b981' : t.type === 'error' ? '#ef4444' : t.type === 'warning' ? '#f97316' : '#00d4ff',
+              background: t.type === 'success' ? '#3fb950' : t.type === 'error' ? '#f85149' : t.type === 'warning' ? '#da9d42' : '#5b9aff',
             }}
           >
             <span style={{ fontSize: 16 }}>

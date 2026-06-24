@@ -24,7 +24,7 @@ const NotFound = lazy(() => import('./pages/NotFound'))
 function PageLoader() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 12 }}>
-      <div style={{ width: 24, height: 24, border: '3px solid var(--gov-border)', borderTopColor: 'var(--neon-cyan)', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
+      <div style={{ width: 24, height: 24, border: '3px solid var(--gov-border)', borderTopColor: 'var(--accent-blue)', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
       <span style={{ color: 'var(--gov-muted)', fontSize: 14 }}>Loading...</span>
     </div>
   )

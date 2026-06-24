@@ -38,8 +38,8 @@ export default function Register() {
             <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="emblemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#00d4ff" />
-                  <stop offset="100%" stopColor="#7c3aed" />
+                  <stop offset="0%" stopColor="#5b9aff" />
+                  <stop offset="100%" stopColor="#7c8df0" />
                 </linearGradient>
               </defs>
               <circle cx="28" cy="28" r="25" stroke="url(#emblemGrad)" strokeWidth="2" fill="none" opacity="0.6" />

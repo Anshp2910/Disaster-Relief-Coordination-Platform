@@ -148,9 +148,9 @@ export default function Header() {
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  background: connected ? 'var(--neon-green)' : 'var(--neon-red)',
+                  background: connected ? 'var(--accent-green)' : 'var(--accent-red)',
                   flexShrink: 0,
-                  boxShadow: connected ? '0 0 8px var(--neon-green)' : '0 0 8px var(--neon-red)',
+                  boxShadow: connected ? '0 0 8px var(--accent-green)' : '0 0 8px var(--accent-red)',
                 }}
               />
               <button

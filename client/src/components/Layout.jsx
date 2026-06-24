@@ -20,15 +20,15 @@ export default function Layout({ children }) {
           <button
             onClick={install}
             style={{
-              background: 'linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.2))',
-              color: 'var(--neon-cyan)',
-              border: '1px solid rgba(0,212,255,0.3)',
+              background: 'linear-gradient(135deg, rgba(91,154,255,0.2), rgba(124,141,240,0.2))',
+              color: 'var(--accent-blue)',
+              border: '1px solid rgba(91,154,255,0.3)',
               padding: '6px 18px',
               borderRadius: 8,
               fontWeight: 700,
               fontSize: 13,
               cursor: 'pointer',
-              boxShadow: '0 0 12px rgba(0,212,255,0.2)',
+              boxShadow: '0 0 12px rgba(91,154,255,0.2)',
             }}
           >
             Install

@@ -179,14 +179,14 @@ export default function Geofencing() {
           {renderResultSection(
             result.requests || [],
             'var(--gov-danger)',
-            'rgba(239,68,68,.06)',
+            'rgba(248,81,73,.06)',
             t('geofencing.requestsNearby'),
             (r) => <>{r.title} <span style={{ color: 'var(--gov-muted)' }}>({r.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.resources || [],
             'var(--gov-green)',
-            'rgba(16,185,129,.06)',
+            'rgba(63,185,80,.06)',
             t('geofencing.resourcesNearby'),
             (r) => <>{r.name} <span style={{ color: 'var(--gov-muted)' }}>({r.distanceKm} km)</span></>
           )}

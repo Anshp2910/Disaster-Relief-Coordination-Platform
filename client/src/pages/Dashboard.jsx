@@ -12,28 +12,28 @@ import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: 'var(--color-open)' },
+  'Open': { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--color-open)' },
   'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
   'In Progress': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-progress)' },
-  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: 'var(--color-resolved)' },
+  'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
   'Fulfilled': { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
 }
 
 const MAP_MARKER_COLORS = { 'Open': 'var(--color-open)', 'Pending': 'var(--color-pending)', 'In Progress': 'var(--color-progress)', 'Resolved': 'var(--color-resolved)', 'Fulfilled': 'var(--color-fulfilled)' }
 
 const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
-  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
+  'Critical': { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
+  'High': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
   'Medium': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
   'Low': { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
 }
 
 const CATEGORY_COLORS = {
-  'Medical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--cat-medical)' },
+  'Medical': { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--cat-medical)' },
   'Food': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
-  'Shelter': { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-shelter)' },
+  'Shelter': { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--cat-shelter)' },
   'Water': { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
-  'Rescue': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--cat-rescue)' },
+  'Rescue': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--cat-rescue)' },
   'Supplies': { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
   'Healthcare': { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: 'var(--cat-healthcare)' },
   'Sanitation': { bg: 'rgba(20,184,166,.1)', border: 'rgba(20,184,166,.25)', text: 'var(--cat-sanitation)' },
@@ -219,20 +219,20 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(0,212,255,0.1)', position: 'relative' }}>
+      <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(91,154,255,0.1)', position: 'relative' }}>
         <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" loading="eager" fetchpriority="high" width="1200" height="300" style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/1' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05))', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(91,154,255,0.05), rgba(124,141,240,0.05))', pointerEvents: 'none' }} />
       </div>
       {resourceSummary.length > 0 && (
         <div className="card" style={{ marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--neon-cyan)' }}>{t('dashboard.resourceInventory')}</h3>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--accent-blue)' }}>{t('dashboard.resourceInventory')}</h3>
             <button onClick={() => navigate('/resources')} style={{ fontSize: 12, padding: '5px 12px' }}>{t('dashboard.viewAll')}</button>
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {resourceSummary.map((s) => (
-              <div key={s._id} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 12, background: 'rgba(0,212,255,0.06)', border: '1px solid rgba(0,212,255,0.12)', backdropFilter: 'blur(4px)' }}>
-                <strong style={{ color: 'var(--neon-cyan)' }}>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: 'var(--neon-orange)' }}>({s.lowCount} low)</span>}
+              <div key={s._id} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 12, background: 'rgba(91,154,255,0.06)', border: '1px solid rgba(91,154,255,0.12)', backdropFilter: 'blur(4px)' }}>
+                <strong style={{ color: 'var(--accent-blue)' }}>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: 'var(--accent-orange)' }}>({s.lowCount} low)</span>}
               </div>
             ))}
           </div>
@@ -300,7 +300,7 @@ export default function Dashboard() {
                     <div key={it._id} className="listCard" style={{ cursor: 'pointer' }} onClick={() => navigate(`/requests/${it._id}`)}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--neon-cyan)' }}>{it.title}</div>
+                          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--accent-blue)' }}>{it.title}</div>
                           <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
                             <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
                             <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
@@ -309,7 +309,7 @@ export default function Dashboard() {
                           <div className="muted" style={{ marginTop: 8, fontSize: 13 }}>{it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
                           <div className="small" style={{ marginTop: 8 }}>{it.locationName}</div>
                           {it.createdBy && <div className="small" style={{ marginTop: 4 }}>{t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}</div>}
-                          {it.claimedBy && <div className="small" style={{ marginTop: 2, color: 'var(--neon-orange)' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
+                          {it.claimedBy && <div className="small" style={{ marginTop: 2, color: 'var(--accent-orange)' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
                         </div>
                         <OwnerActions id={it._id} item={it} onChanged={load} />
                       </div>

@@ -136,7 +136,7 @@ export default function Escalation() {
             <div key={item._id} className="listCard" style={{ borderLeft: '4px solid var(--gov-danger)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--neon-cyan)' }}>{item.title}</div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--accent-blue)' }}>{item.title}</div>
                   <div style={{ fontSize: 12, color: 'var(--gov-danger)', marginTop: 2 }}>
                     {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                   </div>
@@ -146,8 +146,8 @@ export default function Escalation() {
                 <button
                   onClick={() => handleDeescalate(item._id)}
                   style={{
-                    fontSize: 11, padding: '4px 10px', background: 'rgba(16,185,129,.1)',
-                    color: 'var(--neon-green)', border: '1px solid rgba(16,185,129,.3)',
+                    fontSize: 11, padding: '4px 10px', background: 'rgba(63,185,80,.1)',
+                    color: 'var(--accent-green)', border: '1px solid rgba(63,185,80,.3)',
                     borderRadius: 4, cursor: 'pointer', alignSelf: 'start',
                   }}
                 >

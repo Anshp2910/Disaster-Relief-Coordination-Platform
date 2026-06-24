@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component {
             boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
           }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>&#9888;</div>
-            <h2 style={{ fontSize: 20, background: 'linear-gradient(135deg, var(--neon-cyan), var(--neon-purple))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', margin: '0 0 12px' }}>
+            <h2 style={{ fontSize: 20, background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-indigo))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', margin: '0 0 12px' }}>
               Something went wrong
             </h2>
             <p style={{ fontSize: 14, color: 'var(--gov-muted)', margin: '0 0 20px' }}>
@@ -47,7 +47,7 @@ export default class ErrorBoundary extends Component {
                 window.location.href = '/dashboard'
               }}
               style={{
-                background: 'linear-gradient(135deg, #00d4ff, #7c3aed)',
+                background: 'linear-gradient(135deg, #5b9aff, #7c8df0)',
                 color: '#fff',
                 border: 'none',
                 padding: '10px 24px',

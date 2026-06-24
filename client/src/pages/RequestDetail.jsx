@@ -10,16 +10,16 @@ import Chat from './Chat'
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(0,212,255,.1)', border: 'rgba(0,212,255,.25)', text: 'var(--color-open)' },
+  'Open': { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--color-open)' },
   'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
-  'In Progress': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-progress)' },
-  'Resolved': { bg: 'rgba(16,185,129,.1)', border: 'rgba(16,185,129,.25)', text: 'var(--color-resolved)' },
+  'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-progress)' },
+  'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
   'Fulfilled': { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
 }
 
 const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
-  'High': { bg: 'rgba(249,115,22,.1)', border: 'rgba(249,115,22,.25)', text: 'var(--color-high)' },
+  'Critical': { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
+  'High': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
   'Medium': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
   'Low': { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
 }
@@ -259,7 +259,7 @@ export default function RequestDetail() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 16 }}>
         {/* Details Card */}
         <div className="card">
-          <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 700, color: 'var(--neon-cyan)' }}>{t('editRequest.subtitle')}</h3>
+          <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 700, color: 'var(--accent-blue)' }}>{t('editRequest.subtitle')}</h3>
           <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>{item.description}</p>
 
           <div style={{ marginTop: 16, fontSize: 13 }}>
@@ -513,7 +513,7 @@ export default function RequestDetail() {
                   <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
                 </div>
                 {f.comment && <div>{f.comment}</div>}
-                {f.deliveryConfirmed && <div className="small" style={{ color: 'var(--neon-green)', marginTop: 4 }}>{t('requestDetail.deliveryConfirmed')}</div>}
+                {f.deliveryConfirmed && <div className="small" style={{ color: 'var(--accent-green)', marginTop: 4 }}>{t('requestDetail.deliveryConfirmed')}</div>}
               </div>
             ))}
           </div>
