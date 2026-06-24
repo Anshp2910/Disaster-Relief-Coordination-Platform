@@ -284,34 +284,32 @@ a:hover { color: var(--pri-300); }
 .gov-top-strip-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .lang-select {
   font-size: var(--text-xs);
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-sm);
-  padding: 4px 26px 4px 8px;
+  padding: 5px 24px 5px 10px;
   cursor: pointer;
   flex-shrink: 0;
   transition: all var(--duration-fast) var(--ease-out);
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 6px center;
-}
-.lang-select option {
-  background: var(--slate-800);
-  color: var(--text);
-  padding: 8px 12px;
+  background-position: right 7px center;
+  background-size: 8px 5px;
+  line-height: 1.4;
 }
 .lang-select:hover {
-  border-color: var(--pri-500);
+  border-color: rgba(255, 255, 255, 0.15);
   color: var(--text);
+  background: rgba(255, 255, 255, 0.09);
 }
 .lang-select:focus {
   outline: none;
   border-color: var(--pri-500);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 /* === Header Main === */
@@ -1850,22 +1848,20 @@ button { box-sizing: border-box; }
   border-bottom-color: rgba(255, 255, 255, 0.04);
 }
 .dark .lang-select {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.1);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-.dark .lang-select option {
-  background: #1e293b;
-  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.08);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 8px 5px;
 }
 .dark .lang-select:hover {
-  border-color: var(--pri-500);
+  border-color: rgba(255, 255, 255, 0.2);
   color: #fff;
+  background: rgba(255, 255, 255, 0.12);
 }
 .dark .lang-select:focus {
   border-color: var(--pri-500);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
 .dark .gov-header-main {
