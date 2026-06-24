@@ -48,7 +48,13 @@ export default function Geofencing() {
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
 
-    const map = initLeafletMap(mapRef.current)
+    let map
+    try {
+      map = initLeafletMap(mapRef.current)
+    } catch (err) {
+      console.error('[Geofencing] Map init failed:', err)
+      return
+    }
     mapInstanceRef.current = map
 
     const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
@@ -69,38 +75,42 @@ export default function Geofencing() {
 
   useEffect(() => {
     if (!position || !mapInstanceRef.current) return
-    const map = mapInstanceRef.current
-    map.setView([position.lat, position.lng], 10)
+    try {
+      const map = mapInstanceRef.current
+      map.setView([position.lat, position.lng], 10)
 
-    if (circleRef.current) map.removeLayer(circleRef.current)
-    circleRef.current = L.circle([position.lat, position.lng], {
-      radius: radius * 1000,
-      fillColor: 'var(--gov-blue)',
-      fillOpacity: 0.08,
-      color: 'var(--gov-blue)',
-      weight: 2,
-      dashArray: '6,4',
-    }).addTo(map)
+      if (circleRef.current) map.removeLayer(circleRef.current)
+      circleRef.current = L.circle([position.lat, position.lng], {
+        radius: radius * 1000,
+        fillColor: 'var(--gov-blue)',
+        fillOpacity: 0.08,
+        color: 'var(--gov-blue)',
+        weight: 2,
+        dashArray: '6,4',
+      }).addTo(map)
 
-    markersRef.current.forEach((m) => map.removeLayer(m))
-    markersRef.current = []
+      markersRef.current.forEach((m) => map.removeLayer(m))
+      markersRef.current = []
 
-    if (!result) return
+      if (!result) return
 
-    const addMarker = (lat, lng, popup, color) => {
-      const marker = L.marker([lat, lng], { icon: createMapIcon(color) }).addTo(map).bindPopup(popup)
-      markersRef.current.push(marker)
+      const addMarker = (lat, lng, popup, color) => {
+        const marker = L.marker([lat, lng], { icon: createMapIcon(color) }).addTo(map).bindPopup(popup)
+        markersRef.current.push(marker)
+      }
+
+      ;(result.zones || []).forEach((z) => {
+        addMarker(z.centerLat, z.centerLng, `<b>${z.name}</b><br>${z.severity} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999')
+      })
+      ;(result.requests || []).forEach((r) => {
+        if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${r.title}<br>${r.distanceKm} km away`, 'var(--gov-danger)')
+      })
+      ;(result.resources || []).forEach((r) => {
+        if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, 'var(--gov-green)')
+      })
+    } catch (err) {
+      console.error('[Geofencing] Map update failed:', err)
     }
-
-    ;(result.zones || []).forEach((z) => {
-      addMarker(z.centerLat, z.centerLng, `<b>${z.name}</b><br>${z.severity} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999')
-    })
-    ;(result.requests || []).forEach((r) => {
-      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${r.title}<br>${r.distanceKm} km away`, 'var(--gov-danger)')
-    })
-    ;(result.resources || []).forEach((r) => {
-      if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, 'var(--gov-green)')
-    })
   }, [position, radius, result])
 
   const checkArea = useCallback(async () => {
