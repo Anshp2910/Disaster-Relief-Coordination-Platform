@@ -24,7 +24,7 @@
   box-shadow: var(--glass-shadow, var(--shadow-md));
 }
 .glass-inset {
-  background: rgba(255,255,255,0.02);
+  background: rgba(200, 210, 226, 0.15);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--glass-border);
@@ -47,14 +47,7 @@
   -webkit-backdrop-filter: blur(24px) saturate(1.1);
   box-shadow: 0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.02);
 }
-.light .gov-nav-bar.glass-float {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-}
-.light .gov-header-main.glass-float {
-  background: rgba(255,255,255,0.85);
-}
+
 
 /* =========================================
    3. FULL-SCREEN INTERACTIVE MAP
@@ -179,7 +172,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
   pointer-events: none;
 }
 .kpi-card:hover {

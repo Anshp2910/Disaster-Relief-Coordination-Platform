@@ -13,25 +13,25 @@ body {
   overflow-x: hidden;
 }
 
-/* === Subtle Background — defined in 04-components.css (body::before/::after) === */
+/* === Subtle Background ï¿½ defined in 04-components.css (body::before/::after) === */
 
 /* === Custom Scrollbar === */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--slate-300);
   border-radius: 4px;
   transition: background 0.2s;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
 
 /* === Links === */
 a {
-  color: var(--pri-400);
+  color: var(--accent);
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease-out);
 }
-a:hover { color: var(--pri-300); }
+a:hover { color: var(--accent-hover); }
 
 
 :focus-visible {
