@@ -224,19 +224,19 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(74,128,192,0.1)', position: 'relative' }}>
-        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/1' }} />
+      <div className="mb-xl rounded-lg overflow-hidden relative" style={{ border: '1px solid rgba(74,128,192,0.1)' }}>
+        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" className="w-full" style={{ height: 'auto', display: 'block', aspectRatio: '4/1' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(74,128,192,0.05), rgba(107,127,181,0.05))', pointerEvents: 'none' }} />
       </div>
       {resourceSummary.length > 0 && (
-        <div className="card" style={{ marginBottom: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: 'var(--accent-blue)' }}>{t('dashboard.resourceInventory')}</h3>
-            <button onClick={() => navigate('/resources')} style={{ fontSize: 12, padding: '5px 12px' }}>{t('dashboard.viewAll')}</button>
+        <div className="card mb-lg">
+          <div className="flex-between mb-sm">
+            <h3 className="m-0 text-base text-bold" style={{ color: 'var(--accent-blue)' }}>{t('dashboard.resourceInventory')}</h3>
+            <button onClick={() => navigate('/resources')} className="text-sm" style={{ padding: '5px 12px' }}>{t('dashboard.viewAll')}</button>
           </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div className="flex flex-gap-sm flex-wrap">
             {resourceSummary.map((s) => (
-              <div key={s._id} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 12, background: 'rgba(74,128,192,0.06)', border: '1px solid rgba(74,128,192,0.12)', backdropFilter: 'blur(4px)' }}>
+              <div key={s._id} className="text-sm rounded-md" style={{ padding: '8px 14px', background: 'rgba(74,128,192,0.06)', border: '1px solid rgba(74,128,192,0.12)', backdropFilter: 'blur(4px)' }}>
                 <strong style={{ color: 'var(--accent-blue)' }}>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: 'var(--accent-orange)' }}>({s.lowCount} low)</span>}
               </div>
             ))}
@@ -246,8 +246,8 @@ export default function Dashboard() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h1 className="pageTitle" style={{ fontSize: 20 }}>{t('dashboard.title')}</h1>
-            <div className="small" style={{ marginTop: 4 }}>{total} {t('dashboard.totalRequests')}</div>
+            <h1 className="pageTitle text-2xl">{t('dashboard.title')}</h1>
+            <div className="small mt-xs">{total} {t('dashboard.totalRequests')}</div>
           </div>
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
@@ -263,27 +263,27 @@ export default function Dashboard() {
           </div>
         </div>
         {error ? <div className="errorText">{error}</div> : null}
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('admin.searchRequests')} style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }} />
-          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>{t('createRequest.search')}</button>
+        <form onSubmit={handleSearch} className="flex flex-gap-sm mt-md">
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('admin.searchRequests')} className="flex-1 rounded-sm" style={{ padding: '8px 12px', border: '1px solid var(--gov-border)', fontSize: 13 }} />
+          <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>{t('createRequest.search')}</button>
         </form>
-        <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-sm mt-md flex-wrap">
           {filterOptions.map((f) => (
-            <button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}>{f.label}</button>
+            <button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`} aria-label={f.label}>{f.label}</button>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-sm mt-sm flex-wrap">
           {priorityOptions.map((p) => (
-            <button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''}`} style={{ fontSize: 11 }}>{p.label}</button>
+            <button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''} text-xs`} aria-label={p.label}>{p.label}</button>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }}>
+        <div className="flex flex-wrap flex-gap-sm mt-sm" style={{ alignItems: 'center' }}>
+          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="rounded-sm text-sm" style={{ padding: '6px 10px', border: '1px solid var(--gov-border)' }}>
             {categoryOptions.map((c) => (
               <option key={c.key} value={c.key}>{c.key === 'All' ? t('dashboard.allCategories') : c.label}</option>
             ))}
           </select>
-          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }}>
+          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="rounded-sm text-sm" style={{ padding: '6px 10px', border: '1px solid var(--gov-border)' }}>
             {sortOptions.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
             ))}
@@ -294,27 +294,27 @@ export default function Dashboard() {
             {loading ? (
               <SkeletonList count={4} lines={3} />
             ) : (
-              <div className="gridGap" style={{ marginTop: 16 }}>
+              <div className="gridGap mt-lg">
                 {items.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: 20 }}>
+                  <div className="text-center p-lg">
                     <img src="/images/empty-requests.svg" alt="No requests" loading="lazy" width="200" height="150" style={{ width: 200, height: 'auto', margin: '0 auto 12px', display: 'block' }} />
                     <div className="muted">{t('dashboard.noRequests')}</div>
                   </div>
                 ) : (
                   items.map((it) => (
-                    <div key={it._id} className="listCard" style={{ cursor: 'pointer' }} onClick={() => navigate(`/requests/${it._id}`)}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--accent-blue)' }}>{it.title}</div>
-                          <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+                    <div key={it._id} className="listCard cursor-pointer" onClick={() => navigate(`/requests/${it._id}`)}>
+                      <div className="flex-between flex-gap-sm">
+                        <div className="flex-1" style={{ minWidth: 0 }}>
+                          <div className="text-bold" style={{ fontSize: 15, color: 'var(--accent-blue)' }}>{it.title}</div>
+                          <div className="flex flex-gap-sm mt-sm flex-wrap">
                             <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
                             <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
                             <span className="govt-badge govt-badge-blue">{t(`categories.${it.category || 'Other'}`)}</span>
                           </div>
-                          <div className="muted" style={{ marginTop: 8, fontSize: 13 }}>{it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
-                          <div className="small" style={{ marginTop: 8 }}>{it.locationName}</div>
-                          {it.createdBy && <div className="small" style={{ marginTop: 4 }}>{t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}</div>}
-                          {it.claimedBy && <div className="small" style={{ marginTop: 2, color: 'var(--accent-orange)' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
+                          <div className="muted mt-sm text-base">{it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
+                          <div className="small mt-sm">{it.locationName}</div>
+                          {it.createdBy && <div className="small mt-xs">{t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}</div>}
+                          {it.claimedBy && <div className="small mt-xs" style={{ color: 'var(--accent-orange)' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
                         </div>
                         <OwnerActions id={it._id} item={it} onChanged={load} />
                       </div>
@@ -324,33 +324,33 @@ export default function Dashboard() {
               </div>
             )}
             {totalPages > 1 && (
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
-                <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>{t('dashboard.previous')}</button>
-                <span style={{ fontSize: 13, padding: '6px 12px' }}>{page} / {totalPages}</span>
-                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>{t('dashboard.next')}</button>
+              <div className="flex flex-center flex-gap-sm mt-lg">
+                <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
+                <span className="text-sm" style={{ padding: '6px 12px' }}>{page} / {totalPages}</span>
+                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
               </div>
             )}
           </>
         ) : (
           <>
-            <div className="card" style={{ padding: 0, position: 'relative', marginTop: 16 }}>
+            <div className="card p-0 relative mt-lg">
               {mapLoading && (
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
+                <div className="flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
                   <div style={{ width: 24, height: 24, border: '3px solid var(--gov-border)', borderTopColor: 'var(--gov-blue)', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
                 </div>
               )}
-              <div ref={mapRef} className="map-container-full" style={{ height: '70vh', width: '100%', maxWidth: '100%' }} />
+              <div ref={mapRef} className="map-container-full w-full" style={{ height: '70vh' }} />
               {!mapLoading && !error && mapItems.length === 0 && (
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
-                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" style={{ width: 260, height: 'auto', marginBottom: 16 }} />
+                <div className="flex flex-col flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
+                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
                   <div className="muted">{t('dashboard.noRequests')}</div>
                 </div>
               )}
             </div>
-            <div style={{ display: 'flex', gap: 16, marginTop: 12, flexWrap: 'wrap' }}>
+            <div className="flex flex-gap-lg mt-md flex-wrap">
               {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
-                <div key={status} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
-                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: color }} />
+                <div key={status} className="flex text-sm" style={{ alignItems: 'center', gap: 6 }}>
+                  <div className="rounded-full" style={{ width: 12, height: 12, background: color }} />
                   <span>{t(`statuses.${status}`)}</span>
                 </div>
               ))}
@@ -381,9 +381,9 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
   function edit(e) { e.stopPropagation(); navigate(`/requests/${id}/edit`) }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-      <button disabled={!canEdit} onClick={edit} className="btnPrimary" style={{ opacity: !canEdit ? 0.5 : 1, fontSize: 12, padding: '6px 12px' }}>{t('dashboard.edit')}</button>
-      <button disabled={!canEdit || deleting} onClick={del} className="btnDanger" style={{ opacity: !canEdit ? 0.5 : 1, fontSize: 12, padding: '6px 12px' }}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
+    <div className="flex flex-col flex-gap-sm" style={{ alignItems: 'flex-end' }}>
+      <button disabled={!canEdit} onClick={edit} className="btnPrimary text-sm" style={{ opacity: !canEdit ? 0.5 : 1, padding: '6px 12px' }} aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</button>
+      <button disabled={!canEdit || deleting} onClick={del} className="btnDanger text-sm" style={{ opacity: !canEdit ? 0.5 : 1, padding: '6px 12px' }} aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
     </div>
   )
 })

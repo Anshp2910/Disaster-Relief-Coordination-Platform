@@ -66,7 +66,7 @@ export default function Geofencing() {
     try {
       map = initLeafletMap(mapRef.current)
     } catch (err) {
-      console.error('[Geofencing] Map init failed:', err)
+      // silently fail
       return
     }
     mapInstanceRef.current = map
@@ -123,7 +123,7 @@ export default function Geofencing() {
         if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, 'var(--gov-green)')
       })
     } catch (err) {
-      console.error('[Geofencing] Map update failed:', err)
+      // silently fail
     }
   }, [position, radius, result])
 

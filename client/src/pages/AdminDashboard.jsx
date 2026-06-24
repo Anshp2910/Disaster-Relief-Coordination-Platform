@@ -37,11 +37,11 @@ function MiniBarChart({ data, maxVal }) {
   const max = maxVal || Math.max(...safeData.map((d) => typeof d.count === 'number' ? d.count : 0), 1)
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 60, marginTop: 8 }}>
+    <div className="flex mt-sm" style={{ alignItems: 'flex-end', gap: 2, height: 60 }}>
       {safeData.map((d, idx) => {
         const count = typeof d.count === 'number' ? d.count : 0
         return (
-          <div key={d.date || idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          <div key={d.date || idx} className="flex-1 flex flex-col" style={{ alignItems: 'center', gap: 2 }}>
             <div
               style={{
                 width: '100%',
@@ -52,7 +52,7 @@ function MiniBarChart({ data, maxVal }) {
               }}
               title={`${d.date}: ${count}`}
             />
-            {idx % 5 === 0 && <span style={{ fontSize: 9, color: 'var(--gov-muted)' }}>{d.date?.slice(5)}</span>}
+            {idx % 5 === 0 && <span className="text-muted" style={{ fontSize: 9 }}>{d.date?.slice(5)}</span>}
           </div>
         )
       })}
@@ -75,11 +75,11 @@ function BreakdownCard({ title, data, total }) {
         const color = BREAKDOWN_COLORS[i % BREAKDOWN_COLORS.length]
         return (
           <div key={key} className="admin-breakdown-row">
-            <span style={{ fontWeight: 500 }}>{t(`statuses.${key}`) || t(`categories.${key}`) || t(`priorities.${key}`) || key || 'Unknown'}</span>
+            <span className="text-medium">{t(`statuses.${key}`) || t(`categories.${key}`) || t(`priorities.${key}`) || key || 'Unknown'}</span>
             <div className="admin-breakdown-bar">
               <div className="admin-breakdown-bar-fill" style={{ width: `${pct}%`, background: color }} />
             </div>
-            <span style={{ fontWeight: 700, color, minWidth: 40, textAlign: 'right' }}>{numCount}</span>
+            <span className="text-bold" style={{ color, minWidth: 40, textAlign: 'right' }}>{numCount}</span>
           </div>
         )
       })}
@@ -109,7 +109,7 @@ function StatsPanel({ stats }) {
 
   return (
     <div className="card">
-      <h3 style={{ margin: 0, fontSize: 15, color: 'var(--gov-blue)', fontWeight: 700 }}>{t('admin.platformOverview')}</h3>
+      <h3 className="m-0 text-bold" style={{ fontSize: 15, color: 'var(--gov-blue)' }}>{t('admin.platformOverview')}</h3>
 
       <div className="admin-stats-grid">
         {summaryCards.map((c) => (
@@ -123,8 +123,8 @@ function StatsPanel({ stats }) {
       </div>
 
       {stats.dailyRequests?.length > 0 && (
-        <div style={{ marginTop: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gov-blue)', marginBottom: 4 }}>Requests Over Time</div>
+        <div className="mt-xl">
+          <div className="text-semi mb-xs" style={{ fontSize: 13, color: 'var(--gov-blue)' }}>Requests Over Time</div>
           <MiniBarChart data={stats.dailyRequests} />
         </div>
       )}
@@ -173,7 +173,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <div style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--gov-muted)' }}>
+        <div className="flex flex-gap-sm text-sm text-muted">
           <span className="govt-badge govt-badge-blue">
             {roleCounts.volunteer} {t('auth.volunteer')}{roleCounts.volunteer !== 1 ? 's' : ''}
           </span>
@@ -191,7 +191,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
           <div>{search ? t('admin.noUsersMatch') : t('admin.noUsers')}</div>
         </div>
       ) : (
-        <div className="admin-table-wrapper" style={{ border: 'none', borderRadius: 0, marginTop: 12 }}>
+        <div className="admin-table-wrapper border-none mt-md">
           <table className="admin-table">
             <thead>
               <tr>
@@ -276,19 +276,20 @@ function RequestsPanel({ requests, onDelete }) {
 
   return (
     <div className="card">
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+      <div className="flex flex-gap-sm flex-wrap mb-md">
         {filterOptions.map((f) => (
           <button
             key={f.key}
             onClick={() => setFilterStatus(f.key)}
             className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
+            aria-label={f.label}
           >
             {f.label} ({statusCounts[f.key] || 0})
           </button>
         ))}
       </div>
 
-      <div className="admin-toolbar" style={{ marginTop: 0 }}>
+      <div className="admin-toolbar mt-0">
         <input
           type="text"
           className="admin-search"
@@ -303,7 +304,7 @@ function RequestsPanel({ requests, onDelete }) {
           <div>{search || filterStatus !== 'All' ? t('admin.noRequestsMatch') : t('admin.noRequests')}</div>
         </div>
       ) : (
-        <div className="admin-table-wrapper" style={{ border: 'none', borderRadius: 0, marginTop: 12 }}>
+        <div className="admin-table-wrapper border-none mt-md">
           <table className="admin-table">
             <thead>
               <tr>
@@ -317,7 +318,7 @@ function RequestsPanel({ requests, onDelete }) {
             </thead>
             <tbody>
               {filtered.map((r) => (
-                <tr key={r._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/requests/${r._id}`)}>
+                <tr key={r._id} className="cursor-pointer" onClick={() => navigate(`/requests/${r._id}`)}>
                   <td style={{ maxWidth: 280 }}>
                     <div className="admin-request-title">{r.title}</div>
                     <div className="admin-request-location">{r.locationName || t('admin.noLocation')}</div>
@@ -467,11 +468,11 @@ export default function AdminDashboard() {
 
   return (
     <div className="container">
-      <div className="card" style={{ marginBottom: 24 }}>
+      <div className="card mb-xl">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 22, margin: 0 }}>{t('admin.title')}</h2>
-            <div className="small muted" style={{ marginTop: 4 }}>{t('admin.subtitle')}</div>
+            <h2 className="pageTitle text-2xl m-0">{t('admin.title')}</h2>
+            <div className="small muted mt-xs">{t('admin.subtitle')}</div>
           </div>
           <div className="btnRow">
             <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
@@ -479,18 +480,18 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {error && <div className="errorText" style={{ marginTop: 12 }}>{error}</div>}
+        {error && <div className="errorText mt-md">{error}</div>}
 
-        <div style={{ display: 'flex', gap: 4, marginTop: 20, borderBottom: '1px solid rgba(255,255,255,0.06)', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        <div className="flex flex-gap-xs mt-xl overflow-x-auto" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', WebkitOverflowScrolling: 'touch' }}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
+              className="text-semi"
               style={{
                 padding: '12px 20px',
                 borderRadius: '10px 10px 0 0',
                 fontSize: 13,
-                fontWeight: 600,
                 border: '1px solid transparent',
                 borderBottom: activeTab === tab.id ? '2px solid var(--accent-blue)' : '2px solid transparent',
                 marginBottom: activeTab === tab.id ? -1 : 0,
@@ -503,6 +504,7 @@ export default function AdminDashboard() {
               {tab.label}
               {tab.count !== undefined && (
                 <span
+                  className="text-bold"
                   style={{
                     marginLeft: 6,
                     background: activeTab === tab.id ? 'rgba(74,128,192,0.15)' : 'rgba(255,255,255,0.06)',
@@ -510,7 +512,6 @@ export default function AdminDashboard() {
                     borderRadius: 10,
                     padding: '2px 8px',
                     fontSize: 11,
-                    fontWeight: 700,
                   }}
                 >
                   {tab.count}

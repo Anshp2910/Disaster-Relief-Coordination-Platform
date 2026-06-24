@@ -101,14 +101,14 @@ export default function Schedules() {
       const zonesData = await clientApi.getZones()
       setZones(zonesData.items || [])
     } catch (e) {
-      console.error('Failed to load zones:', e)
+      // silently fail
     }
     if (currentUser?.role === 'admin') {
       try {
         const usersData = await clientApi.adminUsers()
         setUsers(usersData.users || [])
       } catch (e) {
-        console.error('Failed to load users:', e)
+        // silently fail
       }
     } else {
       setUsers([{ _id: currentUser?.id, displayName: currentUser?.displayName || currentUser?.email, role: currentUser?.role }])
@@ -196,15 +196,15 @@ export default function Schedules() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.schedules') || 'Volunteer Scheduling'}</h2>
-            <div className="small" style={{ marginTop: 4 }}>{items.length} {t('schedules.schedulesCount')}</div>
+            <h2 className="pageTitle">{t('nav.schedules') || 'Volunteer Scheduling'}</h2>
+            <div className="small mt-xs">{items.length} {t('schedules.schedulesCount')}</div>
           </div>
-          <button className="btnPrimary" onClick={openCreate}>{t('schedules.createSchedule')}</button>
+          <button className="btnPrimary" onClick={openCreate} aria-label="Create schedule">{t('schedules.createSchedule')}</button>
         </div>
 
-        {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
+        {error && <div className="errorText mt-sm">{error}</div>}
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-xs mt-md flex-wrap">
           {STATUS_FILTER_OPTIONS.map((s) => (
             <button
               key={s}
@@ -216,33 +216,32 @@ export default function Schedules() {
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-xs mt-sm flex-wrap">
           {['All', ...SHIFT_OPTIONS].map((s) => (
             <button
               key={s}
               onClick={() => { setFilterShift(s); setPage(1) }}
-              className={`filter-pill ${filterShift === s ? 'active' : ''}`}
-              style={{ fontSize: 11 }}
+              className={`filter-pill text-xs ${filterShift === s ? 'active' : ''}`}
             >
               {s === 'All' ? t('dashboard.filterAll') : s}
             </button>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <select value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }} style={{ padding: '6px 10px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }}>
+        <div className="flex flex-gap-sm mt-sm flex-wrap gap-row-sm">
+          <select value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }}>
             <option value="All">{t('schedules.allZones')}</option>
             {zones.map((z) => (
               <option key={z._id} value={z._id}>{z.name}</option>
             ))}
           </select>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
-            <span style={{ color: 'var(--gov-muted)' }}>{t('schedules.from')}:</span>
-            <input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} style={{ padding: '5px 8px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }} />
+          <div className="gap-row-xs text-sm">
+            <span className="text-muted">{t('schedules.from')}:</span>
+            <input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12 }}>
-            <span style={{ color: 'var(--gov-muted)' }}>{t('schedules.to')}:</span>
-            <input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} style={{ padding: '5px 8px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 12 }} />
+          <div className="gap-row-xs text-sm">
+            <span className="text-muted">{t('schedules.to')}:</span>
+            <input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} />
           </div>
         </div>
       </div>
@@ -250,9 +249,9 @@ export default function Schedules() {
       {loading ? (
         <SkeletonList count={4} lines={3} />
       ) : (
-        <div className="gridGap" style={{ marginTop: 12 }}>
+        <div className="gridGap mt-md">
           {items.length === 0 && (
-            <div className="card" style={{ textAlign: 'center', padding: 24 }}>{t('schedules.noSchedules')}</div>
+            <div className="card text-center p-xl">{t('schedules.noSchedules')}</div>
           )}
 
           {items.map((item) => {
@@ -260,34 +259,34 @@ export default function Schedules() {
             const statusC = STATUS_COLORS[item.status] || STATUS_COLORS.Scheduled
             return (
               <div key={item._id} className="listCard">
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
-                      <span style={{ fontWeight: 700, fontSize: 14 }}>{item.userId?.displayName || 'Volunteer'}</span>
+                <div className="flex flex-between flex-gap-sm">
+                  <div className="flex-1">
+                    <div className="flex flex-gap-sm flex-wrap mb-xs">
+                      <span className="text-bold text-base">{item.userId?.displayName || 'Volunteer'}</span>
                       <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>{item.shift}</span>
                       <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>{item.status}</span>
                     </div>
 
-                    <div style={{ fontSize: 13, color: 'var(--gov-muted)' }}>
+                    <div className="text-base text-muted">
                       {formatDate(item.startDate)} &rarr; {formatDate(item.endDate)}
                     </div>
 
                     {item.zoneId && (
-                      <div className="small muted" style={{ marginTop: 4 }}>Zone: {item.zoneId.name || 'Unknown'}</div>
+                      <div className="small muted mt-xs">Zone: {item.zoneId.name || 'Unknown'}</div>
                     )}
 
                     {item.skills?.length > 0 && (
-                      <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
+                      <div className="flex flex-gap-xs mt-xs flex-wrap">
                         {item.skills.map((s) => (
                           <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
                         ))}
                       </div>
                     )}
 
-                    {item.notes && <div className="small muted" style={{ marginTop: 4 }}>{item.notes}</div>}
+                    {item.notes && <div className="small muted mt-xs">{item.notes}</div>}
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
+                  <div className="flex flex-col flex-gap-xs">
                     <StatusButton
                       currentStatus={item.status}
                       expectedStatus="Scheduled"
@@ -306,8 +305,8 @@ export default function Schedules() {
                       scheduleId={item._id}
                       onStatusChange={handleStatusChange}
                     />
-                    <button onClick={() => openEdit(item)} style={{ fontSize: 11, padding: '3px 8px' }}>Edit</button>
-                    <button onClick={() => handleDelete(item._id)} className="btnDanger" style={{ fontSize: 11, padding: '3px 8px' }}>Delete</button>
+                    <button onClick={() => openEdit(item)} className="text-xs p-xs" aria-label="Edit">Edit</button>
+                    <button onClick={() => handleDelete(item._id)} className="btnDanger text-xs p-xs" aria-label="Delete">Delete</button>
                   </div>
                 </div>
               </div>
@@ -317,21 +316,21 @@ export default function Schedules() {
       )}
 
       {totalPages > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Previous</button>
-          <span style={{ fontSize: 13, padding: '6px 12px' }}>{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Next</button>
+        <div className="flex flex-center flex-gap-sm mt-lg">
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" aria-label="Previous page">Previous</button>
+          <span className="text-base">{page} / {totalPages}</span>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" aria-label="Next page">Next</button>
         </div>
       )}
 
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="modal-overlay" role="dialog" aria-modal="true">
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>{editItem ? t('schedules.editSchedule') : t('schedules.createSchedule')}</h3>
-            <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
+            <h3 className="m-0 mb text-lg">{editItem ? t('schedules.editSchedule') : t('schedules.createSchedule')}</h3>
+            <form onSubmit={handleSubmit} className="grid flex-gap-sm">
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.volunteer')}</label>
-                <select value={form.userId} onChange={updateForm('userId')} required style={{ width: '100%' }}>
+                <select value={form.userId} onChange={updateForm('userId')} required className="w-full">
                   <option value="">{t('schedules.selectVolunteer')}</option>
                   {users.map((u) => (
                     <option key={u._id} value={u._id}>{u.displayName} ({u.role})</option>
@@ -341,7 +340,7 @@ export default function Schedules() {
 
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.zoneOptional')}</label>
-                <select value={form.zoneId} onChange={updateForm('zoneId')} style={{ width: '100%' }}>
+                <select value={form.zoneId} onChange={updateForm('zoneId')} className="w-full">
                   <option value="">{t('schedules.noZone')}</option>
                   {zones.map((z) => (
                     <option key={z._id} value={z._id}>{z.name}</option>
@@ -349,20 +348,20 @@ export default function Schedules() {
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 8 }}>
+              <div className="grid-3-responsive">
                 <div>
                   <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.start')}</label>
-                  <input type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required style={{ width: '100%' }} />
+                  <input type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required className="w-full" />
                 </div>
                 <div>
                   <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.end')}</label>
-                  <input type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required style={{ width: '100%' }} />
+                  <input type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required className="w-full" />
                 </div>
               </div>
 
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.shift')}</label>
-                <select value={form.shift} onChange={updateForm('shift')} style={{ width: '100%' }}>
+                <select value={form.shift} onChange={updateForm('shift')} className="w-full">
                   {SHIFT_OPTIONS.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -371,7 +370,7 @@ export default function Schedules() {
 
               <div>
                 <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.skills')}</label>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                <div className="flex flex-gap-xs flex-wrap">
                   {SKILL_OPTIONS.map((s) => {
                     const active = form.skills.includes(s)
                     return (
@@ -395,9 +394,9 @@ export default function Schedules() {
 
               <textarea placeholder={t('schedules.notesOptional')} value={form.notes} onChange={updateForm('notes')} rows={2} />
 
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="submit" className="btnPrimary">{editItem ? t('schedules.update') : t('schedules.create')}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('schedules.cancel')}</button>
+              <div className="flex flex-gap-sm mt-xs">
+                <button type="submit" className="btnPrimary" aria-label="Submit">{editItem ? t('schedules.update') : t('schedules.create')}</button>
+                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label="Cancel">{t('schedules.cancel')}</button>
               </div>
             </form>
           </div>

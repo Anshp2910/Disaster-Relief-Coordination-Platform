@@ -84,7 +84,7 @@ export default function RequestDetail() {
       const data = await clientApi.getResources({ status: 'Available', limit: 100 })
       setResources(data.items || [])
     } catch {
-      console.error('Failed to load resources')
+      // silently fail
     }
   }, [])
 
@@ -93,7 +93,7 @@ export default function RequestDetail() {
       const data = await clientApi.getFeedback(id)
       setFeedbackList(data.feedback || [])
     } catch {
-      console.error('Failed to load feedback')
+      // silently fail
     }
   }, [id])
 
@@ -103,7 +103,7 @@ export default function RequestDetail() {
       const data = await clientApi.matchResources(id)
       setMatches(data.matches || [])
     } catch {
-      console.error('Failed to load matches')
+      // silently fail
     } finally {
       setLoadingMatches(false)
     }

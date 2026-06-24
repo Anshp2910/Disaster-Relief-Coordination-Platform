@@ -15,10 +15,9 @@ export const PRIORITY_COLORS = {
   'Low': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: '#34c759' },
 }
 
-export const Badge = memo(function Badge({ label, colors, colorKey }) {
-  const c = colors[colorKey || label] || { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' }
+export const Badge = memo(function Badge({ label }) {
   return (
-    <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
+    <span className="badge">
       {label}
     </span>
   )

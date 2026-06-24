@@ -42,28 +42,13 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'system-ui, sans-serif',
-          padding: 20,
-          background: 'var(--gov-bg)',
-        }}>
-          <div style={{
-            maxWidth: 500,
-            textAlign: 'center',
-            padding: 40,
-            background: 'var(--gov-card-bg)',
-            borderRadius: 12,
-            boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
-          }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>&#9888;</div>
-            <h2 style={{ fontSize: 20, background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-indigo))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', margin: '0 0 12px' }}>
+        <div className="flex-center" role="alert">
+          <div className="text-center p-2xl rounded-lg shadow">
+            <div className="text-3xl mb-lg">&#9888;</div>
+            <h1 className="text-xl text-gradient m-0 mb-sm">
               Something went wrong
-            </h2>
-            <p style={{ fontSize: 14, color: 'var(--gov-muted)', margin: '0 0 20px' }}>
+            </h1>
+            <p className="text-sm text-muted m-0 mb-lg">
               An unexpected error occurred. Please try refreshing the page.
             </p>
             <button
@@ -71,15 +56,8 @@ export default class ErrorBoundary extends Component {
                 this.setState({ hasError: false, error: null })
                 window.location.href = '/dashboard'
               }}
-              style={{
-                background: 'linear-gradient(135deg, #4a80c0, #6b7fb5)',
-                color: '#fff',
-                border: 'none',
-                padding: '10px 24px',
-                borderRadius: 6,
-                fontSize: 14,
-                cursor: 'pointer',
-              }}
+              className="btnPrimary"
+              aria-label="Go to Dashboard"
             >
               Go to Dashboard
             </button>

@@ -64,7 +64,7 @@ function buildPopup(zone, color) {
         </div>
       </div>
       <div style="margin-top:8px">
-        <button onclick="window.__selectZone('${escapeHtml(zone._id)}')" style="background:#4a80c0;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
+        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:#4a80c0;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
       </div>
     </div>
   `
@@ -157,13 +157,23 @@ export default function ZoneHeatMap() {
       circlesRef.current.push(circle)
     })
 
-    window.__selectZone = (id) => {
-      const z = zones.find((z) => z._id === id)
-      if (z) setSelectedZone(z)
+    function onPopupOpen(e) {
+      const popupEl = e.popup.getElement()
+      const btn = popupEl.querySelector('.zone-view-btn')
+      if (btn) {
+        const handler = () => {
+          const zoneId = btn.getAttribute('data-zone-id')
+          const z = zones.find((z) => z._id === zoneId)
+          if (z) setSelectedZone(z)
+        }
+        btn.addEventListener('click', handler)
+      }
     }
 
+    map.on('popupopen', onPopupOpen)
+
     return () => {
-      delete window.__selectZone
+      map.off('popupopen', onPopupOpen)
     }
   }, [zones])
 
@@ -239,61 +249,59 @@ export default function ZoneHeatMap() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h1 className="pageTitle" style={{ fontSize: 20 }}>{t('zones.title')}</h1>
-            <div className="small" style={{ marginTop: 4 }}>
+            <h1 className="pageTitle">{t('zones.title')}</h1>
+            <div className="small mt-xs">
               {zones.length} zones &middot; {totalOpen} open requests &middot; {totalGap} coverage gaps &middot; {totalAffected.toLocaleString()} affected
             </div>
           </div>
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <button className="btnPrimary" onClick={openCreate}>{t('zones.addZone')}</button>
+              <button className="btnPrimary" onClick={openCreate} aria-label="Add zone">{t('zones.addZone')}</button>
             )}
           </div>
         </div>
-        {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
+        {error && <div className="errorText mt-sm">{error}</div>}
 
-        <form onSubmit={(e) => { e.preventDefault(); load() }} style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+        <form onSubmit={(e) => { e.preventDefault(); load() }} className="flex flex-gap-sm mt-md">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('zones.searchPlaceholder') || 'Search zones...'}
-            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+            className="flex-1"
           />
         </form>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-xs mt-sm flex-wrap">
           {STATUS_OPTIONS.map((s) => (
             <button
               key={s}
               onClick={() => { setFilterStatus(s) }}
-              className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
-              style={{ fontSize: 11 }}
+              className={`filter-pill text-xs ${filterStatus === s ? 'active' : ''}`}
             >
               {s}
             </button>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-xs mt-xs flex-wrap">
           {SEVERITY_OPTIONS.map((s) => (
             <button
               key={s}
               onClick={() => { setFilterSeverity(s) }}
-              className={`filter-pill ${filterSeverity === s ? 'active' : ''}`}
-              style={{ fontSize: 11, ...(s !== 'All' && SEVERITY_COLORS[s] ? { borderLeft: `3px solid ${SEVERITY_COLORS[s].fill}` } : {}) }}
+              className={`filter-pill text-xs ${filterSeverity === s ? 'active' : ''}`}
+              style={s !== 'All' && SEVERITY_COLORS[s] ? { borderLeft: `3px solid ${SEVERITY_COLORS[s].fill}` } : {}}
             >
               {s}
             </button>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-xs mt-xs flex-wrap">
           {DISASTER_OPTIONS.map((d) => (
             <button
               key={d}
               onClick={() => { setFilterDisaster(d) }}
-              className={`filter-pill ${filterDisaster === d ? 'active' : ''}`}
-              style={{ fontSize: 11 }}
+              className={`filter-pill text-xs ${filterDisaster === d ? 'active' : ''}`}
             >
               {d !== 'All' ? `${DISASTER_ICONS[d]} ` : ''}{d}
             </button>
@@ -301,36 +309,36 @@ export default function ZoneHeatMap() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="card" style={{ padding: 0, position: 'relative' }}>
+      <div className="flex flex-gap mt-md flex-wrap">
+        <div className="flex-1">
+          <div className="card p-0 relative">
             {loading && (
-              <div style={{ position: 'absolute', inset: 0, zIndex: 1000 }}>
+              <div className="absolute z-100" style={{ inset: 0 }}>
                 <SkeletonMap height="65vh" />
               </div>
             )}
             {!loading && zones.length === 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 60 }}>
+              <div className="flex flex-col flex-center p-2xl">
                 <img src="/images/empty-map.svg" alt="No zones" style={{ width: 200, marginBottom: 16 }} />
                 <div className="muted">{t('zones.noZones')}</div>
                 {currentUser?.role === 'admin' && (
-                  <button className="btnPrimary" onClick={openCreate} style={{ marginTop: 12 }}>{t('zones.createZone')}</button>
+                  <button className="btnPrimary mt-md" onClick={openCreate} aria-label="Create zone">{t('zones.createZone')}</button>
                 )}
               </div>
             )}
             <div ref={mapRef} className="map-container-full" style={{ height: '65vh', width: '100%', maxWidth: '100%' }} />
           </div>
 
-          <div style={{ display: 'flex', gap: 16, marginTop: 8, flexWrap: 'wrap' }}>
+          <div className="flex flex-gap-lg mt-sm flex-wrap">
             {Object.entries(SEVERITY_COLORS).map(([sev, c]) => (
-              <div key={sev} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+              <div key={sev} className="gap-row-xs text-sm">
                 <div style={{ width: 14, height: 14, borderRadius: '50%', background: c.fill, border: `2px solid ${c.stroke}` }} />
                 <span>{sev}</span>
               </div>
             ))}
-            <span style={{ fontSize: 12, color: 'var(--gov-muted)' }}>&middot;</span>
+            <span className="text-sm text-muted">&middot;</span>
             {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
-              <div key={cov} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+              <div key={cov} className="gap-row-xs text-sm">
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: c }} />
                 <span>{cov}</span>
               </div>
@@ -339,20 +347,20 @@ export default function ZoneHeatMap() {
         </div>
 
         {selectedZone && (
-          <div className="card" style={{ width: 320, flexShrink: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 8 }}>
+          <div className="card flex-shrink-0" style={{ width: 320 }}>
+            <div className="flex flex-between mb-sm">
               <div>
-                <h3 style={{ margin: 0, fontSize: 15, color: '#4a80c0' }}>
+                <h3 className="m-0 text-lg">
                   {DISASTER_ICONS[selectedZone.disasterType]} {selectedZone.name}
                 </h3>
-                <div style={{ fontSize: 12, marginTop: 4, color: 'var(--gov-muted)' }}>
+                <div className="text-sm mt-xs text-muted">
                   {selectedZone.disasterType} &middot; {selectedZone.status}
                 </div>
               </div>
-              <button onClick={() => setSelectedZone(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, padding: 0 }}>×</button>
+              <button onClick={() => setSelectedZone(null)} className="bg-none border-none cursor-pointer text-xl p-0" aria-label="Close">&times;</button>
             </div>
 
-            <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+            <div className="flex flex-gap-xs mb-sm flex-wrap">
               <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill + '20', color: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill, border: `1px solid ${(SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill}40` }}>
                 {selectedZone.severity}
               </span>
@@ -361,7 +369,7 @@ export default function ZoneHeatMap() {
               </span>
             </div>
 
-            <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+            <div className="text-base">
               <div>{t('zones.radiusLabel')} <strong>{selectedZone.radiusKm} {t('zones.km')}</strong></div>
               {selectedZone.affectedPopulation > 0 && (
                 <div>Affected: <strong>{selectedZone.affectedPopulation.toLocaleString()}</strong></div>
@@ -371,15 +379,15 @@ export default function ZoneHeatMap() {
             </div>
 
             {selectedZone.stats?.openRequests > 0 && (
-              <div style={{ marginTop: 12, padding: '8px 12px', background: 'rgba(248,81,73,0.06)', borderRadius: 6, fontSize: 12 }}>
+              <div className="mt-md rounded-sm text-sm" style={{ padding: '8px 12px', background: 'rgba(248,81,73,0.06)' }}>
                 <strong style={{ color: 'var(--gov-danger)' }}>{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
               </div>
             )}
 
             {currentUser?.role === 'admin' && (
-              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                <button onClick={() => openEdit(selectedZone)} style={{ fontSize: 12, padding: '4px 10px' }}>Edit</button>
-                <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>Delete</button>
+              <div className="flex flex-gap-sm mt-md">
+                <button onClick={() => openEdit(selectedZone)} className="text-sm p-xs" aria-label="Edit zone">Edit</button>
+                <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger text-sm p-xs" aria-label="Delete zone">Delete</button>
               </div>
             )}
           </div>
@@ -387,13 +395,13 @@ export default function ZoneHeatMap() {
       </div>
 
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: '#4a80c0' }}>{editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}</h3>
-            <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
+        <div className="modal-overlay" role="dialog" aria-modal="true">
+          <div className="card overflow-auto" style={{ width: 500, maxHeight: '90vh' }}>
+            <h3 className="m-0 mb text-lg">{editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}</h3>
+            <form onSubmit={handleSubmit} className="grid flex-gap-sm">
               <input placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))', gap: 8 }}>
+              <div className="grid-3-responsive">
                 <select value={form.disasterType} onChange={updateForm('disasterType')}>
                   {Object.keys(DISASTER_ICONS).map((d) => (
                     <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>
@@ -411,12 +419,12 @@ export default function ZoneHeatMap() {
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 8 }}>
+              <div className="grid-3-responsive">
                 <input type="number" step="any" placeholder={t('zones.centerLat')} value={form.centerLat} onChange={updateForm('centerLat')} required />
                 <input type="number" step="any" placeholder={t('zones.centerLng')} value={form.centerLng} onChange={updateForm('centerLng')} required />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 8 }}>
+              <div className="grid-3-responsive">
                 <input type="number" placeholder={t('zones.radiusKm')} value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
                 <input type="number" placeholder={t('zones.affectedPopulationPlaceholder')} value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
               </div>
@@ -424,9 +432,9 @@ export default function ZoneHeatMap() {
               <textarea placeholder={t('zones.description')} value={form.description} onChange={updateForm('description')} rows={2} />
               <textarea placeholder={t('zones.notes')} value={form.notes} onChange={updateForm('notes')} rows={2} />
 
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="submit" className="btnPrimary" disabled={saving}>{saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('zones.cancel')}</button>
+              <div className="flex flex-gap-sm mt-xs">
+                <button type="submit" className="btnPrimary" disabled={saving} aria-label="Submit">{saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}</button>
+                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label="Cancel">{t('zones.cancel')}</button>
               </div>
             </form>
           </div>

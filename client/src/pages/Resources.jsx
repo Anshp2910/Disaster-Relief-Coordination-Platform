@@ -193,19 +193,19 @@ export default function Resources() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h1 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.resources') || 'Resource Inventory'}</h1>
-            <div className="small" style={{ marginTop: 4 }}>{total} {t('resources.resourcesTracked')}</div>
+            <h1 className="pageTitle">{t('nav.resources') || 'Resource Inventory'}</h1>
+            <div className="small mt-xs">{total} {t('resources.resourcesTracked')}</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={exportCSV} style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.exportCSV')}</button>
+          <div className="flex flex-gap-sm">
+            <button onClick={exportCSV} className="text-sm p-xs" aria-label="Export CSV">{t('resources.exportCSV')}</button>
             <button className="btnPrimary" onClick={openCreate}>{t('resources.addResource')}</button>
           </div>
         </div>
 
-        {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
+        {error && <div className="errorText mt-sm">{error}</div>}
 
         {summary.length > 0 && (
-          <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
+          <div className="flex flex-gap-sm mt-md flex-wrap">
             {summary.map((s) => {
               const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
               return (
@@ -217,18 +217,18 @@ export default function Resources() {
           </div>
         )}
 
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+        <form onSubmit={handleSearch} className="flex flex-gap-sm mt-md">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('resources.searchPlaceholder')}
-            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+            className="flex-1"
           />
-          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>{t('resources.search')}</button>
+          <button type="submit" className="btnPrimary text-sm" aria-label="Search">{t('resources.search')}</button>
         </form>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-xs mt-md flex-wrap">
           {CATEGORIES.map((c) => (
             <button
               key={c}
@@ -240,13 +240,12 @@ export default function Resources() {
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-xs mt-sm flex-wrap">
           {STATUSES.map((s) => (
             <button
               key={s}
               onClick={() => { setFilterStatus(s); setPage(1) }}
-              className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
-              style={{ fontSize: 11 }}
+              className={`filter-pill text-xs ${filterStatus === s ? 'active' : ''}`}
             >
               {s}
             </button>
@@ -256,24 +255,24 @@ export default function Resources() {
 
       {/* Create/Edit Form */}
       {showForm && (
-        <div className="card" style={{ marginTop: 12 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{editItem ? t('resources.editResource') : t('resources.addNewResource')}</h3>
-          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))' }}>
+        <div className="card mt-md">
+          <h3 className="m-0 mb text-base">{editItem ? t('resources.editResource') : t('resources.addNewResource')}</h3>
+          <form onSubmit={handleSubmit} className="grid-3-responsive">
             <input placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required maxLength={200} style={{ gridColumn: '1 / -1' }} />
             <select value={form.category} onChange={(e) => updateForm('category', e.target.value)}>
               {CATEGORIES.filter((c) => c !== 'All').map((c) => (
                 <option key={c} value={c}>{CATEGORY_ICONS[c]} {c}</option>
               ))}
             </select>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input type="number" placeholder={t('resources.quantity')} value={form.quantity} onChange={(e) => updateForm('quantity', e.target.value)} required min="0" style={{ flex: 1 }} />
-              <input placeholder={t('resources.unitPlaceholder')} value={form.unit} onChange={(e) => updateForm('unit', e.target.value)} required style={{ flex: 1 }} />
+            <div className="flex flex-gap-sm">
+              <input type="number" placeholder={t('resources.quantity')} value={form.quantity} onChange={(e) => updateForm('quantity', e.target.value)} required min="0" className="flex-1" />
+              <input placeholder={t('resources.unitPlaceholder')} value={form.unit} onChange={(e) => updateForm('unit', e.target.value)} required className="flex-1" />
             </div>
             <input placeholder={t('resources.location')} value={form.locationName} onChange={(e) => updateForm('locationName', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
             <textarea placeholder={t('resources.notesOptional')} value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} style={{ gridColumn: '1 / -1' }} />
-            <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 8 }}>
+            <div style={{ gridColumn: '1 / -1' }} className="flex flex-gap-sm">
               <button type="submit" className="btnPrimary">{editItem ? t('resources.update') : t('resources.create')}</button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('resources.cancel')}</button>
+              <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label="Cancel">{t('resources.cancel')}</button>
             </div>
           </form>
         </div>
@@ -283,39 +282,39 @@ export default function Resources() {
       {loading ? (
         <SkeletonList count={4} lines={3} />
       ) : (
-        <div className="gridGap" style={{ marginTop: 12 }}>
+        <div className="gridGap mt-md">
           {items.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 20 }}>
+            <div className="text-center p-xl">
               <img src="/images/empty-requests.svg" alt="No resources" style={{ width: 200, margin: '0 auto 12px', display: 'block' }} />
               <div className="muted">{t('resources.noResources')}</div>
             </div>
           ) : (
             items.map((r) => (
               <div key={r._id} className="listCard">
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--accent-blue)' }}>{r.name}</span>
+                <div className="flex flex-between flex-gap-sm">
+                  <div className="flex-1">
+                    <div className="flex flex-gap-sm flex-wrap">
+                      <span className="text-bold text-lg">{r.name}</span>
                       <Badge label={r.category} colors={CATEGORY_COLORS} colorKey={r.category} />
                       <Badge label={r.status} colors={STATUS_COLORS} colorKey={r.status} />
                     </div>
-                    <div style={{ marginTop: 6, fontSize: 13 }}>
+                    <div className="mt-xs text-base">
                       <strong>{r.quantity}</strong> {r.unit}
                       {r.allocatedQuantity > 0 && <span style={{ color: 'var(--accent-orange)', marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
                     </div>
-                    <div className="small muted" style={{ marginTop: 4 }}>📍 {r.locationName}</div>
+                    <div className="small muted mt-xs">📍 {r.locationName}</div>
                     {r.allocatedTo && (
-                      <div className="small" style={{ marginTop: 4, color: 'var(--accent-blue)' }}>
-                        {t('resources.allocatedTo')}: {r.allocatedTo.title || 'Request'}
+                      <div className="small mt-xs">{r.allocatedTo.title || 'Request'}
                       </div>
                     )}
-                    {r.notes && <div className="small muted" style={{ marginTop: 4 }}>{r.notes}</div>}
+                    {r.notes && <div className="small muted mt-xs">{r.notes}</div>}
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
+                  <div className="flex flex-col flex-gap-xs">
                     {r.status === 'Available' && r.quantity > 0 && (
                       <button
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
                         style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(74,128,192,.1)', color: 'var(--accent-blue)', border: '1px solid rgba(74,128,192,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        aria-label="Allocate"
                       >
                         {t('resources.allocate')}
                       </button>
@@ -324,12 +323,13 @@ export default function Resources() {
                       <button
                         onClick={() => handleDeallocate(r._id)}
                         style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(248,81,73,.1)', color: 'var(--accent-red)', border: '1px solid rgba(248,81,73,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        aria-label="Deallocate"
                       >
                         {t('resources.deallocate')}
                       </button>
                     )}
-                    <button onClick={() => openEdit(r)} style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.editResource')}</button>
-                    <button onClick={() => handleDelete(r._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>{t('resources.delete')}</button>
+                    <button onClick={() => openEdit(r)} className="text-sm p-xs">{t('resources.editResource')}</button>
+                    <button onClick={() => handleDelete(r._id)} className="btnDanger text-sm p-xs">{t('resources.delete')}</button>
                   </div>
                 </div>
               </div>
@@ -340,31 +340,31 @@ export default function Resources() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Previous</button>
-          <span style={{ fontSize: 13, padding: '6px 12px' }}>{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Next</button>
+        <div className="flex flex-center flex-gap-sm mt-lg">
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" aria-label="Previous page">Previous</button>
+          <span className="text-base">{page} / {totalPages}</span>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" aria-label="Next page">Next</button>
         </div>
       )}
 
       {/* Allocation Modal */}
       {showAllocModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="modal-overlay" role="dialog" aria-modal="true">
           <div className="card" style={{ width: 400 }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>{t('resources.allocateResource')}</h3>
-            <div style={{ fontSize: 13, marginBottom: 12 }}>
+            <h3 className="m-0 mb text-lg">{t('resources.allocateResource')}</h3>
+            <div className="text-base mb">
               <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available
             </div>
             <form onSubmit={handleAllocate}>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('resources.requestId')}</label>
-              <input value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder={t('resources.pasteRequestId')} required style={{ width: '100%', marginBottom: 8, fontSize: 13 }} />
+              <input value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder={t('resources.pasteRequestId')} required className="w-full mb-sm text-base" />
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('resources.quantityToAllocate')}</label>
-              <input type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} min="1" max={showAllocModal.quantity} required style={{ width: '100%', marginBottom: 12 }} />
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button type="submit" disabled={allocating} className="btnPrimary" style={{ fontSize: 13 }}>
+              <input type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} min="1" max={showAllocModal.quantity} required className="w-full mb" />
+              <div className="flex flex-gap-sm">
+                <button type="submit" disabled={allocating} className="btnPrimary text-base" aria-label="Allocate">
                   {allocating ? '...' : t('resources.allocate')}
                 </button>
-                <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} style={{ fontSize: 13 }}>{t('resources.cancel')}</button>
+                <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} className="text-base" aria-label="Cancel">{t('resources.cancel')}</button>
               </div>
             </form>
           </div>

@@ -41,31 +41,19 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 9999, display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 380 }}>
+      <div className="fixed flex flex-col flex-gap-sm">
         {toasts.map((t) => (
           <div
             key={t.id}
             onClick={() => removeToast(t.id)}
-            style={{
-              padding: '12px 16px',
-              borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 500,
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(0,0,0,.15)',
-              animation: 'toast-slide-in .25s ease-out',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              color: '#fff',
-              background: t.type === 'success' ? '#34c759' : t.type === 'error' ? '#ff3b30' : t.type === 'warning' ? '#f0a030' : '#4a80c0',
-            }}
+            className={`flex flex-gap-sm p rounded shadow-sm cursor-pointer ${t.type === 'success' ? 'badge-green' : t.type === 'error' ? 'badge-red' : t.type === 'warning' ? 'badge-orange' : 'badge-blue'}`}
+            role="alert"
           >
-            <span style={{ fontSize: 16 }}>
+            <span className="text-lg">
               {t.type === 'success' ? '\u2714' : t.type === 'error' ? '\u2718' : t.type === 'warning' ? '\u26A0' : '\u2139'}
             </span>
-            <span style={{ flex: 1 }}>{t.message}</span>
-            <span style={{ opacity: .7, fontSize: 11 }}>\u00D7</span>
+            <span className="flex-1">{t.message}</span>
+            <span className="text-xs opacity-50">\u00D7</span>
           </div>
         ))}
       </div>

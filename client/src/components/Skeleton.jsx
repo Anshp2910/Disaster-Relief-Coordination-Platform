@@ -1,10 +1,10 @@
 export function SkeletonLine({ width = '100%', height = 14, style = {} }) {
-  return <div className="sk-line" style={{ width, height, ...style }} />
+  return <div className="sk-line" style={{ width, height, ...style }} aria-hidden="true" />
 }
 
 export function SkeletonCard({ lines = 3, style = {} }) {
   return (
-    <div className="sk-card" style={style}>
+    <div className="sk-card" style={style} aria-hidden="true">
       {Array.from({ length: lines }).map((_, i) => (
         <SkeletonLine key={i} height={i === 0 ? 16 : 12} width={i === lines - 1 ? '60%' : '100%'} style={{ marginBottom: 8 }} />
       ))}
@@ -14,7 +14,7 @@ export function SkeletonCard({ lines = 3, style = {} }) {
 
 export function SkeletonList({ count = 4, lines = 3 }) {
   return (
-    <div className="sk-list">
+    <div className="sk-list" aria-hidden="true">
       {Array.from({ length: count }).map((_, i) => (
         <SkeletonCard key={i} lines={lines} />
       ))}
@@ -24,6 +24,6 @@ export function SkeletonList({ count = 4, lines = 3 }) {
 
 export function SkeletonMap({ height = '70vh' }) {
   return (
-    <div className="sk-map" style={{ height, width: '100%', borderRadius: 8, background: 'linear-gradient(110deg, #e8e8e8 8%, #f5f5f5 18%, #e8e8e8 33%)', backgroundSize: '200% 100%', animation: 'sk-shimmer 1.5s linear infinite' }} />
+    <div className="sk-map" style={{ height, width: '100%', borderRadius: 8, background: 'linear-gradient(110deg, #e8e8e8 8%, #f5f5f5 18%, #e8e8e8 33%)', backgroundSize: '200% 100%', animation: 'sk-shimmer 1.5s linear infinite' }} aria-hidden="true" />
   )
 }

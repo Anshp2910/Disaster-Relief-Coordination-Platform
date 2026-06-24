@@ -201,58 +201,61 @@ export default function Incidents() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.incidents') || 'Incident Grouping'}</h2>
-            <div className="small" style={{ marginTop: 4 }}>{incidents.length} {t('incidents.incidentsTracked')}</div>
+            <h2 className="pageTitle text-2xl">{t('nav.incidents') || 'Incident Grouping'}</h2>
+            <div className="small mt-xs">{incidents.length} {t('incidents.incidentsTracked')}</div>
           </div>
           {currentUser?.role === 'admin' && (
             <button className="btnPrimary" onClick={openCreate}>{t('incidents.createIncident')}</button>
           )}
         </div>
 
-        {error && <div className="errorText" style={{ marginTop: 8 }}>{error}</div>}
+        {error && <div className="errorText mt-sm">{error}</div>}
 
-        <form onSubmit={(e) => { e.preventDefault(); setPage(1); load() }} style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+        <form onSubmit={(e) => { e.preventDefault(); setPage(1); load() }} className="flex flex-gap-sm mt-md">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('incidents.searchPlaceholder')}
-            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+            className="flex-1 rounded-sm"
+            style={{ padding: '8px 12px', border: '1px solid var(--gov-border)', fontSize: 13 }}
           />
-          <button type="submit" className="btnPrimary" style={{ fontSize: 12, padding: '6px 16px' }}>{t('incidents.search')}</button>
+          <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>{t('incidents.search')}</button>
         </form>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-sm mt-md flex-wrap">
           {STATUS_OPTIONS.map((s) => (
             <button
               key={s}
               onClick={() => { setFilterStatus(s); setPage(1) }}
               className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
+              aria-label={s}
             >
               {s}
             </button>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-sm mt-sm flex-wrap">
           {SEVERITY_OPTIONS.map((s) => (
             <button
               key={s}
               onClick={() => { setFilterSeverity(s); setPage(1) }}
-              className={`filter-pill ${filterSeverity === s ? 'active' : ''}`}
-              style={{ fontSize: 11, ...(s !== 'All' ? { borderLeft: `3px solid ${SEVERITY_COLORS[s] || '#999'}` } : {}) }}
+              className={`filter-pill ${filterSeverity === s ? 'active' : ''} text-xs`}
+              style={{ ...(s !== 'All' ? { borderLeft: `3px solid ${SEVERITY_COLORS[s] || '#999'}` } : {}) }}
+              aria-label={s}
             >
               {s}
             </button>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-gap-sm mt-sm flex-wrap">
           {DISASTER_OPTIONS.map((d) => (
             <button
               key={d}
               onClick={() => { setFilterDisaster(d); setPage(1) }}
-              className={`filter-pill ${filterDisaster === d ? 'active' : ''}`}
-              style={{ fontSize: 11 }}
+              className={`filter-pill ${filterDisaster === d ? 'active' : ''} text-xs`}
+              aria-label={d}
             >
               {d !== 'All' ? `${DISASTER_ICONS[d]} ` : ''}{d}
             </button>
@@ -261,37 +264,37 @@ export default function Incidents() {
       </div>
 
       {loading ? (
-        <div style={{ marginTop: 12 }}>
+        <div className="mt-md">
           <SkeletonList count={3} lines={2} />
         </div>
       ) : (
-      <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
-        <div style={{ flex: '1 1 0', minWidth: 0 }}>
-          <div className="card" style={{ padding: 0 }}>
-            <div ref={mapRef} className="map-container-full" style={{ height: '55vh', width: '100%', maxWidth: '100%' }} />
+      <div className="flex flex-wrap mt-md" style={{ gap: 12 }}>
+        <div className="flex-1" style={{ minWidth: 0 }}>
+          <div className="card p-0">
+            <div ref={mapRef} className="map-container-full w-full" style={{ height: '55vh' }} />
           </div>
         </div>
 
         {selectedIncident && (
-          <div className="card" style={{ width: 320, flexShrink: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <h3 style={{ margin: 0, fontSize: 15, color: 'var(--gov-blue)' }}>
+          <div className="card flex-shrink-0" style={{ width: 320 }}>
+            <div className="flex-between mb-sm">
+              <h3 className="m-0" style={{ fontSize: 15, color: 'var(--gov-blue)' }}>
                 {DISASTER_ICONS[selectedIncident.disasterType]} {selectedIncident.name}
               </h3>
-              <button onClick={() => setSelectedIncident(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}>&times;</button>
+              <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer" style={{ fontSize: 18 }} aria-label="Close">&times;</button>
             </div>
 
-            <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: (SEVERITY_COLORS[selectedIncident.severity] || '#999') + '20', color: SEVERITY_COLORS[selectedIncident.severity] || '#999', border: `1px solid ${(SEVERITY_COLORS[selectedIncident.severity] || '#999')}40` }}>
+            <div className="flex flex-gap-sm mb-sm flex-wrap">
+              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (SEVERITY_COLORS[selectedIncident.severity] || '#999') + '20', color: SEVERITY_COLORS[selectedIncident.severity] || '#999', border: `1px solid ${(SEVERITY_COLORS[selectedIncident.severity] || '#999')}40` }}>
                 {selectedIncident.severity}
               </span>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: 'rgba(74,128,192,.1)', color: '#4a80c0', border: '1px solid rgba(74,128,192,.25)' }}>
+              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: 'rgba(74,128,192,.1)', color: '#4a80c0', border: '1px solid rgba(74,128,192,.25)' }}>
                 {selectedIncident.status}
               </span>
             </div>
 
             {selectedIncident.description && (
-              <div style={{ fontSize: 13, marginBottom: 8, lineHeight: 1.5 }}>{selectedIncident.description}</div>
+              <div className="mb-sm" style={{ fontSize: 13, lineHeight: 1.5 }}>{selectedIncident.description}</div>
             )}
 
             <div style={{ fontSize: 13, lineHeight: 1.8 }}>
@@ -308,9 +311,9 @@ export default function Incidents() {
             </div>
 
             {currentUser?.role === 'admin' && (
-              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                <button onClick={() => openEdit(selectedIncident)} style={{ fontSize: 12, padding: '4px 10px' }}>Edit</button>
-                <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger" style={{ fontSize: 12, padding: '4px 10px' }}>Delete</button>
+              <div className="flex flex-gap-sm mt-md">
+                <button onClick={() => openEdit(selectedIncident)} className="text-sm" style={{ padding: '4px 10px' }} aria-label="Edit">Edit</button>
+                <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm" style={{ padding: '4px 10px' }} aria-label="Delete">Delete</button>
               </div>
             )}
           </div>
@@ -319,9 +322,9 @@ export default function Incidents() {
       )}
 
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="flex-center" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000 }} role="dialog" aria-modal="true">
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, color: 'var(--gov-blue)' }}>
+            <h3 className="m-0 mb-md text-lg" style={{ color: 'var(--gov-blue)' }}>
               {editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
             </h3>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
@@ -353,9 +356,9 @@ export default function Incidents() {
               <input type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
               <textarea placeholder="Description" value={form.description} onChange={updateForm('description')} rows={3} />
 
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <div className="flex flex-gap-sm mt-xs">
                 <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
-                <button type="button" onClick={() => setShowForm(false)} style={{ color: 'var(--gov-muted)' }}>{t('incidents.cancel')}</button>
+                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
               </div>
             </form>
           </div>
@@ -363,10 +366,10 @@ export default function Incidents() {
       )}
 
       {totalPages > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Previous</button>
-          <span style={{ fontSize: 13, padding: '6px 12px' }}>{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} style={{ fontSize: 12, padding: '6px 14px' }}>Next</button>
+        <div className="flex flex-center flex-gap-sm mt-lg">
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label="Previous">Previous</button>
+          <span className="text-sm" style={{ padding: '6px 12px' }}>{page} / {totalPages}</span>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label="Next">Next</button>
         </div>
       )}
     </div>
