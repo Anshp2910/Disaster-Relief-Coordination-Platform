@@ -8,6 +8,21 @@ import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 
+function useOnlineStatus() {
+  const [online, setOnline] = useState(navigator.onLine)
+  useEffect(() => {
+    function goOnline() { setOnline(true) }
+    function goOffline() { setOnline(false) }
+    window.addEventListener('online', goOnline)
+    window.addEventListener('offline', goOffline)
+    return () => {
+      window.removeEventListener('online', goOnline)
+      window.removeEventListener('offline', goOffline)
+    }
+  }, [])
+  return online
+}
+
 function safeGetItem(key) {
   try { return localStorage.getItem(key) } catch { return null }
 }
@@ -39,6 +54,7 @@ export default function Header() {
   const { socket, connected } = useSocket()
   const toast = useToast()
   const { user: currentUser, isAuthenticated, logout: authLogout } = useAuth()
+  const online = useOnlineStatus()
 
   function logout() {
     if (socket?.connected) {
@@ -113,6 +129,11 @@ export default function Header() {
 
   return (
     <header>
+      {!online && (
+        <div className="offline-banner">
+          You are offline — some features may be unavailable
+        </div>
+      )}
       <div className="gov-top-strip">
         <div className="gov-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span className="gov-top-strip-text">{t('topStrip')}</span>
@@ -159,14 +180,14 @@ export default function Header() {
           {isAuthenticated && (
             <div className="gov-nav-actions">
               <div
-                title={connected ? 'Connected' : 'Disconnected'}
+                title={!online ? 'Offline' : connected ? 'Connected' : 'Disconnected'}
                 style={{
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  background: connected ? 'var(--accent-green)' : 'var(--accent-red)',
+                  background: !online ? 'var(--accent-red)' : connected ? 'var(--accent-green)' : '#eab308',
                   flexShrink: 0,
-                  boxShadow: connected ? '0 0 8px var(--accent-green)' : '0 0 8px var(--accent-red)',
+                  boxShadow: !online ? '0 0 8px var(--accent-red)' : connected ? '0 0 8px var(--accent-green)' : '0 0 8px #eab308',
                 }}
               />
               <button

@@ -1,0 +1,10 @@
+# Disaster Relief Coordination Platform - Government of India
+# Allow all crawlers to index the platform
+User-agent: *
+Allow: /
+
+# Disallow API routes
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://disaster-relief-coordination-platform.vercel.app/sitemap.xml

@@ -272,6 +272,24 @@ a:hover { color: var(--pri-300); }
 }
 
 /* === Top Strip === */
+.offline-banner {
+  background: linear-gradient(135deg, var(--red-600), var(--red-700));
+  color: #fff;
+  text-align: center;
+  padding: 6px 16px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  animation: slideDown 0.3s var(--ease-out);
+}
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.dark .offline-banner {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+}
+
 .gov-top-strip {
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px);
@@ -1274,19 +1292,38 @@ h1, h2, h3, h4 {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   color: #fff;
   padding: var(--space-md) var(--space-xl);
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   z-index: 10000;
   border-top: 1px solid rgba(59, 130, 246, 0.1);
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
   animation: slide-up 0.4s var(--ease-out);
+}
+.pwa-install-text {
+  flex: 1;
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+.pwa-install-btn {
+  flex-shrink: 0;
+}
+.pwa-dismiss-btn {
+  background: none !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-size: 20px !important;
+  cursor: pointer !important;
+  padding: 4px 8px !important;
+  line-height: 1 !important;
+}
+.pwa-dismiss-btn:hover {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 @keyframes slide-up {
   from { transform: translateY(100%); }

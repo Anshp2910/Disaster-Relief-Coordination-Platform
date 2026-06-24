@@ -2,12 +2,12 @@
   "name": "Disaster Relief Coordination Platform",
   "short_name": "DisasterRelief",
   "description": "Government of India Initiative for coordinating disaster relief efforts across India",
-  "start_url": "/dashboard",
+  "start_url": "/#/dashboard",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#ffffff",
-  "theme_color": "#000080",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "categories": ["government", "social", "utilities"],
   "lang": "en",
   "dir": "ltr",
@@ -30,25 +30,25 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "url": "/dashboard",
+      "url": "/#/dashboard",
       "description": "View all relief requests"
     },
     {
       "name": "New Request",
       "short_name": "New Request",
-      "url": "/requests/new",
+      "url": "/#/requests/new",
       "description": "Create a new relief request"
     },
     {
       "name": "Resources",
       "short_name": "Resources",
-      "url": "/resources",
+      "url": "/#/resources",
       "description": "Manage resource inventory"
     },
     {
       "name": "Zones",
       "short_name": "Zones",
-      "url": "/zones",
+      "url": "/#/zones",
       "description": "View disaster zone heat map"
     }
   ]

@@ -16,36 +16,9 @@ export default function Layout({ children }) {
       <Footer />
       {canInstall && !dismissed && (
         <div className="pwa-install-banner">
-          <span style={{ fontSize: 14, fontWeight: 500 }}>Install this app for offline access</span>
-          <button
-            onClick={install}
-            style={{
-              background: 'linear-gradient(135deg, rgba(74,128,192,0.2), rgba(107,127,181,0.2))',
-              color: 'var(--accent-blue)',
-              border: '1px solid rgba(74,128,192,0.3)',
-              padding: '6px 18px',
-              borderRadius: 8,
-              fontWeight: 700,
-              fontSize: 13,
-              cursor: 'pointer',
-              boxShadow: '0 0 12px rgba(74,128,192,0.2)',
-            }}
-          >
-            Install
-          </button>
-          <button
-            onClick={() => setDismissed(true)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'rgba(255,255,255,0.5)',
-              fontSize: 18,
-              cursor: 'pointer',
-              padding: '0 4px',
-            }}
-          >
-            x
-          </button>
+          <span className="pwa-install-text">Install this app for offline access</span>
+          <button onClick={install} className="btnPrimary pwa-install-btn">Install</button>
+          <button onClick={() => setDismissed(true)} className="pwa-dismiss-btn">&times;</button>
         </div>
       )}
     </div>

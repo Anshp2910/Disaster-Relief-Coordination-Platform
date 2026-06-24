@@ -3,18 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0a0e1a" />
-    <meta name="description" content="Disaster Relief Coordination Platform - Coordinating disaster relief efforts across India" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)" />
+    <meta name="description" content="Disaster Relief Coordination Platform - A Government of India Initiative for coordinating disaster relief efforts across India. Real-time resource tracking, zone mapping, and incident management." />
+    <meta name="keywords" content="disaster relief, India, government, emergency management, resource coordination, NDMA, disaster response" />
+    <meta name="author" content="Government of India" />
+    <meta name="application-name" content="DisasterRelief" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Disaster Relief Coordination Platform" />
+    <meta property="og:description" content="Government of India Initiative for coordinating disaster relief efforts across India. Real-time resource tracking, zone mapping, and incident management." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://disaster-relief-coordination-platform.vercel.app" />
+    <meta property="og:image" content="/icon-512.svg" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:site_name" content="DisasterRelief" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Disaster Relief Coordination Platform" />
+    <meta name="twitter:description" content="Government of India Initiative for coordinating disaster relief efforts across India." />
+    <meta name="twitter:image" content="/icon-512.svg" />
+
+    <!-- Apple -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="DisasterRelief" />
     <link rel="apple-touch-icon" href="/icon-192.svg" />
-    <link rel="icon"  type="image/svg+xml" href="/icon-192.svg" />
+
+    <!-- Icons & Manifest -->
+    <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
     <link rel="manifest" href="/manifest.json" />
+
+    <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://*.tile.openstreetmap.org" />
     <link rel="dns-prefetch" href="https://disaster-relief-coordination-platform-l6mk.onrender.com" />
+
+    <!-- Preload critical chunks -->
+    <link rel="modulepreload" href="/src/main.jsx" />
+
     <title>Disaster Relief Coordination Platform</title>
     <style>
       body { margin: 0; background: #0a0e1a; font-family: 'Inter', system-ui, sans-serif; }
