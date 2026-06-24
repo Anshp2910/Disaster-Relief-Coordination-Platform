@@ -34,7 +34,7 @@ export default function Escalation() {
     clientApi.getRequests({ limit: 1000 }).then((data) => {
       setAllRequests(data.items || [])
     }).catch(() => {})
-  }, [])
+  }, [load])
 
   useAutoRefresh(load, { interval: 20000 })
 

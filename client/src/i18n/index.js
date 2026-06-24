@@ -10,7 +10,8 @@ import gu from './locales/gu.json'
 import kn from './locales/kn.json'
 import pa from './locales/pa.json'
 
-const savedLang = localStorage.getItem('language') || 'en'
+let savedLang = 'en'
+try { savedLang = localStorage.getItem('language') || 'en' } catch {}
 
 i18n.use(initReactI18next).init({
   resources: {

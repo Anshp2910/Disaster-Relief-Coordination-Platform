@@ -8,6 +8,16 @@ import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 
+function safeGetItem(key) {
+  try { return localStorage.getItem(key) } catch { return null }
+}
+function safeSetItem(key, value) {
+  try { localStorage.setItem(key, value) } catch {}
+}
+function safeRemoveItem(key) {
+  try { localStorage.removeItem(key) } catch {}
+}
+
 const LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'hi', label: 'Hindi' },
@@ -33,7 +43,7 @@ export default function Header() {
     if (socket?.connected) {
       socket.disconnect()
     }
-    localStorage.removeItem('notifications')
+    safeRemoveItem('notifications')
     authLogout()
     navigate('/login')
     setMobileMenuOpen(false)
@@ -41,7 +51,7 @@ export default function Header() {
 
   function changeLanguage(langCode) {
     i18n.changeLanguage(langCode)
-    localStorage.setItem('language', langCode)
+    safeSetItem('language', langCode)
   }
 
   function handleNav(path) {

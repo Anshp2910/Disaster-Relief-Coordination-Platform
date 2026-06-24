@@ -1,7 +1,11 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
+function safeGetItem(key) {
+  try { return localStorage.getItem(key) } catch { return null }
+}
+
 function getToken() {
-  return localStorage.getItem('token')
+  return safeGetItem('token')
 }
 
 async function apiFetch(path, { method = 'GET', body, auth = true, formData = false, timeout = 15000 } = {}) {
@@ -150,6 +154,9 @@ export const clientApi = {
       a.download = 'requests-export.csv'
       a.click()
       URL.revokeObjectURL(url)
+    }).catch((err) => {
+      console.error('[client] exportRequestsCSV error:', err.message)
+      throw err
     })
   },
   exportResourcesCSV: () => {
@@ -166,6 +173,9 @@ export const clientApi = {
       a.download = 'resources-export.csv'
       a.click()
       URL.revokeObjectURL(url)
+    }).catch((err) => {
+      console.error('[client] exportResourcesCSV error:', err.message)
+      throw err
     })
   },
   importRequests: (rows) => apiFetch('/api/bulk/requests/import', { method: 'POST', body: { rows }, timeout: 120000 }),

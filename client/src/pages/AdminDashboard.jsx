@@ -37,19 +37,19 @@ function MiniBarChart({ data, maxVal }) {
 
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 60, marginTop: 8 }}>
-      {data.map((d, i) => (
-        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+      {data.map((d, idx) => (
+        <div key={d.date || idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           <div
             style={{
               width: '100%',
               maxWidth: 20,
               height: `${Math.max((d.count / max) * 100, 4)}%`,
-              background: BREAKDOWN_COLORS[i % BREAKDOWN_COLORS.length],
+              background: BREAKDOWN_COLORS[idx % BREAKDOWN_COLORS.length],
               borderRadius: 2,
             }}
             title={`${d.date}: ${d.count}`}
           />
-          {i % 5 === 0 && <span style={{ fontSize: 9, color: 'var(--gov-muted)' }}>{d.date?.slice(5)}</span>}
+          {idx % 5 === 0 && <span style={{ fontSize: 9, color: 'var(--gov-muted)' }}>{d.date?.slice(5)}</span>}
         </div>
       ))}
     </div>
@@ -361,7 +361,7 @@ export default function AdminDashboard() {
   const { t } = useTranslation()
   const toast = useToast()
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -378,11 +378,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [loadData])
 
   useAutoRefresh(loadData, { interval: 20000 })
 
@@ -390,7 +390,7 @@ export default function AdminDashboard() {
     return registerRefreshListener(['request:created', 'request:updated', 'request:deleted', 'resource:created', 'resource:allocated'], loadData)
   }, [loadData])
 
-  async function changeRole(userId, newRole) {
+  const changeRole = useCallback(async (userId, newRole) => {
     try {
       await clientApi.adminUpdateUserRole(userId, newRole)
       setUsers((prev) => prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u)))
@@ -398,9 +398,9 @@ export default function AdminDashboard() {
     } catch (e) {
       toast.error(e.message || 'Failed to update role')
     }
-  }
+  }, [toast, t])
 
-  async function deleteUser(userId) {
+  const deleteUser = useCallback(async (userId) => {
     if (!confirm(t('admin.deleteUserConfirm'))) return
     try {
       await clientApi.adminDeleteUser(userId)
@@ -409,9 +409,9 @@ export default function AdminDashboard() {
     } catch (e) {
       toast.error(e.message || 'Failed to delete user')
     }
-  }
+  }, [toast, t])
 
-  async function deleteRequest(requestId) {
+  const deleteRequest = useCallback(async (requestId) => {
     if (!confirm(t('admin.deleteRequestConfirm'))) return
     try {
       await clientApi.adminDeleteRequest(requestId)
@@ -420,7 +420,7 @@ export default function AdminDashboard() {
     } catch (e) {
       toast.error(e.message || 'Failed to delete request')
     }
-  }
+  }, [toast, t])
 
   function handleExport(format) {
     clientApi.adminExportRequests(format)

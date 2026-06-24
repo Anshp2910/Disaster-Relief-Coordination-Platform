@@ -7,9 +7,19 @@ const IDLE_TIMEOUT = 10 * 60 * 1000
 const WARNING_DURATION = 60 * 1000
 const ACTIVITY_EVENTS = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart']
 
+function safeGetItem(key) {
+  try { return localStorage.getItem(key) } catch { return null }
+}
+function safeSetItem(key, value) {
+  try { localStorage.setItem(key, value) } catch {}
+}
+function safeRemoveItem(key) {
+  try { localStorage.removeItem(key) } catch {}
+}
+
 function parseUser() {
   try {
-    return JSON.parse(localStorage.getItem('user') || 'null')
+    return JSON.parse(safeGetItem('user') || 'null')
   } catch {
     return null
   }
@@ -17,7 +27,7 @@ function parseUser() {
 
 function parseTokenExpiry() {
   try {
-    const token = localStorage.getItem('token')
+    const token = safeGetItem('token')
     if (!token) return null
     const payload = JSON.parse(atob(token.split('.')[1]))
     return payload.exp ? payload.exp * 1000 : null
@@ -28,7 +38,7 @@ function parseTokenExpiry() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(parseUser)
-  const [token, setToken] = useState(() => localStorage.getItem('token'))
+  const [token, setToken] = useState(() => safeGetItem('token'))
   const [idleWarning, setIdleWarning] = useState(false)
   const idleRef = useRef(null)
 
@@ -36,15 +46,15 @@ export function AuthProvider({ children }) {
   const isAdmin = user?.role === 'admin'
 
   const login = useCallback((tokenVal, userObj) => {
-    localStorage.setItem('token', tokenVal)
-    localStorage.setItem('user', JSON.stringify(userObj))
+    safeSetItem('token', tokenVal)
+    safeSetItem('user', JSON.stringify(userObj))
     setToken(tokenVal)
     setUser(userObj)
   }, [])
 
   const logout = useCallback(() => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    safeRemoveItem('token')
+    safeRemoveItem('user')
     setToken(null)
     setUser(null)
     setIdleWarning(false)
@@ -54,7 +64,7 @@ export function AuthProvider({ children }) {
   const updateUser = useCallback((updates) => {
     setUser((prev) => {
       const next = { ...prev, ...updates }
-      localStorage.setItem('user', JSON.stringify(next))
+      safeSetItem('user', JSON.stringify(next))
       return next
     })
   }, [])
@@ -115,11 +125,11 @@ export function useAuth() {
   if (!ctx) {
     return {
       user: parseUser(),
-      token: localStorage.getItem('token'),
-      isAuthenticated: !!localStorage.getItem('token'),
-      isAdmin: (() => { try { return JSON.parse(localStorage.getItem('user'))?.role === 'admin' } catch { return false } })(),
-      login: (t, u) => { localStorage.setItem('token', t); localStorage.setItem('user', JSON.stringify(u)) },
-      logout: () => { localStorage.removeItem('token'); localStorage.removeItem('user') },
+      token: safeGetItem('token'),
+      isAuthenticated: !!safeGetItem('token'),
+      isAdmin: (() => { try { return JSON.parse(safeGetItem('user') || 'null')?.role === 'admin' } catch { return false } })(),
+      login: (t, u) => { safeSetItem('token', t); safeSetItem('user', JSON.stringify(u)) },
+      logout: () => { safeRemoveItem('token'); safeRemoveItem('user') },
       updateUser: () => {},
       idleWarning: false,
       resetIdleTimer: () => {},

@@ -43,7 +43,7 @@ export default function Geofencing() {
   useEffect(() => {
     if (!position) return
     checkArea()
-  }, [position])
+  }, [position, checkArea])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
@@ -103,7 +103,7 @@ export default function Geofencing() {
     })
   }, [position, radius, result])
 
-  async function checkArea() {
+  const checkArea = useCallback(async () => {
     if (!position) return
     setLoading(true)
     setError('')
@@ -115,7 +115,7 @@ export default function Geofencing() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [position, radius])
 
   const renderResultSection = (items, color, bgLight, countLabel, itemRenderer) => (
     <div className="card" style={{ textAlign: 'center' }}>

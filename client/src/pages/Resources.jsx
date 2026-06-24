@@ -184,7 +184,7 @@ export default function Resources() {
   }
 
   function exportCSV() {
-    window.open(clientApi.exportResourcesCSV(), '_blank')
+    clientApi.exportResourcesCSV().catch((err) => toast.error(err.message))
   }
 
   return (
@@ -206,11 +206,14 @@ export default function Resources() {
 
         {summary.length > 0 && (
           <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
-            {summary.map((s) => (
-              <div key={s._id} style={{ ...CATEGORY_COLORS[s._id], padding: '6px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>
-                {CATEGORY_ICONS[s._id]} {s._id}: {s.totalQty} units ({s.count} items)
-              </div>
-            ))}
+            {summary.map((s) => {
+              const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
+              return (
+                <div key={s._id} style={{ ...catColors, padding: '6px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>
+                  {CATEGORY_ICONS[s._id] || CATEGORY_ICONS.Other} {s._id}: {s.totalQty} units ({s.count} items)
+                </div>
+              )
+            })}
           </div>
         )}
 

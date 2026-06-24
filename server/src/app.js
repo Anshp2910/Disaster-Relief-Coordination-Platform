@@ -56,7 +56,6 @@ export function createApp() {
     'http://localhost:5001',
     'https://disasterhelper.dpdns.org',
     'https://disaster-relief-coordination-platform-l6mk.onrender.com',
-    'https://*.vercel.app',
   ]
 
   app.use(helmet({
@@ -65,7 +64,7 @@ export function createApp() {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://fonts.googleapis.com"],
-        connectSrc: ["'self'", "ws:", "wss:", "https://*.vercel.app", "https://*.tile.openstreetmap.org", "https://nominatim.openstreetmap.org", ...allOrigins.filter((o) => !o.includes('*'))],
+        connectSrc: ["'self'", "ws:", "wss:", "https://*.tile.openstreetmap.org", "https://nominatim.openstreetmap.org", ...allOrigins],
         scriptSrc: ["'self'", "'unsafe-inline'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         workerSrc: ["'self'"],
@@ -78,10 +77,8 @@ export function createApp() {
   const allowedOrigins = allOrigins
 
   function isOriginAllowed(origin) {
-    if (!origin) return true
-    if (allowedOrigins.includes(origin)) return true
-    if (allowedOrigins.some((o) => o.startsWith('*') && origin.endsWith(o.slice(1)))) return true
-    return false
+    if (!origin) return false
+    return allowedOrigins.includes(origin)
   }
 
   app.use(
@@ -104,8 +101,10 @@ export function createApp() {
 
   app.use('/api/auth', authLimiter, authRouter)
   const writeLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many write requests, please slow down' })
+  const requestsLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 60, message: 'Too many requests, please slow down' })
+  const geofencingLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many geofencing requests, please slow down' })
 
-  app.use('/api/requests', requestsRouter)
+  app.use('/api/requests', requestsLimiter, requestsRouter)
   app.use('/api/admin', rateLimitUser({ windowMs: 60 * 1000, max: 50 }), adminRouter)
   app.use('/api/resources', writeLimiter, resourcesRouter)
   app.use('/api/zones', writeLimiter, zonesRouter)
@@ -115,7 +114,7 @@ export function createApp() {
   app.use('/api/incidents', writeLimiter, incidentsRouter)
   app.use('/api/bulk', bulkLimiter, bulkRouter)
   app.use('/api/escalation', writeLimiter, escalationRouter)
-  app.use('/api/geofencing', geofencingRouter)
+  app.use('/api/geofencing', geofencingLimiter, geofencingRouter)
   app.use('/api/sos', writeLimiter, sosRouter)
 
   app.use('/api', (req, res) => {

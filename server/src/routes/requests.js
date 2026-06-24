@@ -1,6 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'

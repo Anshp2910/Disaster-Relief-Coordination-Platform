@@ -26,8 +26,10 @@ async function start() {
   const httpServer = createServer(app)
 
   const { Server } = await import('socket.io')
+  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
+  const socketOrigins = [clientUrl, 'http://localhost:5001', 'https://disasterhelper.dpdns.org', 'https://disaster-relief-coordination-platform-l6mk.onrender.com'].filter(Boolean)
   const io = new Server(httpServer, {
-    cors: { origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5001', 'https://disasterhelper.dpdns.org'], credentials: true },
+    cors: { origin: socketOrigins, credentials: true },
   })
 
   const { default: jwt } = await import('jsonwebtoken')
@@ -37,7 +39,7 @@ async function start() {
     const token = socket.handshake.auth?.token || socket.handshake.query?.token
     if (!token) return next(new Error('Authentication required'))
     try {
-      const decoded = jwt.verify(token, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'))
+      const decoded = jwt.verify(token, getEnv('JWT_SECRET'))
       socket.userId = decoded.sub
       socket.userRole = decoded.role
       next()

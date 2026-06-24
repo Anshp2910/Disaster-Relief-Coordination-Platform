@@ -94,7 +94,6 @@ export default function ZoneHeatMap() {
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const circlesRef = useRef([])
-  const zonesRef = useRef([])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -159,17 +158,13 @@ export default function ZoneHeatMap() {
     })
 
     window.__selectZone = (id) => {
-      const z = zonesRef.current.find((z) => z._id === id)
+      const z = zones.find((z) => z._id === id)
       if (z) setSelectedZone(z)
     }
 
     return () => {
       delete window.__selectZone
     }
-  }, [zones])
-
-  useEffect(() => {
-    zonesRef.current = zones
   }, [zones])
 
   function openCreate() {
@@ -358,10 +353,10 @@ export default function ZoneHeatMap() {
             </div>
 
             <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: SEVERITY_COLORS[selectedZone.severity]?.fill + '20', color: SEVERITY_COLORS[selectedZone.severity]?.fill, border: `1px solid ${SEVERITY_COLORS[selectedZone.severity]?.fill}40` }}>
+              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill + '20', color: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill, border: `1px solid ${(SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill}40` }}>
                 {selectedZone.severity}
               </span>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: COVERAGE_COLORS[selectedZone.coverageStatus] + '20', color: COVERAGE_COLORS[selectedZone.coverageStatus], border: `1px solid ${COVERAGE_COLORS[selectedZone.coverageStatus]}40` }}>
+              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: (COVERAGE_COLORS[selectedZone.coverageStatus] || '#999') + '20', color: COVERAGE_COLORS[selectedZone.coverageStatus] || '#999', border: `1px solid ${(COVERAGE_COLORS[selectedZone.coverageStatus] || '#999')}40` }}>
                 {selectedZone.coverageStatus} coverage
               </span>
             </div>

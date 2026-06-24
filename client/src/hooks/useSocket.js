@@ -23,9 +23,7 @@ function notifyRefreshListeners(eventName) {
 
 function getSocket() {
   if (!socket) {
-    const token = (() => {
-      try { return localStorage.getItem('token') || null } catch { return null }
-    })()
+    const token = safeGetItem('token')
     socket = io(API_BASE || window.location.origin, {
       autoConnect: false,
       reconnection: true,
@@ -34,7 +32,7 @@ function getSocket() {
       auth: { token },
     })
   }
-  const storedToken = localStorage.getItem('token')
+  const storedToken = safeGetItem('token')
   if (socket.auth.token !== storedToken) {
     socket.auth.token = storedToken
     if (socket.connected) {
@@ -45,19 +43,21 @@ function getSocket() {
   return socket
 }
 
+function safeGetItem(key) {
+  try { return localStorage.getItem(key) } catch { return null }
+}
 function safeSetItem(key, value) {
-  try {
-    localStorage.setItem(key, value)
-  } catch {
-    // Storage full or blocked
-  }
+  try { localStorage.setItem(key, value) } catch {}
+}
+function safeRemoveItem(key) {
+  try { localStorage.removeItem(key) } catch {}
 }
 
 export function useSocket() {
   const [connected, setConnected] = useState(false)
   const [notifications, setNotifications] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('notifications') || '[]')
+      return JSON.parse(safeGetItem('notifications') || '[]')
     } catch {
       return []
     }
@@ -123,7 +123,7 @@ export function useSocket() {
 
   const clearAll = useCallback(() => {
     setNotifications([])
-    localStorage.removeItem('notifications')
+    safeRemoveItem('notifications')
   }, [])
 
   return { socket: getSocket(), connected, notifications, unreadCount, markAsRead, markAllRead, clearAll }

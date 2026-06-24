@@ -4,6 +4,31 @@ export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
     this.state = { hasError: false, error: null }
+    this.handleUnhandledRejection = this.handleUnhandledRejection.bind(this)
+    this.handleError = this.handleError.bind(this)
+  }
+
+  componentDidMount() {
+    window.addEventListener('unhandledrejection', this.handleUnhandledRejection)
+    window.addEventListener('error', this.handleError)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unhandledrejection', this.handleUnhandledRejection)
+    window.removeEventListener('error', this.handleError)
+  }
+
+  handleUnhandledRejection(event) {
+    console.error('[ErrorBoundary] Unhandled rejection:', event.reason)
+    event.preventDefault()
+    this.setState({ hasError: true, error: event.reason })
+  }
+
+  handleError(event) {
+    console.error('[ErrorBoundary] Window error:', event.error || event.message)
+    if (event.error) {
+      this.setState({ hasError: true, error: event.error })
+    }
   }
 
   static getDerivedStateFromError(error) {

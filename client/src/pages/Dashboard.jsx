@@ -96,7 +96,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch, t])
+  }, [page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch])
 
   const loadMapItems = useCallback(async () => {
     setMapLoading(true)
@@ -115,8 +115,8 @@ export default function Dashboard() {
     }
   }, [filterStatus, filterPriority, filterCategory, debouncedSearch])
 
-  useEffect(() => { load() }, [page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch])
-  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [viewMode, filterStatus, filterPriority, filterCategory, debouncedSearch])
+  useEffect(() => { load() }, [load, page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch])
+  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [loadMapItems, viewMode, filterStatus, filterPriority, filterCategory, debouncedSearch])
 
   useAutoRefresh(load, { interval: 20000 })
 
@@ -180,7 +180,7 @@ export default function Dashboard() {
     { key: 'In Progress', label: t('statuses.In Progress') },
     { key: 'Resolved', label: t('statuses.Resolved') },
     { key: 'Fulfilled', label: t('statuses.Fulfilled') },
-  ], [t])
+  ], [])
 
   const priorityOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
@@ -188,7 +188,7 @@ export default function Dashboard() {
     { key: 'High', label: t('priorities.High') },
     { key: 'Medium', label: t('priorities.Medium') },
     { key: 'Low', label: t('priorities.Low') },
-  ], [t])
+  ], [])
 
   const categoryOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
@@ -206,7 +206,7 @@ export default function Dashboard() {
     { key: 'Power', label: t('categories.Power') },
     { key: 'Infrastructure', label: t('categories.Infrastructure') },
     { key: 'Other', label: t('categories.Other') },
-  ], [t])
+  ], [])
 
   const sortOptions = useMemo(() => [
     { key: '-createdAt', label: t('dashboard.sortNewest') },
@@ -215,7 +215,7 @@ export default function Dashboard() {
     { key: 'priority', label: t('dashboard.sortPriorityAsc') },
     { key: 'title', label: t('dashboard.sortTitleAsc') },
     { key: '-title', label: t('dashboard.sortTitleDesc') },
-  ], [t])
+  ], [])
 
   return (
     <div className="container">

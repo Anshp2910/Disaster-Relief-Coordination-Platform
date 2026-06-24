@@ -115,7 +115,7 @@ export default function Schedules() {
     }
   }
 
-  useEffect(() => { load() }, [page, filterStatus, filterShift, filterZone, dateFrom, dateTo])
+  useEffect(() => { load() }, [load, page, filterStatus, filterShift, filterZone, dateFrom, dateTo])
   useEffect(() => { loadDropdowns() }, [])
 
   useAutoRefresh(load, { interval: 20000 })
@@ -173,14 +173,14 @@ export default function Schedules() {
     }
   }
 
-  async function handleStatusChange(id, status) {
+  const handleStatusChange = useCallback(async (id, status) => {
     try {
       await clientApi.updateSchedule(id, { status })
       load()
     } catch (e) {
       setError(e.message)
     }
-  }
+  }, [load])
 
   function toggleSkill(skill) {
     setForm((prev) => ({

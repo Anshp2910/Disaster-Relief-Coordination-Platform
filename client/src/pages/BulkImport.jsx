@@ -145,6 +145,7 @@ export default function BulkImport() {
       const dataRows = rows.slice(1).map((vals) => {
         const row = {}
         cleanHeaders.forEach((col, i) => { row[col] = vals[cleanColIndices[i]]?.trim() || '' })
+        row._rowId = Date.now() + Math.random()
         return row
       }).filter((row) => {
         return Object.values(row).some((v) => v.trim() !== '')
@@ -152,7 +153,7 @@ export default function BulkImport() {
 
       setHeaders(cleanHeaders)
       setPreview(dataRows)
-      setSelected(new Set(dataRows.map((_, i) => i)))
+      setSelected(new Set(dataRows.map((r) => r._rowId)))
       setEditingRow(null)
     } catch (e) {
       setError(e.message)
@@ -166,23 +167,24 @@ export default function BulkImport() {
     if (selected.size === preview.length) {
       setSelected(new Set())
     } else {
-      setSelected(new Set(preview.map((_, i) => i)))
+      setSelected(new Set(preview.map((r) => r._rowId)))
     }
   }
 
-  function toggleRow(i) {
+  function toggleRow(rowId) {
     setSelected((prev) => {
       const next = new Set(prev)
-      if (next.has(i)) next.delete(i)
-      else next.add(i)
+      if (next.has(rowId)) next.delete(rowId)
+      else next.add(rowId)
       return next
     })
   }
 
-  function updateCell(rowIdx, col, val) {
+  function updateCell(rowId, col, val) {
     setPreview((prev) => {
       const next = [...prev]
-      next[rowIdx] = { ...next[rowIdx], [col]: val }
+      const idx = next.findIndex((r) => r._rowId === rowId)
+      if (idx >= 0) next[idx] = { ...next[idx], [col]: val }
       return next
     })
   }
@@ -219,8 +221,8 @@ export default function BulkImport() {
   }
 
   function exportData() {
-    const url = tab === 'requests' ? clientApi.exportRequestsCSV() : clientApi.exportResourcesCSV()
-    window.open(url, '_blank')
+    const promise = tab === 'requests' ? clientApi.exportRequestsCSV() : clientApi.exportResourcesCSV()
+    promise.catch((err) => toast.error(err.message))
   }
 
   return (
@@ -287,24 +289,24 @@ export default function BulkImport() {
                   </tr>
                 </thead>
                 <tbody>
-                  {preview.map((row, i) => (
+                  {preview.map((row, idx) => (
                     <tr
-                      key={i}
+                      key={row._rowId}
                       style={{
-                        background: editingRow === i ? 'rgba(0,0,128,0.04)' : selected.has(i) ? 'rgba(19,136,8,0.03)' : 'var(--gov-bg)',
-                        opacity: selected.has(i) ? 1 : 0.5,
+                        background: editingRow === row._rowId ? 'rgba(0,0,128,0.04)' : selected.has(row._rowId) ? 'rgba(19,136,8,0.03)' : 'var(--gov-bg)',
+                        opacity: selected.has(row._rowId) ? 1 : 0.5,
                       }}
                     >
                       <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)' }}>
-                        <input type="checkbox" checked={selected.has(i)} onChange={() => toggleRow(i)} />
+                        <input type="checkbox" checked={selected.has(row._rowId)} onChange={() => toggleRow(row._rowId)} />
                       </td>
-                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)', color: 'var(--gov-muted)' }}>{i + 1}</td>
+                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)', color: 'var(--gov-muted)' }}>{idx + 1}</td>
                       {headers.map((h) => (
                         <td key={h} style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {editingRow === i ? (
+                          {editingRow === row._rowId ? (
                             <input
                               value={row[h]}
-                              onChange={(e) => updateCell(i, h, e.target.value)}
+                              onChange={(e) => updateCell(row._rowId, h, e.target.value)}
                               style={{ width: '100%', padding: '3px 6px', border: '1px solid var(--gov-border)', borderRadius: 3, fontSize: 12, boxSizing: 'border-box' }}
                             />
                           ) : (
@@ -314,10 +316,10 @@ export default function BulkImport() {
                       ))}
                       <td style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', textAlign: 'center' }}>
                         <button
-                          onClick={() => setEditingRow(editingRow === i ? null : i)}
+                          onClick={() => setEditingRow(editingRow === row._rowId ? null : row._rowId)}
                           style={{ background: 'none', border: 'none', color: 'var(--gov-blue)', cursor: 'pointer', fontSize: 12, padding: 4 }}
                         >
-                          {editingRow === i ? t('bulkImport.done') : t('bulkImport.edit')}
+                          {editingRow === row._rowId ? t('bulkImport.done') : t('bulkImport.edit')}
                         </button>
                       </td>
                     </tr>

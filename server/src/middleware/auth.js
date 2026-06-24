@@ -9,7 +9,7 @@ export async function requireAuth(req, res, next) {
     if (!token && req.query.token) token = req.query.token
     if (!token) return res.status(401).json({ error: 'Missing token' })
 
-    const payload = jwt.verify(token, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'))
+    const payload = jwt.verify(token, getEnv('JWT_SECRET'))
     const user = await User.findById(payload.sub).select('-passwordHash')
     if (!user) return res.status(401).json({ error: 'Invalid token' })
 

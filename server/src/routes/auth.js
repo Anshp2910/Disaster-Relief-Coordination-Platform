@@ -26,7 +26,7 @@ authRouter.post('/register', validate('register'), async (req, res) => {
     await user.setPassword(password)
     await user.save()
 
-    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'), {
+    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getEnv('JWT_SECRET'), {
       expiresIn: '7d',
     })
 
@@ -50,7 +50,7 @@ authRouter.post('/login', validate('login'), async (req, res) => {
     const ok = await user.verifyPassword(password)
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' })
 
-    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getEnv('JWT_SECRET', 'dev_jwt_secret_change_me'), {
+    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getEnv('JWT_SECRET'), {
       expiresIn: '7d',
     })
 

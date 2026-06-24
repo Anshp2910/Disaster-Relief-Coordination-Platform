@@ -6,8 +6,15 @@ function getSystemTheme() {
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
 }
 
+function safeGetItem(key) {
+  try { return localStorage.getItem(key) } catch { return null }
+}
+function safeSetItem(key, value) {
+  try { localStorage.setItem(key, value) } catch {}
+}
+
 function getInitialTheme() {
-  const saved = localStorage.getItem('theme')
+  const saved = safeGetItem('theme')
   if (saved === 'light' || saved === 'dark') return saved
   if (saved === 'system') return getSystemTheme()
   return getSystemTheme()
@@ -18,7 +25,7 @@ function applyTheme(resolvedTheme) {
 }
 
 export function ThemeProvider({ children }) {
-  const [mode, setMode] = useState(() => localStorage.getItem('theme') || 'system')
+  const [mode, setMode] = useState(() => safeGetItem('theme') || 'system')
   const [resolvedTheme, setResolvedTheme] = useState(getInitialTheme)
 
   useEffect(() => {
@@ -37,7 +44,7 @@ export function ThemeProvider({ children }) {
 
   const setTheme = useCallback((newMode) => {
     setMode(newMode)
-    localStorage.setItem('theme', newMode)
+    safeSetItem('theme', newMode)
     if (newMode === 'system') {
       setResolvedTheme(getSystemTheme())
     } else {

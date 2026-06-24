@@ -303,8 +303,8 @@ export default function RequestDetail() {
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.files')}</h3>
           {item.files?.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {item.files.map((f, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--gov-bg)', borderRadius: 6 }}>
+          {item.files.map((f) => (
+            <div key={f._id || f.id || f.url} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--gov-bg)', borderRadius: 6 }}>
                   {f.mimetype?.startsWith('image/') ? (
                     <img src={`${API_BASE}${f.url}`} alt={f.filename} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, cursor: 'pointer' }} onClick={() => setPreviewFile(f)} />
                   ) : f.mimetype === 'application/pdf' ? (
@@ -440,8 +440,8 @@ export default function RequestDetail() {
         <div className="card" style={{ marginTop: 16 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.activityLog')}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {[...item.auditLog].reverse().map((entry, i) => (
-              <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--gov-muted)' }}>
+            {[...item.auditLog].reverse().map((entry, idx) => (
+              <div key={`${entry.timestamp}-${entry.action}-${idx}`} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--gov-muted)' }}>
                 <span>{new Date(entry.timestamp).toLocaleString()}</span>
                 <span>-</span>
                 <span>{entry.action}</span>

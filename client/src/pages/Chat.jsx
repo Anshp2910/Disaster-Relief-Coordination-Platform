@@ -27,7 +27,7 @@ export default function Chat({ requestId, onClose }) {
 
   useEffect(() => {
     loadMessages(1)
-  }, [requestId])
+  }, [requestId, loadMessages])
 
   useEffect(() => {
     if (!socket) return
@@ -59,7 +59,7 @@ export default function Chat({ requestId, onClose }) {
     }
   }, [socket, requestId])
 
-  async function loadMessages(p) {
+  const loadMessages = useCallback(async (p) => {
     try {
       const data = await clientApi.getChatMessages(requestId, { page: p, limit: 50 })
       if (p === 1) {
@@ -75,7 +75,7 @@ export default function Chat({ requestId, onClose }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [requestId])
 
   async function handleSend(e) {
     e.preventDefault()

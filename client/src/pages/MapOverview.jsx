@@ -131,7 +131,7 @@ export default function MapOverview() {
         if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
       }
     }
-  }, [items, filterStatus, filterPriority, filterCategory, t])
+  }, [items, filterStatus, filterPriority, filterCategory])
 
   const filterOptions = useMemo(() => FILTER_OPTIONS_KEYS.map((key) => ({
     key,

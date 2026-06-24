@@ -101,7 +101,7 @@ export default function Incidents() {
     }
   }, [page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
 
-  useEffect(() => { load() }, [page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
+  useEffect(() => { load() }, [load, page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
 
   useAutoRefresh(load, { interval: 20000 })
 
@@ -276,7 +276,7 @@ export default function Incidents() {
             </div>
 
             <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: SEVERITY_COLORS[selectedIncident.severity] + '20', color: SEVERITY_COLORS[selectedIncident.severity], border: `1px solid ${SEVERITY_COLORS[selectedIncident.severity]}40` }}>
+              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: (SEVERITY_COLORS[selectedIncident.severity] || '#999') + '20', color: SEVERITY_COLORS[selectedIncident.severity] || '#999', border: `1px solid ${(SEVERITY_COLORS[selectedIncident.severity] || '#999')}40` }}>
                 {selectedIncident.severity}
               </span>
               <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: 'rgba(74,128,192,.1)', color: '#4a80c0', border: '1px solid rgba(74,128,192,.25)' }}>
