@@ -41,7 +41,7 @@ class ErrorBoundary extends Component {
       } else {
         fetch('/api/log', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => {})
       }
-    } catch (_) {}
+    } catch (_) { console.error('[ErrorBoundary] Failed to log error to server') }
   }
 
   render() {

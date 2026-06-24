@@ -1,22 +1,39 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const COMMANDS = [
-  { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: '\u{1F4CA}' },
-  { id: 'map', label: 'Map View', path: '/map', icon: '\u{1F5FA}' },
-  { id: 'zones', label: 'Zones & Heatmap', path: '/zones', icon: '\u{1F3E0}' },
-  { id: 'resources', label: 'Resources', path: '/resources', icon: '\u{1F4E6}' },
-  { id: 'incidents', label: 'Incidents', path: '/incidents', icon: '\u26A0' },
-  { id: 'schedules', label: 'Schedules', path: '/schedules', icon: '\u{1F4C5}' },
-  { id: 'geofencing', label: 'Geofencing', path: '/geofencing', icon: '\u{1F9ED}' },
-  { id: 'new-request', label: 'New Request', path: '/requests/new', icon: '\u{1F4CB}' },
-  { id: 'admin', label: 'Admin Dashboard', path: '/admin', icon: '\u2699', admin: true },
-  { id: 'bulk', label: 'Bulk Import', path: '/bulk', icon: '\u{1F4C2}', admin: true },
-  { id: 'escalation', label: 'Escalation', path: '/escalation', icon: '\u{1F4C8}', admin: true },
-  { id: 'profile', label: 'Profile', path: '/profile', icon: '\u{1F464}' },
+  { id: 'dashboard', labelKey: 'nav.dashboard', path: '/dashboard', icon: '\u{1F4CA}' },
+  { id: 'map', labelKey: 'nav.mapView', path: '/map', icon: '\u{1F5FA}' },
+  { id: 'zones', labelKey: 'nav.zones', path: '/zones', icon: '\u{1F3E0}' },
+  { id: 'resources', labelKey: 'nav.resources', path: '/resources', icon: '\u{1F4E6}' },
+  { id: 'incidents', labelKey: 'nav.incidents', path: '/incidents', icon: '\u26A0' },
+  { id: 'schedules', labelKey: 'nav.schedules', path: '/schedules', icon: '\u{1F4C5}' },
+  { id: 'geofencing', labelKey: 'nav.geofencing', path: '/geofencing', icon: '\u{1F9ED}' },
+  { id: 'new-request', labelKey: 'nav.newRequest', path: '/requests/new', icon: '\u{1F4CB}' },
+  { id: 'admin', labelKey: 'nav.admin', path: '/admin', icon: '\u2699', admin: true },
+  { id: 'bulk', labelKey: 'nav.bulkImport', path: '/bulk', icon: '\u{1F4C2}', admin: true },
+  { id: 'escalation', labelKey: 'nav.escalation', path: '/escalation', icon: '\u{1F4C8}', admin: true },
+  { id: 'profile', labelKey: 'nav.profile', path: '/profile', icon: '\u{1F464}' },
 ]
 
+const FALLBACKS = {
+  'nav.dashboard': 'Dashboard',
+  'nav.mapView': 'Map View',
+  'nav.zones': 'Zones',
+  'nav.resources': 'Resources',
+  'nav.incidents': 'Incidents',
+  'nav.schedules': 'Schedules',
+  'nav.geofencing': 'Geofencing',
+  'nav.newRequest': 'New Request',
+  'nav.admin': 'Admin Dashboard',
+  'nav.bulkImport': 'Bulk Import',
+  'nav.escalation': 'Escalation',
+  'nav.profile': 'Profile',
+}
+
 export default memo(function CommandPalette({ isAdmin }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [highlightIndex, setHighlightIndex] = useState(0)
@@ -27,7 +44,8 @@ export default memo(function CommandPalette({ isAdmin }) {
     if (c.admin && !isAdmin) return false
     if (!query) return true
     const q = query.toLowerCase()
-    return c.label.toLowerCase().includes(q) || c.id.includes(q)
+    const label = t(c.labelKey)
+    return label.toLowerCase().includes(q) || c.id.includes(q)
   })
 
   useEffect(() => {
@@ -48,14 +66,10 @@ export default memo(function CommandPalette({ isAdmin }) {
   }, [open])
 
   useEffect(() => {
-    if (open && inputRef.current) {
-      inputRef.current.focus()
-    }
+    if (open && inputRef.current) inputRef.current.focus()
   }, [open])
 
-  useEffect(() => {
-    setHighlightIndex(0)
-  }, [query])
+  useEffect(() => { setHighlightIndex(0) }, [query])
 
   const execute = useCallback((cmd) => {
     setOpen(false)
@@ -85,7 +99,7 @@ export default memo(function CommandPalette({ isAdmin }) {
       onKeyDown={handleKeyDown}
       role="dialog"
       aria-modal="true"
-      aria-label="Command palette"
+      aria-label={t('common.commandPalette')}
     >
       <div className="cmd-palette" onClick={e => e.stopPropagation()}>
         <div className="cmd-input-wrapper">
@@ -93,17 +107,17 @@ export default memo(function CommandPalette({ isAdmin }) {
           <input
             ref={inputRef}
             className="cmd-input"
-            placeholder="Type a command or page name…"
+            placeholder={t('common.typeCommand')}
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            aria-label="Search commands"
+            aria-label={t('common.searchCommands')}
           />
           <span className="cmd-shortcut-hint">ESC</span>
         </div>
         <div className="cmd-list" role="listbox">
           {filtered.length === 0 && (
-            <div className="cmd-empty">No results for &ldquo;{query}&rdquo;</div>
+            <div className="cmd-empty">{t('common.noResultsFor', { query })}</div>
           )}
           {filtered.map((cmd, i) => (
             <button
@@ -115,8 +129,8 @@ export default memo(function CommandPalette({ isAdmin }) {
               onMouseEnter={() => setHighlightIndex(i)}
             >
               <span className="cmd-item-icon">{cmd.icon}</span>
-              <span className="cmd-item-label">{cmd.label}</span>
-              {cmd.admin && <span className="cmd-item-badge">Admin</span>}
+              <span className="cmd-item-label">{t(cmd.labelKey, FALLBACKS[cmd.labelKey])}</span>
+              {cmd.admin && <span className="cmd-item-badge">{t('common.admin')}</span>}
             </button>
           ))}
         </div>

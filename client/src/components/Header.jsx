@@ -6,9 +6,9 @@ import { clientApi } from '../api/client'
 import { useSocket } from '../hooks/useSocket'
 import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
-import { useTheme, THEMES } from '../context/ThemeContext'
+import { useTheme } from '../context/ThemeContext'
 import ThemeSwitcher from './ThemeSwitcher'
-import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
+import { safeSetItem, safeRemoveItem } from '../utils/storage'
 import useFocusTrap from '../hooks/useFocusTrap'
 
 function useOnlineStatus() {
@@ -127,7 +127,7 @@ export default function Header() {
     <header role="banner">
       {!online && (
         <div className="offline-banner">
-          You are offline — some features may be unavailable
+          {t('common.offlineMessage', 'You are offline — some features may be unavailable')}
         </div>
       )}
       <div className="gov-top-strip">
@@ -178,11 +178,7 @@ export default function Header() {
             <div className="gov-nav-actions">
               <div
                 title={!online ? 'Offline' : connected ? 'Connected' : 'Disconnected'}
-                className="h-8 rounded-full flex-shrink-0"
-                style={{
-                  background: !online ? 'var(--accent-red)' : connected ? 'var(--accent-green)' : '#eab308',
-                  boxShadow: !online ? '0 0 8px var(--accent-red)' : connected ? '0 0 8px var(--accent-green)' : '0 0 8px #eab308',
-                }}
+                className={`status-dot ${!online ? 'status-dot--offline' : connected ? 'status-dot--online' : 'status-dot--connecting'}`}
               />
               <button
                 onClick={() => {
