@@ -117,7 +117,7 @@ export default function MapOverview() {
           <div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title)}</div>
           <div style="font-size:12px;color:var(--gov-muted);margin-bottom:4px">${t(`statuses.${item.status}`)} | ${t(`priorities.${item.priority}`)}</div>
           <div style="font-size:12px;color:var(--gov-muted);margin-bottom:8px">${escapeHtml(item.locationName)}</div>
-          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:linear-gradient(135deg,var(--accent-blue),var(--accent-indigo));color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">View Details</a>
+          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:linear-gradient(135deg,var(--accent-blue),var(--accent-indigo));color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">${t('common.viewDetails')}</a>
         </div>
       `)
 

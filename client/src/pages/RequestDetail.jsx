@@ -334,13 +334,15 @@ export default function RequestDetail() {
         <div className="card">
           <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.allocateResources')}</h3>
           <form onSubmit={handleAllocate} className="flex flex-gap-sm flex-wrap">
-            <select value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="flex-1 text-sm" style={{ minWidth: 150 }}>
+            <label htmlFor="rd-resource" className="sr-only">{t('requestDetail.selectResource')}</label>
+            <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="flex-1 text-sm" style={{ minWidth: 150 }}>
               <option value="">{t('requestDetail.selectResource')}</option>
               {resources.map((r) => (
                 <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>
               ))}
             </select>
-            <input type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm" style={{ width: 80 }} />
+            <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
+            <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm" style={{ width: 80 }} />
             <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btnPrimary text-sm p-sm">
               {allocating ? '...' : t('requestDetail.allocate')}
             </button>
@@ -368,7 +370,7 @@ export default function RequestDetail() {
                   <div className="text-sm text-muted-extra mt-xs">
                     {m.quantity} {m.unit} available
                     {m.distanceKm != null && <span> - {m.distanceKm} km away</span>}
-                    {m.categoryMatch && <span className="govt-badge govt-badge-green" style={{ marginLeft: 6, fontSize: 10 }}>Exact Match</span>}
+                    {m.categoryMatch && <span className="govt-badge govt-badge-green" style={{ marginLeft: 6, fontSize: 10 }}>{t('matching.exactMatch')}</span>}
                   </div>
                 </div>
                 <button
@@ -391,7 +393,9 @@ export default function RequestDetail() {
         </h3>
 
         <form onSubmit={handleComment} className="flex flex-gap-sm mb-lg">
+          <label htmlFor="rd-comment" className="sr-only">{t('requestDetail.addComment')}</label>
           <input
+            id="rd-comment"
             type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -486,7 +490,8 @@ export default function RequestDetail() {
                 ))}
               </div>
             </div>
-            <textarea value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder={t('requestDetail.feedbackPlaceholder')} rows={2} className="w-full text-sm mb-sm" />
+            <label htmlFor="rd-feedback" className="sr-only">{t('requestDetail.feedbackPlaceholder')}</label>
+            <textarea id="rd-feedback" value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder={t('requestDetail.feedbackPlaceholder')} rows={2} className="w-full text-sm mb-sm" />
             <div className="flex flex-gap-sm">
               <button type="submit" disabled={feedbackLoading} className="btnPrimary text-sm" style={{ padding: '6px 14px' }}>
                 {feedbackLoading ? '...' : t('requestDetail.submit')}
@@ -529,7 +534,7 @@ export default function RequestDetail() {
               <div className="text-center p-xl" style={{ background: 'var(--gov-white)', borderRadius: 8, color: 'var(--gov-text)' }}>
                 <div className="text-3xl mb">&#128196;</div>
                 <div className="text-base mb-lg">{previewFile.filename}</div>
-                <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary text-sm" style={{ padding: '8px 20px' }}>Download</a>
+                <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary text-sm" style={{ padding: '8px 20px' }}>{t('common.download')}</a>
               </div>
             )}
             <div className="text-center text-muted-extra text-sm mt-sm">{previewFile.filename}</div>

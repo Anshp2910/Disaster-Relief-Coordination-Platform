@@ -218,9 +218,11 @@ export default function EditRequest() {
         {error && <div className="errorText">{error}</div>}
 
         <form onSubmit={onSubmit} className="inputGrid mt">
-          <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <label htmlFor="er-title" className="sr-only">{t('createRequest.titleLabel')}</label>
+          <input id="er-title" placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required />
 
-          <textarea
+          <label htmlFor="er-desc" className="sr-only">{t('createRequest.descriptionLabel')}</label>
+          <textarea id="er-desc"
             placeholder={t('createRequest.descriptionLabel')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -231,24 +233,24 @@ export default function EditRequest() {
 
           <div className="grid-3-responsive">
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.categoryLabel')}</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full">
+              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-category">{t('createRequest.categoryLabel')}</label>
+              <select id="er-category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-full">
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>{t(`categories.${c}`)}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.priorityLabel')}</label>
-              <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full">
+              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-priority">{t('createRequest.priorityLabel')}</label>
+              <select id="er-priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full">
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>{t(`priorities.${p}`)}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('editRequest.statusLabel')}</label>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full">
+              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-status">{t('editRequest.statusLabel')}</label>
+              <select id="er-status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full">
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>{t(`statuses.${s}`)}</option>
                 ))}
@@ -257,8 +259,8 @@ export default function EditRequest() {
           </div>
 
           <div>
-            <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.peopleCountLabel')}</label>
-            <input type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} className="w-full" />
+            <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-people">{t('createRequest.peopleCountLabel')}</label>
+            <input id="er-people" type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} className="w-full" />
           </div>
 
           <div className="card p-sm" style={{ background: 'var(--gov-bg)' }}>
@@ -295,7 +297,9 @@ export default function EditRequest() {
               </button>
 
               <div className="relative flex-1">
+                <label htmlFor="er-search" className="sr-only">{t('createRequest.searchPlaceholder')}</label>
                 <input
+                  id="er-search"
                   type="text"
                   value={searchText}
                   onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}

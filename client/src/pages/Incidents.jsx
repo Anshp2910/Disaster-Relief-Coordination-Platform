@@ -207,7 +207,9 @@ export default function Incidents() {
         {error && <div className="errorText mt-sm">{error}</div>}
 
         <form onSubmit={(e) => { e.preventDefault(); setPage(1); load() }} className="flex flex-gap-sm mt-md">
+          <label htmlFor="inc-search" className="sr-only">{t('incidents.searchPlaceholder')}</label>
           <input
+            id="inc-search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('incidents.searchPlaceholder')}
@@ -276,7 +278,7 @@ export default function Incidents() {
               <h3 className="m-0 text-accent-blue" style={{ fontSize: 15 }}>
                 {DISASTER_ICONS[selectedIncident.disasterType]} {selectedIncident.name}
               </h3>
-              <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer text-xl" aria-label="Close">&times;</button>
+              <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer text-xl" aria-label={t('common.close')}>&times;</button>
             </div>
 
             <div className="flex flex-gap-sm mb-sm flex-wrap">
@@ -307,8 +309,8 @@ export default function Incidents() {
 
             {currentUser?.role === 'admin' && (
               <div className="flex flex-gap-sm mt-md">
-                <button onClick={() => openEdit(selectedIncident)} className="text-sm" style={{ padding: '4px 10px' }} aria-label="Edit">Edit</button>
-                <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm" style={{ padding: '4px 10px' }} aria-label="Delete">Delete</button>
+                <button onClick={() => openEdit(selectedIncident)} className="text-sm" style={{ padding: '4px 10px' }} aria-label={t('common.edit')}>{t('common.edit')}</button>
+                <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm" style={{ padding: '4px 10px' }} aria-label={t('common.delete')}>{t('common.delete')}</button>
               </div>
             )}
           </div>
@@ -323,20 +325,24 @@ export default function Incidents() {
               {editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
             </h3>
             <form onSubmit={handleSubmit} className="grid grid-gap-sm">
-              <input placeholder={t('incidents.incidentName')} value={form.name} onChange={updateForm('name')} required />
+              <label htmlFor="inc-name" className="sr-only">{t('incidents.incidentName')}</label>
+              <input id="inc-name" placeholder={t('incidents.incidentName')} value={form.name} onChange={updateForm('name')} required />
 
               <div className="grid-3-responsive">
-                <select value={form.disasterType} onChange={updateForm('disasterType')}>
+                <label htmlFor="inc-disastertype" className="sr-only">Disaster type</label>
+                <select id="inc-disastertype" value={form.disasterType} onChange={updateForm('disasterType')}>
                   {Object.keys(DISASTER_ICONS).map((d) => (
                     <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>
                   ))}
                 </select>
-                <select value={form.severity} onChange={updateForm('severity')}>
+                <label htmlFor="inc-severity" className="sr-only">Severity</label>
+                <select id="inc-severity" value={form.severity} onChange={updateForm('severity')}>
                   {Object.keys(SEVERITY_COLORS).map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
-                <select value={form.status} onChange={updateForm('status')}>
+                <label htmlFor="inc-status" className="sr-only">Status</label>
+                <select id="inc-status" value={form.status} onChange={updateForm('status')}>
                   {STATUS_OPTIONS.slice(1).map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -344,12 +350,16 @@ export default function Incidents() {
               </div>
 
               <div className="grid-3-responsive">
-                <input type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
-                <input type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
+                <label htmlFor="inc-centerlat" className="sr-only">Center Latitude</label>
+                <input id="inc-centerlat" type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
+                <label htmlFor="inc-centerlng" className="sr-only">Center Longitude</label>
+                <input id="inc-centerlng" type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
               </div>
 
-              <input type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
-              <textarea placeholder="Description" value={form.description} onChange={updateForm('description')} rows={3} />
+              <label htmlFor="inc-population" className="sr-only">Affected population</label>
+              <input id="inc-population" type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
+              <label htmlFor="inc-description" className="sr-only">Description</label>
+              <textarea id="inc-description" placeholder="Description" value={form.description} onChange={updateForm('description')} rows={3} />
 
               <div className="flex flex-gap-sm mt-xs">
                 <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
@@ -362,9 +372,9 @@ export default function Incidents() {
 
       {totalPages > 1 && (
         <div className="flex flex-center flex-gap-sm mt-lg">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label="Previous">Previous</button>
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('common.previous')}>{t('common.previous')}</button>
           <span className="text-sm" style={{ padding: '6px 12px' }}>{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label="Next">Next</button>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('common.next')}>{t('common.next')}</button>
         </div>
       )}
     </div>

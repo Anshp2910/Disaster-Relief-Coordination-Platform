@@ -281,7 +281,8 @@ export default function BulkImport() {
                 <thead>
                   <tr style={{ background: 'var(--gov-bg)' }}>
                     <th className="text-center" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 40 }}>
-                      <input type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
+                      <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
+                      <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
                     </th>
                     <th className="text-center" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 40 }}>#</th>
                     {headers.map((h) => (
@@ -300,7 +301,7 @@ export default function BulkImport() {
                       }}
                     >
                       <td className="text-center" style={{ padding: '6px 10px', borderBottom: '1px solid var(--gov-border)' }}>
-                        <input type="checkbox" checked={selected.has(row._rowId)} onChange={() => toggleRow(row._rowId)} />
+                        <input type="checkbox" checked={selected.has(row._rowId)} onChange={() => toggleRow(row._rowId)} aria-label={`Select row ${idx + 1}`} />
                       </td>
                       <td className="text-center text-muted" style={{ padding: '6px 10px', borderBottom: '1px solid var(--gov-border)' }}>{idx + 1}</td>
                       {headers.map((h) => (

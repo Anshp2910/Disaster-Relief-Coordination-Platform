@@ -174,9 +174,11 @@ export default function CreateRequest() {
         {error && <div className="errorText">{error}</div>}
 
         <form onSubmit={onSubmit} className="inputGrid mt">
-          <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={200} />
+          <label htmlFor="cr-title" className="sr-only">{t('createRequest.titleLabel')}</label>
+          <input id="cr-title" placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={200} />
 
-          <textarea
+          <label htmlFor="cr-desc" className="sr-only">{t('createRequest.descriptionLabel')}</label>
+          <textarea id="cr-desc"
             placeholder={t('createRequest.descriptionLabel')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -188,16 +190,16 @@ export default function CreateRequest() {
 
           <div className="grid-3-responsive">
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.categoryLabel')}</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full">
+              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="cr-category">{t('createRequest.categoryLabel')}</label>
+              <select id="cr-category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-full">
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>{t(`categories.${c}`)}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.priorityLabel')}</label>
-              <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full">
+              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="cr-priority">{t('createRequest.priorityLabel')}</label>
+              <select id="cr-priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full">
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>{t(`priorities.${p}`)}</option>
                 ))}
@@ -206,8 +208,8 @@ export default function CreateRequest() {
           </div>
 
           <div>
-            <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.peopleCountLabel')}</label>
-            <input type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} className="w-full" />
+            <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="cr-people">{t('createRequest.peopleCountLabel')}</label>
+            <input id="cr-people" type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} className="w-full" />
           </div>
 
           <div className="card p-sm" style={{ background: 'var(--gov-bg)' }}>
@@ -244,7 +246,9 @@ export default function CreateRequest() {
               </button>
 
               <div className="relative flex-1">
+                <label htmlFor="cr-search" className="sr-only">{t('createRequest.searchPlaceholder')}</label>
                 <input
+                  id="cr-search"
                   type="text"
                   value={searchText}
                   onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}

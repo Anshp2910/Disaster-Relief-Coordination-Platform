@@ -141,7 +141,7 @@ export default function Header() {
             value={i18n.language}
             onChange={(e) => changeLanguage(e.target.value)}
             className="lang-select"
-            aria-label={t('header.selectLanguage', 'Select Language')}
+            aria-label={t('header.selectLanguage')}
           >
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
@@ -221,7 +221,7 @@ export default function Header() {
             <button
               className="gov-hamburger"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
+              aria-label={t('common.toggleMenu')}
             >
               {mobileMenuOpen ? '\u2715' : '\u2630'}
             </button>
@@ -235,7 +235,7 @@ export default function Header() {
           <div className="gov-mobile-menu">
             <div className="gov-mobile-header">
               <span className="gov-mobile-user-name">{currentUser?.displayName || ''}</span>
-              <button className="gov-mobile-close" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">✕</button>
+              <button className="gov-mobile-close" onClick={() => setMobileMenuOpen(false)} aria-label={t('common.closeMenu')}>✕</button>
             </div>
             {navLinks.map((link) => (
               <button

@@ -32,7 +32,7 @@ const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 
-function buildPopup(zone, color) {
+function buildPopup(zone, color, t) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || '#999'
   return `
     <div style="font-family:Arial,sans-serif;min-width:200px">
@@ -57,7 +57,7 @@ function buildPopup(zone, color) {
         </div>
       </div>
       <div style="margin-top:8px">
-        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:#3b82f6;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
+        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:#3b82f6;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">${t('common.viewDetails')}</button>
       </div>
     </div>
   `
@@ -163,7 +163,7 @@ export default function ZoneHeatMap() {
         weight: 2,
       }).addTo(map)
 
-      circle.bindPopup(buildPopup(zone, color))
+      circle.bindPopup(buildPopup(zone, color, t))
       circle.on('click', () => setSelectedZone(zone))
       circlesRef.current.push(circle)
     })
@@ -378,7 +378,7 @@ export default function ZoneHeatMap() {
                   {selectedZone.disasterType} &middot; {selectedZone.status}
                 </div>
               </div>
-              <button onClick={() => setSelectedZone(null)} className="bg-none border-none cursor-pointer text-xl p-0" aria-label="Close">&times;</button>
+              <button onClick={() => setSelectedZone(null)} className="bg-none border-none cursor-pointer text-xl p-0" aria-label={t('common.close')}>&times;</button>
             </div>
 
             <div className="flex flex-gap-xs mb-sm flex-wrap">
@@ -407,8 +407,8 @@ export default function ZoneHeatMap() {
 
             {currentUser?.role === 'admin' && (
               <div className="flex flex-gap-sm mt-md">
-                <button onClick={() => openEdit(selectedZone)} className="text-sm p-xs" aria-label="Edit zone">Edit</button>
-                <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger text-sm p-xs" aria-label="Delete zone">Delete</button>
+                <button onClick={() => openEdit(selectedZone)} className="text-sm p-xs" aria-label={t('common.edit')}>{t('common.edit')}</button>
+                <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger text-sm p-xs" aria-label={t('common.delete')}>{t('common.delete')}</button>
               </div>
             )}
           </div>
@@ -418,14 +418,14 @@ export default function ZoneHeatMap() {
           <div className="card flex-shrink-0" style={{ width: 280 }}>
             <div className="flex flex-between mb-sm">
               <h4 className="m-0 text-sm" style={{ color: 'var(--gov-blue)' }}>{t('zones.weather')}</h4>
-              <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label="Close">&times;</button>
+              <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}>&times;</button>
             </div>
             <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
             <div className="text-sm text-muted mb-sm">{weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}</div>
             <div className="text-sm" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
-              {weather.humidity != null && <><span className="text-muted">Humidity</span><span>{weather.humidity}%</span></>}
-              {weather.windSpeed != null && <><span className="text-muted">Wind</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
-              {weather.precipitation != null && <><span className="text-muted">Precip</span><span>{weather.precipitation} mm</span></>}
+              {weather.humidity != null && <><span className="text-muted">{t('zones.humidity')}</span><span>{weather.humidity}%</span></>}
+              {weather.windSpeed != null && <><span className="text-muted">{t('zones.wind')}</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
+              {weather.precipitation != null && <><span className="text-muted">{t('zones.precipitation')}</span><span>{weather.precipitation} mm</span></>}
               {weather.dailyPrecipitation != null && <><span className="text-muted">24h total</span><span>{weather.dailyPrecipitation} mm</span></>}
             </div>
             <button onClick={fetchWeather} className="text-xs mt-sm" disabled={weatherLoading} style={{ padding: '3px 10px' }}>
@@ -474,8 +474,8 @@ export default function ZoneHeatMap() {
               <textarea placeholder={t('zones.notes')} value={form.notes} onChange={updateForm('notes')} rows={2} />
 
               <div className="flex flex-gap-sm mt-xs">
-                <button type="submit" className="btnPrimary" disabled={saving} aria-label="Submit">{saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}</button>
-                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label="Cancel">{t('zones.cancel')}</button>
+                <button type="submit" className="btnPrimary" disabled={saving} aria-label={t('common.submit')}>{saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}</button>
+                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
               </div>
             </form>
           </div>

@@ -192,7 +192,7 @@ export default function Schedules() {
             <h2 className="pageTitle">{t('nav.schedules') || 'Volunteer Scheduling'}</h2>
             <div className="small mt-xs">{items.length} {t('schedules.schedulesCount')}</div>
           </div>
-          <button className="btnPrimary" onClick={openCreate} aria-label="Create schedule">{t('schedules.createSchedule')}</button>
+            <button className="btnPrimary" onClick={openCreate} aria-label={t('schedules.createSchedule')}>{t('schedules.createSchedule')}</button>
         </div>
 
         {error && <div className="errorText mt-sm">{error}</div>}
@@ -222,7 +222,8 @@ export default function Schedules() {
         </div>
 
         <div className="flex flex-gap-sm mt-sm flex-wrap gap-row-sm">
-          <select value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }}>
+          <label htmlFor="sch-zonefilter" className="sr-only">Filter by zone</label>
+          <select id="sch-zonefilter" value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }}>
             <option value="All">{t('schedules.allZones')}</option>
             {zones.map((z) => (
               <option key={z._id} value={z._id}>{z.name}</option>
@@ -230,11 +231,13 @@ export default function Schedules() {
           </select>
           <div className="gap-row-xs text-sm">
             <span className="text-muted">{t('schedules.from')}:</span>
-            <input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} />
+            <label htmlFor="sch-datefrom" className="sr-only">{t('schedules.from')}</label>
+            <input id="sch-datefrom" type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} />
           </div>
           <div className="gap-row-xs text-sm">
             <span className="text-muted">{t('schedules.to')}:</span>
-            <input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} />
+            <label htmlFor="sch-dateto" className="sr-only">{t('schedules.to')}</label>
+            <input id="sch-dateto" type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} />
           </div>
         </div>
       </div>
@@ -298,8 +301,8 @@ export default function Schedules() {
                       scheduleId={item._id}
                       onStatusChange={handleStatusChange}
                     />
-                    <button onClick={() => openEdit(item)} className="text-xs p-xs" aria-label="Edit">Edit</button>
-                    <button onClick={() => handleDelete(item._id)} className="btnDanger text-xs p-xs" aria-label="Delete">Delete</button>
+                    <button onClick={() => openEdit(item)} className="text-xs p-xs" aria-label={t('common.edit')}>{t('common.edit')}</button>
+                    <button onClick={() => handleDelete(item._id)} className="btnDanger text-xs p-xs" aria-label={t('common.delete')}>{t('common.delete')}</button>
                   </div>
                 </div>
               </div>
@@ -310,9 +313,9 @@ export default function Schedules() {
 
       {totalPages > 1 && (
         <div className="flex flex-center flex-gap-sm mt-lg">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" aria-label="Previous page">Previous</button>
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" aria-label={t('common.previous')}>{t('common.previous')}</button>
           <span className="text-base">{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" aria-label="Next page">Next</button>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" aria-label={t('common.next')}>{t('common.next')}</button>
         </div>
       )}
 
@@ -322,8 +325,8 @@ export default function Schedules() {
             <h3 className="m-0 mb text-lg">{editItem ? t('schedules.editSchedule') : t('schedules.createSchedule')}</h3>
             <form onSubmit={handleSubmit} className="grid flex-gap-sm">
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.volunteer')}</label>
-                <select value={form.userId} onChange={updateForm('userId')} required className="w-full">
+                <label htmlFor="sch-volunteer" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.volunteer')}</label>
+                <select id="sch-volunteer" value={form.userId} onChange={updateForm('userId')} required className="w-full">
                   <option value="">{t('schedules.selectVolunteer')}</option>
                   {users.map((u) => (
                     <option key={u._id} value={u._id}>{u.displayName} ({u.role})</option>
@@ -332,8 +335,8 @@ export default function Schedules() {
               </div>
 
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.zoneOptional')}</label>
-                <select value={form.zoneId} onChange={updateForm('zoneId')} className="w-full">
+                <label htmlFor="sch-zone" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.zoneOptional')}</label>
+                <select id="sch-zone" value={form.zoneId} onChange={updateForm('zoneId')} className="w-full">
                   <option value="">{t('schedules.noZone')}</option>
                   {zones.map((z) => (
                     <option key={z._id} value={z._id}>{z.name}</option>
@@ -343,18 +346,18 @@ export default function Schedules() {
 
               <div className="grid-3-responsive">
                 <div>
-                  <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.start')}</label>
-                  <input type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required className="w-full" />
+                  <label htmlFor="sch-start" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.start')}</label>
+                  <input id="sch-start" type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required className="w-full" />
                 </div>
                 <div>
-                  <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.end')}</label>
-                  <input type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required className="w-full" />
+                  <label htmlFor="sch-end" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.end')}</label>
+                  <input id="sch-end" type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required className="w-full" />
                 </div>
               </div>
 
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.shift')}</label>
-                <select value={form.shift} onChange={updateForm('shift')} className="w-full">
+                <label htmlFor="sch-shift" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.shift')}</label>
+                <select id="sch-shift" value={form.shift} onChange={updateForm('shift')} className="w-full">
                   {SHIFT_OPTIONS.map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -385,11 +388,12 @@ export default function Schedules() {
                 </div>
               </div>
 
-              <textarea placeholder={t('schedules.notesOptional')} value={form.notes} onChange={updateForm('notes')} rows={2} />
+              <label htmlFor="sch-notes" className="sr-only">{t('schedules.notesOptional')}</label>
+              <textarea id="sch-notes" placeholder={t('schedules.notesOptional')} value={form.notes} onChange={updateForm('notes')} rows={2} />
 
               <div className="flex flex-gap-sm mt-xs">
-                <button type="submit" className="btnPrimary" aria-label="Submit">{editItem ? t('schedules.update') : t('schedules.create')}</button>
-                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label="Cancel">{t('schedules.cancel')}</button>
+                <button type="submit" className="btnPrimary" aria-label={t('common.submit')}>{editItem ? t('schedules.update') : t('schedules.create')}</button>
+                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('schedules.cancel')}</button>
               </div>
             </form>
           </div>

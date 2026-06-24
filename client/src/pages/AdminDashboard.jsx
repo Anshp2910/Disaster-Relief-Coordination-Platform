@@ -125,7 +125,7 @@ function StatsPanel({ stats }) {
 
       {stats.dailyRequests?.length > 0 && (
         <div className="mt-xl">
-          <div className="text-semi mb-xs text-accent-blue" style={{ fontSize: 13 }}>Requests Over Time</div>
+            <div className="text-semi mb-xs text-accent-blue" style={{ fontSize: 13 }}>{t('admin.requestsOverTime')}</div>
           <MiniBarChart data={stats.dailyRequests} />
         </div>
       )}
@@ -477,7 +477,7 @@ export default function AdminDashboard() {
           </div>
           <div className="btnRow">
             <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
-            <button onClick={() => handleExport('csv')} style={{ color: 'var(--accent-green)', borderColor: 'rgba(34,197,94,0.3)' }}>Export CSV</button>
+            <button onClick={() => handleExport('csv')} style={{ color: 'var(--accent-green)', borderColor: 'rgba(34,197,94,0.3)' }}>{t('common.exportCSV')}</button>
           </div>
         </div>
 

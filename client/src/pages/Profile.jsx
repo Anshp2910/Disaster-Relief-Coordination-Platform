@@ -90,11 +90,11 @@ export default function Profile() {
         </div>
 
         <form onSubmit={handleUpdateProfile}>
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('auth.displayName')}</label>
-          <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required className="w-full mb" />
+          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-name">{t('auth.displayName')}</label>
+          <input id="prof-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required className="w-full mb" />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.phone')}</label>
-          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} className="w-full mb" />
+          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-phone">{t('profile.phone')}</label>
+          <input id="prof-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} className="w-full mb" />
 
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.skills')}</label>
           <div className="flex flex-gap-xs flex-wrap mb">
@@ -144,14 +144,14 @@ export default function Profile() {
       <div className="card">
         <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('profile.changePassword')}</h3>
         <form onSubmit={handleChangePassword}>
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.currentPassword')}</label>
-          <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full mb" />
+          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-curpwd">{t('profile.currentPassword')}</label>
+          <input id="prof-curpwd" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full mb" />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.newPassword')}</label>
-          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required className="w-full mb" />
+          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-newpwd">{t('profile.newPassword')}</label>
+          <input id="prof-newpwd" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required className="w-full mb" />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.confirmPassword')}</label>
-          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full mb" />
+          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-confpwd">{t('profile.confirmPassword')}</label>
+          <input id="prof-confpwd" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full mb" />
 
           <button type="submit" className="btnPrimary" disabled={loading} style={{ fontSize: 13 }}>
             {loading ? '...' : t('profile.updatePassword')}

@@ -190,7 +190,8 @@
     "roleUpdated": "Role updated successfully",
     "userDeleted": "User deleted successfully",
     "requestDeleted": "Request deleted successfully",
-    "noLocation": "No location"
+    "noLocation": "No location",
+    "requestsOverTime": "Requests Over Time"
   },
   "categories": {
     "Medical": "Medical",
@@ -311,7 +312,10 @@
     "severityLow": "Low",
     "searchPlaceholder": "Search zones...",
     "weather": "Weather",
-    "refreshWeather": "Refresh"
+    "refreshWeather": "Refresh",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "precipitation": "Precip"
   },
   "public": {
     "title": "Disaster Relief Status",
@@ -530,6 +534,10 @@
     "installApp": "Install this app for offline access",
     "install": "Install",
     "close": "x",
+    "submit": "Submit",
+    "download": "Download",
+    "toggleMenu": "Toggle menu",
+    "closeMenu": "Close menu",
     "failedToLoad": "Failed to load data",
     "loginFailed": "Login failed",
     "registerFailed": "Register failed"
