@@ -10,7 +10,7 @@ import Chat from './Chat'
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--color-open)' },
+  'Open': { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--color-open)' },
   'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
   'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-progress)' },
   'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },

@@ -8,13 +8,13 @@ import { useDebounce } from '../hooks/useDebounce'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(218,157,66,.1)', text: 'var(--accent-orange)', border: 'rgba(218,157,66,.25)' },
-  Afternoon: { bg: 'rgba(91,154,255,.1)', text: 'var(--accent-blue-light)', border: 'rgba(91,154,255,.3)' },
-  Night: { bg: 'rgba(124,141,240,.1)', text: 'var(--accent-indigo)', border: 'rgba(124,141,240,.25)' },
+  Afternoon: { bg: 'rgba(74,128,192,.1)', text: 'var(--accent-blue-light)', border: 'rgba(74,128,192,.3)' },
+  Night: { bg: 'rgba(107,127,181,.1)', text: 'var(--accent-indigo)', border: 'rgba(107,127,181,.25)' },
   'Full Day': { bg: 'rgba(63,185,80,.1)', text: 'var(--accent-green)', border: 'rgba(63,185,80,.3)' },
 }
 
 const STATUS_COLORS = {
-  Scheduled: { bg: 'rgba(91,154,255,.1)', text: 'var(--accent-blue-light)', border: 'rgba(91,154,255,.3)' },
+  Scheduled: { bg: 'rgba(74,128,192,.1)', text: 'var(--accent-blue-light)', border: 'rgba(74,128,192,.3)' },
   Active: { bg: 'rgba(63,185,80,.1)', text: 'var(--accent-green)', border: 'rgba(63,185,80,.3)' },
   Completed: { bg: 'rgba(100,116,139,.1)', text: 'var(--gov-muted)', border: 'rgba(100,116,139,.3)' },
   Cancelled: { bg: 'rgba(248,81,73,.1)', text: 'var(--accent-red)', border: 'rgba(248,81,73,.3)' },
@@ -279,7 +279,7 @@ export default function Schedules() {
                     {item.skills?.length > 0 && (
                       <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
                         {item.skills.map((s) => (
-                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(124,141,240,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
+                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
                         ))}
                       </div>
                     )}

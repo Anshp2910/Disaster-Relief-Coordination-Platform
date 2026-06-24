@@ -1,7 +1,7 @@
 import { memo } from 'react'
 
 export const STATUS_COLORS = {
-  'Open': { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: '#4a80c0' },
+  'Open': { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: '#4a80c0' },
   'Pending': { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
   'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: '#f0a030' },
   'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: '#34c759' },

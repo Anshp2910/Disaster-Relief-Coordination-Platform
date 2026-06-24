@@ -7,7 +7,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 
 const STATUS_COLORS = {
-  Open: { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--color-open)' },
+  Open: { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--color-open)' },
   'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-progress)' },
   Resolved: { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
   Fulfilled: { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
@@ -87,9 +87,9 @@ function StatsPanel({ stats }) {
   const totalAll = stats.byStatus ? Object.values(stats.byStatus).reduce((a, b) => a + b, 0) : 0
 
   const summaryCards = [
-    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(91,154,255,0.08)', color: 'var(--color-open)' },
-    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(124,141,240,0.08)', color: 'var(--accent-indigo)' },
-    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(91,154,255,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(107,127,181,0.08)', color: 'var(--accent-indigo)' },
+    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
     {
       label: t('admin.resolved'),
       value: (stats.byStatus?.Resolved || 0) + (stats.byStatus?.Fulfilled || 0),
@@ -481,10 +481,10 @@ export default function AdminDashboard() {
                 border: '1px solid transparent',
                 borderBottom: activeTab === tab.id ? '2px solid var(--accent-blue)' : '2px solid transparent',
                 marginBottom: activeTab === tab.id ? -1 : 0,
-                background: activeTab === tab.id ? 'rgba(91,154,255,0.06)' : 'transparent',
+                background: activeTab === tab.id ? 'rgba(74,128,192,0.06)' : 'transparent',
                 color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--gov-muted)',
                 transition: 'all 0.2s',
-                boxShadow: activeTab === tab.id ? '0 0 12px rgba(91,154,255,0.1)' : 'none',
+                boxShadow: activeTab === tab.id ? '0 0 12px rgba(74,128,192,0.1)' : 'none',
               }}
             >
               {tab.label}
@@ -492,7 +492,7 @@ export default function AdminDashboard() {
                 <span
                   style={{
                     marginLeft: 6,
-                    background: activeTab === tab.id ? 'rgba(91,154,255,0.15)' : 'rgba(255,255,255,0.06)',
+                    background: activeTab === tab.id ? 'rgba(74,128,192,0.15)' : 'rgba(255,255,255,0.06)',
                     color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--gov-muted)',
                     borderRadius: 10,
                     padding: '2px 8px',

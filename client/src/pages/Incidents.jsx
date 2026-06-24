@@ -279,7 +279,7 @@ export default function Incidents() {
               <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: SEVERITY_COLORS[selectedIncident.severity] + '20', color: SEVERITY_COLORS[selectedIncident.severity], border: `1px solid ${SEVERITY_COLORS[selectedIncident.severity]}40` }}>
                 {selectedIncident.severity}
               </span>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: 'rgba(91,154,255,.1)', color: '#4a80c0', border: '1px solid rgba(91,154,255,.25)' }}>
+              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: 'rgba(74,128,192,.1)', color: '#4a80c0', border: '1px solid rgba(74,128,192,.25)' }}>
                 {selectedIncident.status}
               </span>
             </div>

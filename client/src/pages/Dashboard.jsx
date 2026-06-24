@@ -12,7 +12,7 @@ import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--color-open)' },
+  'Open': { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--color-open)' },
   'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
   'In Progress': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-progress)' },
   'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
@@ -31,7 +31,7 @@ const PRIORITY_COLORS = {
 const CATEGORY_COLORS = {
   'Medical': { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--cat-medical)' },
   'Food': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
-  'Shelter': { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--cat-shelter)' },
+  'Shelter': { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--cat-shelter)' },
   'Water': { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
   'Rescue': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--cat-rescue)' },
   'Supplies': { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
@@ -219,9 +219,9 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(91,154,255,0.1)', position: 'relative' }}>
+      <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(74,128,192,0.1)', position: 'relative' }}>
         <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" loading="eager" fetchpriority="high" width="1200" height="300" style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/1' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(91,154,255,0.05), rgba(124,141,240,0.05))', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(74,128,192,0.05), rgba(107,127,181,0.05))', pointerEvents: 'none' }} />
       </div>
       {resourceSummary.length > 0 && (
         <div className="card" style={{ marginBottom: 16 }}>
@@ -231,7 +231,7 @@ export default function Dashboard() {
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {resourceSummary.map((s) => (
-              <div key={s._id} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 12, background: 'rgba(91,154,255,0.06)', border: '1px solid rgba(91,154,255,0.12)', backdropFilter: 'blur(4px)' }}>
+              <div key={s._id} style={{ padding: '8px 14px', borderRadius: 10, fontSize: 12, background: 'rgba(74,128,192,0.06)', border: '1px solid rgba(74,128,192,0.12)', backdropFilter: 'blur(4px)' }}>
                 <strong style={{ color: 'var(--accent-blue)' }}>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: 'var(--accent-orange)' }}>({s.lowCount} low)</span>}
               </div>
             ))}

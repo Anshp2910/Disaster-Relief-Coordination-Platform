@@ -15,7 +15,7 @@ const CATEGORY_COLORS = {
   Food: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
   Water: { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
   Medical: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--cat-medical)' },
-  Shelter: { bg: 'rgba(91,154,255,.1)', border: 'rgba(91,154,255,.25)', text: 'var(--cat-shelter)' },
+  Shelter: { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--cat-shelter)' },
   Supplies: { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
   Healthcare: { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: 'var(--cat-healthcare)' },
   Sanitation: { bg: 'rgba(20,184,166,.1)', border: 'rgba(20,184,166,.25)', text: 'var(--cat-sanitation)' },
@@ -31,7 +31,7 @@ const STATUS_COLORS = {
   Available: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
   Low: { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
   Depleted: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
-  Reserved: { bg: 'rgba(124,141,240,.1)', border: 'rgba(124,141,240,.25)', text: 'var(--accent-indigo)' },
+  Reserved: { bg: 'rgba(107,127,181,.1)', border: 'rgba(107,127,181,.25)', text: 'var(--accent-indigo)' },
 }
 
 const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
@@ -312,7 +312,7 @@ export default function Resources() {
                     {r.status === 'Available' && r.quantity > 0 && (
                       <button
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
-                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(91,154,255,.1)', color: 'var(--accent-blue)', border: '1px solid rgba(91,154,255,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(74,128,192,.1)', color: 'var(--accent-blue)', border: '1px solid rgba(74,128,192,.25)', borderRadius: 6, cursor: 'pointer' }}
                       >
                         {t('resources.allocate')}
                       </button>
