@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSocket } from '../hooks/useSocket'
 import { clientApi } from '../api/client'
@@ -24,6 +24,24 @@ export default function Chat({ requestId, onClose }) {
   const [sending, setSending] = useState(false)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
+
+  const loadMessages = useCallback(async (p) => {
+    try {
+      const data = await clientApi.getChatMessages(requestId, { page: p, limit: 50 })
+      if (p === 1) {
+        setMessages(data.messages || [])
+        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'auto' }), 100)
+      } else {
+        setMessages((prev) => [...(data.messages || []), ...prev])
+      }
+      setHasMore((data.page || 1) < (data.pages || 1))
+      setPage(p)
+    } catch (err) {
+      console.error('Failed to load chat:', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [requestId])
 
   useEffect(() => {
     loadMessages(1)
@@ -58,24 +76,6 @@ export default function Chat({ requestId, onClose }) {
       socket.off('chat:message', onMessage)
     }
   }, [socket, requestId])
-
-  const loadMessages = useCallback(async (p) => {
-    try {
-      const data = await clientApi.getChatMessages(requestId, { page: p, limit: 50 })
-      if (p === 1) {
-        setMessages(data.messages || [])
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'auto' }), 100)
-      } else {
-        setMessages((prev) => [...(data.messages || []), ...prev])
-      }
-      setHasMore((data.page || 1) < (data.pages || 1))
-      setPage(p)
-    } catch (err) {
-      console.error('Failed to load chat:', err)
-    } finally {
-      setLoading(false)
-    }
-  }, [requestId])
 
   async function handleSend(e) {
     e.preventDefault()

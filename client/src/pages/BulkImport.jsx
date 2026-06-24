@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { useToast } from '../components/Toast'
 
 function detectDelimiter(text) {
   const firstLine = text.split(/[\r\n]+/)[0] || ''
@@ -67,6 +68,7 @@ const RESOURCE_EXAMPLE = 'Rice bags,Food,100,kg,Available,Chennai Depot,13.0827,
 
 export default function BulkImport() {
   const { t } = useTranslation()
+  const toast = useToast()
   const [tab, setTab] = useState('requests')
   const [importing, setImporting] = useState(false)
   const [result, setResult] = useState(null)

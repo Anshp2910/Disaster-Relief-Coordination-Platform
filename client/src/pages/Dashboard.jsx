@@ -115,6 +115,15 @@ export default function Dashboard() {
     }
   }, [filterStatus, filterPriority, filterCategory, debouncedSearch])
 
+  const loadResources = useCallback(async () => {
+    try {
+      const data = await clientApi.getResources({ limit: 100 })
+      setResourceSummary(data.summary || [])
+    } catch {
+      // silent fail
+    }
+  }, [])
+
   useEffect(() => { load() }, [load, page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch])
   useEffect(() => { if (viewMode === 'map') loadMapItems() }, [loadMapItems, viewMode, filterStatus, filterPriority, filterCategory, debouncedSearch])
 
@@ -124,11 +133,7 @@ export default function Dashboard() {
     return registerRefreshListener(['request:created', 'request:updated', 'request:deleted', 'request:commented', 'resource:allocated'], load)
   }, [load])
 
-  useEffect(() => {
-    clientApi.getResources({ limit: 100 }).then((data) => {
-      setResourceSummary(data.summary || [])
-    }).catch(() => {})
-  }, [])
+  useEffect(() => { loadResources() }, [loadResources])
 
   useEffect(() => {
     if (viewMode !== 'map') return

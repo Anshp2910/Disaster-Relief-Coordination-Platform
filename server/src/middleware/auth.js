@@ -5,8 +5,7 @@ import { User } from '../models/User.js'
 export async function requireAuth(req, res, next) {
   try {
     const auth = req.headers.authorization || ''
-    let token = auth.startsWith('Bearer ') ? auth.slice(7) : null
-    if (!token && req.query.token) token = req.query.token
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null
     if (!token) return res.status(401).json({ error: 'Missing token', code: 'MISSING_TOKEN' })
 
     let payload

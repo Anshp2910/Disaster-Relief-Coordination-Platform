@@ -38,11 +38,11 @@ function formatDate(d) {
   })
 }
 
-const StatusButton = memo(function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color, onStatusChange }) {
+const StatusButton = memo(function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color, scheduleId, onStatusChange }) {
   if (currentStatus !== expectedStatus) return null
   return (
     <button
-      onClick={() => onStatusChange(nextStatus)}
+      onClick={() => onStatusChange(scheduleId, nextStatus)}
       style={{ fontSize: 11, padding: '3px 8px', background: color.bg, color: color.text, border: `1px solid ${color.border}`, borderRadius: 4, cursor: 'pointer' }}
     >
       {label}
@@ -294,7 +294,8 @@ export default function Schedules() {
                       nextStatus="Active"
                       label={t('schedules.startButton')}
                       color={STATUS_COLORS.Active}
-                      onStatusChange={(s) => handleStatusChange(item._id, s)}
+                      scheduleId={item._id}
+                      onStatusChange={handleStatusChange}
                     />
                     <StatusButton
                       currentStatus={item.status}
@@ -302,7 +303,8 @@ export default function Schedules() {
                       nextStatus="Completed"
                       label={t('schedules.completeButton')}
                       color={STATUS_COLORS.Completed}
-                      onStatusChange={(s) => handleStatusChange(item._id, s)}
+                      scheduleId={item._id}
+                      onStatusChange={handleStatusChange}
                     />
                     <button onClick={() => openEdit(item)} style={{ fontSize: 11, padding: '3px 8px' }}>Edit</button>
                     <button onClick={() => handleDelete(item._id)} className="btnDanger" style={{ fontSize: 11, padding: '3px 8px' }}>Delete</button>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
@@ -39,6 +39,20 @@ export default function Geofencing() {
       () => setPosition({ lat: DEFAULT_CENTER[0], lng: DEFAULT_CENTER[1] })
     )
   }, [])
+
+  const checkArea = useCallback(async () => {
+    if (!position) return
+    setLoading(true)
+    setError('')
+    try {
+      const data = await clientApi.checkGeofencing(position.lat, position.lng, radius)
+      setResult(data)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [position, radius])
 
   useEffect(() => {
     if (!position) return
@@ -113,28 +127,14 @@ export default function Geofencing() {
     }
   }, [position, radius, result])
 
-  const checkArea = useCallback(async () => {
-    if (!position) return
-    setLoading(true)
-    setError('')
-    try {
-      const data = await clientApi.checkGeofencing(position.lat, position.lng, radius)
-      setResult(data)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }, [position, radius])
-
   const renderResultSection = (items, color, bgLight, countLabel, itemRenderer) => {
     const safeItems = Array.isArray(items) ? items : []
     return (
       <div className="card" style={{ textAlign: 'center' }}>
         <div style={{ fontSize: 28, fontWeight: 700, color }}>{safeItems.length}</div>
         <div className="small muted">{countLabel}</div>
-        {safeItems.map((item) => (
-          <div key={item._id || item.id || Math.random()} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: bgLight }}>
+        {safeItems.map((item, idx) => (
+          <div key={item._id || item.id || idx} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: bgLight }}>
             {itemRenderer(item)}
           </div>
         ))}
