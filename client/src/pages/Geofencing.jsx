@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
+import { escapeHtml } from '../utils/escapeHtml'
 
 const DEFAULT_CENTER = [20.5937, 78.9629]
 const SEVERITY_COLORS = { Critical: 'var(--severity-critical)', High: 'var(--severity-high)', Medium: 'var(--severity-medium)', Low: 'var(--severity-low)' }
@@ -114,13 +115,13 @@ export default function Geofencing() {
       }
 
       ;(result.zones || []).forEach((z) => {
-        addMarker(z.centerLat, z.centerLng, `<b>${z.name}</b><br>${z.severity} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999')
+        addMarker(z.centerLat, z.centerLng, `<b>${escapeHtml(z.name)}</b><br>${escapeHtml(z.severity)} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999')
       })
       ;(result.requests || []).forEach((r) => {
-        if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${r.title}<br>${r.distanceKm} km away`, 'var(--gov-danger)')
+        if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${escapeHtml(r.title)}<br>${r.distanceKm} km away`, 'var(--gov-danger)')
       })
       ;(result.resources || []).forEach((r) => {
-        if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${r.name}<br>${r.distanceKm} km away`, 'var(--gov-green)')
+        if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${escapeHtml(r.name)}<br>${r.distanceKm} km away`, 'var(--gov-green)')
       })
     } catch (err) {
       // silently fail

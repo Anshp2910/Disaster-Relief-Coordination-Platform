@@ -44,13 +44,21 @@ adminRouter.get('/stats', async (req, res) => {
   }
 })
 
-adminRouter.get('/users', async (req, res) => {
+adminRouter.get('/users', validateQuery(querySchemas.adminUsersList), async (req, res) => {
   try {
-    const users = await User.find()
-      .select('-passwordHash')
-      .sort({ createdAt: -1 })
-      .lean()
-    return res.json({ users })
+    const { page = 1, limit = 50 } = req.query
+    const skip = (Math.max(1, Number(page)) - 1) * Math.min(100, Math.max(1, Number(limit)))
+    const lim = Math.min(100, Math.max(1, Number(limit)))
+    const [users, total] = await Promise.all([
+      User.find()
+        .select('-passwordHash')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(lim)
+        .lean(),
+      User.countDocuments(),
+    ])
+    return res.json({ users, total, pages: Math.ceil(total / lim) })
   } catch (err) {
     console.error('[admin] users list error:', err.message)
     return res.status(500).json({ error: 'Server error' })
@@ -137,25 +145,29 @@ adminRouter.get('/export/requests', validateQuery(querySchemas.adminExport), asy
   }
 })
 
-adminRouter.get('/requests', async (req, res) => {
+adminRouter.get('/requests', validateQuery(querySchemas.requestsList), async (req, res) => {
   try {
-    const { page = 1, limit = 20, status, search } = req.query
+    const { page = 1, limit = 20, status, search, category, priority, sort } = req.query
     const filter = {}
     if (status && status !== 'All') filter.status = status
+    if (category && category !== 'All') filter.category = category
+    if (priority && priority !== 'All') filter.priority = priority
     if (search) {
       const safeSearch = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       filter.$or = [
         { title: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } },
         { locationName: { $regex: safeSearch, $options: 'i' } },
       ]
     }
+    const sortStr = sort || '-createdAt'
     const skip = (Math.max(1, Number(page)) - 1) * Math.min(100, Math.max(1, Number(limit) || 20))
     const lim = Math.min(100, Math.max(1, Number(limit) || 20))
     const [items, total] = await Promise.all([
       Request.find(filter)
         .populate('createdBy', 'displayName email')
         .populate('claimedBy', 'displayName email')
-        .sort({ createdAt: -1 })
+        .sort(sortStr)
         .skip(skip)
         .limit(lim)
         .lean(),

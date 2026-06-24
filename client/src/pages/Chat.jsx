@@ -37,7 +37,7 @@ export default function Chat({ requestId, onClose }) {
       setHasMore((data.page || 1) < (data.pages || 1))
       setPage(p)
     } catch (err) {
-      // silently fail
+      setMessages([])
     } finally {
       setLoading(false)
     }

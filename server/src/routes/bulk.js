@@ -108,7 +108,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImp
 
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
-    console.error('[bulk] import requests error:', err)
+    console.error('[bulk] import requests error:', err.message)
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -181,7 +181,7 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkIm
 
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
-    console.error('[bulk] import resources error:', err)
+    console.error('[bulk] import resources error:', err.message)
     res.status(500).json({ error: 'Server error' })
   }
 })

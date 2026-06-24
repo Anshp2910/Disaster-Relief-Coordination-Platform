@@ -100,7 +100,7 @@ export default function CreateRequest() {
           .then((data) => {
             setLocationName(data.display_name || `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`)
           })
-          .catch(() => {})
+          .catch(() => { setLocationName(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`) })
           .finally(() => setLocating(false))
       },
       () => {

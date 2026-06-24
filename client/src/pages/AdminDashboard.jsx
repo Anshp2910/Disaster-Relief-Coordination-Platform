@@ -457,7 +457,7 @@ export default function AdminDashboard() {
           URL.revokeObjectURL(url)
         }
       })
-      .catch(() => {})
+      .catch((e) => { toast?.error?.(e.message || 'Export failed') })
   }
 
   const tabs = [

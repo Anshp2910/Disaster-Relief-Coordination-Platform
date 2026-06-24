@@ -59,7 +59,7 @@ authRouter.post('/login', validate('login'), async (req, res) => {
       user: { id: user._id, email: user.email, role: user.role, displayName: user.displayName },
     })
   } catch (err) {
-    console.error('[auth] login error:', err)
+    console.error('[auth] login error:', err.message)
     return res.status(500).json({ error: 'Server error' })
   }
 })

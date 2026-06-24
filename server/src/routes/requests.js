@@ -363,8 +363,10 @@ requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), async (re
       const buf = Buffer.from(f.data, 'base64')
       if (buf.length > 10 * 1024 * 1024) continue
       const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+      const allowedExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf', '.doc', '.docx']
       if (!allowedMimes.includes(f.mimetype)) continue
-      const ext = path.extname(f.filename).toLowerCase() || '.' + (f.mimetype.split('/')[1] || 'bin')
+      const ext = path.extname(f.filename).toLowerCase()
+      if (!allowedExts.includes(ext)) continue
       const unique = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext
       fs.writeFileSync(path.join(uploadsDir, unique), buf)
       newFiles.push({

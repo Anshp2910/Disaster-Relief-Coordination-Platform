@@ -161,7 +161,6 @@ export const clientApi = {
       a.click()
       URL.revokeObjectURL(url)
     }).catch((err) => {
-      console.error('[client] exportRequestsCSV error:', err.message)
       throw err
     })
   },
@@ -180,7 +179,6 @@ export const clientApi = {
       a.click()
       URL.revokeObjectURL(url)
     }).catch((err) => {
-      console.error('[client] exportResourcesCSV error:', err.message)
       throw err
     })
   },

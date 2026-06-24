@@ -270,6 +270,11 @@ const querySchemas = {
     format: Joi.string().valid('json', 'csv').default('json'),
   }),
 
+  adminUsersList: Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(50),
+  }),
+
   geofencingCheck: Joi.object({
     lat: Joi.number().min(-90).max(90).required(),
     lng: Joi.number().min(-180).max(180).required(),

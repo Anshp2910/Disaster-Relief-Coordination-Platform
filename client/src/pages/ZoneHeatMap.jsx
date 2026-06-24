@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, memo, useCallback } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
@@ -157,23 +157,30 @@ export default function ZoneHeatMap() {
       circlesRef.current.push(circle)
     })
 
+    const clickHandler = (e) => {
+      const btn = e.target.closest('.zone-view-btn')
+      if (!btn) return
+      const zoneId = btn.getAttribute('data-zone-id')
+      const z = zones.find((z) => z._id === zoneId)
+      if (z) setSelectedZone(z)
+    }
+
     function onPopupOpen(e) {
       const popupEl = e.popup.getElement()
-      const btn = popupEl.querySelector('.zone-view-btn')
-      if (btn) {
-        const handler = () => {
-          const zoneId = btn.getAttribute('data-zone-id')
-          const z = zones.find((z) => z._id === zoneId)
-          if (z) setSelectedZone(z)
-        }
-        btn.addEventListener('click', handler)
-      }
+      popupEl.addEventListener('click', clickHandler)
+    }
+
+    function onPopupClose(e) {
+      const popupEl = e.popup.getElement()
+      popupEl.removeEventListener('click', clickHandler)
     }
 
     map.on('popupopen', onPopupOpen)
+    map.on('popupclose', onPopupClose)
 
     return () => {
       map.off('popupopen', onPopupOpen)
+      map.off('popupclose', onPopupClose)
     }
   }, [zones])
 

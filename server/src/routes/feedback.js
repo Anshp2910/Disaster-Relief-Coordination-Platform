@@ -6,7 +6,7 @@ import { Request } from '../models/Request.js'
 
 export const feedbackRouter = express.Router()
 
-feedbackRouter.get('/request/:requestId', requireAuth, async (req, res) => {
+feedbackRouter.get('/request/:requestId', requireAuth, validateObjectId('requestId'), async (req, res) => {
   try {
     const feedback = await Feedback.find({ requestId: req.params.requestId })
       .populate('submittedBy', 'displayName email role')
@@ -20,7 +20,7 @@ feedbackRouter.get('/request/:requestId', requireAuth, async (req, res) => {
   }
 })
 
-feedbackRouter.post('/request/:requestId', requireAuth, validate('feedback'), async (req, res) => {
+feedbackRouter.post('/request/:requestId', requireAuth, validateObjectId('requestId'), validate('feedback'), async (req, res) => {
   try {
     const { rating, comment, deliveryConfirmed } = req.body
 
