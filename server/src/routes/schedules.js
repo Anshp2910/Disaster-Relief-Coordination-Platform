@@ -40,8 +40,9 @@ schedulesRouter.post('/', requireAuth, validate('createSchedule'), async (req, r
     if (req.body.userId && req.user.role === 'admin') {
       targetUserId = req.body.userId
     }
+    const { zoneId, startDate, endDate, shift, skills, notes } = req.body
     const schedule = new Schedule({
-      ...req.body,
+      zoneId, startDate, endDate, shift, skills, notes,
       userId: targetUserId,
     })
     await schedule.save()

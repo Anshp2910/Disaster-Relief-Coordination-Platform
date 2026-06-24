@@ -28,9 +28,10 @@ bulkRouter.get('/resources/export', requireAuth, requireAdmin, async (req, res) 
   try {
     const items = await Resource.find({}).sort({ createdAt: -1 }).lean()
     const headers = ['name', 'category', 'quantity', 'unit', 'status', 'locationName', 'lat', 'lng', 'createdAt']
+    const escCsv2 = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
     const csv = [headers.join(',')]
     for (const r of items) {
-      csv.push(headers.map((h) => `"${String(r[h] || '').replace(/"/g, '""')}"`).join(','))
+      csv.push(headers.map((h) => escCsv2(r[h] || '')).join(','))
     }
     res.setHeader('Content-Type', 'text/csv')
     res.setHeader('Content-Disposition', 'attachment; filename="resources.csv"')

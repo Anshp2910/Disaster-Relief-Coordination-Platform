@@ -132,7 +132,8 @@ adminRouter.get('/export/requests', validateQuery(querySchemas.adminExport), asy
         r.claimedBy?.displayName || r.claimedBy?.email || '',
         r.createdAt,
       ])
-      const csv = [headers.join(','), ...rows.map((row) => row.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n')
+      const escCsv = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
+      const csv = [headers.join(','), ...rows.map((row) => row.map(escCsv).join(','))].join('\n')
       res.setHeader('Content-Type', 'text/csv')
       res.setHeader('Content-Disposition', 'attachment; filename=requests-export.csv')
       return res.send(csv)

@@ -70,10 +70,11 @@ async function migrate() {
 
       // Compare JSON strings to detect changes
       if (JSON.stringify(doc) !== JSON.stringify(fixed)) {
+        const { _id, ...setFields } = fixed
         batch.push({
           updateOne: {
             filter: { _id: doc._id },
-            update: { $set: fixed },
+            update: { $set: setFields },
           },
         })
         count++

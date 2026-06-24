@@ -253,7 +253,25 @@ export default function Header() {
       {showLogoutConfirm && (
         <div className="modal-overlay" onClick={() => setShowLogoutConfirm(false)}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
-            <div className="modal-icon">&#x1F6AA;</div>
+            <div className="modal-icon">
+              <svg width="40" height="40" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="logoutEmblem" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#4a80c0" />
+                    <stop offset="100%" stopColor="#6b7fb5" />
+                  </linearGradient>
+                </defs>
+                <circle cx="28" cy="28" r="25" stroke="url(#logoutEmblem)" strokeWidth="2" fill="none" opacity="0.6" />
+                <circle cx="28" cy="28" r="18" stroke="url(#logoutEmblem)" strokeWidth="1" fill="none" opacity="0.3" />
+                <circle cx="28" cy="28" r="5" fill="url(#logoutEmblem)" />
+                {[...Array(24)].map((_, i) => {
+                  const angle = (i * 15 * Math.PI) / 180
+                  return (
+                    <line key={i} x1={28} y1={28} x2={28 + 22 * Math.sin(angle)} y2={28 - 22 * Math.cos(angle)} stroke="url(#logoutEmblem)" strokeWidth="0.8" opacity="0.4" />
+                  )
+                })}
+              </svg>
+            </div>
             <h3 className="modal-title">Logout</h3>
             <p className="modal-desc">Are you sure you want to logout?</p>
             <div className="modal-actions">

@@ -1,12 +1,18 @@
 import { Router } from 'express'
+import { validateQuery } from '../middleware/validate.js'
+import Joi from 'joi'
 
 const router = Router()
 const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1'
 
-router.get('/current', async (req, res) => {
+const weatherQuery = Joi.object({
+  lat: Joi.number().min(-90).max(90).required(),
+  lng: Joi.number().min(-180).max(180).required(),
+})
+
+router.get('/current', validateQuery(weatherQuery), async (req, res) => {
   try {
     const { lat, lng } = req.query
-    if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' })
 
     const url = `${OPEN_METEO_BASE}/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m&daily=precipitation_sum&timezone=auto`
 

@@ -119,8 +119,9 @@ export function createApp() {
   app.use('/api/escalation', writeLimiter, escalationRouter)
   app.use('/api/geofencing', geofencingLimiter, geofencingRouter)
   app.use('/api/sos', writeLimiter, sosRouter)
-  app.use('/api/weather', weatherRouter)
-  app.use('/api/public', publicRouter)
+  const publicLimiter = rateLimit({ windowMs: 60 * 1000, max: 30, message: { error: 'Too many requests, please slow down' } })
+  app.use('/api/weather', publicLimiter, weatherRouter)
+  app.use('/api/public', publicLimiter, publicRouter)
 
   app.use('/api', (req, res) => {
     res.status(404).json({ error: 'API endpoint not found' })

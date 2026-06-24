@@ -107,7 +107,8 @@ incidentsRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res
 
 incidentsRouter.post('/', requireAuth, requireAdmin, validate('createIncident'), async (req, res) => {
   try {
-    const incident = new Incident({ ...req.body, createdBy: req.user._id })
+    const { name, description, disasterType, severity, status, zones, startDate, affectedPopulation, centerLat, centerLng } = req.body
+    const incident = new Incident({ name, description, disasterType, severity, status, zones, startDate, affectedPopulation, centerLat, centerLng, createdBy: req.user._id })
     await incident.save()
     return res.status(201).json({ item: incident })
   } catch (err) {

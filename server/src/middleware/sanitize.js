@@ -21,7 +21,7 @@ function sanitizeValue(val) {
   if (val && typeof val === 'object') {
     const clean = {}
     for (const [k, v] of Object.entries(val)) {
-      clean[k] = sanitizeValue(v)
+      clean[stripDangerous(k)] = sanitizeValue(v)
     }
     return clean
   }
