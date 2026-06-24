@@ -7,16 +7,27 @@ export async function requireAuth(req, res, next) {
     const auth = req.headers.authorization || ''
     let token = auth.startsWith('Bearer ') ? auth.slice(7) : null
     if (!token && req.query.token) token = req.query.token
-    if (!token) return res.status(401).json({ error: 'Missing token' })
+    if (!token) return res.status(401).json({ error: 'Missing token', code: 'MISSING_TOKEN' })
 
-    const payload = jwt.verify(token, getEnv('JWT_SECRET'))
+    let payload
+    try {
+      payload = jwt.verify(token, getEnv('JWT_SECRET'))
+    } catch (jwtErr) {
+      console.warn('[auth] JWT verify failed:', jwtErr.name, jwtErr.message)
+      return res.status(401).json({ error: 'Token expired or invalid', code: 'INVALID_TOKEN' })
+    }
+
     const user = await User.findById(payload.sub).select('-passwordHash')
-    if (!user) return res.status(401).json({ error: 'Invalid token' })
+    if (!user) {
+      console.warn('[auth] User not found for token sub:', payload.sub)
+      return res.status(401).json({ error: 'User not found', code: 'USER_NOT_FOUND' })
+    }
 
     req.user = user
     return next()
   } catch (err) {
-    return res.status(401).json({ error: 'Unauthorized' })
+    console.error('[auth] Unexpected error:', err.message)
+    return res.status(500).json({ error: 'Authentication error', code: 'AUTH_ERROR' })
   }
 }
 
