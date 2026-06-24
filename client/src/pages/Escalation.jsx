@@ -79,7 +79,7 @@ export default function Escalation() {
   return (
     <div className="container">
       <div className="card">
-        <h2 className="pageTitle m-0 mb" style={{ fontSize: 20 }}>
+        <h2 className="pageTitle m-0 mb text-20">
           {t('nav.escalation') || 'Request Escalation Pipeline'}
         </h2>
         <div className="small muted mb">
@@ -93,7 +93,7 @@ export default function Escalation() {
             value={requestId}
             onChange={(e) => setRequestId(e.target.value)}
             required
-            className="rounded-sm" style={{ fontSize: 13, padding: '8px 12px', border: '1px solid var(--gov-border)' }}
+            className="rounded-sm text-13 border-gov p-sm"
           >
             <option value="">{t('escalation.selectRequest') || 'Select a request...'}</option>
             {allRequests.map((r) => (
@@ -111,7 +111,7 @@ export default function Escalation() {
             maxLength={2000}
             className="text-13"
           />
-          <button type="submit" className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px', justifySelf: 'start' }}>
+          <button type="submit" className="btnPrimary text-13 p-sm justify-self-start">
             {t('escalation.escalateRequest')}
           </button>
         </form>
@@ -122,7 +122,7 @@ export default function Escalation() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('escalation.searchPlaceholder') || 'Search by title, reason, or user...'}
-            className="flex-1 rounded-sm" style={{ padding: '8px 12px', border: '1px solid var(--gov-border)', fontSize: 13 }}
+            className="flex-1 rounded-sm p-sm border-gov text-13"
           />
         </div>
       </div>
@@ -134,11 +134,11 @@ export default function Escalation() {
       ) : (
         <div className="gridGap mt">
           {filteredItems.map((item) => (
-            <div key={item._id} className="listCard" style={{ borderLeft: '4px solid var(--gov-danger)' }}>
+            <div key={item._id} className="listCard border-l-4" style={{ borderLeftColor: 'var(--gov-danger)' }}>
               <div className="flex-between">
                 <div className="flex-1">
                   <div className="text-bold text-base text-accent-blue">{item.title}</div>
-                  <div className="text-sm" style={{ color: 'var(--gov-danger)', marginTop: 2 }}>
+                  <div className="text-sm text-red mt-xs">
                     {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                   </div>
                   <div className="mt-xs text-13">{item.escalationReason}</div>
@@ -146,11 +146,7 @@ export default function Escalation() {
                 </div>
                 <button
                   onClick={() => handleDeescalate(item._id)}
-                  style={{
-                    fontSize: 11, padding: '4px 10px', background: 'var(--success-soft)',
-                    color: 'var(--accent-green)', border: '1px solid rgba(34,197,94,.3)',
-                    borderRadius: 4, cursor: 'pointer', alignSelf: 'start',
-                  }}
+                  className="deescalate-btn"
                 >
                    {t('escalation.deEscalate')}
                 </button>

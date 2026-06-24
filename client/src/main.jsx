@@ -9,7 +9,7 @@ import { ToastProvider } from './components/Toast'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useVersionCheck } from './hooks/useVersionCheck'
-import 'leaflet/dist/leaflet.css'
+// Leaflet CSS is loaded dynamically in mapInit.js to avoid blocking non-map pages
 import './styles/index.css'
 
 function VersionChecker() {

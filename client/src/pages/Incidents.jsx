@@ -237,7 +237,7 @@ export default function Incidents() {
               key={s}
               onClick={() => { setFilterSeverity(s); setPage(1) }}
               className={`filter-pill ${filterSeverity === s ? 'active' : ''} text-xs`}
-              style={{ ...(s !== 'All' ? { borderLeft: `3px solid ${SEVERITY_COLORS[s] || '#999'}` } : {}) }}
+              style={s !== 'All' ? { borderLeft: `3px solid ${SEVERITY_COLORS[s] || '#999'}` } : undefined}
               aria-label={s}
             >
               {s}
@@ -259,6 +259,7 @@ export default function Incidents() {
         </div>
       </div>
 
+      <section aria-label={t('nav.incidents')}>
       {loading ? (
         <div className="mt-md">
           <SkeletonList count={3} lines={2} />
@@ -272,7 +273,7 @@ export default function Incidents() {
         </div>
 
         {selectedIncident && (
-          <div className="card flex-shrink-0" style={{ width: 320 }}>
+          <div className="card flex-shrink-0 w-320">
             <div className="flex-between mb-sm">
               <h3 className="m-0 text-accent-blue text-15">
                 {DISASTER_ICONS[selectedIncident.disasterType]} {selectedIncident.name}
@@ -281,7 +282,7 @@ export default function Incidents() {
             </div>
 
             <div className="flex flex-gap-sm mb-sm flex-wrap">
-              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (SEVERITY_COLORS[selectedIncident.severity] || '#999') + '20', color: SEVERITY_COLORS[selectedIncident.severity] || '#999', border: `1px solid ${(SEVERITY_COLORS[selectedIncident.severity] || '#999')}40` }}>
+              <span className="text-xs text-semi severity-badge" data-severity={selectedIncident.severity}>
                 {selectedIncident.severity}
               </span>
               <span className="text-xs text-semi rounded-sm p-xs bg-accent-soft text-accent-blue">
@@ -290,10 +291,10 @@ export default function Incidents() {
             </div>
 
             {selectedIncident.description && (
-              <div className="mb-sm text-13" style={{ lineHeight: 1.5 }}>{selectedIncident.description}</div>
+              <div className="mb-sm text-13 leading-normal">{selectedIncident.description}</div>
             )}
 
-            <div className="text-13" style={{ lineHeight: 1.8 }}>
+            <div className="text-13 leading-lg">
               <div>{t('incidents.type')}: <strong>{selectedIncident.disasterType}</strong></div>
               {selectedIncident.affectedPopulation > 0 && (
                 <div>Affected: <strong>{selectedIncident.affectedPopulation.toLocaleString()}</strong></div>
@@ -316,10 +317,11 @@ export default function Incidents() {
         )}
       </div>
       )}
+      </section>
 
       {showForm && (
         <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
+          <div className="card w-500 overflow-auto" style={{ maxHeight: '90vh' }}>
             <h3 className="m-0 mb-md text-lg text-accent-blue">
               {editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
             </h3>
@@ -371,9 +373,9 @@ export default function Incidents() {
 
       {totalPages > 1 && (
         <div className="flex flex-center flex-gap-sm mt-lg">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('common.previous')}>{t('common.previous')}</button>
-          <span className="text-sm" style={{ padding: '6px 12px' }}>{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('common.next')}>{t('common.next')}</button>
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm p-xs" aria-label={t('common.previous')}>{t('common.previous')}</button>
+          <span className="text-sm p-xs">{page} / {totalPages}</span>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('common.next')}>{t('common.next')}</button>
         </div>
       )}
     </div>

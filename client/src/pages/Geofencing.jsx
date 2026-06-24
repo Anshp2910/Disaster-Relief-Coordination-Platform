@@ -135,7 +135,7 @@ export default function Geofencing() {
         <div className="text-3xl text-bold" style={{ color }}>{safeItems.length}</div>
         <div className="small muted">{countLabel}</div>
         {safeItems.map((item, idx) => (
-          <div key={item._id || item.id || idx} className="text-sm mt-xs" style={{ padding: '4px 8px', borderRadius: 4, background: bgLight }}>
+          <div key={item._id || item.id || idx} className="text-sm mt-xs p-xs rounded-sm" style={{ background: bgLight }}>
             {itemRenderer(item)}
           </div>
         ))}
@@ -148,7 +148,7 @@ export default function Geofencing() {
       <div className="card">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('nav.geofencing') || 'Geofencing Alerts'}</h2>
+            <h2 className="pageTitle text-20">{t('nav.geofencing') || 'Geofencing Alerts'}</h2>
             <div className="small mt-xs">{t('geofencing.subtitle')}</div>
           </div>
         </div>
@@ -163,14 +163,13 @@ export default function Geofencing() {
             onChange={(e) => setRadius(Number(e.target.value))}
             min="1"
             max="500"
-            className="rounded-sm" style={{ width: 80, padding: '6px 10px', border: '1px solid var(--gov-border)', fontSize: 13 }}
+            className="rounded-sm w-80 text-13 border-gov" style={{ padding: '6px 10px' }}
           />
           {position && <span className="small muted">{position.lat.toFixed(4)}, {position.lng.toFixed(4)}</span>}
           <button
-            className="btnPrimary text-sm"
             onClick={checkArea}
             disabled={loading || !position}
-            style={{ padding: '6px 16px' }}
+            className="btnPrimary text-sm p-sm"
           >
             {loading ? t('geofencing.checking') : t('geofencing.checkArea')}
           </button>
@@ -178,7 +177,7 @@ export default function Geofencing() {
       </div>
 
       <div className="card p-0 mt">
-        <div ref={mapRef} className="map-container-full" style={{ height: '60vh' }} />
+        <div ref={mapRef} className="map-container-full map-container-60vh" />
       </div>
 
       {result && (

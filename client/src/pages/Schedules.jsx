@@ -36,7 +36,7 @@ const StatusButton = memo(function StatusButton({ currentStatus, expectedStatus,
   return (
     <button
       onClick={() => onStatusChange(scheduleId, nextStatus)}
-      style={{ fontSize: 11, padding: '3px 8px', background: color.bg, color: color.text, border: `1px solid ${color.border}`, borderRadius: 4, cursor: 'pointer' }}
+      className="skill-pill" style={{ background: color.bg, color: color.text, borderColor: color.border }}
     >
       {label}
     </button>
@@ -259,8 +259,8 @@ export default function Schedules() {
                   <div className="flex-1">
                     <div className="flex flex-gap-sm flex-wrap mb-xs">
                       <span className="text-bold text-base">{item.userId?.displayName || 'Volunteer'}</span>
-                      <span className="text-xs p-xs rounded-sm text-semi" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>{item.shift}</span>
-                      <span className="text-xs p-xs rounded-sm text-semi" style={{ background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>{item.status}</span>
+                      <span className="status-badge" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>{item.shift}</span>
+                      <span className="status-badge" style={{ background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>{item.status}</span>
                     </div>
 
                     <div className="text-base text-muted">
@@ -274,7 +274,7 @@ export default function Schedules() {
                     {item.skills?.length > 0 && (
                       <div className="flex flex-gap-xs mt-xs flex-wrap">
                         {item.skills.map((s) => (
-                          <span key={s} className="text-xs" style={{ padding: '2px 6px', borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
+                          <span key={s} className="text-xs p-xs" style={{ borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
                         ))}
                       </div>
                     )}
@@ -321,7 +321,7 @@ export default function Schedules() {
 
       {showForm && (
         <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
+          <div className="card w-500 overflow-auto" style={{ maxHeight: '90vh' }}>
             <h3 className="m-0 mb text-lg">{editItem ? t('schedules.editSchedule') : t('schedules.createSchedule')}</h3>
             <form onSubmit={handleSubmit} className="grid flex-gap-sm">
               <div>
@@ -374,12 +374,7 @@ export default function Schedules() {
                         key={s}
                         type="button"
                         onClick={() => toggleSkill(s)}
-                        style={{
-                          fontSize: 11, padding: '3px 8px', borderRadius: 4, border: '1px solid', cursor: 'pointer',
-                          ...(active
-                            ? { background: 'var(--gov-blue)', color: 'white', borderColor: 'var(--gov-blue)' }
-                            : { background: 'var(--gov-white)', color: 'var(--gov-muted)', borderColor: 'var(--gov-border)' }),
-                        }}
+                        className={`skill-pill ${active ? 'active' : 'inactive'}`}
                       >
                         {s}
                       </button>

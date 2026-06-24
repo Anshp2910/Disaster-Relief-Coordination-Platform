@@ -1,3 +1,4 @@
+import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 
 const DEFAULT_CENTER = [20.5937, 78.9629]

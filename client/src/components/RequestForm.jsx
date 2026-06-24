@@ -288,8 +288,7 @@ export default function RequestForm({
                 type="button"
                 onClick={useMyLocation}
                 disabled={locating}
-                className="flex-shrink-0 btn-pill"
-                style={{ cursor: locating ? 'wait' : 'pointer' }}
+                className={`flex-shrink-0 btn-pill ${locating ? 'cursor-wait' : 'cursor-pointer'}`}
               >
                 {locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
               </button>
@@ -303,40 +302,26 @@ export default function RequestForm({
                   onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
                   placeholder={t('createRequest.searchPlaceholder')}
-                  className="w-full input-pill"
-                  style={{ paddingRight: 70 }}
+                  className="w-full input-pill pr-70"
                 />
                 <button
                   type="button"
                   onClick={onSearch}
                   disabled={searching}
-                  className="absolute text-sm rounded-sm border-none"
-                  style={{
-                    right: 4, top: 4, bottom: 4, padding: '4px 12px',
-                    background: 'linear-gradient(135deg, var(--accent), var(--pri-600))', color: '#fff',
-                    cursor: searching ? 'wait' : 'pointer',
-                  }}
+                  className="search-btn"
                 >
                   {searching ? t('createRequest.searching') : t('createRequest.search')}
                 </button>
 
                 {suggestions.length > 0 && (
-                  <div className="absolute overflow-auto rounded-sm z-100 border-gov bg-elevated" style={{
-                    top: '100%', left: 0, right: 0,
-                    marginTop: 4, maxHeight: 200,
-                  }}>
+                  <div className="suggestions-dropdown">
                     {suggestions.map((s, i) => (
                       <div
                         key={i}
                         onClick={() => pickSuggestion(s)}
-                        className="text-sm cursor-pointer"
-                        style={{
-                          padding: '8px 12px',
-                          borderBottom: i < suggestions.length - 1 ? '1px solid var(--gov-border)' : 'none',
-                          color: 'var(--gov-text)',
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--gov-bg)'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                        className={`suggestion-item ${i < suggestions.length - 1 ? 'border-bottom' : ''}`}
+                        onMouseEnter={(e) => e.currentTarget.classList.add('bg-accent-soft')}
+                        onMouseLeave={(e) => e.currentTarget.classList.remove('bg-accent-soft')}
                       >
                         {s.display_name}
                       </div>

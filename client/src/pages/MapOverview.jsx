@@ -163,7 +163,7 @@ export default function MapOverview() {
               key={p}
               onClick={() => setFilterPriority(p)}
               className={`filter-pill text-xs ${filterPriority === p ? 'active' : ''}`}
-              style={{ ...(p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : {}) }}
+              style={p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : undefined}
             >
               {p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}
             </button>
@@ -194,7 +194,7 @@ export default function MapOverview() {
 
         {!loading && error && (
           <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
-            <div className="text-base" style={{ color: 'var(--danger)', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
+            <div className="text-base text-red mb-sm">{t('dashboard.error') || 'Error'}</div>
             <div className="muted">{error}</div>
           </div>
         )}
@@ -209,7 +209,7 @@ export default function MapOverview() {
 
       <div className="flex flex-gap-lg mt flex-wrap">
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
-          <div key={status} className="flex text-sm gap-6" style={{ alignItems: 'center' }}>
+          <div key={status} className="flex text-sm gap-6 items-center">
             <div className="icon-12" style={{ background: color }} />
             <span>{t(`statuses.${status}`)}</span>
           </div>

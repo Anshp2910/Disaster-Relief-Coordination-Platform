@@ -38,11 +38,11 @@ function MiniBarChart({ data, maxVal }) {
   const max = maxVal || Math.max(...safeData.map((d) => typeof d.count === 'number' ? d.count : 0), 1)
 
   return (
-    <div className="flex mt-sm" style={{ alignItems: 'flex-end', gap: 2, height: 60 }}>
+    <div className="flex mt-sm items-end gap-2 h-60">
       {safeData.map((d, idx) => {
         const count = typeof d.count === 'number' ? d.count : 0
         return (
-          <div key={d.date || idx} className="flex-1 flex flex-col" style={{ alignItems: 'center', gap: 2 }}>
+          <div key={d.date || idx} className="flex-1 flex flex-col items-center gap-2">
             <div
               style={{
                 width: '100%',
@@ -53,7 +53,7 @@ function MiniBarChart({ data, maxVal }) {
               }}
               title={`${d.date}: ${count}`}
             />
-            {idx % 5 === 0 && <span className="text-muted" style={{ fontSize: 9 }}>{d.date?.slice(5)}</span>}
+            {idx % 5 === 0 && <span className="text-muted text-9">{d.date?.slice(5)}</span>}
           </div>
         )
       })}
@@ -80,7 +80,7 @@ function BreakdownCard({ title, data, total }) {
             <div className="admin-breakdown-bar">
               <div className="admin-breakdown-bar-fill" style={{ width: `${pct}%`, background: color }} />
             </div>
-            <span className="text-bold" style={{ color, minWidth: 40, textAlign: 'right' }}>{numCount}</span>
+            <span className="text-bold min-w-40 text-right" style={{ color }}>{numCount}</span>
           </div>
         )
       })}
@@ -112,7 +112,7 @@ function StatsPanel({ stats }) {
     <div className="card">
       <h3 className="m-0 text-bold text-accent-blue text-15">{t('admin.platformOverview')}</h3>
 
-      <div className="admin-stats-grid">
+      <section aria-label="Statistics"><div className="admin-stats-grid">
         {summaryCards.map((c) => (
           <div key={c.label} className="admin-stat-card">
             <div className="admin-stat-info">
@@ -121,7 +121,7 @@ function StatsPanel({ stats }) {
             </div>
           </div>
         ))}
-      </div>
+      </div></section>
 
       {stats.dailyRequests?.length > 0 && (
         <div className="mt-xl">
@@ -165,7 +165,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
   }, [safeUsers])
 
   return (
-    <div className="card">
+    <section aria-label="User Management"><div className="card">
       <div className="admin-toolbar">
         <input
           type="text"
@@ -199,7 +199,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
                 <th>{t('admin.userHeader')}</th>
                 <th>{t('admin.roleHeader')}</th>
                 <th>{t('admin.joinedHeader')}</th>
-                <th style={{ textAlign: 'right' }}>{t('admin.actionsHeader')}</th>
+                <th className="text-right">{t('admin.actionsHeader')}</th>
               </tr>
             </thead>
             <tbody>
@@ -219,7 +219,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
                   <td>
                     <span className="small">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</span>
                   </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td className="text-right">
                     <button onClick={() => onDelete(u._id)} className="admin-action-btn btnDanger">
                       {t('admin.delete')}
                     </button>
@@ -230,7 +230,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
           </table>
         </div>
       )}
-    </div>
+    </div></section>
   )
 }
 
@@ -276,7 +276,7 @@ function RequestsPanel({ requests, onDelete }) {
   ]
 
   return (
-    <div className="card">
+    <section aria-label="Request Management"><div className="card">
       <div className="flex flex-gap-sm flex-wrap mb-md">
         {filterOptions.map((f) => (
           <button
@@ -314,13 +314,13 @@ function RequestsPanel({ requests, onDelete }) {
                 <th>{t('admin.priorityHeader')}</th>
                 <th>{t('admin.categoryHeader')}</th>
                 <th>{t('admin.postedByHeader')}</th>
-                <th style={{ textAlign: 'right' }}>{t('admin.actionsHeader')}</th>
+                <th className="text-right">{t('admin.actionsHeader')}</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((r) => (
                 <tr key={r._id} className="cursor-pointer" onClick={() => navigate(`/requests/${r._id}`)}>
-                  <td style={{ maxWidth: 280 }}>
+                  <td className="max-w-280">
                     <div className="admin-request-title">{r.title}</div>
                     <div className="admin-request-location">{r.locationName || t('admin.noLocation')}</div>
                   </td>
@@ -344,7 +344,7 @@ function RequestsPanel({ requests, onDelete }) {
                   <td>
                     <span className="small">{r.createdBy?.displayName || r.createdBy?.email || t('dashboard.unknown')}</span>
                   </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td className="text-right">
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
@@ -361,7 +361,7 @@ function RequestsPanel({ requests, onDelete }) {
           </table>
         </div>
       )}
-    </div>
+    </div></section>
   )
 }
 
@@ -477,49 +477,30 @@ export default function AdminDashboard() {
           </div>
           <div className="btnRow">
             <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
-            <button onClick={() => handleExport('csv')} style={{ color: 'var(--accent-green)', borderColor: 'rgba(34,197,94,0.3)' }}>{t('common.exportCSV')}</button>
+            <button onClick={() => handleExport('csv')} className="text-accent-green" style={{ borderColor: 'rgba(34,197,94,0.3)' }}>{t('common.exportCSV')}</button>
           </div>
         </div>
 
         {error && <div className="errorText mt-md">{error}</div>}
 
         <div className="flex flex-gap-xs mt-xl overflow-x-auto border-bottom" style={{ WebkitOverflowScrolling: 'touch' }}>
-          {tabs.map((tab) => (
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id
+            return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className="text-semi"
-              style={{
-                padding: '12px 20px',
-                borderRadius: '10px 10px 0 0',
-                fontSize: 13,
-                border: '1px solid transparent',
-                borderBottom: activeTab === tab.id ? '2px solid var(--accent-blue)' : '2px solid transparent',
-                marginBottom: 0,
-                background: activeTab === tab.id ? 'var(--accent-soft)' : 'transparent',
-                color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)',
-                transition: 'all 0.2s',
-                boxShadow: activeTab === tab.id ? '0 0 12px var(--accent-soft)' : 'none',
-              }}
+              className={`text-semi tab-btn ${isActive ? 'active' : ''}`}
             >
               {tab.label}
               {tab.count !== undefined && (
-                <span
-                  className="text-bold"
-                  style={{
-                    marginLeft: 6,
-                    background: activeTab === tab.id ? 'var(--accent-soft)' : 'var(--glass-bg)',
-                    color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)',
-                    borderRadius: 10,
-                    padding: '2px 8px',
-                    fontSize: 11,
-                  }}
-                >
+                <span className={`text-bold tab-count ${isActive ? 'active' : 'inactive'}`}>
                   {tab.count}
                 </span>
               )}
             </button>
-          ))}
+            )
+          })}
         </div>
       </div>
 

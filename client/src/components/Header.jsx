@@ -128,7 +128,7 @@ export default function Header() {
   }
 
   return (
-    <header>
+    <header role="banner">
       {!online && (
         <div className="offline-banner">
           You are offline — some features may be unavailable
@@ -164,7 +164,7 @@ export default function Header() {
 
       {!isAuthPage && (
         <div className="gov-nav-bar">
-          <nav className="gov-nav flex-1 overflow-x-auto">
+          <nav className="gov-nav flex-1 overflow-x-auto" aria-label="Main navigation">
             <div className="gov-nav-inner">
               {navLinks.map((link) => (
                 <button
@@ -182,25 +182,16 @@ export default function Header() {
             <div className="gov-nav-actions">
               <div
                 title={!online ? 'Offline' : connected ? 'Connected' : 'Disconnected'}
+                className="h-8 rounded-full flex-shrink-0"
                 style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
                   background: !online ? 'var(--accent-red)' : connected ? 'var(--accent-green)' : '#eab308',
-                  flexShrink: 0,
                   boxShadow: !online ? '0 0 8px var(--accent-red)' : connected ? '0 0 8px var(--accent-green)' : '0 0 8px #eab308',
                 }}
               />
               <button
                 onClick={cycleTheme}
                 title={themeLabel}
-                className="bg-none border-none cursor-pointer"
-                style={{
-                  fontSize: 16,
-                  padding: '4px 8px',
-                  borderRadius: 8,
-                  transition: 'all 0.2s',
-                }}
+                className="bg-none border-none cursor-pointer text-16 p-xs rounded-md transition-02"
               >
                 {themeIcon}
               </button>

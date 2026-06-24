@@ -223,19 +223,19 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div className="mb-xl rounded-lg overflow-hidden relative" style={{ border: '1px solid var(--accent-soft)' }}>
+      <div className="mb-xl rounded-lg overflow-hidden relative border-gov" style={{ borderColor: 'var(--accent-soft)' }}>
           <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" className="w-full h-auto block" />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(59,130,246,0.04), rgba(129,140,248,0.04))', pointerEvents: 'none' }} />
+        <div className="absolute inset-0 no-pointer-events" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.04), rgba(129,140,248,0.04))' }} />
       </div>
       {resourceSummary.length > 0 && (
         <div className="card mb-lg">
           <div className="flex-between mb-sm">
             <h3 className="m-0 text-base text-bold text-accent-blue">{t('dashboard.resourceInventory')}</h3>
-            <button onClick={() => navigate('/resources')} className="text-sm" style={{ padding: '5px 12px' }}>{t('dashboard.viewAll')}</button>
+            <button onClick={() => navigate('/resources')} className="text-sm p-xs">{t('dashboard.viewAll')}</button>
           </div>
           <div className="flex flex-gap-sm flex-wrap">
             {resourceSummary.map((s) => (
-              <div key={s._id} className="text-sm rounded-md" style={{ padding: '8px 14px', background: 'var(--accent-soft)', border: '1px solid rgba(59,130,246,0.15)', backdropFilter: 'blur(4px)' }}>
+              <div key={s._id} className="text-sm rounded-md p-sm bg-accent-soft" style={{ border: '1px solid rgba(59,130,246,0.15)', backdropFilter: 'blur(4px)' }}>
                 <strong className="text-accent-blue">{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span className="text-accent-orange">({s.lowCount} low)</span>}
               </div>
             ))}
@@ -250,7 +250,7 @@ export default function Dashboard() {
           </div>
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <button onClick={() => navigate('/admin')} className="text-accent-blue" style={{ borderColor: 'var(--gov-blue)' }}>{t('dashboard.admin')}</button>
+              <button onClick={() => navigate('/admin')} className="text-accent-blue border-gov" style={{ borderColor: 'var(--gov-blue)' }}>{t('dashboard.admin')}</button>
             )}
             <button
               onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
@@ -264,9 +264,9 @@ export default function Dashboard() {
         {error ? <div className="errorText">{error}</div> : null}
         <form onSubmit={handleSearch} className="flex flex-gap-sm mt-md">
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('admin.searchRequests')} className="flex-1 input-pill" />
-          <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>{t('createRequest.search')}</button>
+          <button type="submit" className="btnPrimary text-sm p-sm">{t('createRequest.search')}</button>
         </form>
-        <div className="flex flex-gap-sm mt-md flex-wrap">
+        <nav aria-label="Filters"><div className="flex flex-gap-sm mt-md flex-wrap">
           {filterOptions.map((f) => (
             <button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`} aria-label={f.label}>{f.label}</button>
           ))}
@@ -276,19 +276,19 @@ export default function Dashboard() {
             <button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''} text-xs`} aria-label={p.label}>{p.label}</button>
           ))}
         </div>
-          <div className="flex flex-wrap flex-gap-sm mt-sm" style={{ alignItems: 'center' }}>
-          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov" style={{ padding: '6px 10px' }}>
+          <div className="flex flex-wrap flex-gap-sm mt-sm items-center">
+          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov p-xs">
             {categoryOptions.map((c) => (
               <option key={c.key} value={c.key}>{c.key === 'All' ? t('dashboard.allCategories') : c.label}</option>
             ))}
           </select>
-          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov" style={{ padding: '6px 10px' }}>
+          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov p-xs">
             {sortOptions.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
             ))}
           </select>
-        </div>
-        {viewMode === 'list' ? (
+        </div></nav>
+        <section aria-label={t('dashboard.title')} role="region" aria-live="polite">{viewMode === 'list' ? (
           <>
             {loading ? (
               <SkeletonList count={4} lines={3} />
@@ -303,7 +303,7 @@ export default function Dashboard() {
                   items.map((it) => (
                     <div key={it._id} className="listCard cursor-pointer" onClick={() => navigate(`/requests/${it._id}`)}>
                       <div className="flex-between flex-gap-sm">
-                        <div className="flex-1" style={{ minWidth: 0 }}>
+                        <div className="flex-1 min-w-0">
                           <div className="text-bold text-accent-blue text-15">{it.title}</div>
                           <div className="flex flex-gap-sm mt-sm flex-wrap">
                             <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
@@ -329,9 +329,9 @@ export default function Dashboard() {
             )}
             {totalPages > 1 && (
               <div className="flex flex-center flex-gap-sm mt-lg">
-                <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
-                <span className="text-sm" style={{ padding: '6px 12px' }}>{page} / {totalPages}</span>
-                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" style={{ padding: '6px 14px' }} aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
+                <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm p-xs" aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
+                <span className="text-sm p-xs">{page} / {totalPages}</span>
+                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
               </div>
             )}
           </>
@@ -360,7 +360,7 @@ export default function Dashboard() {
               ))}
             </div>
           </>
-        )}
+        )}</section>
       </div>
     </div>
   )
@@ -385,9 +385,9 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
   function edit(e) { e.stopPropagation(); navigate(`/requests/${id}/edit`) }
 
   return (
-    <div className="flex flex-col flex-gap-sm" style={{ alignItems: 'flex-end' }}>
-      <button disabled={!canEdit} onClick={edit} className="btnPrimary text-sm" style={{ opacity: !canEdit ? 0.5 : 1, padding: '6px 12px' }} aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</button>
-      <button disabled={!canEdit || deleting} onClick={del} className="btnDanger text-sm" style={{ opacity: !canEdit ? 0.5 : 1, padding: '6px 12px' }} aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
+    <div className="flex flex-col flex-gap-sm items-end">
+      <button disabled={!canEdit} onClick={edit} className="btnPrimary text-sm p-xs" style={{ opacity: !canEdit ? 0.5 : 1 }} aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</button>
+      <button disabled={!canEdit || deleting} onClick={del} className="btnDanger text-sm p-xs" style={{ opacity: !canEdit ? 0.5 : 1 }} aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
     </div>
   )
 })

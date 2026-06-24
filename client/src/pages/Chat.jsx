@@ -102,8 +102,8 @@ export default function Chat({ requestId, onClose }) {
   }
 
   return (
-    <div className="flex flex-col" style={{ height: '100%', maxHeight: 500 }}>
-      <div className="flex flex-between flex-center" style={{ padding: '10px 12px', borderBottom: '1px solid var(--gov-border)' }}>
+    <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
+      <div className="flex flex-between flex-center p-sm border-bottom">
         <h3 className="m-0 text-sm text-accent-blue">{t('chat.title')}</h3>
         {onClose && (
           <button onClick={onClose} className="bg-none border-none cursor-pointer text-xl" aria-label={t('chat.close') || 'Close chat'}>
@@ -112,7 +112,7 @@ export default function Chat({ requestId, onClose }) {
         )}
       </div>
 
-      <div className="flex-1 overflow-auto flex flex-col flex-gap-sm" style={{ padding: '10px 12px' }} role="log" aria-live="polite">
+      <div className="flex-1 overflow-auto flex flex-col flex-gap-sm p-sm" role="log" aria-live="polite">
         {hasMore && (
           <button onClick={() => loadMessages(page + 1)} className="text-xs bg-none border-none cursor-pointer" style={{ color: 'var(--gov-saffron)', alignSelf: 'center' }}>
             {t('chat.loadEarlier')}
@@ -128,7 +128,7 @@ export default function Chat({ requestId, onClose }) {
           if (isSystem) {
             return (
               <div key={m._id || m.createdAt} className="flex flex-center">
-                <div className="text-xs" style={{ color: 'var(--text-muted)', background: 'var(--accent-soft)', padding: '3px 10px', borderRadius: 12 }}>
+                <div className="text-xs text-muted bg-accent-soft rounded-xl p-xs">
                   {m.text}
                 </div>
               </div>
@@ -136,10 +136,10 @@ export default function Chat({ requestId, onClose }) {
           }
 
           return (
-            <div key={m._id || m.createdAt} className="flex" style={{ justifyContent: isMe ? 'flex-end' : 'flex-start' }}>
-              <div style={{ maxWidth: '75%' }}>
+            <div key={m._id || m.createdAt} className={`flex ${isMe ? 'justify-end' : ''}`}>
+              <div className="max-w-75p">
                 {!isMe && (
-                  <div className="text-xs text-semi" style={{ color: 'var(--gov-blue)', marginBottom: 2 }}>
+                  <div className="text-xs text-semi mb-xs" style={{ color: 'var(--gov-blue)' }}>
                     {m.sender?.displayName || 'User'}
                   </div>
                 )}
@@ -151,7 +151,7 @@ export default function Chat({ requestId, onClose }) {
                 }}>
                   {m.text}
                 </div>
-                <div className="text-xs text-muted" style={{ marginTop: 2, textAlign: isMe ? 'right' : 'left' }}>
+                <div className={`text-xs text-muted mt-xs ${isMe ? 'text-right' : ''}`}>
                   {formatTime(m.createdAt)}
                 </div>
               </div>
@@ -161,18 +161,17 @@ export default function Chat({ requestId, onClose }) {
         <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={handleSend} className="flex flex-gap-sm" style={{ padding: '10px 12px', borderTop: '1px solid var(--gov-border)' }}>
+      <form onSubmit={handleSend} className="flex flex-gap-sm p-sm border-top">
         <input
           ref={inputRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={t('chat.typeMessage')}
           maxLength={2000}
-          className="flex-1 text-sm rounded-sm"
-          style={{ padding: '8px 12px', border: '1px solid var(--gov-border)' }}
+          className="flex-1 text-sm rounded-sm p-sm border-gov"
         />
-        <span className="text-xs text-muted" style={{ alignSelf: 'center' }}>{text.length}/2000</span>
-        <button type="submit" className="btnPrimary text-xs" disabled={!text.trim() || sending} style={{ padding: '6px 16px' }}>
+        <span className="text-xs text-muted self-center">{text.length}/2000</span>
+        <button type="submit" className="btnPrimary text-xs p-sm" disabled={!text.trim() || sending}>
           {sending ? '...' : t('chat.send')}
         </button>
       </form>

@@ -6,7 +6,7 @@ export function SkeletonCard({ lines = 3, style = {} }) {
   return (
     <div className="sk-card" style={style} aria-hidden="true">
       {Array.from({ length: lines }).map((_, i) => (
-        <SkeletonLine key={i} height={i === 0 ? 16 : 12} width={i === lines - 1 ? '60%' : '100%'} style={{ marginBottom: 8 }} />
+        <SkeletonLine key={i} height={i === 0 ? 16 : 12} width={i === lines - 1 ? '60%' : '100%'} className="mb-sm" />
       ))}
     </div>
   )

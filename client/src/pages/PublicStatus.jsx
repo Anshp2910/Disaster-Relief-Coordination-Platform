@@ -58,9 +58,9 @@ export default function PublicStatus() {
           const val = data?.[key]
           if (val === undefined) return null
           return (
-            <div key={key} className="card text-center" style={{ padding: 20 }}>
+            <div key={key} className="card text-center p">
               <div className="text-3xl mb-sm">{icon}</div>
-              <div className="text-bold" style={{ fontSize: 32, color: 'var(--accent-blue)' }}>
+              <div className="text-bold text-32 text-accent-blue">
                 {typeof val === 'number' ? val.toLocaleString() : val}
               </div>
               <div className="muted text-sm">{t(labelKey)}</div>
@@ -74,8 +74,8 @@ export default function PublicStatus() {
           <h3 className="m-0 mb-sm text-base">{t('public.byStatus')}</h3>
           <div className="flex flex-gap-lg flex-wrap">
             {Object.entries(data.statusBreakdown).map(([status, count]) => (
-              <div key={status} className="flex flex-gap-xs" style={{ alignItems: 'center' }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: STATUS_COLORS[status] || '#999' }} />
+              <div key={status} className="flex flex-gap-xs items-center">
+                <div className="h-10 rounded-full" style={{ background: STATUS_COLORS[status] || '#999' }} />
                 <span className="text-sm">{status}: <strong>{count}</strong></span>
               </div>
             ))}

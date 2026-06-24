@@ -230,7 +230,7 @@ export default function BulkImport() {
   return (
     <div className="container">
       <div className="card">
-        <h2 className="pageTitle m-0 mb" style={{ fontSize: 20 }}>{t('bulkImport.title')}</h2>
+        <h2 className="pageTitle m-0 mb text-20">{t('bulkImport.title')}</h2>
 
         <div className="flex mb-lg gap-6">
           <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>{t('bulkImport.requestsTab')}</button>
@@ -242,17 +242,17 @@ export default function BulkImport() {
         {!preview && (
           <>
             <div className="flex flex-gap-sm mb-lg">
-              <button onClick={downloadTemplate} className="rounded-sm cursor-pointer" style={{ padding: '8px 16px', border: '1px solid var(--gov-border)', background: 'var(--gov-white)', fontSize: 13 }}>
+              <button onClick={downloadTemplate} className="rounded-sm cursor-pointer p-sm border-gov bg-gov-white text-13">
                 {t('bulkImport.downloadTemplate')}
               </button>
-              <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>{t('bulkImport.exportCSV')}</button>
+              <button onClick={exportData} className="btnPrimary text-13 p-sm">{t('bulkImport.exportCSV')}</button>
             </div>
 
-            <div className="p-2xl text-center" style={{ border: '2px dashed var(--gov-border)', borderRadius: 8 }}>
+            <div className="p-2xl text-center border-gov rounded" style={{ borderStyle: 'dashed', borderWidth: 2 }}>
               <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
               <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
-              <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} style={{ display: 'none' }} id="csv-upload" />
-              <label htmlFor="csv-upload" className="btnPrimary cursor-pointer" style={{ display: 'inline-block', fontSize: 13, padding: '8px 20px' }}>
+              <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" />
+              <label htmlFor="csv-upload" className="btnPrimary cursor-pointer inline-block text-13" style={{ padding: '8px 20px' }}>
                 {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
               </label>
             </div>
@@ -268,8 +268,7 @@ export default function BulkImport() {
                 <button
                   onClick={handleSubmitImport}
                   disabled={importing || selected.size === 0}
-                  className="btnPrimary text-sm"
-                  style={{ padding: '6px 14px' }}
+                  className="btnPrimary text-sm p-xs"
                 >
                   {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
                 </button>
@@ -300,12 +299,12 @@ export default function BulkImport() {
                         opacity: selected.has(row._rowId) ? 1 : 0.5,
                       }}
                     >
-                      <td className="text-center border-bottom" style={{ padding: '6px 10px' }}>
+                      <td className="text-center border-bottom p-xs">
                         <input type="checkbox" checked={selected.has(row._rowId)} onChange={() => toggleRow(row._rowId)} aria-label={`Select row ${idx + 1}`} />
                       </td>
-                      <td className="text-center text-muted border-bottom" style={{ padding: '6px 10px' }}>{idx + 1}</td>
+                      <td className="text-center text-muted border-bottom p-xs">{idx + 1}</td>
                       {headers.map((h) => (
-                        <td key={h} className="text-ellipsis border-bottom max-w-200" style={{ padding: '4px 10px' }}>
+                        <td key={h} className="text-ellipsis border-bottom max-w-200 p-xs" style={{ padding: '4px 10px' }}>
                           {editingRow === row._rowId ? (
                             <input
                               value={row[h]}
@@ -317,7 +316,7 @@ export default function BulkImport() {
                           )}
                         </td>
                       ))}
-                      <td className="text-center border-bottom" style={{ padding: '4px 10px' }}>
+                      <td className="text-center border-bottom p-xs">
                         <button
                           onClick={() => setEditingRow(editingRow === row._rowId ? null : row._rowId)}
                           className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
@@ -335,12 +334,12 @@ export default function BulkImport() {
 
         {result && (
           <div className="mt-lg p rounded-sm" style={{ background: 'var(--success-soft)', border: '1px solid rgba(34,197,94,.2)' }}>
-            <div className="text-semi" style={{ fontSize: 13, color: 'var(--accent-green)' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
+            <div className="text-semi text-13 text-accent-green">{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
             {result.errors?.length > 0 && (
               <div className="mt-sm">
-                <div className="text-sm text-semi" style={{ color: 'var(--gov-danger)' }}>{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>
+                <div className="text-sm text-semi text-red">{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>
                 {result.errors.slice(0, 10).map((e, i) => (
-                  <div key={i} className="text-sm text-muted" style={{ marginTop: 2 }}>Row {e.row}: {e.errors.join(', ')}</div>
+                  <div key={i} className="text-sm text-muted mt-xs">Row {e.row}: {e.errors.join(', ')}</div>
                 ))}
               </div>
             )}

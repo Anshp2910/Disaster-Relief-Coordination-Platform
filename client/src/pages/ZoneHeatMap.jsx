@@ -360,7 +360,7 @@ export default function ZoneHeatMap() {
             <span className="text-sm text-muted">&middot;</span>
             {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
               <div key={cov} className="gap-row-xs text-sm">
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: c }} />
+                <div className="w-10 h-10 rounded-sm" style={{ background: c }} />
                 <span>{cov}</span>
               </div>
             ))}
@@ -368,7 +368,7 @@ export default function ZoneHeatMap() {
         </div>
 
         {selectedZone && (
-          <div className="card flex-shrink-0" style={{ width: 320 }}>
+          <div className="card flex-shrink-0 w-320">
             <div className="flex flex-between mb-sm">
               <div>
                 <h3 className="m-0 text-lg">
@@ -395,13 +395,13 @@ export default function ZoneHeatMap() {
               {selectedZone.affectedPopulation > 0 && (
                 <div>Affected: <strong>{selectedZone.affectedPopulation.toLocaleString()}</strong></div>
               )}
-              <div>Open requests: <strong style={{ color: 'var(--gov-danger)' }}>{selectedZone.openRequests}</strong></div>
+              <div>Open requests: <strong className="text-red">{selectedZone.openRequests}</strong></div>
               <div>{t('zones.totalResources')}: <strong>{selectedZone.totalResources}</strong> {t('zones.units')}</div>
             </div>
 
             {selectedZone.stats?.openRequests > 0 && (
-              <div className="mt-md rounded-sm text-sm" style={{ padding: '8px 12px', background: 'rgba(248,81,73,0.06)' }}>
-                <strong style={{ color: 'var(--gov-danger)' }}>{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
+              <div className="mt-md rounded-sm text-sm p-sm bg-warning-soft">
+                <strong className="text-red">{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
               </div>
             )}
 
@@ -415,20 +415,20 @@ export default function ZoneHeatMap() {
         )}
 
         {weather && (
-          <div className="card flex-shrink-0" style={{ width: 280 }}>
+          <div className="card flex-shrink-0 w-280">
             <div className="flex flex-between mb-sm">
               <h4 className="m-0 text-sm text-accent-blue">{t('zones.weather')}</h4>
               <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}>&times;</button>
             </div>
             <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
             <div className="text-sm text-muted mb-sm">{weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}</div>
-            <div className="text-sm grid gap-8" style={{ gridTemplateColumns: '1fr 1fr' }}>
+            <div className="text-sm grid-2 gap-8">
               {weather.humidity != null && <><span className="text-muted">{t('zones.humidity')}</span><span>{weather.humidity}%</span></>}
               {weather.windSpeed != null && <><span className="text-muted">{t('zones.wind')}</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
               {weather.precipitation != null && <><span className="text-muted">{t('zones.precipitation')}</span><span>{weather.precipitation} mm</span></>}
               {weather.dailyPrecipitation != null && <><span className="text-muted">24h total</span><span>{weather.dailyPrecipitation} mm</span></>}
             </div>
-            <button onClick={fetchWeather} className="text-xs mt-sm" disabled={weatherLoading} style={{ padding: '3px 10px' }}>
+            <button onClick={fetchWeather} className="text-xs mt-sm p-xs" disabled={weatherLoading}>
               {weatherLoading ? '...' : t('zones.refreshWeather') || 'Refresh'}
             </button>
           </div>
@@ -437,7 +437,7 @@ export default function ZoneHeatMap() {
 
       {showForm && (
         <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="card overflow-auto" style={{ width: 500, maxHeight: '90vh' }}>
+          <div className="card overflow-auto w-500" style={{ maxHeight: '90vh' }}>
             <h3 className="m-0 mb text-lg">{editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}</h3>
             <form onSubmit={handleSubmit} className="grid flex-gap-sm">
               <input placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />

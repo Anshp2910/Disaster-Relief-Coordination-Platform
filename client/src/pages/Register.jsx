@@ -116,7 +116,7 @@ export default function Register() {
             </button>
           </form>
 
-          <p className="muted" style={{ marginTop: 20 }}>
+          <p className="muted mt-lg">
             {t('auth.hasAccount')}{' '}
             <a href="/login" onClick={(e) => (e.preventDefault(), navigate('/login'))}>
               {t('auth.loginLink')}

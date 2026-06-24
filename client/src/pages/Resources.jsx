@@ -40,7 +40,7 @@ const STATUSES = ['All', 'Available', 'Low', 'Depleted', 'Reserved']
 const Badge = memo(function Badge({ label, colors, colorKey }) {
   const c = colors[colorKey || label] || colors['Other']
   return (
-    <span style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text, padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600 }}>
+    <span className="cat-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
     </span>
   )
@@ -209,7 +209,7 @@ export default function Resources() {
             {summary.map((s) => {
               const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
               return (
-                <div key={s._id} className="text-sm text-semi p-sm rounded-sm" style={{ ...catColors }}>
+                <div key={s._id} className="text-sm text-semi p-sm rounded-sm" style={{ background: catColors.bg, border: catColors.border ? `1px solid ${catColors.border}` : undefined, color: catColors.text }}>
                   {CATEGORY_ICONS[s._id] || CATEGORY_ICONS.Other} {s._id}: {s.totalQty} units ({s.count} items)
                 </div>
               )
@@ -287,6 +287,7 @@ export default function Resources() {
       )}
 
       {/* Resource List */}
+      <section aria-label={t('nav.resources')}>
       {loading ? (
         <SkeletonList count={4} lines={3} />
       ) : (
@@ -308,7 +309,7 @@ export default function Resources() {
                     </div>
                     <div className="mt-xs text-base">
                       <strong>{r.quantity}</strong> {r.unit}
-                      {r.allocatedQuantity > 0 && <span className="text-accent-orange" style={{ marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
+                      {r.allocatedQuantity > 0 && <span className="text-accent-orange ml-sm">({r.allocatedQuantity} {t('resources.allocated')})</span>}
                     </div>
                     <div className="small muted mt-xs">📍 {r.locationName}</div>
                     {r.allocatedTo && (
@@ -345,6 +346,7 @@ export default function Resources() {
           )}
         </div>
       )}
+      </section>
 
       {/* Pagination */}
       {totalPages > 1 && (
@@ -358,7 +360,7 @@ export default function Resources() {
       {/* Allocation Modal */}
       {showAllocModal && (
         <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="card" style={{ width: 400 }}>
+          <div className="card w-400">
             <h3 className="m-0 mb text-lg">{t('resources.allocateResource')}</h3>
             <div className="text-base mb">
               <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available

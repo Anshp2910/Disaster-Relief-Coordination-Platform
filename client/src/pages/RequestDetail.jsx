@@ -235,7 +235,7 @@ export default function RequestDetail() {
   if (!item) return null
 
   return (
-    <div className="container max-w-md">
+    <article className="container max-w-md">
       <div className="card mb-lg">
         <div className="headerRow">
           <div>
@@ -252,11 +252,11 @@ export default function RequestDetail() {
         </div>
       </div>
 
-      <div className="grid-3-responsive" style={{ gap: 16 }}>
+      <div className="grid-3-responsive gap-16">
         {/* Details Card */}
         <div className="card">
-          <h3 className="text-base text-bold" style={{ margin: '0 0 14px', color: 'var(--accent-blue)' }}>{t('editRequest.subtitle')}</h3>
-          <p className="text-base m-0" style={{ lineHeight: 1.6 }}>{item.description}</p>
+          <h3 className="text-base text-bold text-accent-blue" style={{ margin: '0 0 14px' }}>{t('editRequest.subtitle')}</h3>
+          <p className="text-base m-0 leading-normal">{item.description}</p>
 
           <div className="mt-lg text-sm">
             <div className="mb-xs">📍 {item.locationName}</div>
@@ -275,7 +275,7 @@ export default function RequestDetail() {
           </div>
 
           {item.claimedBy && (
-            <div className="mt-sm text-sm p-sm" style={{ background: 'var(--warning-soft)', borderRadius: 6 }}>
+            <div className="mt-sm text-sm p-sm bg-warning-soft rounded-sm">
               {t('requestDetail.claimedBy')} <strong>{item.claimedBy.displayName || item.claimedBy.email}</strong>
               {item.claimedAt && <span className="small muted"> - {new Date(item.claimedAt).toLocaleDateString()}</span>}
             </div>
@@ -300,15 +300,15 @@ export default function RequestDetail() {
           {item.files?.length > 0 ? (
             <div className="flex-col flex-gap-sm">
           {item.files.map((f) => (
-            <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
+            <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs bg-gov-bg rounded-sm">
                   {f.mimetype?.startsWith('image/') ? (
-                    <img src={`${API_BASE}${f.url}`} alt={f.filename} className="cursor-pointer" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} onClick={() => setPreviewFile(f)} />
+                    <img src={`${API_BASE}${f.url}`} alt={f.filename} className="cursor-pointer object-cover rounded-sm w-40 h-40" onClick={() => setPreviewFile(f)} />
                   ) : f.mimetype === 'application/pdf' ? (
                     <span className="text-xl cursor-pointer" onClick={() => setPreviewFile(f)}>&#128196;</span>
                   ) : (
                     <span className="text-xl">&#128196;</span>
                   )}
-                  <div className="flex-1" style={{ minWidth: 0 }}>
+                  <div className="flex-1 min-w-0">
                     <div className="text-sm text-ellipsis">{f.filename}</div>
                     <div className="small muted">{new Date(f.uploadedAt).toLocaleDateString()}</div>
                   </div>
@@ -323,8 +323,8 @@ export default function RequestDetail() {
             <div className="muted text-sm">{t('requestDetail.noFiles')}</div>
           )}
           <div className="mt">
-            <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" onChange={handleFileUpload} style={{ display: 'none' }} id="file-upload" />
-            <label htmlFor="file-upload" className="btnPrimary" style={{ display: 'inline-block', cursor: 'pointer', fontSize: 12, padding: '6px 14px' }}>
+            <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" className="hidden" onChange={handleFileUpload} id="file-upload" />
+            <label htmlFor="file-upload" className="btnPrimary inline-block cursor-pointer text-12 p-sm">
               {uploading ? t('editRequest.saving') : t('requestDetail.uploadFiles')}
             </label>
           </div>
@@ -364,19 +364,18 @@ export default function RequestDetail() {
           </div>
           <div className="flex-col flex-gap-sm">
             {matches.map((m) => (
-              <div key={m._id} className="flex-between text-sm p-sm" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
-                <div className="flex-1" style={{ minWidth: 0 }}>
+              <div key={m._id} className="flex-between text-sm p-sm bg-gov-bg rounded-sm">
+                <div className="flex-1 min-w-0">
                   <div className="text-semi">{m.name}</div>
                   <div className="text-sm text-muted-extra mt-xs">
                     {m.quantity} {m.unit} available
                     {m.distanceKm != null && <span> - {m.distanceKm} km away</span>}
-                    {m.categoryMatch && <span className="govt-badge govt-badge-green" style={{ marginLeft: 6, fontSize: 10 }}>{t('matching.exactMatch')}</span>}
+                    {m.categoryMatch && <span className="govt-badge govt-badge-green ml-sm text-10">{t('matching.exactMatch')}</span>}
                   </div>
                 </div>
                 <button
                   onClick={() => quickAllocate(m)}
-                  className="btnPrimary text-xs flex-shrink-0"
-                  style={{ padding: '4px 12px' }}
+                  className="btnPrimary text-xs flex-shrink-0 p-xs"
                 >
                   Quick Allocate
                 </button>
@@ -387,7 +386,7 @@ export default function RequestDetail() {
       )}
 
       {/* Comments */}
-      <div className="card mt-lg">
+      <section aria-label={t('requestDetail.comments')} aria-live="polite"><div className="card mt-lg">
         <h3 className="m-0 mb text-base text-accent-blue">
           {t('requestDetail.comments')} ({item.comments?.length || 0})
         </h3>
@@ -403,7 +402,7 @@ export default function RequestDetail() {
             maxLength={2000}
             className="flex-1 text-sm p-sm border-gov rounded-sm"
           />
-          <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>
+          <button type="submit" className="btnPrimary text-sm p-sm">
             {posting ? '...' : t('requestDetail.post')}
           </button>
         </form>
@@ -411,13 +410,13 @@ export default function RequestDetail() {
         {item.comments?.length > 0 ? (
           <div className="flex-col flex-gap-xs">
             {[...item.comments].reverse().map((c) => (
-              <div key={c._id} className="text-sm p-sm" style={{ background: 'var(--gov-bg)', borderRadius: 8 }}>
+              <div key={c._id} className="text-sm p-sm bg-gov-bg" style={{ borderRadius: 8 }}>
                 <div className="flex-between mb-xs">
                   <strong className="text-sm">{c.createdBy?.displayName || c.createdBy?.email}</strong>
                   <div className="flex flex-gap-sm">
                     <span className="small muted">{new Date(c.createdAt).toLocaleDateString()}</span>
                     {(currentUser?.id === c.createdBy?._id || currentUser?.role === 'admin') && (
-                      <button onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0" style={{ color: 'var(--gov-danger)', cursor: 'pointer' }}>
+                      <button onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0 text-red cursor-pointer">
                         {t('requestDetail.delete')}
                       </button>
                     )}
@@ -430,11 +429,11 @@ export default function RequestDetail() {
         ) : (
           <div className="muted text-sm">{t('requestDetail.noComments')}</div>
         )}
-      </div>
+      </div></section>
 
       {/* Activity Log */}
       {item.auditLog?.length > 0 && (
-        <div className="card mt-lg">
+        <aside aria-label={t('requestDetail.activityLog')}><div className="card mt-lg">
           <h3 className="m-0 mb text-base text-accent-blue">{t('requestDetail.activityLog')}</h3>
           <div className="flex-col flex-gap-xs">
             {[...item.auditLog].reverse().map((entry, idx) => (
@@ -446,14 +445,14 @@ export default function RequestDetail() {
               </div>
             ))}
           </div>
-        </div>
+        </div></aside>
       )}
 
       {/* Chat */}
       <div className="card mt-lg">
         <div className="flex-between" style={{ marginBottom: showChat ? 12 : 0 }}>
           <h3 className="m-0 text-base text-accent-blue">{t('requestDetail.realTimeChat')}</h3>
-          <button onClick={() => setShowChat(!showChat)} className="text-sm" style={{ padding: '4px 12px' }}>
+          <button onClick={() => setShowChat(!showChat)} className="text-sm p-xs">
             {showChat ? t('requestDetail.hideChat') : t('requestDetail.openChat')}
           </button>
         </div>
@@ -471,14 +470,14 @@ export default function RequestDetail() {
             {t('requestDetail.feedback')} ({feedbackList.length})
           </h3>
           {!showFeedbackForm && (
-            <button onClick={() => setShowFeedbackForm(true)} className="btnPrimary text-sm" style={{ padding: '4px 12px' }}>
+            <button onClick={() => setShowFeedbackForm(true)} className="btnPrimary text-sm p-xs">
               {t('requestDetail.giveFeedback')}
             </button>
           )}
         </div>
 
         {showFeedbackForm && (
-          <form onSubmit={handleFeedbackSubmit} className="p mb" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
+          <form onSubmit={handleFeedbackSubmit} className="p mb bg-gov-bg rounded-sm">
             <div className="mb-sm">
               <label className="small label-block">{t('requestDetail.rating')}</label>
               <div className="flex flex-gap-xs">
@@ -492,7 +491,7 @@ export default function RequestDetail() {
             <label htmlFor="rd-feedback" className="sr-only">{t('requestDetail.feedbackPlaceholder')}</label>
             <textarea id="rd-feedback" value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder={t('requestDetail.feedbackPlaceholder')} rows={2} className="w-full text-sm mb-sm" />
             <div className="flex flex-gap-sm">
-              <button type="submit" disabled={feedbackLoading} className="btnPrimary text-sm" style={{ padding: '6px 14px' }}>
+              <button type="submit" disabled={feedbackLoading} className="btnPrimary text-sm p-sm">
                 {feedbackLoading ? '...' : t('requestDetail.submit')}
               </button>
               <button type="button" onClick={() => setShowFeedbackForm(false)} className="text-sm">{t('editRequest.cancel')}</button>
@@ -503,12 +502,12 @@ export default function RequestDetail() {
         {feedbackList.length > 0 ? (
           <div className="flex-col flex-gap-sm">
             {feedbackList.map((f) => (
-              <div key={f._id} className="text-sm p-sm" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
+              <div key={f._id} className="text-sm p-sm bg-gov-bg rounded-sm">
                 <div className="flex flex-gap-xs mb-xs">
                   {[1, 2, 3, 4, 5].map((s) => (
                      <span key={s} className="text-base" style={{ color: s <= f.rating ? 'var(--gov-saffron)' : 'var(--gov-border)' }}>★</span>
                   ))}
-                  <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
+                  <span className="small muted ml-sm">by {f.submittedBy?.displayName || 'User'}</span>
                 </div>
                 {f.comment && <div>{f.comment}</div>}
                 {f.deliveryConfirmed && <div className="small mt-xs text-accent-green">{t('requestDetail.deliveryConfirmed')}</div>}
@@ -522,24 +521,24 @@ export default function RequestDetail() {
 
       {/* File Preview Modal */}
       {previewFile && (
-        <div className="fixed flex-center inset-0 p-xl" style={{ background: 'rgba(0,0,0,0.85)', zIndex: 9999 }} onClick={() => setPreviewFile(null)}>
+        <div className="fixed flex-center inset-0 p-xl bg-black-85 z-9999" onClick={() => setPreviewFile(null)}>
           <div className="relative" style={{ maxWidth: '90vw', maxHeight: '85vh' }} onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setPreviewFile(null)} className="absolute bg-none border-none cursor-pointer" style={{ top: -32, right: 0, color: 'white', fontSize: 24 }}>✕</button>
+            <button onClick={() => setPreviewFile(null)} className="absolute bg-none border-none cursor-pointer text-white text-24" style={{ top: -32, right: 0 }}>✕</button>
             {previewFile.mimetype?.startsWith('image/') ? (
               <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} className="rounded" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
             ) : previewFile.mimetype === 'application/pdf' ? (
-              <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile.filename} className="border-none rounded" style={{ width: '80vw', height: '80vh', background: 'var(--gov-white)' }} />
+              <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile.filename} className="border-none rounded bg-gov-white" style={{ width: '80vw', height: '80vh' }} />
             ) : (
-              <div className="text-center p-xl" style={{ background: 'var(--gov-white)', borderRadius: 8, color: 'var(--gov-text)' }}>
+              <div className="text-center p-xl bg-gov-white" style={{ borderRadius: 8, color: 'var(--gov-text)' }}>
                 <div className="text-3xl mb">&#128196;</div>
                 <div className="text-base mb-lg">{previewFile.filename}</div>
-                <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary text-sm" style={{ padding: '8px 20px' }}>{t('common.download')}</a>
+                <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary text-sm p-sm">{t('common.download')}</a>
               </div>
             )}
             <div className="text-center text-muted-extra text-sm mt-sm">{previewFile.filename}</div>
           </div>
         </div>
       )}
-    </div>
+    </article>
   )
 }

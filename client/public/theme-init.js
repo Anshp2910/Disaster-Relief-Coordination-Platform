@@ -5,5 +5,5 @@
   if (saved === 'light') isLight = true;
   else if (saved === 'dark') isLight = false;
   else isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-  if (isLight) document.documentElement.classList.add('dark');
+  if (isLight) document.documentElement.classList.add('light');
 })();

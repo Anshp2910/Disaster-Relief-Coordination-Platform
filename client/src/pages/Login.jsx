@@ -92,7 +92,7 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="muted" style={{ marginTop: 20 }}>
+          <p className="muted mt-lg">
             {t('auth.noAccount')}{' '}
             <a href="/register" onClick={(e) => (e.preventDefault(), navigate('/register'))}>
               {t('auth.registerLink')}

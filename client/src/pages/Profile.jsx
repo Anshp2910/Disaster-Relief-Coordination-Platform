@@ -71,7 +71,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 700, margin: '20px auto' }}>
+    <div className="container max-w-sm mt-lg mb-lg">
       <div className="card mb-lg">
         <div className="headerRow">
           <h2 className="pageTitle text-2xl m-0">{t('profile.title')}</h2>
@@ -90,13 +90,13 @@ export default function Profile() {
         </div>
 
         <form onSubmit={handleUpdateProfile}>
-          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-name">{t('auth.displayName')}</label>
+          <label className="small label-block" htmlFor="prof-name">{t('auth.displayName')}</label>
           <input id="prof-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required className="w-full mb" />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-phone">{t('profile.phone')}</label>
+          <label className="small label-block" htmlFor="prof-phone">{t('profile.phone')}</label>
           <input id="prof-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} className="w-full mb" />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.skills')}</label>
+          <label className="small label-block">{t('profile.skills')}</label>
           <div className="flex flex-gap-xs flex-wrap mb">
             {SKILL_OPTIONS.map((s) => (
               <button
@@ -110,7 +110,7 @@ export default function Profile() {
             ))}
           </div>
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.notificationPreferences')}</label>
+          <label className="small label-block">{t('profile.notificationPreferences')}</label>
           <div className="flex-col flex-gap-sm mb-lg text-sm">
             <div className="flex flex-gap-lg">
               <label className="flex flex-gap-xs cursor-pointer">
@@ -144,13 +144,13 @@ export default function Profile() {
       <div className="card">
         <h3 className="m-0 mb text-base text-accent-blue">{t('profile.changePassword')}</h3>
         <form onSubmit={handleChangePassword}>
-          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-curpwd">{t('profile.currentPassword')}</label>
+          <label className="small label-block" htmlFor="prof-curpwd">{t('profile.currentPassword')}</label>
           <input id="prof-curpwd" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full mb" />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-newpwd">{t('profile.newPassword')}</label>
+          <label className="small label-block" htmlFor="prof-newpwd">{t('profile.newPassword')}</label>
           <input id="prof-newpwd" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required className="w-full mb" />
 
-          <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-confpwd">{t('profile.confirmPassword')}</label>
+          <label className="small label-block" htmlFor="prof-confpwd">{t('profile.confirmPassword')}</label>
           <input id="prof-confpwd" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full mb" />
 
           <button type="submit" className="btnPrimary text-13" disabled={loading}>
