@@ -38,6 +38,14 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('[ErrorBoundary]', error, errorInfo)
+    try {
+      const body = { message: error?.message, stack: error?.stack, componentStack: errorInfo?.componentStack, url: window.location.href, userAgent: navigator.userAgent }
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/log', new Blob([JSON.stringify(body)], { type: 'application/json' }))
+      } else {
+        fetch('/api/log', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => {})
+      }
+    } catch (_) {}
   }
 
   render() {

@@ -77,7 +77,8 @@
     "sortPriorityDesc": "Priority: High to Low",
     "sortPriorityAsc": "Priority: Low to High",
     "sortTitleAsc": "Title: A-Z",
-    "sortTitleDesc": "Title: Z-A"
+    "sortTitleDesc": "Title: Z-A",
+    "unclaimConfirm": "Are you sure you want to unclaim this request?"
   },
   "createRequest": {
     "title": "ಅಪಘಾತ ನಿವಾರಣೆ ವಿನಂತಿ ರಚಿಸಿ",
@@ -148,7 +149,13 @@
     "open": "ತೆರೆದ",
     "allocatedSuccessfully": "ಸಂಪನ್ಮೂಲ ಯಶಸ್ವಿಯಾಗಿ ನಿಯೋಜಿಸಲಾಗಿದೆ",
     "resourceAllocated": "ಸಂಪನ್ಮೂಲ ನಿಯೋಜಿಸಲಾಗಿದೆ",
-    "available": "ಲಭ್ಯ"
+    "available": "ಲಭ್ಯ",
+    "claimed": "Request claimed",
+    "unclaimed": "Request unclaimed",
+    "feedbackSubmitted": "Feedback submitted",
+    "filesUploaded": "Files uploaded",
+    "commentDeleted": "Comment deleted",
+    "preview": "Preview"
   },
   "admin": {
     "title": "ಆಡಳಿತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
@@ -394,7 +401,8 @@
     "deEscalate": "ಡೀ-ಎಸ್ಕಲೇಟ್",
     "deEscalateConfirm": "ಈ ವಿನಂತಿಯನ್ನು ಡೀ-ಎಸ್ಕಲೇಟ್ ಮಾಡಬೇಕೇ?",
     "searchPlaceholder": "Search by title, reason, or user...",
-    "noMatch": "No escalated requests match your search"
+    "noMatch": "No escalated requests match your search",
+    "selectRequest": "Select a request..."
   },
   "geofencing": {
     "title": "ಜಿಯೋಫೆನ್ಸಿಂಗ್ ಎಚ್ಚರಿಕೆಗಳು",

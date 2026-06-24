@@ -114,7 +114,8 @@
     "sortPriorityDesc": "Priority: High to Low",
     "sortPriorityAsc": "Priority: Low to High",
     "sortTitleAsc": "Title: A-Z",
-    "sortTitleDesc": "Title: Z-A"
+    "sortTitleDesc": "Title: Z-A",
+    "unclaimConfirm": "Are you sure you want to unclaim this request?"
   },
   "createRequest": {
     "title": "Create Disaster Relief Request",
@@ -185,7 +186,13 @@
     "open": "Open",
     "allocatedSuccessfully": "Resource allocated successfully",
     "resourceAllocated": "Resource allocated",
-    "available": "available"
+    "available": "available",
+    "claimed": "Request claimed",
+    "unclaimed": "Request unclaimed",
+    "feedbackSubmitted": "Feedback submitted",
+    "filesUploaded": "Files uploaded",
+    "commentDeleted": "Comment deleted",
+    "preview": "Preview"
   },
   "admin": {
     "title": "Admin Dashboard",
@@ -445,7 +452,8 @@
     "deEscalate": "De-escalate",
     "deEscalateConfirm": "De-escalate this request?",
     "searchPlaceholder": "Search by title, reason, or user...",
-    "noMatch": "No escalated requests match your search"
+    "noMatch": "No escalated requests match your search",
+    "selectRequest": "Select a request..."
   },
   "geofencing": {
     "title": "Geofencing Alerts",

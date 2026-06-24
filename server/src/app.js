@@ -102,6 +102,14 @@ export function createApp() {
 
   app.get('/health', (req, res) => res.json({ ok: true }))
 
+  app.post('/api/log', (req, res) => {
+    const { message, stack, componentStack, url, userAgent } = req.body || {}
+    console.error('[client-error]', JSON.stringify({ message, url, userAgent, ts: new Date().toISOString() }))
+    if (stack) console.error('[client-error-stack]', stack)
+    if (componentStack) console.error('[client-error-component]', componentStack)
+    res.status(204).end()
+  })
+
   app.use('/api/auth', authLimiter, authRouter)
   const writeLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many write requests, please slow down' })
   const requestsLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 60, message: 'Too many requests, please slow down' })
@@ -136,7 +144,7 @@ export function createApp() {
   }
 
   app.use((err, req, res, next) => {
-    console.error('[error]', err.message)
+    console.error('[error]', err.message, JSON.stringify({ method: req.method, url: req.url, ts: new Date().toISOString() }))
     if (err.name === 'ValidationError') {
       return res.status(400).json({ error: err.message })
     }
@@ -145,6 +153,9 @@ export function createApp() {
     }
     if (err.name === 'MulterError') {
       return res.status(400).json({ error: err.message })
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[error-detail]', err.stack)
     }
     return res.status(500).json({ error: 'Internal server error' })
   })

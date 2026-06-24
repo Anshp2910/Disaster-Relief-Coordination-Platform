@@ -77,7 +77,8 @@
     "sortPriorityDesc": "Priority: High to Low",
     "sortPriorityAsc": "Priority: Low to High",
     "sortTitleAsc": "Title: A-Z",
-    "sortTitleDesc": "Title: Z-A"
+    "sortTitleDesc": "Title: Z-A",
+    "unclaimConfirm": "Are you sure you want to unclaim this request?"
   },
   "createRequest": {
     "title": "આપત્તિ રાહત વિનંતી બનાવો",
@@ -148,7 +149,13 @@
     "open": "ખુલ્લી",
     "allocatedSuccessfully": "સાધન સફળતાપૂર્વક ફાળવાયું",
     "resourceAllocated": "સાધન ફાળવાયું",
-    "available": "ઉપલબ્ધ"
+    "available": "ઉપલબ્ધ",
+    "claimed": "Request claimed",
+    "unclaimed": "Request unclaimed",
+    "feedbackSubmitted": "Feedback submitted",
+    "filesUploaded": "Files uploaded",
+    "commentDeleted": "Comment deleted",
+    "preview": "Preview"
   },
   "admin": {
     "title": "સંચાલન ડેશબોર્ડ",
@@ -394,7 +401,8 @@
     "deEscalate": "ડી-એસ્કેલેટ",
     "deEscalateConfirm": "આ વિનંતી ડી-એસ્કેલેટ કરવી?",
     "searchPlaceholder": "Search by title, reason, or user...",
-    "noMatch": "No escalated requests match your search"
+    "noMatch": "No escalated requests match your search",
+    "selectRequest": "Select a request..."
   },
   "geofencing": {
     "title": "જિયોફેન્સિંગ ચેતવણીઓ",

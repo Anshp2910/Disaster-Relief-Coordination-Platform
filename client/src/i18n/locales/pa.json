@@ -77,7 +77,8 @@
     "sortPriorityDesc": "Priority: High to Low",
     "sortPriorityAsc": "Priority: Low to High",
     "sortTitleAsc": "Title: A-Z",
-    "sortTitleDesc": "Title: Z-A"
+    "sortTitleDesc": "Title: Z-A",
+    "unclaimConfirm": "Are you sure you want to unclaim this request?"
   },
   "createRequest": {
     "title": "ਆਸਾਂਟ ਰਾਹਤ ਬੇਨਤੀ ਬਣਾਓ",
@@ -148,7 +149,13 @@
     "open": "ਖੁੱਲ੍ਹੀ",
     "allocatedSuccessfully": "ਸਰੋਤ ਸਫਲਤਾਪੂਰਵਕ ਜਾਰੀ ਕੀਤਾ",
     "resourceAllocated": "ਸਰੋਤ ਜਾਰੀ ਕੀਤਾ",
-    "available": "ਉਪਲਬਧ"
+    "available": "ਉਪਲਬਧ",
+    "claimed": "Request claimed",
+    "unclaimed": "Request unclaimed",
+    "feedbackSubmitted": "Feedback submitted",
+    "filesUploaded": "Files uploaded",
+    "commentDeleted": "Comment deleted",
+    "preview": "Preview"
   },
   "admin": {
     "title": "ਪ੍ਰਸ਼ਾਸਨ ਡੈਸ਼ਬੋਰਡ",
@@ -394,7 +401,8 @@
     "deEscalate": "ਡੀ-ਐਸਕਲੇਟ",
     "deEscalateConfirm": "ਇਹ ਬੇਨਤੀ ਡੀ-ਐਸਕਲੇਟ ਕਰਨੀ ਹੈ?",
     "searchPlaceholder": "Search by title, reason, or user...",
-    "noMatch": "No escalated requests match your search"
+    "noMatch": "No escalated requests match your search",
+    "selectRequest": "Select a request..."
   },
   "geofencing": {
     "title": "ਜੀਓਫੈਂਸਿੰਗ ਚੇਤਾਵਨੀਆਂ",
