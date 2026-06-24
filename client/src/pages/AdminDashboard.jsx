@@ -32,39 +32,46 @@ function Badge({ label, colors, colorKey }) {
 }
 
 function MiniBarChart({ data, maxVal }) {
-  if (!data?.length) return null
-  const max = maxVal || Math.max(...data.map((d) => d.count), 1)
+  const safeData = Array.isArray(data) ? data : []
+  if (!safeData.length) return null
+  const max = maxVal || Math.max(...safeData.map((d) => typeof d.count === 'number' ? d.count : 0), 1)
 
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 60, marginTop: 8 }}>
-      {data.map((d, idx) => (
-        <div key={d.date || idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-          <div
-            style={{
-              width: '100%',
-              maxWidth: 20,
-              height: `${Math.max((d.count / max) * 100, 4)}%`,
-              background: BREAKDOWN_COLORS[idx % BREAKDOWN_COLORS.length],
-              borderRadius: 2,
-            }}
-            title={`${d.date}: ${d.count}`}
-          />
-          {idx % 5 === 0 && <span style={{ fontSize: 9, color: 'var(--gov-muted)' }}>{d.date?.slice(5)}</span>}
-        </div>
-      ))}
+      {safeData.map((d, idx) => {
+        const count = typeof d.count === 'number' ? d.count : 0
+        return (
+          <div key={d.date || idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <div
+              style={{
+                width: '100%',
+                maxWidth: 20,
+                height: `${Math.max((count / max) * 100, 4)}%`,
+                background: BREAKDOWN_COLORS[idx % BREAKDOWN_COLORS.length],
+                borderRadius: 2,
+              }}
+              title={`${d.date}: ${count}`}
+            />
+            {idx % 5 === 0 && <span style={{ fontSize: 9, color: 'var(--gov-muted)' }}>{d.date?.slice(5)}</span>}
+          </div>
+        )
+      })}
     </div>
   )
 }
 
 function BreakdownCard({ title, data, total }) {
   const { t } = useTranslation()
-  if (!data || Object.keys(data).length === 0) return null
+  const safeData = data || {}
+  const safeTotal = total || 0
+  if (Object.keys(safeData).length === 0) return null
 
   return (
     <div className="admin-breakdown-card">
       <div className="admin-breakdown-header">{title}</div>
-      {Object.entries(data).map(([key, count], i) => {
-        const pct = total > 0 ? Math.round((count / total) * 100) : 0
+      {Object.entries(safeData).map(([key, count], i) => {
+        const numCount = typeof count === 'number' ? count : 0
+        const pct = safeTotal > 0 ? Math.round((numCount / safeTotal) * 100) : 0
         const color = BREAKDOWN_COLORS[i % BREAKDOWN_COLORS.length]
         return (
           <div key={key} className="admin-breakdown-row">
@@ -72,7 +79,7 @@ function BreakdownCard({ title, data, total }) {
             <div className="admin-breakdown-bar">
               <div className="admin-breakdown-bar-fill" style={{ width: `${pct}%`, background: color }} />
             </div>
-            <span style={{ fontWeight: 700, color, minWidth: 40, textAlign: 'right' }}>{count}</span>
+            <span style={{ fontWeight: 700, color, minWidth: 40, textAlign: 'right' }}>{numCount}</span>
           </div>
         )
       })}
@@ -84,15 +91,17 @@ function StatsPanel({ stats }) {
   const { t } = useTranslation()
   if (!stats) return null
 
-  const totalAll = stats.byStatus ? Object.values(stats.byStatus).reduce((a, b) => a + b, 0) : 0
+  const safeStats = stats || {}
+  const byStatus = safeStats.byStatus || {}
+  const totalAll = Object.values(byStatus).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0)
 
   const summaryCards = [
-    { label: t('admin.totalUsers'), value: stats.totalUsers, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
-    { label: t('admin.totalRequests'), value: stats.totalRequests, bg: 'rgba(107,127,181,0.08)', color: 'var(--accent-indigo)' },
-    { label: t('admin.openRequests'), value: stats.byStatus?.Open || 0, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalUsers'), value: safeStats.totalUsers || 0, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalRequests'), value: safeStats.totalRequests || 0, bg: 'rgba(107,127,181,0.08)', color: 'var(--accent-indigo)' },
+    { label: t('admin.openRequests'), value: byStatus.Open || 0, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
     {
       label: t('admin.resolved'),
-      value: (stats.byStatus?.Resolved || 0) + (stats.byStatus?.Fulfilled || 0),
+      value: (byStatus.Resolved || 0) + (byStatus.Fulfilled || 0),
       bg: 'rgba(63,185,80,0.08)',
       color: 'var(--color-resolved)',
     },
@@ -133,24 +142,26 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
   const [search, setSearch] = useState('')
   const { t } = useTranslation()
 
+  const safeUsers = Array.isArray(users) ? users : []
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim()
-    if (!q) return users
-    return users.filter(
+    if (!q) return safeUsers
+    return safeUsers.filter(
       (u) =>
         (u.displayName || '').toLowerCase().includes(q) ||
         (u.email || '').toLowerCase().includes(q) ||
         (u.role || '').toLowerCase().includes(q)
     )
-  }, [users, search])
+  }, [safeUsers, search])
 
   const roleCounts = useMemo(() => {
     const counts = { volunteer: 0, ngo: 0, admin: 0 }
-    users.forEach((u) => {
+    safeUsers.forEach((u) => {
       if (counts[u.role] !== undefined) counts[u.role]++
     })
     return counts
-  }, [users])
+  }, [safeUsers])
 
   return (
     <div className="card">
@@ -228,8 +239,10 @@ function RequestsPanel({ requests, onDelete }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
+  const safeRequests = Array.isArray(requests) ? requests : []
+
   const filtered = useMemo(() => {
-    let items = requests
+    let items = safeRequests
     if (filterStatus !== 'All') items = items.filter((r) => r.status === filterStatus)
     const q = search.toLowerCase().trim()
     if (q) {
@@ -242,15 +255,15 @@ function RequestsPanel({ requests, onDelete }) {
       )
     }
     return items
-  }, [requests, search, filterStatus])
+  }, [safeRequests, search, filterStatus])
 
   const statusCounts = useMemo(() => {
-    const counts = { All: requests.length }
-    requests.forEach((r) => {
+    const counts = { All: safeRequests.length }
+    safeRequests.forEach((r) => {
       counts[r.status] = (counts[r.status] || 0) + 1
     })
     return counts
-  }, [requests])
+  }, [safeRequests])
 
   const filterOptions = [
     { key: 'All', label: t('dashboard.filterAll') },

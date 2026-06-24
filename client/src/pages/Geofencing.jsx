@@ -117,17 +117,20 @@ export default function Geofencing() {
     }
   }, [position, radius])
 
-  const renderResultSection = (items, color, bgLight, countLabel, itemRenderer) => (
-    <div className="card" style={{ textAlign: 'center' }}>
-      <div style={{ fontSize: 28, fontWeight: 700, color }}>{items.length}</div>
-      <div className="small muted">{countLabel}</div>
-      {items.map((item) => (
-        <div key={item._id} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: bgLight }}>
-          {itemRenderer(item)}
-        </div>
-      ))}
-    </div>
-  )
+  const renderResultSection = (items, color, bgLight, countLabel, itemRenderer) => {
+    const safeItems = Array.isArray(items) ? items : []
+    return (
+      <div className="card" style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 28, fontWeight: 700, color }}>{safeItems.length}</div>
+        <div className="small muted">{countLabel}</div>
+        {safeItems.map((item) => (
+          <div key={item._id || item.id || Math.random()} style={{ fontSize: 12, marginTop: 4, padding: '4px 8px', borderRadius: 4, background: bgLight }}>
+            {itemRenderer(item)}
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="container">
