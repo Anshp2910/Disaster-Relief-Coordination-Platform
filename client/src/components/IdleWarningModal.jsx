@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useAuth } from '../context/AuthContext'
+import useFocusTrap from '../hooks/useFocusTrap'
 
 export default function IdleWarningModal() {
   const { idleWarning, resetIdleTimer } = useAuth()
+  const trapRef = useFocusTrap(idleWarning)
   const [countdown, setCountdown] = useState(60)
 
   useEffect(() => {
@@ -18,7 +20,7 @@ export default function IdleWarningModal() {
   if (!idleWarning) return null
 
   return createPortal(
-    <div className="modal-overlay" role="alertdialog" aria-modal="true">
+    <div className="modal-overlay" ref={trapRef} role="alertdialog" aria-modal="true">
       <div className="modal-card text-center">
         <div className="modal-icon">&#9200;</div>
         <h2 className="modal-title">

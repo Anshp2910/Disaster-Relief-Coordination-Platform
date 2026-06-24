@@ -1,0 +1,52 @@
+{
+  "appTitle": "آفات سے نجات کوآرڈینیشن پلیٹ فارم",
+  "appSubtitle": "حکومت ہند کا اقدام",
+  "topStrip": "آفات سے نجات کوآرڈینیشن پلیٹ فارم کی سرکاری ویب سائٹ",
+  "header": {
+    "selectLanguage": "زبان منتخب کریں"
+  },
+  "nav": {
+    "dashboard": "ڈیش بورڈ",
+    "mapView": "نقشہ",
+    "newRequest": "نئی درخواست",
+    "admin": "ایڈمن",
+    "login": "لاگ ان",
+    "register": "رجسٹر",
+    "logout": "لاگ آؤٹ",
+    "profile": "پروفائل",
+    "resources": "وسائل",
+    "zones": "زونز",
+    "incidents": "واقعات",
+    "schedules": "نظام الاوقات",
+    "bulkImport": "بلک امپورٹ",
+    "escalation": "ایسکلیشن",
+    "geofencing": "جیو فینسنگ",
+    "logoutConfirm": "کیا آپ لاگ آؤٹ کرنا چاہتے ہیں؟"
+  },
+  "auth": {
+    "email": "ای میل",
+    "password": "پاس ورڈ",
+    "loginTitle": "لاگ ان",
+    "loginButton": "لاگ ان",
+    "registerTitle": "رجسٹر",
+    "displayName": "نام",
+    "role": "کردار",
+    "volunteer": "رضاکار",
+    "ngo": "این جی او",
+    "createAccount": "اکاؤنٹ بنائیں"
+  },
+  "common": {
+    "loading": "لوڈ ہو رہا ہے...",
+    "error": "ایک خرابی پیش آگئی",
+    "save": "محفوظ کریں",
+    "cancel": "منسوخ کریں",
+    "delete": "حذف کریں",
+    "edit": "ترمیم کریں",
+    "create": "بنائیں",
+    "search": "تلاش کریں",
+    "submit": "جمع کریں",
+    "download": "ڈاؤن لوڈ",
+    "close": "بند کریں",
+    "skipToContent": "مواد پر جائیں"
+  }
+}

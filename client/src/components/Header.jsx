@@ -8,6 +8,7 @@ import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
+import useFocusTrap from '../hooks/useFocusTrap'
 
 function useOnlineStatus() {
   const [online, setOnline] = useState(navigator.onLine)
@@ -34,6 +35,7 @@ const LANGUAGES = [
   { code: 'gu', label: 'Gujarati' },
   { code: 'kn', label: 'Kannada' },
   { code: 'pa', label: 'Punjabi' },
+  { code: 'ur', label: 'اردو' },
 ]
 
 export default function Header() {
@@ -46,6 +48,8 @@ export default function Header() {
   const toast = useToast()
   const { user: currentUser, isAuthenticated, logout: authLogout } = useAuth()
   const online = useOnlineStatus()
+  const mobileRef = useFocusTrap(mobileMenuOpen && isAuthenticated)
+  const logoutRef = useFocusTrap(showLogoutConfirm)
 
   function logout() {
     if (socket?.connected) {
@@ -222,7 +226,7 @@ export default function Header() {
       {mobileMenuOpen && isAuthenticated && (
         <>
           <div className="gov-mobile-backdrop" onClick={() => setMobileMenuOpen(false)} />
-          <div className="gov-mobile-menu">
+          <div className="gov-mobile-menu" ref={mobileRef} role="dialog" aria-modal="true" aria-label={t('nav.dashboard')}>
             <div className="gov-mobile-header">
               <span className="gov-mobile-user-name">{currentUser?.displayName || ''}</span>
               <button className="gov-mobile-close" onClick={() => setMobileMenuOpen(false)} aria-label={t('common.closeMenu')}>✕</button>
@@ -248,7 +252,7 @@ export default function Header() {
       )}
 
       {showLogoutConfirm && (
-        <div className="modal-overlay" onClick={() => setShowLogoutConfirm(false)}>
+        <div className="modal-overlay" ref={logoutRef} onClick={() => setShowLogoutConfirm(false)}>
           <div className="modal-card text-center" onClick={(e) => e.stopPropagation()}>
             <div className="modal-icon">
               <svg width="40" height="40" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">

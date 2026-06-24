@@ -9,6 +9,7 @@ import mr from './locales/mr.json'
 import gu from './locales/gu.json'
 import kn from './locales/kn.json'
 import pa from './locales/pa.json'
+import ur from './locales/ur.json'
 
 let savedLang = 'en'
 try { savedLang = localStorage.getItem('language') || 'en' } catch {}
@@ -24,10 +25,16 @@ i18n.use(initReactI18next).init({
     gu: { translation: gu },
     kn: { translation: kn },
     pa: { translation: pa },
+    ur: { translation: ur },
   },
   lng: savedLang,
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
+})
+
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.dir = lng === 'ur' ? 'rtl' : 'ltr'
+  document.documentElement.lang = lng
 })
 
 export default i18n
