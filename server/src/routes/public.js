@@ -3,7 +3,7 @@ import Request from '../models/Request.js'
 import Resource from '../models/Resource.js'
 import Zone from '../models/Zone.js'
 import Incident from '../models/Incident.js'
-import SOS from '../models/SOS.js'
+import SOS from '../models/SosAlert.js'
 
 const router = Router()
 
