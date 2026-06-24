@@ -44,7 +44,7 @@
   <line x1="70" y1="150" x2="230" y2="150" stroke="white" stroke-width="1" opacity="0.1"/>
   <line x1="150" y1="70" x2="150" y2="230" stroke="white" stroke-width="1" opacity="0.1"/>
   <!-- Text content -->
-  <text x="600" y="110" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="white" opacity="0.95">Disaster Relief Coordination</text>
+  <text x="600" y="105" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="white" opacity="0.95">Disaster Relief Coordination Platform</text>
   <text x="600" y="155" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="white" opacity="0.7">Connecting those in need with those who can help</text>
   <text x="600" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#FF9933" opacity="0.8">Government of India Initiative</text>
   <!-- Helper icons -->
