@@ -15,7 +15,7 @@ function getInitialTheme() {
 }
 
 function applyTheme(resolvedTheme) {
-  document.documentElement.classList.toggle('dark', resolvedTheme === 'dark')
+  document.documentElement.classList.toggle('light', resolvedTheme === 'light')
 }
 
 export function ThemeProvider({ children }) {

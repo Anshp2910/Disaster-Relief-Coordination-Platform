@@ -18,7 +18,7 @@ function TestConsumer() {
 describe('ThemeContext', () => {
   beforeEach(() => {
     localStorage.clear()
-    window.document.documentElement.classList.remove('dark')
+    window.document.documentElement.classList.remove('light')
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: vi.fn().mockImplementation((query) => ({
@@ -115,16 +115,16 @@ describe('ThemeContext', () => {
     expect(screen.getByTestId('resolved').textContent).toBe('light')
   })
 
-  it('applies dark class to document.documentElement', () => {
+  it('applies light class to document.documentElement in light mode', () => {
     render(
       <ThemeProvider>
         <TestConsumer />
       </ThemeProvider>
     )
     fireEvent.click(screen.getByTestId('set-dark'))
-    expect(document.documentElement.classList.contains('dark')).toBe(true)
+    expect(document.documentElement.classList.contains('light')).toBe(false)
     fireEvent.click(screen.getByTestId('set-light'))
-    expect(document.documentElement.classList.contains('dark')).toBe(false)
+    expect(document.documentElement.classList.contains('light')).toBe(true)
   })
 
   it('saves theme preference to localStorage', () => {

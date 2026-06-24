@@ -11,8 +11,11 @@ export default function Layout({ children }) {
 
   return (
     <div className="gov-layout">
+      <a href="#main-content" className="skip-link">
+        {t('common.skipToContent')}
+      </a>
       <Header />
-      <main className="gov-main">
+      <main className="gov-main" id="main-content">
         {children}
       </main>
       <Footer />

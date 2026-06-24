@@ -296,7 +296,7 @@ export default function Dashboard() {
               <div className="gridGap mt-lg">
                 {items.length === 0 ? (
                   <div className="text-center p-lg">
-                    <img src="/images/empty-requests.svg" alt="No requests" loading="lazy" width="200" height="150" className="h-auto block mt-0 mx-auto mb" style={{ width: 200 }} />
+                    <img src="/images/empty-requests.svg" alt="No requests" loading="lazy" width="200" height="150" className="h-auto block mt-0 mx-auto mb" />
                     <div className="muted">{t('dashboard.noRequests')}</div>
                   </div>
                 ) : (
@@ -346,7 +346,7 @@ export default function Dashboard() {
               <div ref={mapRef} className="map-container-full w-full" />
               {!mapLoading && !error && mapItems.length === 0 && (
                 <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
-                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg h-auto" style={{ width: 260 }} />
+                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg h-auto" />
                   <div className="muted">{t('dashboard.noRequests')}</div>
                 </div>
               )}

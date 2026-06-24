@@ -171,6 +171,7 @@ export default function Header() {
                   key={link.path}
                   onClick={() => handleNav(link.path)}
                   className={`gov-nav-link ${location.pathname === link.path ? 'active' : ''}`}
+                  aria-current={location.pathname === link.path ? 'page' : undefined}
                 >
                   {link.label}
                 </button>
@@ -193,10 +194,8 @@ export default function Header() {
               <button
                 onClick={cycleTheme}
                 title={themeLabel}
+                className="bg-none border-none cursor-pointer"
                 style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
                   fontSize: 16,
                   padding: '4px 8px',
                   borderRadius: 8,

@@ -81,7 +81,7 @@ export default function Profile() {
 
       {/* Profile Info */}
       <div className="card mb-lg">
-        <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('profile.accountInfo')}</h3>
+        <h3 className="m-0 mb text-base text-accent-blue">{t('profile.accountInfo')}</h3>
         <div className="text-sm mb-sm">
           <span className="muted">{t('profile.email')}:</span> <strong>{user?.email}</strong>
         </div>
@@ -134,7 +134,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <button type="submit" className="btnPrimary" disabled={loading} style={{ fontSize: 13 }}>
+          <button type="submit" className="btnPrimary text-13" disabled={loading}>
             {loading ? '...' : t('profile.updateProfile')}
           </button>
         </form>
@@ -142,7 +142,7 @@ export default function Profile() {
 
       {/* Change Password */}
       <div className="card">
-        <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('profile.changePassword')}</h3>
+        <h3 className="m-0 mb text-base text-accent-blue">{t('profile.changePassword')}</h3>
         <form onSubmit={handleChangePassword}>
           <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-curpwd">{t('profile.currentPassword')}</label>
           <input id="prof-curpwd" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full mb" />
@@ -153,7 +153,7 @@ export default function Profile() {
           <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="prof-confpwd">{t('profile.confirmPassword')}</label>
           <input id="prof-confpwd" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full mb" />
 
-          <button type="submit" className="btnPrimary" disabled={loading} style={{ fontSize: 13 }}>
+          <button type="submit" className="btnPrimary text-13" disabled={loading}>
             {loading ? '...' : t('profile.updatePassword')}
           </button>
         </form>

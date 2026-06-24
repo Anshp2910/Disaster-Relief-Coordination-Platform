@@ -98,7 +98,7 @@ export default function Register() {
               required
             />
 
-            <label className="gridGap" style={{ gap: 6 }}>
+            <label className="gridGap gap-6">
               <span className="small">{t('auth.role')}</span>
               <select
                 value={role}

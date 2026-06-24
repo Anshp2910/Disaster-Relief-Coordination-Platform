@@ -104,7 +104,7 @@ export default function Chat({ requestId, onClose }) {
   return (
     <div className="flex flex-col" style={{ height: '100%', maxHeight: 500 }}>
       <div className="flex flex-between flex-center" style={{ padding: '10px 12px', borderBottom: '1px solid var(--gov-border)' }}>
-        <h3 className="m-0 text-sm" style={{ color: 'var(--gov-blue)' }}>{t('chat.title')}</h3>
+        <h3 className="m-0 text-sm text-accent-blue">{t('chat.title')}</h3>
         {onClose && (
           <button onClick={onClose} className="bg-none border-none cursor-pointer text-xl" aria-label={t('chat.close') || 'Close chat'}>
             &times;

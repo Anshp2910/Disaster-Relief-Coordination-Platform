@@ -25,7 +25,7 @@ const NotFound = lazy(() => import('./pages/NotFound'))
 function PageLoader() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 12 }}>
-      <div className="animate-spin" />
+      <div className="loading-spinner" />
       <span style={{ color: 'var(--gov-muted)', fontSize: 14 }}>Loading...</span>
     </div>
   )

@@ -88,7 +88,7 @@ export default function Escalation() {
 
         {error && <div className="errorText mb">{error}</div>}
 
-        <form onSubmit={handleEscalate} className="mb-lg" style={{ display: 'grid', gap: 8 }}>
+        <form onSubmit={handleEscalate} className="mb-lg grid gap-8">
           <select
             value={requestId}
             onChange={(e) => setRequestId(e.target.value)}
@@ -109,7 +109,7 @@ export default function Escalation() {
             rows={2}
             required
             maxLength={2000}
-            style={{ fontSize: 13 }}
+            className="text-13"
           />
           <button type="submit" className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px', justifySelf: 'start' }}>
             {t('escalation.escalateRequest')}
@@ -135,13 +135,13 @@ export default function Escalation() {
         <div className="gridGap mt">
           {filteredItems.map((item) => (
             <div key={item._id} className="listCard" style={{ borderLeft: '4px solid var(--gov-danger)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+              <div className="flex-between">
                 <div className="flex-1">
-                  <div className="text-bold text-base" style={{ color: 'var(--accent-blue)' }}>{item.title}</div>
+                  <div className="text-bold text-base text-accent-blue">{item.title}</div>
                   <div className="text-sm" style={{ color: 'var(--gov-danger)', marginTop: 2 }}>
                     {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                   </div>
-                  <div className="mt-xs" style={{ fontSize: 13 }}>{item.escalationReason}</div>
+                  <div className="mt-xs text-13">{item.escalationReason}</div>
                   <div className="small muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || 'Unknown'}</div>
                 </div>
                 <button

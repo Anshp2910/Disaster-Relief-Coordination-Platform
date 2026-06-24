@@ -1,4 +1,4 @@
-﻿/* === Reset & Base === */
+/* === Reset & Base === */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 html, body { height: 100%; }
@@ -13,14 +13,15 @@ body {
   overflow-x: hidden;
 }
 
-/* === Subtle Background â€” duplicate removed, see Professional Enhancements === */
+/* === Subtle Background � defined in 04-components.css (body::before/::after) === */
 
 /* === Custom Scrollbar === */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 3px;
+  border-radius: 4px;
+  transition: background 0.2s;
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 

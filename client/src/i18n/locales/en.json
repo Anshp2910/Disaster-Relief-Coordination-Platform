@@ -536,6 +536,7 @@
     "close": "x",
     "submit": "Submit",
     "download": "Download",
+    "skipToContent": "Skip to content",
     "toggleMenu": "Toggle menu",
     "closeMenu": "Close menu",
     "failedToLoad": "Failed to load data",
