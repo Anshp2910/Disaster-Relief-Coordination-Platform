@@ -22,14 +22,10 @@ class ErrorBoundary extends Component {
   handleUnhandledRejection(event) {
     console.error('[ErrorBoundary] Unhandled rejection:', event.reason)
     event.preventDefault()
-    this.setState({ hasError: true, error: event.reason })
   }
 
   handleError(event) {
     console.error('[ErrorBoundary] Window error:', event.error || event.message)
-    if (event.error) {
-      this.setState({ hasError: true, error: event.error })
-    }
   }
 
   static getDerivedStateFromError(error) {
