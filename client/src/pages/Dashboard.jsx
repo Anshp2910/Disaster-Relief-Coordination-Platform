@@ -220,7 +220,7 @@ export default function Dashboard() {
   return (
     <div className="container">
       <div style={{ marginBottom: 20, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(74,128,192,0.1)', position: 'relative' }}>
-        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination" loading="eager" fetchpriority="high" width="1200" height="300" style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/1' }} />
+        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/1' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(74,128,192,0.05), rgba(107,127,181,0.05))', pointerEvents: 'none' }} />
       </div>
       {resourceSummary.length > 0 && (
