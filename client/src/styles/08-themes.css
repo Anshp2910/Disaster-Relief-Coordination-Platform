@@ -1,0 +1,221 @@
+/* ============================================================
+   THEME PACK — 8 Color Themes
+   Each theme sets dark vars on .theme-xxx and light vars on
+   .light.theme-xxx. Midnight Tactical is the default (:root).
+   ============================================================ */
+
+/* === 1. MONSOON / FLOOD RESPONSE === */
+.theme-monsoon {
+  --bg: #051212; --bg-elevated: #0a1e1e; --bg-card: #0f2a2a;
+  --accent: #06b6d4; --accent-hover: #22d3ee;
+  --accent-soft: rgba(6,182,212,0.1); --accent-soft-hover: rgba(6,182,212,0.16);
+  --pri-400: #22d3ee; --pri-500: #06b6d4; --pri-600: #0891b2;
+  --gradient-bg: linear-gradient(170deg, #020e0e 0%, #061a1a 40%, #0a2424 100%);
+  --gradient-accent: linear-gradient(135deg, #06b6d4, #0891b2);
+  --gradient-header: linear-gradient(90deg, #06b6d4, #22d3ee, #67e8f9, #06b6d4);
+  --glow-blue: 0 0 20px rgba(6,182,212,0.15);
+  --glass-bg: rgba(6,182,212,0.04);
+}
+.light.theme-monsoon {
+  --bg: #e0f0ee; --bg-elevated: #f0faf8; --bg-card: #ffffff;
+  --accent: #0891b2; --accent-hover: #0e7490;
+  --accent-soft: rgba(8,145,178,0.07); --accent-soft-hover: rgba(8,145,178,0.11);
+  --pri-500: #06b6d4; --pri-600: #0891b2;
+  --gradient-bg: linear-gradient(160deg, #d4ece9 0%, #e6f5f2 40%, #e0f0ee 100%);
+  --gradient-accent: linear-gradient(135deg, #0891b2, #0e7490);
+}
+
+/* === 2. HEATWAVE / FIRE SEASON === */
+.theme-heatwave {
+  --bg: #120a05; --bg-elevated: #1e1208; --bg-card: #2a1a0a;
+  --accent: #f59e0b; --accent-hover: #fbbf24;
+  --accent-soft: rgba(245,158,11,0.1); --accent-soft-hover: rgba(245,158,11,0.16);
+  --pri-400: #fbbf24; --pri-500: #f59e0b; --pri-600: #d97706;
+  --gradient-bg: linear-gradient(170deg, #0f0802 0%, #1a0f04 40%, #241505 100%);
+  --gradient-accent: linear-gradient(135deg, #f59e0b, #d97706);
+  --gradient-header: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d, #f59e0b);
+  --glow-blue: 0 0 20px rgba(245,158,11,0.15);
+  --glass-bg: rgba(245,158,11,0.04);
+}
+.light.theme-heatwave {
+  --bg: #fef3c7; --bg-elevated: #fef9e7; --bg-card: #ffffff;
+  --accent: #d97706; --accent-hover: #b45309;
+  --accent-soft: rgba(217,119,6,0.07); --accent-soft-hover: rgba(217,119,6,0.11);
+  --pri-500: #f59e0b; --pri-600: #d97706;
+  --gradient-bg: linear-gradient(160deg, #fef0c0 0%, #fef5d8 40%, #fef3c7 100%);
+  --gradient-accent: linear-gradient(135deg, #d97706, #b45309);
+}
+
+/* === 3. WINTER / SNOW RELIEF === */
+.theme-winter {
+  --bg: #0a0e17; --bg-elevated: #0f1624; --bg-card: #141e30;
+  --accent: #38bdf8; --accent-hover: #7dd3fc;
+  --accent-soft: rgba(56,189,248,0.1); --accent-soft-hover: rgba(56,189,248,0.16);
+  --pri-400: #7dd3fc; --pri-500: #38bdf8; --pri-600: #0284c7;
+  --gradient-bg: linear-gradient(170deg, #060a12 0%, #0c1420 40%, #111c2c 100%);
+  --gradient-accent: linear-gradient(135deg, #38bdf8, #0284c7);
+  --gradient-header: linear-gradient(90deg, #38bdf8, #7dd3fc, #bae6fd, #38bdf8);
+  --glow-blue: 0 0 20px rgba(56,189,248,0.15);
+  --glass-bg: rgba(56,189,248,0.04);
+}
+.light.theme-winter {
+  --bg: #f0f4f8; --bg-elevated: #f8fafc; --bg-card: #ffffff;
+  --accent: #0284c7; --accent-hover: #0369a1;
+  --accent-soft: rgba(2,132,199,0.07); --accent-soft-hover: rgba(2,132,199,0.11);
+  --pri-500: #38bdf8; --pri-600: #0284c7;
+  --gradient-bg: linear-gradient(160deg, #e8f0f8 0%, #f2f6fa 40%, #f0f4f8 100%);
+  --gradient-accent: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+/* === 4. FOREST / ECO RELIEF === */
+.theme-forest {
+  --bg: #060e0a; --bg-elevated: #0a1810; --bg-card: #0f2216;
+  --accent: #10b981; --accent-hover: #34d399;
+  --accent-soft: rgba(16,185,129,0.1); --accent-soft-hover: rgba(16,185,129,0.16);
+  --pri-400: #34d399; --pri-500: #10b981; --pri-600: #059669;
+  --gradient-bg: linear-gradient(170deg, #040d08 0%, #081a10 40%, #0c2616 100%);
+  --gradient-accent: linear-gradient(135deg, #10b981, #059669);
+  --gradient-header: linear-gradient(90deg, #10b981, #34d399, #6ee7b7, #10b981);
+  --glow-blue: 0 0 20px rgba(16,185,129,0.15);
+  --glass-bg: rgba(16,185,129,0.04);
+}
+.light.theme-forest {
+  --bg: #f0fdf4; --bg-elevated: #f5fef8; --bg-card: #ffffff;
+  --accent: #059669; --accent-hover: #047857;
+  --accent-soft: rgba(5,150,105,0.07); --accent-soft-hover: rgba(5,150,105,0.11);
+  --pri-500: #10b981; --pri-600: #059669;
+  --gradient-bg: linear-gradient(160deg, #e8f5ee 0%, #f2faf4 40%, #f0fdf4 100%);
+  --gradient-accent: linear-gradient(135deg, #059669, #047857);
+}
+
+/* === 5. GOVERNMENT STANDARD (Saffron) === */
+.theme-govt {
+  --bg: #050a16; --bg-elevated: #0b1428; --bg-card: #0f1b30;
+  --accent: #ea580c; --accent-hover: #f97316;
+  --accent-soft: rgba(234,88,12,0.1); --accent-soft-hover: rgba(234,88,12,0.16);
+  --pri-400: #f97316; --pri-500: #ea580c; --pri-600: #c2410c;
+  --gradient-bg: linear-gradient(170deg, #080408 0%, #120a10 40%, #1a0e14 100%);
+  --gradient-accent: linear-gradient(135deg, #ea580c, #c2410c);
+  --gradient-header: linear-gradient(90deg, #ea580c, #f97316, #fb923c, #ea580c);
+  --glow-blue: 0 0 20px rgba(234,88,12,0.15);
+  --glass-bg: rgba(234,88,12,0.04);
+  --gov-saffron: #ea580c; --gov-blue: var(--pri-600);
+}
+.light.theme-govt {
+  --bg: #fefce8; --bg-elevated: #fefdee; --bg-card: #ffffff;
+  --accent: #c2410c; --accent-hover: #9a3412;
+  --accent-soft: rgba(194,65,12,0.07); --accent-soft-hover: rgba(194,65,12,0.11);
+  --pri-500: #ea580c; --pri-600: #c2410c;
+  --gradient-bg: linear-gradient(160deg, #fefae0 0%, #fefce8 40%, #fefce8 100%);
+  --gradient-accent: linear-gradient(135deg, #c2410c, #9a3412);
+}
+
+/* === 6. HIGH CONTRAST AAA === */
+.theme-contrast {
+  --bg: #000000; --bg-elevated: #111111; --bg-card: #1a1a1a;
+  --text: #ffffff; --text-secondary: #e0e0e0; --text-muted: #cccccc;
+  --border: #333333; --border-light: #222222;
+  --accent: #ffff00; --accent-hover: #ffff66;
+  --accent-soft: rgba(255,255,0,0.15); --accent-soft-hover: rgba(255,255,0,0.25);
+  --pri-400: #ffff66; --pri-500: #ffff00; --pri-600: #e6e600;
+  --gradient-bg: none;
+  --gradient-card: none;
+  --gradient-accent: none;
+  --gradient-header: none;
+  --shadow-sm: 0 1px 3px rgba(255,255,255,0.1);
+  --shadow-md: 0 4px 20px rgba(255,255,255,0.08);
+  --glass-bg: rgba(255,255,255,0.05);
+  --glass-blur: 4px;
+  --glass-border: rgba(255,255,255,0.1);
+  --glow-blue: 0 0 20px rgba(255,255,0,0.2);
+  --ecc-glow: 0 0 15px rgba(255,255,0,0.12);
+}
+.light.theme-contrast {
+  --bg: #ffffff; --bg-elevated: #ffffff; --bg-card: #ffffff;
+  --text: #000000; --text-secondary: #222222; --text-muted: #444444;
+  --border: #000000; --border-light: #cccccc;
+  --accent: #0000ff; --accent-hover: #4444ff;
+  --accent-soft: rgba(0,0,255,0.07); --accent-soft-hover: rgba(0,0,255,0.11);
+  --pri-500: #0000ff; --pri-600: #0000cc;
+  --gradient-bg: none;
+  --gradient-card: none;
+  --glass-bg: rgba(0,0,0,0.02);
+  --glass-blur: 0px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 14px rgba(0,0,0,0.06);
+  --glow-blue: 0 0 20px rgba(0,0,255,0.1);
+}
+.theme-contrast .gov-app-title,
+.theme-contrast .pageTitle,
+.theme-contrast .govt-app-title {
+  background: none !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+.theme-contrast .card { border: 1px solid var(--border); box-shadow: none; }
+.theme-contrast .card::before { display: none; }
+.theme-contrast .glass, .theme-contrast .glass-card { backdrop-filter: none; background: var(--bg-card); }
+.theme-contrast .gradient-text { background: none; -webkit-text-fill-color: var(--text); color: var(--text); }
+
+/* === 7. COMPACT DATA OPERATOR === */
+.theme-compact {
+  --bg: #020408; --bg-elevated: #060a10; --bg-card: #0a0e16;
+  --accent: #4b7bec; --accent-hover: #6b9bfc;
+  --accent-soft: rgba(75,123,236,0.08); --accent-soft-hover: rgba(75,123,236,0.14);
+  --pri-400: #6b9bfc; --pri-500: #4b7bec; --pri-600: #3a6bd0;
+  --gradient-bg: linear-gradient(170deg, #010306 0%, #040810 40%, #080c18 100%);
+  --gradient-accent: linear-gradient(135deg, #4b7bec, #3a6bd0);
+  --gradient-header: linear-gradient(90deg, #4b7bec, #6b9bfc, #8bb4fc, #4b7bec);
+  --glow-blue: 0 0 20px rgba(75,123,236,0.12);
+  --glass-bg: rgba(75,123,236,0.03);
+}
+.light.theme-compact {
+  --bg: #e2e8f0; --bg-elevated: #f0f2f5; --bg-card: #ffffff;
+  --accent: #3a6bd0; --accent-hover: #2d5bb9;
+  --accent-soft: rgba(58,107,208,0.07); --accent-soft-hover: rgba(58,107,208,0.11);
+  --pri-500: #4b7bec; --pri-600: #3a6bd0;
+  --gradient-bg: linear-gradient(160deg, #dce2ec 0%, #eaf0f4 40%, #e2e8f0 100%);
+  --gradient-accent: linear-gradient(135deg, #3a6bd0, #2d5bb9);
+}
+.theme-compact { --text-xs: 10px; --text-sm: 11px; --text-base: 13px; }
+
+/* === 8. MIDNIGHT TACTICAL (default — already :root) === */
+/* No extra overrides needed — it's the baseline */
+
+/* === Theme Picker UI === */
+.theme-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
+}
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+.theme-option:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.theme-option.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.theme-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}

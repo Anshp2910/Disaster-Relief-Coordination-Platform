@@ -6,7 +6,8 @@ import { clientApi } from '../api/client'
 import { useSocket } from '../hooks/useSocket'
 import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
+import { useTheme, THEMES } from '../context/ThemeContext'
+import ThemeSwitcher from './ThemeSwitcher'
 import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
 import useFocusTrap from '../hooks/useFocusTrap'
 
@@ -109,15 +110,6 @@ export default function Header() {
   const [sosLoading, setSosLoading] = useState(false)
   const { mode: themeMode, setTheme } = useTheme()
 
-  function cycleTheme() {
-    const order = ['system', 'dark', 'light']
-    const next = order[(order.indexOf(themeMode) + 1) % order.length]
-    setTheme(next)
-  }
-
-  const themeIcon = themeMode === 'system' ? '\u{1F310}' : themeMode === 'dark' ? '\u{1F319}' : '\u2600\uFE0F'
-  const themeLabel = themeMode === 'system' ? 'Auto (System)' : themeMode === 'dark' ? 'Dark mode' : 'Light mode'
-
   async function handleSOS() {
     if (!confirm(t('sos.confirm'))) return
     setSosLoading(true)
@@ -193,12 +185,17 @@ export default function Header() {
                 }}
               />
               <button
-                onClick={cycleTheme}
-                title={themeLabel}
-                className="bg-none border-none cursor-pointer text-16 p-xs rounded-md transition-02"
+                onClick={() => {
+                  const order = ['system', 'dark', 'light']
+                  const next = order[(order.indexOf(themeMode) + 1) % order.length]
+                  setTheme(next)
+                }}
+                title={themeMode === 'system' ? 'Auto (System)' : themeMode === 'dark' ? 'Dark mode' : 'Light mode'}
+                className="mode-toggle-btn"
               >
-                {themeIcon}
+                {themeMode === 'system' ? '\u{1F310}' : themeMode === 'dark' ? '\u{1F319}' : '\u2600\uFE0F'}
               </button>
+              <ThemeSwitcher />
               <NotificationBell />
               <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">
                 {sosLoading ? '...' : 'SOS'}
