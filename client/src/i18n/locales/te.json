@@ -517,7 +517,8 @@
     "submit": "Submit",
     "download": "Download",
     "toggleMenu": "Toggle menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "skipToContent": "Skip to content"
   },
   "header": {
     "selectLanguage": "Select Language"
