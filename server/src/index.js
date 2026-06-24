@@ -29,7 +29,17 @@ async function start() {
   const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
   const socketOrigins = [clientUrl, 'http://localhost:5001', 'https://disasterhelper.dpdns.org', 'https://disaster-relief-coordination-platform-l6mk.onrender.com'].filter(Boolean)
   const io = new Server(httpServer, {
-    cors: { origin: socketOrigins, credentials: true },
+    cors: {
+      origin: (origin, callback) => {
+        if (!origin || socketOrigins.includes(origin)) {
+          callback(null, true)
+        } else {
+          console.warn('[Socket.io CORS] Rejected origin:', origin)
+          callback(new Error('Not allowed by CORS'), false)
+        }
+      },
+      credentials: true,
+    },
   })
 
   const { default: jwt } = await import('jsonwebtoken')

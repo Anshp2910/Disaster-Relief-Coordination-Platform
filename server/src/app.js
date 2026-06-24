@@ -77,7 +77,7 @@ export function createApp() {
   const allowedOrigins = allOrigins
 
   function isOriginAllowed(origin) {
-    if (!origin) return false
+    if (!origin) return true
     return allowedOrigins.includes(origin)
   }
 
@@ -87,6 +87,7 @@ export function createApp() {
         if (isOriginAllowed(origin)) {
           callback(null, true)
         } else {
+          console.warn('[CORS] Rejected origin:', origin, '| Allowed:', allowedOrigins)
           callback(new Error('Not allowed by CORS'), false)
         }
       },
