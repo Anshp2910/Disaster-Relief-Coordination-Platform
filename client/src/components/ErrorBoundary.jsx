@@ -47,7 +47,7 @@ export default class ErrorBoundary extends Component {
                 window.location.href = '/dashboard'
               }}
               style={{
-                background: 'linear-gradient(135deg, #5b9aff, #7c8df0)',
+                background: 'linear-gradient(135deg, #4a80c0, #6b7fb5)',
                 color: '#fff',
                 border: 'none',
                 padding: '10px 24px',
