@@ -308,7 +308,23 @@
     "severityHigh": "High",
     "severityMedium": "Medium",
     "severityLow": "Low",
-    "searchPlaceholder": "Search zones..."
+    "searchPlaceholder": "Search zones...",
+    "weather": "Weather",
+    "refreshWeather": "Refresh"
+  },
+  "public": {
+    "title": "Disaster Relief Status",
+    "subtitle": "Real-time overview of relief operations and resource deployment",
+    "lastUpdated": "Last updated",
+    "activeRequests": "Active Requests",
+    "totalResources": "Total Resources",
+    "deployedResources": "Deployed Resources",
+    "availableResources": "Available Resources",
+    "activeIncidents": "Active Incidents",
+    "totalZones": "Zones",
+    "activeSOS": "Active SOS Alerts",
+    "byStatus": "Requests by Status",
+    "error": "Failed to load public status"
   },
   "incidents": {
     "title": "Incident Grouping",

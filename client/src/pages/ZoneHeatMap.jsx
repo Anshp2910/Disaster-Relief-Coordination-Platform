@@ -91,6 +91,9 @@ export default function ZoneHeatMap() {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
 
+  const [weather, setWeather] = useState(null)
+  const [weatherLoading, setWeatherLoading] = useState(false)
+
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const circlesRef = useRef([])
@@ -116,6 +119,20 @@ export default function ZoneHeatMap() {
   useEffect(() => { load() }, [load])
 
   useAutoRefresh(load, { interval: 20000 })
+
+  async function fetchWeather() {
+    const map = mapInstanceRef.current
+    if (!map) return
+    try {
+      setWeatherLoading(true)
+      const center = map.getCenter()
+      const data = await clientApi.getWeatherCurrent(center.lat.toFixed(4), center.lng.toFixed(4))
+      setWeather(data)
+    } catch {
+    } finally {
+      setWeatherLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current || loading) return
@@ -265,6 +282,9 @@ export default function ZoneHeatMap() {
             {currentUser?.role === 'admin' && (
               <button className="btnPrimary" onClick={openCreate} aria-label="Add zone">{t('zones.addZone')}</button>
             )}
+            <button className="btnSecondary" onClick={fetchWeather} disabled={weatherLoading} style={{ fontSize: 12 }}>
+              {weatherLoading ? '...' : '🌤 ' + (t('zones.weather') || 'Weather')}
+            </button>
           </div>
         </div>
         {error && <div className="errorText mt-sm">{error}</div>}
@@ -397,6 +417,26 @@ export default function ZoneHeatMap() {
                 <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger text-sm p-xs" aria-label="Delete zone">Delete</button>
               </div>
             )}
+          </div>
+        )}
+
+        {weather && (
+          <div className="card flex-shrink-0" style={{ width: 280 }}>
+            <div className="flex flex-between mb-sm">
+              <h4 className="m-0 text-sm" style={{ color: 'var(--gov-blue)' }}>{t('zones.weather')}</h4>
+              <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label="Close">&times;</button>
+            </div>
+            <div className="text-lg" style={{ fontWeight: 700 }}>{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
+            <div className="text-sm text-muted" style={{ marginBottom: 8 }}>{weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}</div>
+            <div className="text-sm" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
+              {weather.humidity != null && <><span className="text-muted">Humidity</span><span>{weather.humidity}%</span></>}
+              {weather.windSpeed != null && <><span className="text-muted">Wind</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
+              {weather.precipitation != null && <><span className="text-muted">Precip</span><span>{weather.precipitation} mm</span></>}
+              {weather.dailyPrecipitation != null && <><span className="text-muted">24h total</span><span>{weather.dailyPrecipitation} mm</span></>}
+            </div>
+            <button onClick={fetchWeather} className="text-xs mt-sm" disabled={weatherLoading} style={{ padding: '3px 10px' }}>
+              {weatherLoading ? '...' : t('zones.refreshWeather') || 'Refresh'}
+            </button>
           </div>
         )}
       </div>

@@ -20,6 +20,8 @@ import { bulkRouter } from './routes/bulk.js'
 import { escalationRouter } from './routes/escalation.js'
 import { geofencingRouter } from './routes/geofencing.js'
 import { sosRouter } from './routes/sos.js'
+import weatherRouter from './routes/weather.js'
+import publicRouter from './routes/public.js'
 import { getEnv } from './config/env.js'
 import { sanitizeBody } from './middleware/sanitize.js'
 import { rateLimitUser } from './middleware/rateLimitUser.js'
@@ -117,6 +119,8 @@ export function createApp() {
   app.use('/api/escalation', writeLimiter, escalationRouter)
   app.use('/api/geofencing', geofencingLimiter, geofencingRouter)
   app.use('/api/sos', writeLimiter, sosRouter)
+  app.use('/api/weather', weatherRouter)
+  app.use('/api/public', publicRouter)
 
   app.use('/api', (req, res) => {
     res.status(404).json({ error: 'API endpoint not found' })

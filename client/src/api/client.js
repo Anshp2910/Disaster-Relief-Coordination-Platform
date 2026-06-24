@@ -194,4 +194,7 @@ export const clientApi = {
   acknowledgeSos: (id) => apiFetch(`/api/sos/${id}/acknowledge`, { method: 'PUT' }),
   resolveSos: (id) => apiFetch(`/api/sos/${id}/resolve`, { method: 'PUT' }),
   checkGeofencing: (lat, lng, radiusKm) => apiFetch(`/api/geofencing/check?lat=${lat}&lng=${lng}&radiusKm=${radiusKm}`),
+
+  getPublicOverview: () => apiFetch('/api/public/overview', { auth: false }),
+  getWeatherCurrent: (lat, lng) => apiFetch(`/api/weather/current?lat=${lat}&lng=${lng}`, { auth: false }),
 }

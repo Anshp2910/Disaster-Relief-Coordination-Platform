@@ -19,6 +19,7 @@ const BulkImport = lazy(() => import('./pages/BulkImport'))
 const Escalation = lazy(() => import('./pages/Escalation'))
 const Geofencing = lazy(() => import('./pages/Geofencing'))
 const MapOverview = lazy(() => import('./pages/MapOverview'))
+const PublicStatus = lazy(() => import('./pages/PublicStatus'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 function PageLoader() {
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/public" element={<PublicStatus />} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
           <Route path="/map" element={<RequireAuth><MapOverview /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />

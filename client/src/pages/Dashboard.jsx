@@ -310,6 +310,11 @@ export default function Dashboard() {
                             <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
                             <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
                             <span className="govt-badge govt-badge-blue">{t(`categories.${it.category || 'Other'}`)}</span>
+                            {it.matchedResources?.length > 0 && (
+                              <span className="govt-badge govt-badge-green" title={`${it.matchedResources.length} matched resources`}>
+                                {it.matchedResources.length} Match{it.matchedResources.length > 1 ? 'es' : ''}
+                              </span>
+                            )}
                           </div>
                           <div className="muted mt-sm text-base">{it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
                           <div className="small mt-sm">{it.locationName}</div>
