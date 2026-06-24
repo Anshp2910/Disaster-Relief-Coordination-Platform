@@ -1,0 +1,141 @@
+﻿/* ============================================================
+   EMERGENCY COMMAND CENTER DESIGN SYSTEM
+   Tactical | High-Contrast | Dark-First | v2.0
+   ============================================================ */
+
+:root {
+  /* === Core Palette (unchanged, referenced by theme tokens) === */
+  --pri-50: #eff6ff;  --pri-100: #dbeafe;  --pri-200: #bfdbfe;
+  --pri-300: #93c5fd; --pri-400: #60a5fa;  --pri-500: #3b82f6;
+  --pri-600: #2563eb; --pri-700: #1d4ed8;  --pri-800: #1e40af; --pri-900: #1e3a8a;
+
+  --amber-50: #fffbeb;  --amber-100: #fef3c7;  --amber-200: #fde68a;
+  --amber-300: #fcd34d; --amber-400: #fbbf24;  --amber-500: #f59e0b;
+  --amber-600: #d97706; --amber-700: #b45309;
+
+  --red-50: #fef2f2;  --red-100: #fee2e2;  --red-200: #fecaca;
+  --red-300: #fca5a5; --red-400: #f87171;  --red-500: #ef4444;
+  --red-600: #dc2626; --red-700: #b91c1c;
+
+  --green-50: #f0fdf4;  --green-100: #dcfce7;  --green-200: #bbf7d0;
+  --green-300: #86efac; --green-400: #4ade80;  --green-500: #22c55e;
+  --green-600: #16a34a; --green-700: #15803d;
+
+  --slate-50: #f8fafc;  --slate-100: #f1f5f9;  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1; --slate-400: #94a3b8;  --slate-500: #64748b;
+  --slate-600: #475569; --slate-700: #334155;  --slate-800: #1e293b; --slate-900: #0f172a;
+
+  /* === ECC Theme Tokens (Dark / Tactical) === */
+  --bg: #050a16;
+  --bg-elevated: #0b1428;
+  --bg-card: #0f1b30;
+  --text: #dce5f5;
+  --text-secondary: #7a93b8;
+  --text-muted: #4a6488;
+  --border: #162a48;
+  --border-light: #0b1428;
+
+  --accent: var(--pri-500);
+  --accent-hover: var(--pri-400);
+  --accent-soft: rgba(59, 130, 246, 0.1);
+  --accent-soft-hover: rgba(59, 130, 246, 0.16);
+
+  --danger: var(--red-500);
+  --danger-hover: var(--red-400);
+  --danger-soft: rgba(239, 68, 68, 0.1);
+
+  --success: var(--green-500);
+  --success-soft: rgba(34, 197, 94, 0.1);
+
+  --warning: var(--amber-500);
+  --warning-soft: rgba(245, 158, 11, 0.1);
+
+  /* === Gradients === */
+  --gradient-bg: linear-gradient(170deg, #030813 0%, #080f20 40%, #0c162a 100%);
+  --gradient-card: linear-gradient(180deg, rgba(15, 27, 48, 0.85) 0%, rgba(15, 27, 48, 0.35) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--pri-500), var(--pri-600));
+  --gradient-accent-subtle: linear-gradient(135deg, var(--pri-500), var(--pri-700));
+
+  /* === Shadows === */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 16px 60px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-accent: 0 0 25px rgba(59, 130, 246, 0.12);
+
+  /* === Typography === */
+  --font: 'Inter', 'Noto Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs: 11px;  --text-sm: 12px;  --text-base: 14px;
+  --text-lg: 16px;  --text-xl: 18px;  --text-2xl: 22px;  --text-3xl: 28px;
+
+  --leading-tight: 1.25;  --leading-normal: 1.5;  --leading-relaxed: 1.625;
+  --tracking-wide: 0.05em;  --tracking-wider: 0.08em;
+
+  /* === Spacing === */
+  --radius-sm: 6px;  --radius-md: 10px;  --radius-lg: 14px;  --radius-xl: 20px;
+  --space-xs: 4px;  --space-sm: 8px;  --space-md: 12px;
+  --space-lg: 16px; --space-xl: 24px; --space-2xl: 32px; --space-3xl: 48px;
+
+  /* === Transitions === */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;  --duration-normal: 250ms;  --duration-slow: 400ms;
+
+  /* === Legacy vars (keep for compatibility) === */
+  --gov-blue: var(--pri-500);      --gov-blue-light: var(--pri-400);
+  --gov-saffron: var(--amber-500); --gov-green: var(--green-500);
+  --gov-white: #ffffff;            --gov-bg: var(--bg);
+  --gov-text: var(--text);         --gov-muted: var(--text-secondary);
+  --gov-border: var(--border);     --gov-card-bg: var(--bg-card);
+  --gov-danger: var(--danger);
+
+  --accent-blue: var(--pri-500);        --accent-blue-light: var(--pri-400);
+  --accent-indigo: #818cf8;             --accent-purple: #a78bfa;
+  --accent-green: var(--green-500);     --accent-orange: var(--amber-500);
+  --accent-red: var(--danger);
+
+  --color-open: var(--pri-500);     --color-pending: #a78bfa;
+  --color-progress: var(--amber-500); --color-resolved: var(--green-500);
+  --color-fulfilled: var(--green-600);
+
+  --color-critical: var(--red-500); --color-high: var(--amber-500);
+  --color-medium: #eab308;          --color-low: var(--green-500);
+
+  --severity-critical: var(--red-500);          --severity-high: var(--amber-500);
+  --severity-medium: #eab308;                   --severity-low: var(--green-500);
+  --severity-critical-stroke: #7f1d1d;          --severity-high-stroke: #92400e;
+  --severity-medium-stroke: #854d0e;            --severity-low-stroke: #166534;
+
+  --coverage-covered: var(--green-500); --coverage-partial: #eab308;
+  --coverage-gap: var(--red-500);
+
+  --cat-medical: var(--red-500);        --cat-food: var(--amber-500);
+  --cat-shelter: var(--pri-500);        --cat-water: #06b6d4;
+  --cat-rescue: #ea580c;                --cat-supplies: #818cf8;
+  --cat-healthcare: #a78bfa;            --cat-sanitation: #14b8a6;
+  --cat-clothing: #a78bfa;              --cat-transportation: #818cf8;
+  --cat-communication: var(--pri-500);  --cat-power: #eab308;
+  --cat-infrastructure: #64748b;        --cat-other: var(--text-muted);
+
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-strong: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-blur: 16px;
+  --glass-shadow: var(--shadow-md);
+
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.15);
+  --glow-purple: 0 0 20px rgba(129, 140, 248, 0.15);
+  --glow-green: 0 0 20px rgba(34, 197, 94, 0.15);
+  --glow-red: 0 0 20px rgba(239, 68, 68, 0.15);
+  --glow-orange: 0 0 20px rgba(245, 158, 11, 0.15);
+
+  --gradient-main: var(--gradient-bg);
+  --gradient-header: linear-gradient(90deg, var(--pri-500), #818cf8, #a78bfa, var(--pri-500));
+  --gradient-saffron: linear-gradient(135deg, var(--amber-500), #ea580c);
+
+  /* === ECC-Specific === */
+  --ecc-glow: 0 0 15px rgba(59, 130, 246, 0.08);
+  --ecc-border-focus: rgba(59, 130, 246, 0.35);
+}

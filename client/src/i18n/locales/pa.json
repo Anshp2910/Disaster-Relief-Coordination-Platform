@@ -70,7 +70,14 @@
     "claimedBy": "ਦੁਆਰਾ ਦਾਅ",
     "previous": "ਪਿਛਲਾ",
     "next": "ਅਗਲਾ",
-    "failedToLoad": "ਬੇਨਤੀਆਂ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
+    "failedToLoad": "ਬੇਨਤੀਆਂ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "allCategories": "All Categories",
+    "sortNewest": "Newest First",
+    "sortOldest": "Oldest First",
+    "sortPriorityDesc": "Priority: High to Low",
+    "sortPriorityAsc": "Priority: Low to High",
+    "sortTitleAsc": "Title: A-Z",
+    "sortTitleDesc": "Title: Z-A"
   },
   "createRequest": {
     "title": "ਆਸਾਂਟ ਰਾਹਤ ਬੇਨਤੀ ਬਣਾਓ",
@@ -180,7 +187,8 @@
     "roleUpdated": "ਭੂਮਿਕਾ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਹੋਈ",
     "userDeleted": "ਵਰਤੋਂਕਾਰ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਇਆ",
     "requestDeleted": "ਬੇਨਤੀ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਈ",
-    "noLocation": "ਕੋਈ ਥਾਂ ਨਹੀਂ"
+    "noLocation": "ਕੋਈ ਥਾਂ ਨਹੀਂ",
+    "requestsOverTime": "Requests Over Time"
   },
   "categories": {
     "Medical": "ਚਿਕਿਤਸਕ",
@@ -298,7 +306,13 @@
     "severityCritical": "ਬਹੁਤ ਜ਼ਰੂਰੀ",
     "severityHigh": "ਉੱਚ",
     "severityMedium": "ਦਰਮਿਆਨਾ",
-    "severityLow": "ਘੱਟ"
+    "severityLow": "ਘੱਟ",
+    "searchPlaceholder": "Search zones...",
+    "weather": "Weather",
+    "refreshWeather": "Refresh",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "precipitation": "Precip"
   },
   "incidents": {
     "title": "ਘਟਨਾ ਸਮੂਹ",
@@ -338,7 +352,10 @@
     "cancel": "ਰੱਦ ਕਰੋ",
     "deleteConfirm": "ਇਹ ਸਮਾਂ ਪੱਤਰ ਮਿਟਾਉਣਾ ਹੈ?",
     "startButton": "ਸ਼ੁਰੂ ਕਰੋ",
-    "completeButton": "ਪੂਰਾ ਕਰੋ"
+    "completeButton": "ਪੂਰਾ ਕਰੋ",
+    "allZones": "All Zones",
+    "from": "From",
+    "to": "To"
   },
   "bulkImport": {
     "title": "ਬਲਕ ਆਯਾਤ ਅਤੇ CSV ਨਿਕਾਸ",
@@ -375,7 +392,9 @@
     "escalated": "ਐਸਕਲੇਟ ਕੀਤਾ:",
     "by": "ਦੁਆਰਾ:",
     "deEscalate": "ਡੀ-ਐਸਕਲੇਟ",
-    "deEscalateConfirm": "ਇਹ ਬੇਨਤੀ ਡੀ-ਐਸਕਲੇਟ ਕਰਨੀ ਹੈ?"
+    "deEscalateConfirm": "ਇਹ ਬੇਨਤੀ ਡੀ-ਐਸਕਲੇਟ ਕਰਨੀ ਹੈ?",
+    "searchPlaceholder": "Search by title, reason, or user...",
+    "noMatch": "No escalated requests match your search"
   },
   "geofencing": {
     "title": "ਜੀਓਫੈਂਸਿੰਗ ਚੇਤਾਵਨੀਆਂ",
@@ -415,7 +434,12 @@
     "profileUpdated": "ਪ੍ਰੋਫਾਈਲ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਹੋਈ",
     "passwordsDoNotMatch": "ਪਾਸਵਰਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ",
     "passwordTooShort": "ਪਾਸਵਰਡ ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
-    "passwordChanged": "ਪਾਸਵਰਡ ਸਫਲਤਾਪੂਰਵਕ ਬਦਲਿਆ"
+    "passwordChanged": "ਪਾਸਵਰਡ ਸਫਲਤਾਪੂਰਵਕ ਬਦਲਿਆ",
+    "eventSubscriptions": "Event subscriptions:",
+    "notifyNewRequest": "New requests",
+    "notifyStatusChange": "Status changes",
+    "notifyNewComment": "New comments",
+    "updateProfile": "Update Profile"
   },
   "footer": {
     "quickLinks": "ਤੇਜ਼ ਲਿੰਕ",
@@ -489,6 +513,33 @@
     "close": "x",
     "failedToLoad": "ਡੇਟਾ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
     "loginFailed": "ਲੌਗਿਨ ਅਸਫਲ",
-    "registerFailed": "ਰਜਿਸਟਰ ਅਸਫਲ"
+    "registerFailed": "ਰਜਿਸਟਰ ਅਸਫਲ",
+    "submit": "Submit",
+    "download": "Download",
+    "toggleMenu": "Toggle menu",
+    "closeMenu": "Close menu"
+  },
+  "header": {
+    "selectLanguage": "Select Language"
+  },
+  "public": {
+    "title": "Disaster Relief Status",
+    "subtitle": "Real-time overview of relief operations and resource deployment",
+    "lastUpdated": "Last updated",
+    "activeRequests": "Active Requests",
+    "totalResources": "Total Resources",
+    "deployedResources": "Deployed Resources",
+    "availableResources": "Available Resources",
+    "activeIncidents": "Active Incidents",
+    "totalZones": "Zones",
+    "activeSOS": "Active SOS Alerts",
+    "byStatus": "Requests by Status",
+    "error": "Failed to load public status"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for doesn't exist or has been moved.",
+    "goHome": "Go to Dashboard",
+    "goBack": "Go Back"
   }
 }

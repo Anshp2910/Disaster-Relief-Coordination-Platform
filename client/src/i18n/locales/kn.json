@@ -70,7 +70,14 @@
     "claimedBy": "ಹಕ್ಕು ಪಡೆದವರು",
     "previous": "ಹಿಂದಿನ",
     "next": "ಮುಂದಿನ",
-    "failedToLoad": "ವಿನಂತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲ"
+    "failedToLoad": "ವಿನಂತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲ",
+    "allCategories": "All Categories",
+    "sortNewest": "Newest First",
+    "sortOldest": "Oldest First",
+    "sortPriorityDesc": "Priority: High to Low",
+    "sortPriorityAsc": "Priority: Low to High",
+    "sortTitleAsc": "Title: A-Z",
+    "sortTitleDesc": "Title: Z-A"
   },
   "createRequest": {
     "title": "ಅಪಘಾತ ನಿವಾರಣೆ ವಿನಂತಿ ರಚಿಸಿ",
@@ -180,7 +187,8 @@
     "roleUpdated": "ಪಾತ್ರ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",
     "userDeleted": "ಬಳಕೆದಾರ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ",
     "requestDeleted": "ವಿನಂತಿ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ",
-    "noLocation": "ಯಾವುದೇ ಸ್ಥಳ ಇಲ್ಲ"
+    "noLocation": "ಯಾವುದೇ ಸ್ಥಳ ಇಲ್ಲ",
+    "requestsOverTime": "Requests Over Time"
   },
   "categories": {
     "Medical": "ವೈದ್ಯಕೀಯ",
@@ -298,7 +306,13 @@
     "severityCritical": "ಅತ್ಯಾವಶ್ಯಕ",
     "severityHigh": "ಉನ್ನತ",
     "severityMedium": "ಮಧ್ಯಮ",
-    "severityLow": "ಕಡಿಮೆ"
+    "severityLow": "ಕಡಿಮೆ",
+    "searchPlaceholder": "Search zones...",
+    "weather": "Weather",
+    "refreshWeather": "Refresh",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "precipitation": "Precip"
   },
   "incidents": {
     "title": "ಘಟನೆ ಗುಂಪುಗಳು",
@@ -338,7 +352,10 @@
     "cancel": "ರದ್ದುಮಾಡಿ",
     "deleteConfirm": "ಈ ವೇಳಾಪಟ್ಟಿಯನ್ನು ಅಳಿಸಬೇಕೇ?",
     "startButton": "ಪ್ರಾರಂಭಿಸಿ",
-    "completeButton": "ಪೂರ್ಣಗೊಳಿಸಿ"
+    "completeButton": "ಪೂರ್ಣಗೊಳಿಸಿ",
+    "allZones": "All Zones",
+    "from": "From",
+    "to": "To"
   },
   "bulkImport": {
     "title": "ಬಲ್ಕ್ ಆಮದು ಮತ್ತು CSV ರಫ್ತು",
@@ -375,7 +392,9 @@
     "escalated": "ಎಸ್ಕಲೇಟ್ ಮಾಡಲಾಗಿದೆ:",
     "by": "ಮೂಲಕ:",
     "deEscalate": "ಡೀ-ಎಸ್ಕಲೇಟ್",
-    "deEscalateConfirm": "ಈ ವಿನಂತಿಯನ್ನು ಡೀ-ಎಸ್ಕಲೇಟ್ ಮಾಡಬೇಕೇ?"
+    "deEscalateConfirm": "ಈ ವಿನಂತಿಯನ್ನು ಡೀ-ಎಸ್ಕಲೇಟ್ ಮಾಡಬೇಕೇ?",
+    "searchPlaceholder": "Search by title, reason, or user...",
+    "noMatch": "No escalated requests match your search"
   },
   "geofencing": {
     "title": "ಜಿಯೋಫೆನ್ಸಿಂಗ್ ಎಚ್ಚರಿಕೆಗಳು",
@@ -415,7 +434,12 @@
     "profileUpdated": "ಪ್ರೊಫೈಲ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",
     "passwordsDoNotMatch": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ",
     "passwordTooShort": "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿರಬೇಕು",
-    "passwordChanged": "ಪಾಸ್‌ವರ್ಡ್ ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ"
+    "passwordChanged": "ಪಾಸ್‌ವರ್ಡ್ ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ",
+    "eventSubscriptions": "Event subscriptions:",
+    "notifyNewRequest": "New requests",
+    "notifyStatusChange": "Status changes",
+    "notifyNewComment": "New comments",
+    "updateProfile": "Update Profile"
   },
   "footer": {
     "quickLinks": "ತ್ವರಿತ ಲಿಂಕ್‌ಗಳು",
@@ -489,6 +513,33 @@
     "close": "x",
     "failedToLoad": "ಡೇಟಾ ಲೋಡ್ ಮಾಡಲು ವಿಫಲ",
     "loginFailed": "ಲಾಗಿನ್ ವಿಫಲ",
-    "registerFailed": "ನೋಂದಣಿ ವಿಫಲ"
+    "registerFailed": "ನೋಂದಣಿ ವಿಫಲ",
+    "submit": "Submit",
+    "download": "Download",
+    "toggleMenu": "Toggle menu",
+    "closeMenu": "Close menu"
+  },
+  "header": {
+    "selectLanguage": "Select Language"
+  },
+  "public": {
+    "title": "Disaster Relief Status",
+    "subtitle": "Real-time overview of relief operations and resource deployment",
+    "lastUpdated": "Last updated",
+    "activeRequests": "Active Requests",
+    "totalResources": "Total Resources",
+    "deployedResources": "Deployed Resources",
+    "availableResources": "Available Resources",
+    "activeIncidents": "Active Incidents",
+    "totalZones": "Zones",
+    "activeSOS": "Active SOS Alerts",
+    "byStatus": "Requests by Status",
+    "error": "Failed to load public status"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for doesn't exist or has been moved.",
+    "goHome": "Go to Dashboard",
+    "goBack": "Go Back"
   }
 }

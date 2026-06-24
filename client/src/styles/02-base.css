@@ -1,0 +1,73 @@
+﻿/* === Reset & Base === */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--gradient-bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--leading-normal);
+  overflow-x: hidden;
+}
+
+/* === Subtle Background â€” duplicate removed, see Professional Enhancements === */
+
+/* === Custom Scrollbar === */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+
+/* === Links === */
+a {
+  color: var(--pri-400);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+a:hover { color: var(--pri-300); }
+
+
+:focus-visible {
+  outline: 2px solid var(--pri-500);
+  outline-offset: 2px;
+}
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--pri-500);
+  outline-offset: 2px;
+}
+
+#root { max-width: 100%; }
+button, a, input, select, textarea { touch-action: manipulation; }
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+* { -webkit-tap-highlight-color: transparent; }
+
+img, video, svg { max-width: 100%; height: auto; }
+table { border-collapse: collapse; }
+
+.gov-app-title,
+.gov-app-subtitle,
+.pageTitle,
+.admin-stat-label,
+.admin-request-title,
+.notification-title,
+.notification-message {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gov-app-subtitle { white-space: nowrap; }
+
+input, textarea, select { box-sizing: border-box; min-width: 0; }
+button { box-sizing: border-box; }

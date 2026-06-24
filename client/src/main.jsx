@@ -10,7 +10,7 @@ import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useVersionCheck } from './hooks/useVersionCheck'
 import 'leaflet/dist/leaflet.css'
-import './styles.css'
+import './styles/index.css'
 
 function VersionChecker() {
   useVersionCheck()

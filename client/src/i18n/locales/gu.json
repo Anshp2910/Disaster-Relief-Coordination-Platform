@@ -70,7 +70,14 @@
     "claimedBy": "દ્વારા દાવો",
     "previous": "પહેલાનું",
     "next": "આગળનું",
-    "failedToLoad": "વિનંતીઓ લોડ કરવામાં નિષ્ફળ"
+    "failedToLoad": "વિનંતીઓ લોડ કરવામાં નિષ્ફળ",
+    "allCategories": "All Categories",
+    "sortNewest": "Newest First",
+    "sortOldest": "Oldest First",
+    "sortPriorityDesc": "Priority: High to Low",
+    "sortPriorityAsc": "Priority: Low to High",
+    "sortTitleAsc": "Title: A-Z",
+    "sortTitleDesc": "Title: Z-A"
   },
   "createRequest": {
     "title": "આપત્તિ રાહત વિનંતી બનાવો",
@@ -180,7 +187,8 @@
     "roleUpdated": "ભૂમિકા સફળતાપૂર્વક અપડેટ થઈ",
     "userDeleted": "વપરાશકર્તા સફળતાપૂર્વક કાઢી નાખ્યો",
     "requestDeleted": "વિનંતી સફળતાપૂર્વક કાઢી નાખી",
-    "noLocation": "કોઈ સ્થાન નથી"
+    "noLocation": "કોઈ સ્થાન નથી",
+    "requestsOverTime": "Requests Over Time"
   },
   "categories": {
     "Medical": "વૈદ્યકીય",
@@ -298,7 +306,13 @@
     "severityCritical": "અત્યંત મહત્વપૂર્ણ",
     "severityHigh": "ઊંચી",
     "severityMedium": "મધ્યમ",
-    "severityLow": "ઓછી"
+    "severityLow": "ઓછી",
+    "searchPlaceholder": "Search zones...",
+    "weather": "Weather",
+    "refreshWeather": "Refresh",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "precipitation": "Precip"
   },
   "incidents": {
     "title": "ઘટના જૂથીકરણ",
@@ -338,7 +352,10 @@
     "cancel": "રદ કરો",
     "deleteConfirm": "આ સમયપત્રક કાઢી નાખવું?",
     "startButton": "શરૂ કરો",
-    "completeButton": "પૂર્ણ કરો"
+    "completeButton": "પૂર્ણ કરો",
+    "allZones": "All Zones",
+    "from": "From",
+    "to": "To"
   },
   "bulkImport": {
     "title": "બલ્ક આયાત અને CSV નિકાસ",
@@ -375,7 +392,9 @@
     "escalated": "એસ્કેલેટ થયેલ:",
     "by": "દ્વારા:",
     "deEscalate": "ડી-એસ્કેલેટ",
-    "deEscalateConfirm": "આ વિનંતી ડી-એસ્કેલેટ કરવી?"
+    "deEscalateConfirm": "આ વિનંતી ડી-એસ્કેલેટ કરવી?",
+    "searchPlaceholder": "Search by title, reason, or user...",
+    "noMatch": "No escalated requests match your search"
   },
   "geofencing": {
     "title": "જિયોફેન્સિંગ ચેતવણીઓ",
@@ -415,7 +434,12 @@
     "profileUpdated": "પ્રોફાઇલ સફળતાપૂર્વક અપડેટ થઈ",
     "passwordsDoNotMatch": "પાસવર્ડ મેળ ખાતા નથી",
     "passwordTooShort": "પાસવર્ડ ઓછામાં ઓછો 6 અક્ષરોનો હોવો જોઈએ",
-    "passwordChanged": "પાસવર્ડ સફળતાપૂર્વક બદલાયો"
+    "passwordChanged": "પાસવર્ડ સફળતાપૂર્વક બદલાયો",
+    "eventSubscriptions": "Event subscriptions:",
+    "notifyNewRequest": "New requests",
+    "notifyStatusChange": "Status changes",
+    "notifyNewComment": "New comments",
+    "updateProfile": "Update Profile"
   },
   "footer": {
     "quickLinks": "ઝડપી લિંક્સ",
@@ -489,6 +513,33 @@
     "close": "x",
     "failedToLoad": "ડેટા લોડ કરવામાં નિષ્ફળ",
     "loginFailed": "લોગિન નિષ્ફળ",
-    "registerFailed": "નોંધણી નિષ્ફળ"
+    "registerFailed": "નોંધણી નિષ્ફળ",
+    "submit": "Submit",
+    "download": "Download",
+    "toggleMenu": "Toggle menu",
+    "closeMenu": "Close menu"
+  },
+  "header": {
+    "selectLanguage": "Select Language"
+  },
+  "public": {
+    "title": "Disaster Relief Status",
+    "subtitle": "Real-time overview of relief operations and resource deployment",
+    "lastUpdated": "Last updated",
+    "activeRequests": "Active Requests",
+    "totalResources": "Total Resources",
+    "deployedResources": "Deployed Resources",
+    "availableResources": "Available Resources",
+    "activeIncidents": "Active Incidents",
+    "totalZones": "Zones",
+    "activeSOS": "Active SOS Alerts",
+    "byStatus": "Requests by Status",
+    "error": "Failed to load public status"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for doesn't exist or has been moved.",
+    "goHome": "Go to Dashboard",
+    "goBack": "Go Back"
   }
 }
