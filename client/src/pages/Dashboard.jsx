@@ -65,7 +65,6 @@ export default function Dashboard() {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
   const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
   const [resourceSummary, setResourceSummary] = useState([])
   const [viewMode, setViewMode] = useState('list')

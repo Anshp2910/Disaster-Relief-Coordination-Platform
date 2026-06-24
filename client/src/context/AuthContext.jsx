@@ -77,15 +77,8 @@ export function AuthProvider({ children }) {
     ACTIVITY_EVENTS.forEach((e) => document.addEventListener(e, handleActivity, { passive: true }))
     resetIdleTimer()
 
-    function handleBeforeUnload() {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload)
-
     return () => {
       ACTIVITY_EVENTS.forEach((e) => document.removeEventListener(e, handleActivity))
-      window.removeEventListener('beforeunload', handleBeforeUnload)
       if (idleRef.current) clearTimeout(idleRef.current)
     }
   }, [isAuthenticated, resetIdleTimer])
