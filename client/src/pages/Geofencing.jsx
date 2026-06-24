@@ -186,21 +186,21 @@ export default function Geofencing() {
           {renderResultSection(
             result.zones || [],
             'var(--gov-blue)',
-            'rgba(0,0,128,.06)',
+            'var(--accent-soft)',
             t('geofencing.zonesInArea'),
             (z) => <>{z.name} <span className="text-muted">({z.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.requests || [],
             'var(--gov-danger)',
-            'rgba(248,81,73,.06)',
+            'var(--danger-soft)',
             t('geofencing.requestsNearby'),
             (r) => <>{r.title} <span className="text-muted">({r.distanceKm} km)</span></>
           )}
           {renderResultSection(
             result.resources || [],
             'var(--gov-green)',
-            'rgba(63,185,80,.06)',
+            'var(--success-soft)',
             t('geofencing.resourcesNearby'),
             (r) => <>{r.name} <span className="text-muted">({r.distanceKm} km)</span></>
           )}

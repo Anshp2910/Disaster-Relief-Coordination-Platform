@@ -1,18 +1,18 @@
 import { memo } from 'react'
 
 export const STATUS_COLORS = {
-  'Open': { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: '#4a80c0' },
-  'Pending': { bg: 'rgba(142,142,147,.1)', border: 'rgba(142,142,147,.25)', text: '#8e8e93' },
-  'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: '#f0a030' },
-  'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: '#34c759' },
-  'Fulfilled': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: '#34c759' },
+  'Open': { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--pri-400)' },
+  'Pending': { bg: 'rgba(100,116,139,0.1)', border: 'rgba(100,116,139,0.25)', text: 'var(--text-muted)' },
+  'In Progress': { bg: 'var(--warning-soft)', border: 'rgba(245,158,11,0.25)', text: 'var(--amber-400)' },
+  'Resolved': { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--green-400)' },
+  'Fulfilled': { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--green-400)' },
 }
 
 export const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: '#ff3b30' },
-  'High': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: '#f0a030' },
-  'Medium': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: '#f0a030' },
-  'Low': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: '#34c759' },
+  'Critical': { bg: 'var(--danger-soft)', border: 'rgba(239,68,68,0.25)', text: 'var(--red-400)' },
+  'High': { bg: 'var(--warning-soft)', border: 'rgba(245,158,11,0.25)', text: 'var(--amber-400)' },
+  'Medium': { bg: 'var(--warning-soft)', border: 'rgba(245,158,11,0.25)', text: 'var(--amber-400)' },
+  'Low': { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--green-400)' },
 }
 
 export const Badge = memo(function Badge({ label }) {

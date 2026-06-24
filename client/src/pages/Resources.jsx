@@ -14,14 +14,14 @@ const CATEGORY_ICONS = {
 const CATEGORY_COLORS = {
   Food: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
   Water: { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
-  Medical: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--cat-medical)' },
-  Shelter: { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--cat-shelter)' },
+  Medical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--cat-medical)' },
+  Shelter: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-shelter)' },
   Supplies: { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
   Healthcare: { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: 'var(--cat-healthcare)' },
   Sanitation: { bg: 'rgba(20,184,166,.1)', border: 'rgba(20,184,166,.25)', text: 'var(--cat-sanitation)' },
   Clothing: { bg: 'rgba(168,85,247,.1)', border: 'rgba(168,85,247,.25)', text: 'var(--cat-clothing)' },
   Transportation: { bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.25)', text: 'var(--cat-transportation)' },
-  Communication: { bg: 'rgba(14,165,233,.1)', border: 'rgba(14,165,233,.25)', text: 'var(--cat-communication)' },
+  Communication: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-communication)' },
   Power: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--cat-power)' },
   Infrastructure: { bg: 'rgba(100,116,139,.1)', border: 'rgba(100,116,139,.25)', text: 'var(--cat-infrastructure)' },
   Other: { bg: 'rgba(156,163,175,.1)', border: 'rgba(156,163,175,.25)', text: 'var(--cat-other)' },
@@ -29,9 +29,9 @@ const CATEGORY_COLORS = {
 
 const STATUS_COLORS = {
   Available: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
-  Low: { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
-  Depleted: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
-  Reserved: { bg: 'rgba(107,127,181,.1)', border: 'rgba(107,127,181,.25)', text: 'var(--accent-indigo)' },
+  Low: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-high)' },
+  Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
+  Reserved: { bg: 'rgba(129,140,248,.1)', border: 'rgba(129,140,248,.25)', text: 'var(--accent-indigo)' },
 }
 
 const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
@@ -314,7 +314,7 @@ export default function Resources() {
                       <button
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
                         className="text-xs p-xs"
-                        style={{ background: 'rgba(74,128,192,.1)', color: 'var(--accent-blue)', border: '1px solid rgba(74,128,192,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        style={{ background: 'var(--accent-soft)', color: 'var(--accent-blue)', border: '1px solid rgba(59,130,246,.25)', borderRadius: 6, cursor: 'pointer' }}
                         aria-label="Allocate"
                       >
                         {t('resources.allocate')}
@@ -324,7 +324,7 @@ export default function Resources() {
                       <button
                         onClick={() => handleDeallocate(r._id)}
                         className="text-xs p-xs"
-                        style={{ background: 'rgba(248,81,73,.1)', color: 'var(--accent-red)', border: '1px solid rgba(248,81,73,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        style={{ background: 'var(--danger-soft)', color: 'var(--accent-red)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 6, cursor: 'pointer' }}
                         aria-label="Deallocate"
                       >
                         {t('resources.deallocate')}

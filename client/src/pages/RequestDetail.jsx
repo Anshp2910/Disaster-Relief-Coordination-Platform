@@ -11,18 +11,18 @@ import Chat from './Chat'
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--color-open)' },
-  'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
-  'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-progress)' },
-  'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
-  'Fulfilled': { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
+  'Open': { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--color-open)' },
+  'Pending': { bg: 'rgba(167,139,250,0.1)', border: 'rgba(167,139,250,0.25)', text: 'var(--color-pending)' },
+  'In Progress': { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-progress)' },
+  'Resolved': { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--color-resolved)' },
+  'Fulfilled': { bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.25)', text: 'var(--color-fulfilled)' },
 }
 
 const PRIORITY_COLORS = {
-  'Critical': { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
-  'High': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
-  'Medium': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
-  'Low': { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
+  'Critical': { bg: 'var(--danger-soft)', border: 'rgba(239,68,68,0.25)', text: 'var(--color-critical)' },
+  'High': { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-high)' },
+  'Medium': { bg: 'rgba(234,179,8,0.1)', border: 'rgba(234,179,8,0.25)', text: 'var(--color-medium)' },
+  'Low': { bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.25)', text: 'var(--color-low)' },
 }
 
 function Badge({ label, colors, colorKey }) {
@@ -280,7 +280,7 @@ export default function RequestDetail() {
           </div>
 
           {item.claimedBy && (
-            <div className="mt-sm text-sm p-sm" style={{ background: 'rgba(255,153,51,0.08)', borderRadius: 6 }}>
+            <div className="mt-sm text-sm p-sm" style={{ background: 'var(--warning-soft)', borderRadius: 6 }}>
               {t('requestDetail.claimedBy')} <strong>{item.claimedBy.displayName || item.claimedBy.email}</strong>
               {item.claimedAt && <span className="small muted"> - {new Date(item.claimedAt).toLocaleDateString()}</span>}
             </div>

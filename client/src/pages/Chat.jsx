@@ -133,7 +133,7 @@ export default function Chat({ requestId, onClose }) {
           if (isSystem) {
             return (
               <div key={m._id || m.createdAt} className="flex flex-center">
-                <div className="text-xs" style={{ color: 'var(--gov-muted)', background: 'rgba(0,0,0,.04)', padding: '3px 10px', borderRadius: 12 }}>
+                <div className="text-xs" style={{ color: 'var(--text-muted)', background: 'var(--accent-soft)', padding: '3px 10px', borderRadius: 12 }}>
                   {m.text}
                 </div>
               </div>
@@ -149,8 +149,8 @@ export default function Chat({ requestId, onClose }) {
                   </div>
                 )}
                 <div className="text-sm" style={{
-                  background: isMe ? 'var(--gov-blue)' : 'rgba(0,0,0,.06)',
-                  color: isMe ? 'white' : 'inherit',
+                  background: isMe ? 'var(--accent)' : 'var(--accent-soft)',
+                  color: isMe ? '#fff' : 'var(--text)',
                   padding: '7px 12px',
                   borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
                 }}>

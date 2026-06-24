@@ -147,8 +147,8 @@ export default function Escalation() {
                 <button
                   onClick={() => handleDeescalate(item._id)}
                   style={{
-                    fontSize: 11, padding: '4px 10px', background: 'rgba(63,185,80,.1)',
-                    color: 'var(--accent-green)', border: '1px solid rgba(63,185,80,.3)',
+                    fontSize: 11, padding: '4px 10px', background: 'var(--success-soft)',
+                    color: 'var(--accent-green)', border: '1px solid rgba(34,197,94,.3)',
                     borderRadius: 4, cursor: 'pointer', alignSelf: 'start',
                   }}
                 >

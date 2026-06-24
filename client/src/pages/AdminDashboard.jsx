@@ -8,15 +8,15 @@ import { useToast } from '../components/Toast'
 import { SkeletonList } from '../components/Skeleton'
 
 const STATUS_COLORS = {
-  Open: { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--color-open)' },
-  'In Progress': { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-progress)' },
-  Resolved: { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
+  Open: { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--color-open)' },
+  'In Progress': { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-progress)' },
+  Resolved: { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--color-resolved)' },
   Fulfilled: { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
 }
 
 const PRIORITY_COLORS = {
-  Critical: { bg: 'rgba(248,81,73,.1)', border: 'rgba(248,81,73,.25)', text: 'var(--color-critical)' },
-  High: { bg: 'rgba(218,157,66,.1)', border: 'rgba(218,157,66,.25)', text: 'var(--color-high)' },
+  Critical: { bg: 'var(--danger-soft)', border: 'rgba(239,68,68,0.25)', text: 'var(--color-critical)' },
+  High: { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-high)' },
   Medium: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
   Low: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
 }
@@ -97,13 +97,13 @@ function StatsPanel({ stats }) {
   const totalAll = Object.values(byStatus).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0)
 
   const summaryCards = [
-    { label: t('admin.totalUsers'), value: safeStats.totalUsers || 0, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
-    { label: t('admin.totalRequests'), value: safeStats.totalRequests || 0, bg: 'rgba(107,127,181,0.08)', color: 'var(--accent-indigo)' },
-    { label: t('admin.openRequests'), value: byStatus.Open || 0, bg: 'rgba(74,128,192,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalUsers'), value: safeStats.totalUsers || 0, bg: 'rgba(59,130,246,0.08)', color: 'var(--color-open)' },
+    { label: t('admin.totalRequests'), value: safeStats.totalRequests || 0, bg: 'rgba(129,140,248,0.08)', color: 'var(--accent-indigo)' },
+    { label: t('admin.openRequests'), value: byStatus.Open || 0, bg: 'rgba(59,130,246,0.08)', color: 'var(--color-open)' },
     {
       label: t('admin.resolved'),
       value: (byStatus.Resolved || 0) + (byStatus.Fulfilled || 0),
-      bg: 'rgba(63,185,80,0.08)',
+      bg: 'rgba(34,197,94,0.08)',
       color: 'var(--color-resolved)',
     },
   ]
@@ -477,13 +477,13 @@ export default function AdminDashboard() {
           </div>
           <div className="btnRow">
             <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
-            <button onClick={() => handleExport('csv')} style={{ color: 'var(--accent-green)', borderColor: 'rgba(63,185,80,0.3)' }}>Export CSV</button>
+            <button onClick={() => handleExport('csv')} style={{ color: 'var(--accent-green)', borderColor: 'rgba(34,197,94,0.3)' }}>Export CSV</button>
           </div>
         </div>
 
         {error && <div className="errorText mt-md">{error}</div>}
 
-        <div className="flex flex-gap-xs mt-xl overflow-x-auto" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', WebkitOverflowScrolling: 'touch' }}>
+        <div className="flex flex-gap-xs mt-xl overflow-x-auto" style={{ borderBottom: '1px solid var(--border)', WebkitOverflowScrolling: 'touch' }}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -495,11 +495,11 @@ export default function AdminDashboard() {
                 fontSize: 13,
                 border: '1px solid transparent',
                 borderBottom: activeTab === tab.id ? '2px solid var(--accent-blue)' : '2px solid transparent',
-                marginBottom: activeTab === tab.id ? -1 : 0,
-                background: activeTab === tab.id ? 'rgba(74,128,192,0.06)' : 'transparent',
-                color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--gov-muted)',
+                marginBottom: 0,
+                background: activeTab === tab.id ? 'var(--accent-soft)' : 'transparent',
+                color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)',
                 transition: 'all 0.2s',
-                boxShadow: activeTab === tab.id ? '0 0 12px rgba(74,128,192,0.1)' : 'none',
+                boxShadow: activeTab === tab.id ? '0 0 12px var(--accent-soft)' : 'none',
               }}
             >
               {tab.label}
@@ -508,8 +508,8 @@ export default function AdminDashboard() {
                   className="text-bold"
                   style={{
                     marginLeft: 6,
-                    background: activeTab === tab.id ? 'rgba(74,128,192,0.15)' : 'rgba(255,255,255,0.06)',
-                    color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--gov-muted)',
+                    background: activeTab === tab.id ? 'var(--accent-soft)' : 'var(--glass-bg)',
+                    color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)',
                     borderRadius: 10,
                     padding: '2px 8px',
                     fontSize: 11,

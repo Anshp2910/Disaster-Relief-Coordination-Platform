@@ -12,11 +12,11 @@ import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const STATUS_COLORS = {
-  'Open': { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--color-open)' },
-  'Pending': { bg: 'rgba(167,139,250,.1)', border: 'rgba(167,139,250,.25)', text: 'var(--color-pending)' },
-  'In Progress': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-progress)' },
-  'Resolved': { bg: 'rgba(63,185,80,.1)', border: 'rgba(63,185,80,.25)', text: 'var(--color-resolved)' },
-  'Fulfilled': { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
+  'Open': { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--color-open)' },
+  'Pending': { bg: 'rgba(167,139,250,0.1)', border: 'rgba(167,139,250,0.25)', text: 'var(--color-pending)' },
+  'In Progress': { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-progress)' },
+  'Resolved': { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--color-resolved)' },
+  'Fulfilled': { bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.25)', text: 'var(--color-fulfilled)' },
 }
 
 const MAP_MARKER_COLORS = { 'Open': 'var(--color-open)', 'Pending': 'var(--color-pending)', 'In Progress': 'var(--color-progress)', 'Resolved': 'var(--color-resolved)', 'Fulfilled': 'var(--color-fulfilled)' }
@@ -224,9 +224,9 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div className="mb-xl rounded-lg overflow-hidden relative" style={{ border: '1px solid rgba(74,128,192,0.1)' }}>
+      <div className="mb-xl rounded-lg overflow-hidden relative" style={{ border: '1px solid var(--accent-soft)' }}>
         <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" className="w-full" style={{ height: 'auto', display: 'block', aspectRatio: '4/1' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(74,128,192,0.05), rgba(107,127,181,0.05))', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(59,130,246,0.04), rgba(129,140,248,0.04))', pointerEvents: 'none' }} />
       </div>
       {resourceSummary.length > 0 && (
         <div className="card mb-lg">
@@ -236,7 +236,7 @@ export default function Dashboard() {
           </div>
           <div className="flex flex-gap-sm flex-wrap">
             {resourceSummary.map((s) => (
-              <div key={s._id} className="text-sm rounded-md" style={{ padding: '8px 14px', background: 'rgba(74,128,192,0.06)', border: '1px solid rgba(74,128,192,0.12)', backdropFilter: 'blur(4px)' }}>
+              <div key={s._id} className="text-sm rounded-md" style={{ padding: '8px 14px', background: 'var(--accent-soft)', border: '1px solid rgba(59,130,246,0.15)', backdropFilter: 'blur(4px)' }}>
                 <strong style={{ color: 'var(--accent-blue)' }}>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: 'var(--accent-orange)' }}>({s.lowCount} low)</span>}
               </div>
             ))}
@@ -255,7 +255,7 @@ export default function Dashboard() {
             )}
             <button
               onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-              style={{ color: 'var(--gov-blue)', borderColor: viewMode === 'map' ? 'var(--gov-blue)' : 'var(--gov-border)', background: viewMode === 'map' ? 'rgba(0,0,128,0.08)' : undefined, fontWeight: viewMode === 'map' ? 600 : 400 }}
+              style={{ color: 'var(--gov-blue)', borderColor: viewMode === 'map' ? 'var(--gov-blue)' : 'var(--gov-border)', background: viewMode === 'map' ? 'var(--accent-soft)' : undefined, fontWeight: viewMode === 'map' ? 600 : 400 }}
             >
               {viewMode === 'list' ? t('dashboard.mapView') : t('dashboard.listView')}
             </button>
@@ -340,13 +340,13 @@ export default function Dashboard() {
           <>
             <div className="card p-0 relative mt-lg">
               {mapLoading && (
-                <div className="flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.8)', zIndex: 1000 }}>
+                <div className="flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--bg-elevated)', zIndex: 1000 }}>
                   <div style={{ width: 24, height: 24, border: '3px solid var(--gov-border)', borderTopColor: 'var(--gov-blue)', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
                 </div>
               )}
               <div ref={mapRef} className="map-container-full w-full" style={{ height: '70vh' }} />
               {!mapLoading && !error && mapItems.length === 0 && (
-                <div className="flex flex-col flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
+                <div className="flex flex-col flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--bg-elevated)', zIndex: 1000 }}>
                   <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
                   <div className="muted">{t('dashboard.noRequests')}</div>
                 </div>

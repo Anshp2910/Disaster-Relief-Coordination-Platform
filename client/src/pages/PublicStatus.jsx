@@ -4,8 +4,8 @@ import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
 
 const STATUS_COLORS = {
-  Open: '#4a80c0', Assigned: '#cc7a00', 'In Progress': '#f08b3a',
-  Resolved: '#2b8a3e', Closed: '#666',
+  Open: 'var(--pri-400)', Assigned: 'var(--amber-400)', 'In Progress': 'var(--amber-500)',
+  Resolved: 'var(--green-400)', Closed: 'var(--text-muted)',
 }
 
 const STAT_CARDS = [

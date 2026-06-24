@@ -193,14 +193,14 @@ export default function MapOverview() {
         <div ref={mapRef} className="map-container-full w-full" style={{ height: '70vh' }} />
 
         {!loading && error && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-elevated)', zIndex: 1000 }}>
             <div style={{ fontSize: 16, color: 'var(--gov-danger)', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
             <div className="muted">{error}</div>
           </div>
         )}
 
         {!loading && !error && items.length === 0 && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-elevated)', zIndex: 1000 }}>
             <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
             <div className="muted">{t('dashboard.noRequests')}</div>
           </div>

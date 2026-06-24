@@ -9,10 +9,10 @@ import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 
 const SEVERITY_COLORS = {
-  Critical: { fill: 'var(--severity-critical)', stroke: '#990000', weight: 0.6 },
-  High: { fill: 'var(--severity-high)', stroke: '#994d00', weight: 0.5 },
-  Medium: { fill: 'var(--severity-medium)', stroke: '#cc7a00', weight: 0.4 },
-  Low: { fill: 'var(--severity-low)', stroke: '#0d6e06', weight: 0.3 },
+  Critical: { fill: 'var(--severity-critical)', stroke: 'var(--severity-critical-stroke)', weight: 0.6 },
+  High: { fill: 'var(--severity-high)', stroke: 'var(--severity-high-stroke)', weight: 0.5 },
+  Medium: { fill: 'var(--severity-medium)', stroke: 'var(--severity-medium-stroke)', weight: 0.4 },
+  Low: { fill: 'var(--severity-low)', stroke: 'var(--severity-low-stroke)', weight: 0.3 },
 }
 
 const DISASTER_ICONS = {
@@ -43,7 +43,7 @@ function buildPopup(zone, color) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || '#999'
   return `
     <div style="font-family:Arial,sans-serif;min-width:200px">
-      <div style="font-weight:700;font-size:14px;color:#4a80c0;margin-bottom:4px">
+      <div style="font-weight:700;font-size:14px;color:#3b82f6;margin-bottom:4px">
         ${DISASTER_ICONS[zone.disasterType] || ''} ${escapeHtml(zone.name)}
       </div>
       <div style="font-size:12px;margin-bottom:6px">
@@ -55,16 +55,16 @@ function buildPopup(zone, color) {
         ? `<div style="font-size:12px;margin-bottom:4px">Affected: ${zone.affectedPopulation.toLocaleString()}</div>`
         : ''
       }
-      <hr style="margin:6px 0;border:none;border-top:1px solid #eee"/>
+      <hr style="margin:6px 0;border:none;border-top:1px solid rgba(255,255,255,0.1)"/>
       <div style="font-size:12px">
-        <div>Open requests: <strong style="color:#cc0000">${zone.openRequests}</strong></div>
+        <div>Open requests: <strong style="color:#ef4444">${zone.openRequests}</strong></div>
         <div>Resources: <strong>${zone.totalResources}</strong> units</div>
         <div style="margin-top:4px">
           Coverage: <span style="background:${coverageColor};color:white;padding:1px 6px;border-radius:3px;font-size:11px">${escapeHtml(zone.coverageStatus)}</span>
         </div>
       </div>
       <div style="margin-top:8px">
-        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:#4a80c0;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
+        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:#3b82f6;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">View Details</button>
       </div>
     </div>
   `
@@ -388,10 +388,10 @@ export default function ZoneHeatMap() {
             </div>
 
             <div className="flex flex-gap-xs mb-sm flex-wrap">
-              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill + '20', color: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill, border: `1px solid ${(SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill}40` }}>
+              <span className="severity-badge" data-severity={selectedZone.severity}>
                 {selectedZone.severity}
               </span>
-              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (COVERAGE_COLORS[selectedZone.coverageStatus] || '#999') + '20', color: COVERAGE_COLORS[selectedZone.coverageStatus] || '#999', border: `1px solid ${(COVERAGE_COLORS[selectedZone.coverageStatus] || '#999')}40` }}>
+              <span className="coverage-badge" data-coverage={selectedZone.coverageStatus}>
                 {selectedZone.coverageStatus} coverage
               </span>
             </div>

@@ -7,17 +7,17 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 
 const SHIFT_COLORS = {
-  Morning: { bg: 'rgba(218,157,66,.1)', text: 'var(--accent-orange)', border: 'rgba(218,157,66,.25)' },
-  Afternoon: { bg: 'rgba(74,128,192,.1)', text: 'var(--accent-blue-light)', border: 'rgba(74,128,192,.3)' },
-  Night: { bg: 'rgba(107,127,181,.1)', text: 'var(--accent-indigo)', border: 'rgba(107,127,181,.25)' },
-  'Full Day': { bg: 'rgba(63,185,80,.1)', text: 'var(--accent-green)', border: 'rgba(63,185,80,.3)' },
+  Morning: { bg: 'rgba(245,158,11,0.1)', text: 'var(--accent-orange)', border: 'rgba(245,158,11,0.25)' },
+  Afternoon: { bg: 'rgba(59,130,246,0.1)', text: 'var(--accent-blue-light)', border: 'rgba(59,130,246,0.3)' },
+  Night: { bg: 'rgba(129,140,248,0.1)', text: 'var(--accent-indigo)', border: 'rgba(129,140,248,0.25)' },
+  'Full Day': { bg: 'var(--success-soft)', text: 'var(--accent-green)', border: 'rgba(34,197,94,0.3)' },
 }
 
 const STATUS_COLORS = {
-  Scheduled: { bg: 'rgba(74,128,192,.1)', text: 'var(--accent-blue-light)', border: 'rgba(74,128,192,.3)' },
-  Active: { bg: 'rgba(63,185,80,.1)', text: 'var(--accent-green)', border: 'rgba(63,185,80,.3)' },
-  Completed: { bg: 'rgba(100,116,139,.1)', text: 'var(--gov-muted)', border: 'rgba(100,116,139,.3)' },
-  Cancelled: { bg: 'rgba(248,81,73,.1)', text: 'var(--accent-red)', border: 'rgba(248,81,73,.3)' },
+  Scheduled: { bg: 'rgba(59,130,246,0.1)', text: 'var(--accent-blue-light)', border: 'rgba(59,130,246,0.3)' },
+  Active: { bg: 'var(--success-soft)', text: 'var(--accent-green)', border: 'rgba(34,197,94,0.3)' },
+  Completed: { bg: 'rgba(100,116,139,0.1)', text: 'var(--gov-muted)', border: 'rgba(100,116,139,0.3)' },
+  Cancelled: { bg: 'var(--danger-soft)', text: 'var(--accent-red)', border: 'rgba(239,68,68,0.3)' },
 }
 
 const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other']

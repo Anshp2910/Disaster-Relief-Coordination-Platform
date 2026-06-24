@@ -12,8 +12,8 @@ const PIN_ICON = L.divIcon({
   html: `<svg width="30" height="42" viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="pinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#4a80c0"/>
-        <stop offset="100%" stop-color="#6b7fb5"/>
+        <stop offset="0%" stop-color="#3b82f6"/>
+        <stop offset="100%" stop-color="#818cf8"/>
       </linearGradient>
     </defs>
     <path d="M15 0C6.7 0 0 6.7 0 15c0 10.5 15 27 15 27s15-16.5 15-27C30 6.7 23.3 0 15 0z" fill="url(#pinGrad)"/>
@@ -260,7 +260,7 @@ export default function CreateRequest() {
                   className="absolute text-sm rounded-sm border-none"
                   style={{
                     right: 4, top: 4, bottom: 4, padding: '4px 12px',
-                    background: 'linear-gradient(135deg, #4a80c0, #6b7fb5)', color: '#fff',
+                    background: 'linear-gradient(135deg, var(--accent), var(--pri-600))', color: '#fff',
                     cursor: searching ? 'wait' : 'pointer',
                   }}
                 >

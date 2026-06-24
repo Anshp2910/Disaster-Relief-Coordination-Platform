@@ -295,7 +295,7 @@ export default function BulkImport() {
                     <tr
                       key={row._rowId}
                       style={{
-                        background: editingRow === row._rowId ? 'rgba(0,0,128,0.04)' : selected.has(row._rowId) ? 'rgba(19,136,8,0.03)' : 'var(--gov-bg)',
+                        background: editingRow === row._rowId ? 'var(--accent-soft)' : selected.has(row._rowId) ? 'var(--success-soft)' : 'var(--gov-bg)',
                         opacity: selected.has(row._rowId) ? 1 : 0.5,
                       }}
                     >
@@ -334,7 +334,7 @@ export default function BulkImport() {
         )}
 
         {result && (
-          <div className="mt-lg p rounded-sm" style={{ background: 'rgba(19,136,8,.06)', border: '1px solid rgba(19,136,8,.2)' }}>
+          <div className="mt-lg p rounded-sm" style={{ background: 'var(--success-soft)', border: '1px solid rgba(34,197,94,.2)' }}>
             <div className="text-semi" style={{ fontSize: 13, color: 'var(--accent-green)' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
             {result.errors?.length > 0 && (
               <div className="mt-sm">

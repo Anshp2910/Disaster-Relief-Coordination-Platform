@@ -35,7 +35,7 @@ function buildIncidentPopup(inc) {
   const stats = inc.stats || {}
   return `
     <div style="font-family:Arial,sans-serif;min-width:180px">
-      <div style="font-weight:700;font-size:13px;color:#4a80c0;margin-bottom:4px">${DISASTER_ICONS[inc.disasterType] || ''} ${escapeHtml(inc.name)}</div>
+      <div style="font-weight:700;font-size:13px;color:#3b82f6;margin-bottom:4px">${DISASTER_ICONS[inc.disasterType] || ''} ${escapeHtml(inc.name)}</div>
       <div style="font-size:12px;margin-bottom:6px">
         <span style="color:${color};font-weight:600">${escapeHtml(inc.severity)}</span> &middot; ${escapeHtml(inc.status)}
       </div>
@@ -290,7 +290,7 @@ export default function Incidents() {
               <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (SEVERITY_COLORS[selectedIncident.severity] || '#999') + '20', color: SEVERITY_COLORS[selectedIncident.severity] || '#999', border: `1px solid ${(SEVERITY_COLORS[selectedIncident.severity] || '#999')}40` }}>
                 {selectedIncident.severity}
               </span>
-              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: 'rgba(74,128,192,.1)', color: '#4a80c0', border: '1px solid rgba(74,128,192,.25)' }}>
+              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: 'var(--accent-soft)', color: 'var(--accent-blue)', border: '1px solid rgba(59,130,246,.25)' }}>
                 {selectedIncident.status}
               </span>
             </div>
