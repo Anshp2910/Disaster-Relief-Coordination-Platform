@@ -31,6 +31,12 @@ async function apiFetch(path, { method = 'GET', body, auth = true, formData = fa
 
     const data = await res.json().catch(() => ({}))
     if (!res.ok) {
+      if (res.status === 401 && auth) {
+        try { localStorage.removeItem('token'); localStorage.removeItem('user') } catch {}
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+          window.location.href = '/login'
+        }
+      }
       const msg = data?.error || `Request failed with status ${res.status}`
       throw new Error(msg)
     }

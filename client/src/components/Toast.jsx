@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef } from 'react'
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 
 const ToastContext = createContext(null)
 
@@ -7,6 +7,13 @@ let toastId = 0
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([])
   const timers = useRef({})
+
+  useEffect(() => {
+    return () => {
+      Object.values(timers.current).forEach(clearTimeout)
+      timers.current = {}
+    }
+  }, [])
 
   const removeToast = useCallback((id) => {
     if (timers.current[id]) {

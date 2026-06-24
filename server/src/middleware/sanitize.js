@@ -24,5 +24,15 @@ export function sanitizeBody(req, res, next) {
   if (req.body && typeof req.body === 'object') {
     req.body = sanitizeValue(req.body)
   }
+  if (req.query && typeof req.query === 'object') {
+    for (const [k, v] of Object.entries(req.query)) {
+      if (typeof v === 'string') req.query[k] = sanitizeString(v)
+    }
+  }
+  if (req.params && typeof req.params === 'object') {
+    for (const [k, v] of Object.entries(req.params)) {
+      if (typeof v === 'string') req.params[k] = sanitizeString(v)
+    }
+  }
   next()
 }
