@@ -6,8 +6,6 @@ import { clientApi } from '../api/client'
 import { useSocket } from '../hooks/useSocket'
 import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
-import ThemeSwitcher from './ThemeSwitcher'
 import { safeSetItem, safeRemoveItem } from '../utils/storage'
 import useFocusTrap from '../hooks/useFocusTrap'
 
@@ -108,7 +106,6 @@ export default function Header() {
   }, [mobileMenuOpen])
 
   const [sosLoading, setSosLoading] = useState(false)
-  const { mode: themeMode, setTheme } = useTheme()
 
   async function handleSOS() {
     if (!confirm(t('sos.confirm'))) return
@@ -180,18 +177,6 @@ export default function Header() {
                 title={!online ? 'Offline' : connected ? 'Connected' : 'Disconnected'}
                 className={`status-dot ${!online ? 'status-dot--offline' : connected ? 'status-dot--online' : 'status-dot--connecting'}`}
               />
-              <button
-                onClick={() => {
-                  const order = ['system', 'dark', 'light']
-                  const next = order[(order.indexOf(themeMode) + 1) % order.length]
-                  setTheme(next)
-                }}
-                title={themeMode === 'system' ? 'Auto (System)' : themeMode === 'dark' ? 'Dark mode' : 'Light mode'}
-                className="mode-toggle-btn"
-              >
-                {themeMode === 'system' ? '\u{1F310}' : themeMode === 'dark' ? '\u{1F319}' : '\u2600\uFE0F'}
-              </button>
-              <ThemeSwitcher />
               <NotificationBell />
               <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">
                 {sosLoading ? '...' : 'SOS'}
