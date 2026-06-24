@@ -1,6 +1,6 @@
 import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validate, validateObjectId } from '../middleware/validate.js'
 import { Feedback } from '../models/Feedback.js'
 import { Request } from '../models/Request.js'
 

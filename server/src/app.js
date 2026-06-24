@@ -67,7 +67,7 @@ export function createApp() {
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://fonts.googleapis.com"],
         connectSrc: ["'self'", "ws:", "wss:", "https://*.tile.openstreetmap.org", "https://nominatim.openstreetmap.org", ...allOrigins],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         workerSrc: ["'self'"],
         formAction: ["'self'"],
@@ -79,7 +79,7 @@ export function createApp() {
   const allowedOrigins = allOrigins
 
   function isOriginAllowed(origin) {
-    if (!origin) return true
+    if (!origin || origin === 'null') return false
     return allowedOrigins.includes(origin)
   }
 

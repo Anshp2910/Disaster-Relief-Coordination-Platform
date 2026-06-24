@@ -1,14 +1,22 @@
-function sanitizeString(str) {
+const DANGEROUS_PATTERNS = [
+  { regex: /<script[\s>]/gi, replacement: '<blocked-script>' },
+  { regex: /javascript\s*:/gi, replacement: 'blocked-javascript:' },
+  { regex: /on\w+\s*=/gi, replacement: 'blocked-event=' },
+  { regex: /data\s*:\s*text\s*\/\s*html/gi, replacement: 'blocked-data:' },
+  { regex: /expression\s*\(/gi, replacement: 'blocked-expression(' },
+]
+
+function stripDangerous(str) {
   if (typeof str !== 'string') return str
-  return str
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
+  let result = str
+  for (const { regex, replacement } of DANGEROUS_PATTERNS) {
+    result = result.replace(regex, replacement)
+  }
+  return result
 }
 
 function sanitizeValue(val) {
-  if (typeof val === 'string') return sanitizeString(val)
+  if (typeof val === 'string') return stripDangerous(val)
   if (Array.isArray(val)) return val.map(sanitizeValue)
   if (val && typeof val === 'object') {
     const clean = {}
@@ -26,12 +34,12 @@ export function sanitizeBody(req, res, next) {
   }
   if (req.query && typeof req.query === 'object') {
     for (const [k, v] of Object.entries(req.query)) {
-      if (typeof v === 'string') req.query[k] = sanitizeString(v)
+      if (typeof v === 'string') req.query[k] = stripDangerous(v)
     }
   }
   if (req.params && typeof req.params === 'object') {
     for (const [k, v] of Object.entries(req.params)) {
-      if (typeof v === 'string') req.params[k] = sanitizeString(v)
+      if (typeof v === 'string') req.params[k] = stripDangerous(v)
     }
   }
   next()

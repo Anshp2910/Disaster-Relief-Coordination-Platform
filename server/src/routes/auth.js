@@ -7,6 +7,41 @@ import { validate } from '../middleware/validate.js'
 
 export const authRouter = express.Router()
 
+const LOCKOUT_WINDOW = 15 * 60 * 1000
+const MAX_ATTEMPTS = 10
+const loginAttempts = new Map()
+
+function getLoginKey(email) {
+  return email.toLowerCase().trim()
+}
+
+function checkLockout(email) {
+  const key = getLoginKey(email)
+  const record = loginAttempts.get(key)
+  if (!record) return false
+  if (Date.now() - record.windowStart > LOCKOUT_WINDOW) {
+    loginAttempts.delete(key)
+    return false
+  }
+  if (record.count >= MAX_ATTEMPTS) return true
+  return false
+}
+
+function recordAttempt(email, success) {
+  const key = getLoginKey(email)
+  if (success) {
+    loginAttempts.delete(key)
+    return
+  }
+  const now = Date.now()
+  const record = loginAttempts.get(key)
+  if (!record || now - record.windowStart > LOCKOUT_WINDOW) {
+    loginAttempts.set(key, { count: 1, windowStart: now })
+  } else {
+    record.count++
+  }
+}
+
 authRouter.post('/register', validate('register'), async (req, res) => {
   try {
     const { email, password, role, displayName } = req.body || {}
@@ -44,14 +79,26 @@ authRouter.post('/login', validate('login'), async (req, res) => {
     const { email, password } = req.body || {}
     if (!email || !password) return res.status(400).json({ error: 'Missing email or password' })
 
+    if (checkLockout(email)) {
+      return res.status(429).json({ error: 'Too many attempts. Account locked for 15 minutes.' })
+    }
+
     const user = await User.findOne({ email })
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' })
+    if (!user) {
+      recordAttempt(email, false)
+      return res.status(401).json({ error: 'Invalid credentials' })
+    }
 
     const ok = await user.verifyPassword(password)
-    if (!ok) return res.status(401).json({ error: 'Invalid credentials' })
+    if (!ok) {
+      recordAttempt(email, false)
+      return res.status(401).json({ error: 'Invalid credentials' })
+    }
+
+    recordAttempt(email, true)
 
     const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getEnv('JWT_SECRET'), {
-      expiresIn: '7d',
+      expiresIn: '24h',
     })
 
     return res.json({

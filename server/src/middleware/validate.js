@@ -206,6 +206,18 @@ const schemas = {
   bulkImportRows: Joi.object({
     rows: Joi.array().min(1).max(1000).items(Joi.object()).required(),
   }),
+
+  fileUpload: Joi.object({
+    files: Joi.array().min(1).max(5).items(Joi.object({
+      data: Joi.string().required(),
+      filename: Joi.string().min(1).max(255).required(),
+      mimetype: Joi.string().valid(
+        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+        'application/pdf', 'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ).required(),
+    })).required(),
+  }),
 }
 
 const querySchemas = {

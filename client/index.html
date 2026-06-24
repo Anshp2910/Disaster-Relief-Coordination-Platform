@@ -45,6 +45,7 @@
 
     <!-- Preload critical chunks (Vite transforms this in dev, ignored in prod) -->
     <link rel="modulepreload" href="/src/main.jsx" />
+    <script src="/theme-init.js"></script>
 
     <title>Disaster Relief Coordination Platform</title>
     <style>
@@ -101,24 +102,6 @@
         </div>
       </div>
     </div>
-    <script>
-      (function() {
-        var saved;
-        try { saved = localStorage.getItem('theme') } catch(e) {}
-        var isLight;
-        if (saved === 'light') isLight = true;
-        else if (saved === 'dark') isLight = false;
-        else isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-        if (isLight) document.documentElement.classList.add('dark');
-      })();
-    </script>
     <script type="module" src="/src/main.jsx"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {})
-        })
-      }
-    </script>
   </body>
 </html>

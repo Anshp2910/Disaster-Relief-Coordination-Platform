@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import Request from '../models/Request.js'
-import Resource from '../models/Resource.js'
-import Zone from '../models/Zone.js'
-import Incident from '../models/Incident.js'
-import SOS from '../models/SosAlert.js'
+import { Request } from '../models/Request.js'
+import { Resource } from '../models/Resource.js'
+import { Zone } from '../models/Zone.js'
+import { Incident } from '../models/Incident.js'
+import { SosAlert } from '../models/SosAlert.js'
 
 const router = Router()
 
@@ -23,7 +23,7 @@ router.get('/overview', async (req, res) => {
       Resource.countDocuments({ status: 'Deployed' }),
       Zone.countDocuments(),
       Incident.countDocuments({ status: { $ne: 'Resolved' } }),
-      SOS.countDocuments({ resolved: false }),
+      SosAlert.countDocuments({ resolved: false }),
       Request.aggregate([
         { $group: { _id: '$status', count: { $sum: 1 } } },
       ]),

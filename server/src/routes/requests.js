@@ -343,7 +343,7 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, validateObjectId(
   }
 })
 
-requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), async (req, res) => {
+requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), validate('fileUpload'), async (req, res) => {
   try {
     const { id } = req.params
     const item = await Request.findById(id)
