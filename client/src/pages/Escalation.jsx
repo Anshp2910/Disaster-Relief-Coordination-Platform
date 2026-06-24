@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
+import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
@@ -127,7 +128,7 @@ export default function Escalation() {
       </div>
 
       {loading ? (
-        <div className="small muted" style={{ marginTop: 16 }}>{t('escalation.loading')}</div>
+        <div style={{ marginTop: 16 }}><SkeletonList count={3} lines={2} /></div>
       ) : filteredItems.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 24 }}>{search ? t('escalation.noMatch') : t('escalation.noEscalated')}</div>
       ) : (

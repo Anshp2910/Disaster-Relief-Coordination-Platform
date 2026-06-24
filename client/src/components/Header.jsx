@@ -35,6 +35,7 @@ export default function Header() {
   const location = useLocation()
   const { t, i18n } = useTranslation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const { socket, connected } = useSocket()
   const toast = useToast()
   const { user: currentUser, isAuthenticated, logout: authLogout } = useAuth()
@@ -47,6 +48,11 @@ export default function Header() {
     authLogout()
     navigate('/login')
     setMobileMenuOpen(false)
+    setShowLogoutConfirm(false)
+  }
+
+  function confirmLogout() {
+    setShowLogoutConfirm(true)
   }
 
   function changeLanguage(langCode) {
@@ -185,7 +191,7 @@ export default function Header() {
               <button onClick={() => handleNav('/profile')} className="gov-nav-link gov-nav-link-user">
                 {currentUser?.displayName || t('nav.profile')}
               </button>
-              <button onClick={logout} className="gov-nav-link">
+              <button onClick={confirmLogout} className="gov-nav-link">
                 {t('nav.logout')}
               </button>
             </div>
@@ -217,9 +223,61 @@ export default function Header() {
           <button onClick={() => handleNav('/profile')} className="gov-mobile-link">
             {currentUser?.displayName || t('nav.profile')}
           </button>
-          <button onClick={logout} className="gov-mobile-link">
+          <button onClick={confirmLogout} className="gov-mobile-link">
             {t('nav.logout')}
           </button>
+        </div>
+      )}
+
+      {showLogoutConfirm && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 99999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(3px)',
+          }}
+        >
+          <div
+            style={{
+              background: 'var(--gov-card-bg)',
+              border: '1px solid var(--gov-border)',
+              borderRadius: 16, padding: 32, maxWidth: 380, width: '90%',
+              textAlign: 'center',
+              boxShadow: '0 16px 64px rgba(0,0,0,0.4)',
+            }}
+          >
+            <div style={{ fontSize: 40, marginBottom: 12 }}>&#128682;</div>
+            <h3 style={{ margin: '0 0 8px', fontSize: 18, color: 'var(--gov-text)' }}>
+              {t('header.logoutTitle') || 'Logout'}
+            </h3>
+            <p style={{ margin: '0 0 20px', color: 'var(--gov-muted)', fontSize: 14 }}>
+              {t('header.logoutConfirm') || 'Are you sure you want to logout?'}
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button
+                onClick={logout}
+                style={{
+                  background: 'var(--accent-red)',
+                  color: '#fff', border: 'none',
+                  padding: '10px 24px', borderRadius: 8, fontSize: 14,
+                  fontWeight: 600, cursor: 'pointer',
+                }}
+              >
+                {t('header.logoutYes') || 'Logout'}
+              </button>
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                style={{
+                  background: 'var(--gov-card-bg)',
+                  color: 'var(--gov-text)', border: '1px solid var(--gov-border)',
+                  padding: '10px 24px', borderRadius: 8, fontSize: 14,
+                  cursor: 'pointer',
+                }}
+              >
+                {t('header.logoutNo') || 'Cancel'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </header>

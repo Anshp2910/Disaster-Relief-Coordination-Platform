@@ -42,6 +42,21 @@ export function ThemeProvider({ children }) {
     return () => mq.removeEventListener('change', handleChange)
   }, [mode])
 
+  useEffect(() => {
+    function handleStorage(e) {
+      if (e.key !== 'theme') return
+      const newMode = e.newValue || 'system'
+      setMode(newMode)
+      if (newMode === 'system') {
+        setResolvedTheme(getSystemTheme())
+      } else if (newMode === 'light' || newMode === 'dark') {
+        setResolvedTheme(newMode)
+      }
+    }
+    window.addEventListener('storage', handleStorage)
+    return () => window.removeEventListener('storage', handleStorage)
+  }, [])
+
   const setTheme = useCallback((newMode) => {
     setMode(newMode)
     safeSetItem('theme', newMode)

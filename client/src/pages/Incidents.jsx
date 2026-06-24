@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
+import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
@@ -259,6 +260,11 @@ export default function Incidents() {
         </div>
       </div>
 
+      {loading ? (
+        <div style={{ marginTop: 12 }}>
+          <SkeletonList count={3} lines={2} />
+        </div>
+      ) : (
       <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 0', minWidth: 0 }}>
           <div className="card" style={{ padding: 0 }}>
@@ -310,6 +316,7 @@ export default function Incidents() {
           </div>
         )}
       </div>
+      )}
 
       {showForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
