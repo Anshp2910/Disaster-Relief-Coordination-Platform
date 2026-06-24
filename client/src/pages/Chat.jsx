@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSocket } from '../hooks/useSocket'
+import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 
@@ -122,7 +123,7 @@ export default function Chat({ requestId, onClose }) {
             {t('chat.loadEarlier')}
           </button>
         )}
-        {loading && <div className="small muted text-center">{t('chat.loadingChat')}</div>}
+        {loading && <SkeletonList count={4} lines={1} />}
         {!loading && messages.length === 0 && <div className="small muted text-center">{t('chat.noMessages')}</div>}
 
         {messages.map((m) => {

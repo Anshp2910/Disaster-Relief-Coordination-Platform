@@ -4,6 +4,7 @@ import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
+import { SkeletonCard } from '../components/Skeleton'
 
 const PIN_ICON = L.divIcon({
   className: '',

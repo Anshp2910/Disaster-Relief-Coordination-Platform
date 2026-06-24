@@ -20,7 +20,8 @@
     "schedules": "Schedules",
     "bulkImport": "Bulk Import",
     "escalation": "Escalation",
-    "geofencing": "Geofencing"
+    "geofencing": "Geofencing",
+    "logoutConfirm": "Are you sure you want to logout?"
   },
   "auth": {
     "appName": "DisasterRelief",

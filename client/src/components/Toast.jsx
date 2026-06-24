@@ -41,7 +41,7 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      <div className="fixed flex flex-col flex-gap-sm">
+      <div className="toast-container">
         {toasts.map((t) => (
           <div
             key={t.id}
@@ -57,12 +57,6 @@ export function ToastProvider({ children }) {
           </div>
         ))}
       </div>
-      <style>{`
-        @keyframes toast-slide-in {
-          from { opacity: 0; transform: translateX(40px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
     </ToastContext.Provider>
   )
 }

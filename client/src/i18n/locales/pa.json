@@ -17,7 +17,8 @@
     "schedules": "ਸਮਾਂ ਪੱਤਰ",
     "bulkImport": "ਬਲਕ ਆਯਾਤ",
     "escalation": "ਐਸਕਲੇਸ਼ਨ",
-    "geofencing": "ਜੀਓਫੈਂਸਿੰਗ"
+    "geofencing": "ਜੀਓਫੈਂਸਿੰਗ",
+    "logoutConfirm": "Are you sure you want to logout?"
   },
   "auth": {
     "appName": "ਆਸਾਂਟ ਰਾਹਤ",

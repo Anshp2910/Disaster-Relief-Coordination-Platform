@@ -102,7 +102,7 @@ export default function Incidents() {
     }
   }, [page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
 
-  useEffect(() => { load() }, [load, page, filterSeverity, filterDisaster, filterStatus, debouncedSearch])
+  useEffect(() => { load() }, [load])
 
   useAutoRefresh(load, { interval: 20000 })
 
@@ -112,18 +112,20 @@ export default function Incidents() {
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
-    const map = initLeafletMap(mapRef.current)
-    mapInstanceRef.current = map
+    try {
+      const map = initLeafletMap(mapRef.current)
+      if (!map) return
+      mapInstanceRef.current = map
+    } catch (_) { return }
     const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
     window.addEventListener('resize', onResize)
     if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
     return () => {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
-      cleanupLeafletMap(map)
-      mapInstanceRef.current = null
+      const m = mapInstanceRef.current; if (m) { cleanupLeafletMap(m); mapInstanceRef.current = null }
     }
-  }, [])
+  }, [loading])
 
   useEffect(() => {
     const map = mapInstanceRef.current

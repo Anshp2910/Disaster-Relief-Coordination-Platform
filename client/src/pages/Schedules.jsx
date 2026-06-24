@@ -115,7 +115,7 @@ export default function Schedules() {
     }
   }
 
-  useEffect(() => { load() }, [load, page, filterStatus, filterShift, filterZone, dateFrom, dateTo])
+  useEffect(() => { load() }, [load])
   useEffect(() => { loadDropdowns() }, [])
 
   useAutoRefresh(load, { interval: 20000 })

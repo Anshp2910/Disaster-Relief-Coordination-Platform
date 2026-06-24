@@ -124,8 +124,8 @@ export default function Dashboard() {
     }
   }, [])
 
-  useEffect(() => { load() }, [load, page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch])
-  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [loadMapItems, viewMode, filterStatus, filterPriority, filterCategory, debouncedSearch])
+  useEffect(() => { load() }, [load])
+  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [loadMapItems, viewMode])
 
   useAutoRefresh(load, { interval: 20000 })
 

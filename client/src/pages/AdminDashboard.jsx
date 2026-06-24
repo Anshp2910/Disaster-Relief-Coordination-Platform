@@ -5,6 +5,7 @@ import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
+import { SkeletonList } from '../components/Skeleton'
 
 const STATUS_COLORS = {
   Open: { bg: 'rgba(74,128,192,.1)', border: 'rgba(74,128,192,.25)', text: 'var(--color-open)' },
@@ -524,10 +525,7 @@ export default function AdminDashboard() {
 
       {loading ? (
         <div className="card">
-          <div className="admin-loading">
-            <div className="admin-spinner" />
-            {t('admin.loadingData')}
-          </div>
+          <SkeletonList count={6} lines={2} />
         </div>
       ) : activeTab === 'stats' ? (
         <StatsPanel stats={stats} />

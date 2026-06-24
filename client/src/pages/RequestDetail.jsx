@@ -5,6 +5,7 @@ import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
+import { SkeletonCard } from '../components/Skeleton'
 import Chat from './Chat'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
@@ -234,7 +235,7 @@ export default function RequestDetail() {
     }
   }
 
-  if (loading) return <div className="container"><div className="card"><div className="small muted">{t('dashboard.loading')}</div></div></div>
+  if (loading) return <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
   if (error) return <div className="container"><div className="card"><div className="errorText">{error}</div></div></div>
   if (!item) return null
 

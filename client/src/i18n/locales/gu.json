@@ -17,7 +17,8 @@
     "schedules": "સમયપત્રક",
     "bulkImport": "બલ્ક આયાત",
     "escalation": "એસ્કેલેશન",
-    "geofencing": "જિયોફેન્સિંગ"
+    "geofencing": "જિયોફેન્સિંગ",
+    "logoutConfirm": "Are you sure you want to logout?"
   },
   "auth": {
     "appName": "આપત્તિ રાહત",

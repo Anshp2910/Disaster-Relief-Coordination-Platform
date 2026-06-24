@@ -272,11 +272,11 @@ export default function Header() {
                 })}
               </svg>
             </div>
-            <h3 className="modal-title">Logout</h3>
-            <p className="modal-desc">Are you sure you want to logout?</p>
+            <h3 className="modal-title">{t('nav.logout')}</h3>
+            <p className="modal-desc">{t('nav.logoutConfirm')}</p>
             <div className="modal-actions">
-              <button onClick={logout} className="btn btn-danger">Logout</button>
-              <button onClick={() => setShowLogoutConfirm(false)} className="btn">Cancel</button>
+              <button onClick={logout} className="btn btn-danger">{t('nav.logout')}</button>
+              <button onClick={() => setShowLogoutConfirm(false)} className="btn">{t('common.cancel')}</button>
             </div>
           </div>
         </div>

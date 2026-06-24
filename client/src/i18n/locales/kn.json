@@ -17,7 +17,8 @@
     "schedules": "ವೇಳಾಪಟ್ಟಿ",
     "bulkImport": "ಬಲ್ಕ್ ಆಮದು",
     "escalation": "ಎಸ್ಕಲೇಶನ್",
-    "geofencing": "ಜಿಯೋಫೆನ್ಸಿಂಗ್"
+    "geofencing": "ಜಿಯೋಫೆನ್ಸಿಂಗ್",
+    "logoutConfirm": "Are you sure you want to logout?"
   },
   "auth": {
     "appName": "ಅಪಘಾತ ನಿವಾರಣೆ",
