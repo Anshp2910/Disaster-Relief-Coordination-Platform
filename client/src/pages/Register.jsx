@@ -70,21 +70,27 @@ export default function Register() {
           <form onSubmit={onSubmit} className="inputGrid">
             {error ? <div className="errorText">{error}</div> : null}
 
+            <label htmlFor="reg-name" className="sr-only">{t('auth.displayName')}</label>
             <input
+              id="reg-name"
               placeholder={t('auth.displayName')}
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               type="text"
               required
             />
+            <label htmlFor="reg-email" className="sr-only">{t('auth.email')}</label>
             <input
+              id="reg-email"
               placeholder={t('auth.email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               required
             />
+            <label htmlFor="reg-password" className="sr-only">{t('auth.password')}</label>
             <input
+              id="reg-password"
               placeholder={t('auth.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

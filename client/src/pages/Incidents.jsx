@@ -8,6 +8,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
+import { useAuth } from '../context/AuthContext'
 
 const DISASTER_ICONS = {
   Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
@@ -21,14 +22,6 @@ const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DEFAULT_CENTER = [20.5937, 78.9629]
-
-function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem('user') || 'null')
-  } catch {
-    return null
-  }
-}
 
 function buildIncidentPopup(inc) {
   const color = SEVERITY_COLORS[inc.severity] || '#999'
@@ -81,7 +74,7 @@ export default function Incidents() {
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
 
-  const currentUser = getCurrentUser()
+  const { user: currentUser } = useAuth()
 
   const load = useCallback(async () => {
     setLoading(true)

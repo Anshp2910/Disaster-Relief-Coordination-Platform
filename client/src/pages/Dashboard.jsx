@@ -8,6 +8,7 @@ import { useDebounce } from '../hooks/useDebounce'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useToast } from '../components/Toast'
+import { useAuth } from '../context/AuthContext'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
@@ -174,9 +175,7 @@ export default function Dashboard() {
     setPage(1)
   }
 
-  const currentUser = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  }, [])
+  const { user: currentUser } = useAuth()
 
   const filterOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
@@ -340,13 +339,13 @@ export default function Dashboard() {
           <>
             <div className="card p-0 relative mt-lg">
               {mapLoading && (
-                <div className="flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--bg-elevated)', zIndex: 1000 }}>
-                  <div style={{ width: 24, height: 24, border: '3px solid var(--gov-border)', borderTopColor: 'var(--gov-blue)', borderRadius: '50%', animation: 'admin-spin 0.7s linear infinite' }} />
+                <div className="flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
+                  <div className="loading-spinner" />
                 </div>
               )}
-              <div ref={mapRef} className="map-container-full w-full" style={{ height: '70vh' }} />
+              <div ref={mapRef} className="map-container-full w-full" />
               {!mapLoading && !error && mapItems.length === 0 && (
-                <div className="flex flex-col flex-center" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--bg-elevated)', zIndex: 1000 }}>
+                <div className="flex flex-col flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
                   <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
                   <div className="muted">{t('dashboard.noRequests')}</div>
                 </div>
@@ -371,7 +370,7 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const toast = useToast()
-  const user = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null } })()
+  const { user } = useAuth()
   const [deleting, setDeleting] = useState(false)
   const isOwner = user?.id && item.createdBy && item.createdBy._id ? item.createdBy._id === user.id : user?.id && String(item.createdBy) === String(user.id)
   const canEdit = isOwner || user?.role === 'admin'

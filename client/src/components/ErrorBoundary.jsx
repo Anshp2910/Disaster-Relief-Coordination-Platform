@@ -1,6 +1,7 @@
 import { Component } from 'react'
+import { withTranslation } from 'react-i18next'
 
-export default class ErrorBoundary extends Component {
+class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
     this.state = { hasError: false, error: null }
@@ -40,16 +41,17 @@ export default class ErrorBoundary extends Component {
   }
 
   render() {
+    const { t } = this.props
     if (this.state.hasError) {
       return (
         <div className="flex-center" role="alert">
           <div className="text-center p-2xl rounded-lg shadow">
             <div className="text-3xl mb-lg">&#9888;</div>
             <h1 className="text-xl text-gradient m-0 mb-sm">
-              Something went wrong
+              {t('common.somethingWentWrong')}
             </h1>
             <p className="text-sm text-muted m-0 mb-lg">
-              An unexpected error occurred. Please try refreshing the page.
+              {t('common.unexpectedError')}
             </p>
             <button
               onClick={() => {
@@ -57,9 +59,9 @@ export default class ErrorBoundary extends Component {
                 window.location.href = '/dashboard'
               }}
               className="btnPrimary"
-              aria-label="Go to Dashboard"
+              aria-label={t('common.goToDashboard')}
             >
-              Go to Dashboard
+              {t('common.goToDashboard')}
             </button>
           </div>
         </div>
@@ -69,3 +71,5 @@ export default class ErrorBoundary extends Component {
     return this.props.children
   }
 }
+
+export default withTranslation()(ErrorBoundary)

@@ -7,6 +7,7 @@ import { useSocket } from '../hooks/useSocket'
 import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
 
 function useOnlineStatus() {
   const [online, setOnline] = useState(navigator.onLine)
@@ -21,16 +22,6 @@ function useOnlineStatus() {
     }
   }, [])
   return online
-}
-
-function safeGetItem(key) {
-  try { return localStorage.getItem(key) } catch { return null }
-}
-function safeSetItem(key, value) {
-  try { localStorage.setItem(key, value) } catch {}
-}
-function safeRemoveItem(key) {
-  try { localStorage.removeItem(key) } catch {}
 }
 
 const LANGUAGES = [
@@ -101,6 +92,15 @@ export default function Header() {
       ]
     : []
   , [isAuthenticated, currentUser, t])
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileMenuOpen])
 
   const [sosLoading, setSosLoading] = useState(false)
   const { mode: themeMode, setTheme } = useTheme()
@@ -230,24 +230,31 @@ export default function Header() {
       )}
 
       {mobileMenuOpen && isAuthenticated && (
-        <div className="gov-mobile-menu">
-          {navLinks.map((link) => (
-            <button
-              key={link.path}
-              onClick={() => handleNav(link.path)}
-              className={`gov-mobile-link ${location.pathname === link.path ? 'active' : ''}`}
-            >
-              {link.label}
+        <>
+          <div className="gov-mobile-backdrop" onClick={() => setMobileMenuOpen(false)} />
+          <div className="gov-mobile-menu">
+            <div className="gov-mobile-header">
+              <span className="gov-mobile-user-name">{currentUser?.displayName || ''}</span>
+              <button className="gov-mobile-close" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">✕</button>
+            </div>
+            {navLinks.map((link) => (
+              <button
+                key={link.path}
+                onClick={() => handleNav(link.path)}
+                className={`gov-mobile-link ${location.pathname === link.path ? 'active' : ''}`}
+              >
+                {link.label}
+              </button>
+            ))}
+            <hr className="gov-mobile-divider" />
+            <button onClick={() => handleNav('/profile')} className="gov-mobile-link">
+              {currentUser?.displayName || t('nav.profile')}
             </button>
-          ))}
-          <hr className="gov-mobile-divider" />
-          <button onClick={() => handleNav('/profile')} className="gov-mobile-link">
-            {currentUser?.displayName || t('nav.profile')}
-          </button>
-          <button onClick={confirmLogout} className="gov-mobile-link">
-            {t('nav.logout')}
-          </button>
-        </div>
+            <button onClick={confirmLogout} className="gov-mobile-link">
+              {t('nav.logout')}
+            </button>
+          </div>
+        </>
       )}
 
       {showLogoutConfirm && (

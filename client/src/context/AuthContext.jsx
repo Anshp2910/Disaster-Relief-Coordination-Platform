@@ -1,29 +1,12 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import IdleWarningModal from '../components/IdleWarningModal'
+import { safeGetItem, safeSetItem, safeRemoveItem, parseUser } from '../utils/storage'
 
 const AuthContext = createContext(null)
 
 const IDLE_TIMEOUT = 10 * 60 * 1000
 const WARNING_DURATION = 60 * 1000
 const ACTIVITY_EVENTS = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart']
-
-function safeGetItem(key) {
-  try { return localStorage.getItem(key) } catch { return null }
-}
-function safeSetItem(key, value) {
-  try { localStorage.setItem(key, value) } catch {}
-}
-function safeRemoveItem(key) {
-  try { localStorage.removeItem(key) } catch {}
-}
-
-function parseUser() {
-  try {
-    return JSON.parse(safeGetItem('user') || 'null')
-  } catch {
-    return null
-  }
-}
 
 function parseTokenExpiry() {
   try {

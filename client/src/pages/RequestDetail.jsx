@@ -6,6 +6,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { SkeletonCard } from '../components/Skeleton'
+import { useAuth } from '../context/AuthContext'
 import Chat from './Chat'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
@@ -34,17 +35,11 @@ function Badge({ label, colors, colorKey }) {
   )
 }
 
-function useCurrentUser() {
-  return (() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
-}
-
 export default function RequestDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const currentUser = useCurrentUser()
+  const { user: currentUser } = useAuth()
   const fileRef = useRef()
   const toast = useToast()
 
@@ -523,7 +518,7 @@ export default function RequestDetail() {
 
       {/* File Preview Modal */}
       {previewFile && (
-        <div className="fixed flex-center" style={{ inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, padding: 20 }} onClick={() => setPreviewFile(null)}>
+        <div className="fixed flex-center" style={{ inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, padding: 'var(--space-xl)' }} onClick={() => setPreviewFile(null)}>
           <div className="relative" style={{ maxWidth: '90vw', maxHeight: '85vh' }} onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setPreviewFile(null)} className="absolute bg-none border-none cursor-pointer" style={{ top: -32, right: 0, color: 'white', fontSize: 24 }}>✕</button>
             {previewFile.mimetype?.startsWith('image/') ? (

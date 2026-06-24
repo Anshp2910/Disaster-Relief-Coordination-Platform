@@ -68,14 +68,18 @@ export default function Login() {
           <form onSubmit={onSubmit} className="inputGrid">
             {error ? <div className="errorText">{error}</div> : null}
 
+            <label htmlFor="login-email" className="sr-only">{t('auth.email')}</label>
             <input
+              id="login-email"
               placeholder={t('auth.email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               required
             />
+            <label htmlFor="login-password" className="sr-only">{t('auth.password')}</label>
             <input
+              id="login-password"
               placeholder={t('auth.password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

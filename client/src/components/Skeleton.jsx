@@ -24,6 +24,6 @@ export function SkeletonList({ count = 4, lines = 3 }) {
 
 export function SkeletonMap({ height = '70vh' }) {
   return (
-    <div className="sk-map" style={{ height, width: '100%', borderRadius: 8, background: 'linear-gradient(110deg, #e8e8e8 8%, #f5f5f5 18%, #e8e8e8 33%)', backgroundSize: '200% 100%', animation: 'sk-shimmer 1.5s linear infinite' }} aria-hidden="true" />
+    <div className="sk-map" style={{ height }} aria-hidden="true" />
   )
 }

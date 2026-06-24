@@ -1,16 +1,10 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { safeGetItem, safeSetItem } from '../utils/storage'
 
 const ThemeContext = createContext()
 
 function getSystemTheme() {
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
-}
-
-function safeGetItem(key) {
-  try { return localStorage.getItem(key) } catch { return null }
-}
-function safeSetItem(key, value) {
-  try { localStorage.setItem(key, value) } catch {}
 }
 
 function getInitialTheme() {

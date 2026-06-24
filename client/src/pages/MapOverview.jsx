@@ -185,22 +185,22 @@ export default function MapOverview() {
 
       <div className="card p-0 relative">
         {loading && (
-          <div style={{ position: 'absolute', inset: 0, zIndex: 1000 }}>
+          <div className="inset-0 z-100">
             <SkeletonMap height="70vh" />
           </div>
         )}
 
-        <div ref={mapRef} className="map-container-full w-full" style={{ height: '70vh' }} />
+        <div ref={mapRef} className="map-container-full w-full" />
 
         {!loading && error && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-elevated)', zIndex: 1000 }}>
-            <div style={{ fontSize: 16, color: 'var(--gov-danger)', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
+          <div className="flex flex-col flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
+            <div className="text-base" style={{ color: 'var(--danger)', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
             <div className="muted">{error}</div>
           </div>
         )}
 
         {!loading && !error && items.length === 0 && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-elevated)', zIndex: 1000 }}>
+          <div className="flex flex-col flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
             <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
             <div className="muted">{t('dashboard.noRequests')}</div>
           </div>

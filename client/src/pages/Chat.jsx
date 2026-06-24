@@ -4,16 +4,11 @@ import { useSocket } from '../hooks/useSocket'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
-
-function useCurrentUser() {
-  return (() => {
-    try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-  })()
-}
+import { useAuth } from '../context/AuthContext'
 
 export default function Chat({ requestId, onClose }) {
   const { t } = useTranslation()
-  const currentUser = useCurrentUser()
+  const { user: currentUser } = useAuth()
   const { socket } = useSocket()
   const bottomRef = useRef(null)
   const inputRef = useRef(null)

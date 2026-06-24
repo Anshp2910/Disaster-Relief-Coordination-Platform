@@ -7,6 +7,7 @@ import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
+import { useAuth } from '../context/AuthContext'
 
 const SEVERITY_COLORS = {
   Critical: { fill: 'var(--severity-critical)', stroke: 'var(--severity-critical-stroke)', weight: 0.6 },
@@ -30,14 +31,6 @@ const DEFAULT_CENTER = [20.5937, 78.9629]
 const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
-
-function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem('user') || 'null')
-  } catch {
-    return null
-  }
-}
 
 function buildPopup(zone, color) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || '#999'
@@ -128,7 +121,8 @@ export default function ZoneHeatMap() {
       const center = map.getCenter()
       const data = await clientApi.getWeatherCurrent(center.lat.toFixed(4), center.lng.toFixed(4))
       setWeather(data)
-    } catch {
+    } catch (e) {
+      console.warn('[ZoneHeatMap] Weather fetch failed:', e)
     } finally {
       setWeatherLoading(false)
     }
@@ -261,7 +255,7 @@ export default function ZoneHeatMap() {
     }
   }
 
-  const currentUser = getCurrentUser()
+  const { user: currentUser } = useAuth()
   const totalOpen = useMemo(() => zones.reduce((s, z) => s + z.openRequests, 0), [zones])
   const totalGap = useMemo(() => zones.filter((z) => z.coverageStatus === 'Gap').length, [zones])
   const totalAffected = useMemo(() => zones.reduce((s, z) => s + (z.affectedPopulation || 0), 0), [zones])
@@ -340,7 +334,7 @@ export default function ZoneHeatMap() {
         <div className="flex-1">
           <div className="card p-0 relative">
             {loading && (
-              <div className="absolute z-100" style={{ inset: 0 }}>
+              <div className="inset-0 z-100">
                 <SkeletonMap height="65vh" />
               </div>
             )}

@@ -5,6 +5,7 @@ import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
+import { useAuth } from '../context/AuthContext'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(245,158,11,0.1)', text: 'var(--accent-orange)', border: 'rgba(245,158,11,0.25)' },
@@ -23,14 +24,6 @@ const STATUS_COLORS = {
 const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other']
 const SHIFT_OPTIONS = ['Morning', 'Afternoon', 'Night', 'Full Day']
 const STATUS_FILTER_OPTIONS = ['All', 'Scheduled', 'Active', 'Completed', 'Cancelled']
-
-function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem('user') || 'null')
-  } catch {
-    return null
-  }
-}
 
 function formatDate(d) {
   return new Date(d).toLocaleDateString('en-IN', {
@@ -74,7 +67,7 @@ export default function Schedules() {
   const [zones, setZones] = useState([])
   const [form, setForm] = useState(DEFAULT_FORM)
 
-  const currentUser = getCurrentUser()
+  const { user: currentUser } = useAuth()
 
   const load = useCallback(async () => {
     setLoading(true)

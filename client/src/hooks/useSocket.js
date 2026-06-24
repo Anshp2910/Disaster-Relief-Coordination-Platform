@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { io } from 'socket.io-client'
+import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -41,16 +42,6 @@ function getSocket() {
     }
   }
   return socket
-}
-
-function safeGetItem(key) {
-  try { return localStorage.getItem(key) } catch { return null }
-}
-function safeSetItem(key, value) {
-  try { localStorage.setItem(key, value) } catch {}
-}
-function safeRemoveItem(key) {
-  try { localStorage.removeItem(key) } catch {}
 }
 
 export function useSocket() {

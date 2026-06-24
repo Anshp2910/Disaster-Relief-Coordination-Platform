@@ -1,13 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-
-function getCurrentUser() {
-  try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
-}
+import { useAuth } from '../context/AuthContext'
 
 export default function Footer() {
   const { t } = useTranslation()
-  const currentUser = getCurrentUser()
+  const { user: currentUser } = useAuth()
 
   return (
     <footer className="gov-footer">
