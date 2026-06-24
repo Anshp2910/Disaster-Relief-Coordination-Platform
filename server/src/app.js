@@ -51,14 +51,13 @@ export function createApp() {
   app.set('trust proxy', 1)
   const clientUrl = getEnv('CLIENT_URL', 'http://localhost:5173')
 
-  const extraOrigins = clientUrl !== 'http://localhost:5173' ? [clientUrl] : []
-  const allOrigins = [
-    ...extraOrigins,
+  const baseOrigins = [
     'http://localhost:5173',
     'http://localhost:5001',
     'https://disasterhelper.dpdns.org',
     'https://disaster-relief-coordination-platform-l6mk.onrender.com',
   ]
+  const allOrigins = [...new Set([...baseOrigins, clientUrl])]
 
   app.use(helmet({
     contentSecurityPolicy: {
@@ -79,7 +78,8 @@ export function createApp() {
   const allowedOrigins = allOrigins
 
   function isOriginAllowed(origin) {
-    if (!origin || origin === 'null') return false
+    if (!origin) return true
+    if (origin === 'null') return false
     return allowedOrigins.includes(origin)
   }
 
