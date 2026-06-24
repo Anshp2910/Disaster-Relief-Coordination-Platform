@@ -10,3 +10,7 @@ server/uploads
 .env.production.local
 .DS_Store
 *.log
+
+test-results/
+playwright-report/
+playwright/.cache
