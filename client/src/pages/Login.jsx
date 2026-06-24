@@ -63,7 +63,7 @@ export default function Login() {
           <h1 className="govt-app-title">{t('auth.appName')}</h1>
           <p className="govt-app-slogan">{t('auth.slogan')}</p>
           <hr className="govt-divider" />
-          <h2 className="pageTitle" style={{ textAlign: 'left', fontSize: 18 }}>{t('auth.loginTitle')}</h2>
+          <h2 className="pageTitle text-left text-xl">{t('auth.loginTitle')}</h2>
 
           <form onSubmit={onSubmit} className="inputGrid">
             {error ? <div className="errorText">{error}</div> : null}

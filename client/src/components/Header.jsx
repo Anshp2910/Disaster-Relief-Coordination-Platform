@@ -135,7 +135,7 @@ export default function Header() {
         </div>
       )}
       <div className="gov-top-strip">
-        <div className="gov-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="gov-container flex-between">
           <span className="gov-top-strip-text">{t('topStrip')}</span>
           <select
             value={i18n.language}
@@ -153,7 +153,7 @@ export default function Header() {
       </div>
 
       <div className="gov-header-main">
-        <div className="gov-container" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div className="gov-container flex flex-gap-lg">
           <img src="/images/logo.svg" alt="Logo" className="gov-logo" />
           <div className="gov-title-group">
             <div className="gov-app-title">{t('appTitle')}</div>
@@ -164,7 +164,7 @@ export default function Header() {
 
       {!isAuthPage && (
         <div className="gov-nav-bar">
-          <nav className="gov-nav" style={{ flex: 1, overflowX: 'auto' }}>
+          <nav className="gov-nav flex-1 overflow-x-auto">
             <div className="gov-nav-inner">
               {navLinks.map((link) => (
                 <button
@@ -252,7 +252,7 @@ export default function Header() {
 
       {showLogoutConfirm && (
         <div className="modal-overlay" onClick={() => setShowLogoutConfirm(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+          <div className="modal-card text-center" onClick={(e) => e.stopPropagation()}>
             <div className="modal-icon">
               <svg width="40" height="40" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>

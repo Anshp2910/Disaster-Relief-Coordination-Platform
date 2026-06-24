@@ -263,8 +263,8 @@ export default function Schedules() {
                   <div className="flex-1">
                     <div className="flex flex-gap-sm flex-wrap mb-xs">
                       <span className="text-bold text-base">{item.userId?.displayName || 'Volunteer'}</span>
-                      <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>{item.shift}</span>
-                      <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>{item.status}</span>
+                      <span className="text-xs p-xs rounded-sm text-semi" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>{item.shift}</span>
+                      <span className="text-xs p-xs rounded-sm text-semi" style={{ background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>{item.status}</span>
                     </div>
 
                     <div className="text-base text-muted">
@@ -278,7 +278,7 @@ export default function Schedules() {
                     {item.skills?.length > 0 && (
                       <div className="flex flex-gap-xs mt-xs flex-wrap">
                         {item.skills.map((s) => (
-                          <span key={s} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
+                          <span key={s} className="text-xs" style={{ padding: '2px 6px', borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
                         ))}
                       </div>
                     )}

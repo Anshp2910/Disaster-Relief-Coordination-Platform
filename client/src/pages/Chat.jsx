@@ -156,7 +156,7 @@ export default function Chat({ requestId, onClose }) {
                 }}>
                   {m.text}
                 </div>
-                <div className="text-xs" style={{ color: 'var(--gov-muted)', marginTop: 2, textAlign: isMe ? 'right' : 'left' }}>
+                <div className="text-xs text-muted" style={{ marginTop: 2, textAlign: isMe ? 'right' : 'left' }}>
                   {formatTime(m.createdAt)}
                 </div>
               </div>
@@ -173,10 +173,10 @@ export default function Chat({ requestId, onClose }) {
           onChange={(e) => setText(e.target.value)}
           placeholder={t('chat.typeMessage')}
           maxLength={2000}
-          className="flex-1 text-sm"
-          style={{ padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6 }}
+          className="flex-1 text-sm rounded-sm"
+          style={{ padding: '8px 12px', border: '1px solid var(--gov-border)' }}
         />
-        <span className="text-xs" style={{ color: 'var(--gov-muted)', alignSelf: 'center' }}>{text.length}/2000</span>
+        <span className="text-xs text-muted" style={{ alignSelf: 'center' }}>{text.length}/2000</span>
         <button type="submit" className="btnPrimary text-xs" disabled={!text.trim() || sending} style={{ padding: '6px 16px' }}>
           {sending ? '...' : t('chat.send')}
         </button>

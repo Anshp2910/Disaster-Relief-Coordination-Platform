@@ -240,12 +240,12 @@ export default function RequestDetail() {
   if (!item) return null
 
   return (
-    <div className="container" style={{ maxWidth: 800 }}>
-      <div className="card" style={{ marginBottom: 16 }}>
+    <div className="container max-w-md">
+      <div className="card mb-lg">
         <div className="headerRow">
           <div>
-            <h2 className="pageTitle" style={{ fontSize: 20, margin: 0 }}>{item.title}</h2>
-            <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+            <h2 className="pageTitle text-2xl m-0">{item.title}</h2>
+            <div className="flex flex-gap-xs mt-sm flex-wrap">
               <Badge label={t(`statuses.${item.status}`)} colors={STATUS_COLORS} colorKey={item.status} />
               <Badge label={t(`priorities.${item.priority}`)} colors={PRIORITY_COLORS} colorKey={item.priority} />
               <span className="govt-badge govt-badge-blue">{t(`categories.${item.category}`)}</span>
@@ -257,36 +257,36 @@ export default function RequestDetail() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 16 }}>
+      <div className="grid-3-responsive" style={{ gap: 16 }}>
         {/* Details Card */}
         <div className="card">
-          <h3 style={{ margin: '0 0 14px', fontSize: 14, fontWeight: 700, color: 'var(--accent-blue)' }}>{t('editRequest.subtitle')}</h3>
-          <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>{item.description}</p>
+          <h3 className="text-base text-bold" style={{ margin: '0 0 14px', color: 'var(--accent-blue)' }}>{t('editRequest.subtitle')}</h3>
+          <p className="text-base m-0" style={{ lineHeight: 1.6 }}>{item.description}</p>
 
-          <div style={{ marginTop: 16, fontSize: 13 }}>
-            <div style={{ marginBottom: 6 }}>📍 {item.locationName}</div>
+          <div className="mt-lg text-sm">
+            <div className="mb-xs">📍 {item.locationName}</div>
             <div className="small muted">{item.lat?.toFixed(4)}, {item.lng?.toFixed(4)}</div>
           </div>
 
           {item.peopleCount > 1 && (
-            <div style={{ marginTop: 8, fontSize: 13 }}>
+            <div className="mt-sm text-sm">
               {t('requestDetail.peopleAffected')} <strong>{item.peopleCount}</strong>
             </div>
           )}
 
-          <div style={{ marginTop: 12, fontSize: 13 }}>
+          <div className="mt text-sm">
             <span className="small muted">{t('dashboard.postedBy')}</span>{' '}
             <strong>{item.createdBy?.displayName || item.createdBy?.email}</strong>
           </div>
 
           {item.claimedBy && (
-            <div style={{ marginTop: 8, fontSize: 13, padding: '8px 12px', background: 'rgba(255,153,51,0.08)', borderRadius: 6 }}>
+            <div className="mt-sm text-sm p-sm" style={{ background: 'rgba(255,153,51,0.08)', borderRadius: 6 }}>
               {t('requestDetail.claimedBy')} <strong>{item.claimedBy.displayName || item.claimedBy.email}</strong>
               {item.claimedAt && <span className="small muted"> - {new Date(item.claimedAt).toLocaleDateString()}</span>}
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+          <div className="flex flex-gap-sm mt">
             {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
               <button className="btnPrimary" onClick={handleClaim} disabled={claiming}>{claiming ? '...' : t('dashboard.claim')}</button>
             )}
@@ -301,33 +301,33 @@ export default function RequestDetail() {
 
         {/* Files Card */}
         <div className="card">
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.files')}</h3>
+          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.files')}</h3>
           {item.files?.length > 0 ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="flex-col flex-gap-sm">
           {item.files.map((f) => (
-            <div key={f._id || f.id || f.url} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'var(--gov-bg)', borderRadius: 6 }}>
+            <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
                   {f.mimetype?.startsWith('image/') ? (
-                    <img src={`${API_BASE}${f.url}`} alt={f.filename} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, cursor: 'pointer' }} onClick={() => setPreviewFile(f)} />
+                    <img src={`${API_BASE}${f.url}`} alt={f.filename} className="cursor-pointer" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} onClick={() => setPreviewFile(f)} />
                   ) : f.mimetype === 'application/pdf' ? (
-                    <span style={{ fontSize: 20, cursor: 'pointer' }} onClick={() => setPreviewFile(f)}>&#128196;</span>
+                    <span className="text-xl cursor-pointer" onClick={() => setPreviewFile(f)}>&#128196;</span>
                   ) : (
-                    <span style={{ fontSize: 20 }}>&#128196;</span>
+                    <span className="text-xl">&#128196;</span>
                   )}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.filename}</div>
+                  <div className="flex-1" style={{ minWidth: 0 }}>
+                    <div className="text-sm text-ellipsis">{f.filename}</div>
                     <div className="small muted">{new Date(f.uploadedAt).toLocaleDateString()}</div>
                   </div>
                   {(f.mimetype?.startsWith('image/') || f.mimetype === 'application/pdf') && (
-                    <button onClick={() => setPreviewFile(f)} style={{ fontSize: 11, padding: '3px 8px' }}>{t('requestDetail.preview') || 'Preview'}</button>
+                    <button onClick={() => setPreviewFile(f)} className="text-xs p-xs">{t('requestDetail.preview') || 'Preview'}</button>
                   )}
-                  <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--gov-blue)' }}>{t('requestDetail.open')}</a>
+                  <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.open')}</a>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="muted" style={{ fontSize: 13 }}>{t('requestDetail.noFiles')}</div>
+            <div className="muted text-sm">{t('requestDetail.noFiles')}</div>
           )}
-          <div style={{ marginTop: 12 }}>
+          <div className="mt">
             <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" onChange={handleFileUpload} style={{ display: 'none' }} id="file-upload" />
             <label htmlFor="file-upload" className="btnPrimary" style={{ display: 'inline-block', cursor: 'pointer', fontSize: 12, padding: '6px 14px' }}>
               {uploading ? t('editRequest.saving') : t('requestDetail.uploadFiles')}
@@ -337,43 +337,40 @@ export default function RequestDetail() {
 
         {/* Allocate Resources Card */}
         <div className="card">
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.allocateResources')}</h3>
-          <form onSubmit={handleAllocate} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <select value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required style={{ flex: 1, minWidth: 150, fontSize: 13 }}>
+          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.allocateResources')}</h3>
+          <form onSubmit={handleAllocate} className="flex flex-gap-sm flex-wrap">
+            <select value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="flex-1 text-sm" style={{ minWidth: 150 }}>
               <option value="">{t('requestDetail.selectResource')}</option>
               {resources.map((r) => (
                 <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>
               ))}
             </select>
-            <input type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" style={{ width: 80, fontSize: 13 }} />
-            <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
+            <input type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm" style={{ width: 80 }} />
+            <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btnPrimary text-sm p-sm">
               {allocating ? '...' : t('requestDetail.allocate')}
             </button>
           </form>
           {resources.length === 0 && (
-            <div className="muted small" style={{ marginTop: 8 }}>{t('requestDetail.noAvailableResources')}</div>
+            <div className="muted small mt-sm">{t('requestDetail.noAvailableResources')}</div>
           )}
         </div>
       </div>
 
       {/* Suggested Resources */}
       {matches.length > 0 && (
-        <div className="card" style={{ marginTop: 16 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>
+        <div className="card mt-lg">
+          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>
             Suggested Resources ({matches.length})
           </h3>
-          <div style={{ fontSize: 12, color: 'var(--gov-muted)', marginBottom: 10 }}>
+          <div className="text-sm text-muted-extra mb-xs">
             Auto-matched by category and proximity
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="flex-col flex-gap-sm">
             {matches.map((m) => (
-              <div key={m._id} style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 14px', background: 'var(--gov-bg)', borderRadius: 6, fontSize: 13,
-              }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600 }}>{m.name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--gov-muted)', marginTop: 2 }}>
+              <div key={m._id} className="flex-between text-sm p-sm" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
+                <div className="flex-1" style={{ minWidth: 0 }}>
+                  <div className="text-semi">{m.name}</div>
+                  <div className="text-sm text-muted-extra mt-xs">
                     {m.quantity} {m.unit} available
                     {m.distanceKm != null && <span> - {m.distanceKm} km away</span>}
                     {m.categoryMatch && <span className="govt-badge govt-badge-green" style={{ marginLeft: 6, fontSize: 10 }}>Exact Match</span>}
@@ -381,8 +378,8 @@ export default function RequestDetail() {
                 </div>
                 <button
                   onClick={() => quickAllocate(m)}
-                  className="btnPrimary"
-                  style={{ fontSize: 11, padding: '4px 12px', flexShrink: 0 }}
+                  className="btnPrimary text-xs flex-shrink-0"
+                  style={{ padding: '4px 12px' }}
                 >
                   Quick Allocate
                 </button>
@@ -393,35 +390,36 @@ export default function RequestDetail() {
       )}
 
       {/* Comments */}
-      <div className="card" style={{ marginTop: 16 }}>
-        <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>
+      <div className="card mt-lg">
+        <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>
           {t('requestDetail.comments')} ({item.comments?.length || 0})
         </h3>
 
-        <form onSubmit={handleComment} style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+        <form onSubmit={handleComment} className="flex flex-gap-sm mb-lg">
           <input
             type="text"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder={t('requestDetail.addComment')}
             maxLength={2000}
-            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+            className="flex-1 text-sm p-sm"
+            style={{ border: '1px solid var(--gov-border)', borderRadius: 6 }}
           />
-          <button type="submit" className="btnPrimary" disabled={posting} style={{ fontSize: 12, padding: '6px 16px' }}>
+          <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>
             {posting ? '...' : t('requestDetail.post')}
           </button>
         </form>
 
         {item.comments?.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className="flex-col flex-gap-xs">
             {[...item.comments].reverse().map((c) => (
-              <div key={c._id} style={{ padding: '10px 14px', background: 'var(--gov-bg)', borderRadius: 8, fontSize: 13 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                  <strong style={{ fontSize: 12 }}>{c.createdBy?.displayName || c.createdBy?.email}</strong>
-                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div key={c._id} className="text-sm p-sm" style={{ background: 'var(--gov-bg)', borderRadius: 8 }}>
+                <div className="flex-between mb-xs">
+                  <strong className="text-sm">{c.createdBy?.displayName || c.createdBy?.email}</strong>
+                  <div className="flex flex-gap-sm">
                     <span className="small muted">{new Date(c.createdAt).toLocaleDateString()}</span>
                     {(currentUser?.id === c.createdBy?._id || currentUser?.role === 'admin') && (
-                      <button onClick={() => handleDeleteComment(c._id)} style={{ background: 'none', border: 'none', color: 'var(--gov-danger)', cursor: 'pointer', fontSize: 11, padding: 0 }}>
+                      <button onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0" style={{ color: 'var(--gov-danger)', cursor: 'pointer' }}>
                         {t('requestDetail.delete')}
                       </button>
                     )}
@@ -432,17 +430,17 @@ export default function RequestDetail() {
             ))}
           </div>
         ) : (
-          <div className="muted" style={{ fontSize: 13 }}>{t('requestDetail.noComments')}</div>
+          <div className="muted text-sm">{t('requestDetail.noComments')}</div>
         )}
       </div>
 
       {/* Activity Log */}
       {item.auditLog?.length > 0 && (
-        <div className="card" style={{ marginTop: 16 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.activityLog')}</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="card mt-lg">
+          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.activityLog')}</h3>
+          <div className="flex-col flex-gap-xs">
             {[...item.auditLog].reverse().map((entry, idx) => (
-              <div key={`${entry.timestamp}-${entry.action}-${idx}`} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--gov-muted)' }}>
+              <div key={`${entry.timestamp}-${entry.action}-${idx}`} className="flex flex-gap-sm text-sm text-muted-extra">
                 <span>{new Date(entry.timestamp).toLocaleString()}</span>
                 <span>-</span>
                 <span>{entry.action}</span>
@@ -454,92 +452,92 @@ export default function RequestDetail() {
       )}
 
       {/* Chat */}
-      <div className="card" style={{ marginTop: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: showChat ? 12 : 0 }}>
-          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>{t('requestDetail.realTimeChat')}</h3>
-          <button onClick={() => setShowChat(!showChat)} style={{ fontSize: 12, padding: '4px 12px' }}>
+      <div className="card mt-lg">
+        <div className="flex-between" style={{ marginBottom: showChat ? 12 : 0 }}>
+          <h3 className="m-0 text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.realTimeChat')}</h3>
+          <button onClick={() => setShowChat(!showChat)} className="text-sm" style={{ padding: '4px 12px' }}>
             {showChat ? t('requestDetail.hideChat') : t('requestDetail.openChat')}
           </button>
         </div>
         {showChat && (
-          <div style={{ height: 350, marginTop: 8, border: '1px solid var(--gov-border)', borderRadius: 6, overflow: 'hidden' }}>
+          <div className="mt-sm overflow-hidden" style={{ height: 350, border: '1px solid var(--gov-border)', borderRadius: 6 }}>
             <Chat requestId={id} onClose={() => setShowChat(false)} />
           </div>
         )}
       </div>
 
       {/* Feedback */}
-      <div className="card" style={{ marginTop: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <h3 style={{ margin: 0, fontSize: 14, color: 'var(--gov-blue)' }}>
+      <div className="card mt-lg">
+        <div className="flex-between mb">
+          <h3 className="m-0 text-base" style={{ color: 'var(--gov-blue)' }}>
             {t('requestDetail.feedback')} ({feedbackList.length})
           </h3>
           {!showFeedbackForm && (
-            <button onClick={() => setShowFeedbackForm(true)} className="btnPrimary" style={{ fontSize: 12, padding: '4px 12px' }}>
+            <button onClick={() => setShowFeedbackForm(true)} className="btnPrimary text-sm" style={{ padding: '4px 12px' }}>
               {t('requestDetail.giveFeedback')}
             </button>
           )}
         </div>
 
         {showFeedbackForm && (
-          <form onSubmit={handleFeedbackSubmit} style={{ padding: 12, background: 'var(--gov-bg)', borderRadius: 6, marginBottom: 12 }}>
-            <div style={{ marginBottom: 8 }}>
+          <form onSubmit={handleFeedbackSubmit} className="p mb" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
+            <div className="mb-sm">
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('requestDetail.rating')}</label>
-              <div style={{ display: 'flex', gap: 4 }}>
+              <div className="flex flex-gap-xs">
                 {[1, 2, 3, 4, 5].map((star) => (
-                   <button key={star} type="button" onClick={() => setFeedbackRating(star)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--gov-border)', padding: '0 2px' }}>
+                   <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none text-xl cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--gov-border)' }}>
                     ★
                   </button>
                 ))}
               </div>
             </div>
-            <textarea value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder={t('requestDetail.feedbackPlaceholder')} rows={2} style={{ width: '100%', fontSize: 13, marginBottom: 8 }} />
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button type="submit" disabled={feedbackLoading} className="btnPrimary" style={{ fontSize: 12, padding: '6px 14px' }}>
+            <textarea value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder={t('requestDetail.feedbackPlaceholder')} rows={2} className="w-full text-sm mb-sm" />
+            <div className="flex flex-gap-sm">
+              <button type="submit" disabled={feedbackLoading} className="btnPrimary text-sm" style={{ padding: '6px 14px' }}>
                 {feedbackLoading ? '...' : t('requestDetail.submit')}
               </button>
-              <button type="button" onClick={() => setShowFeedbackForm(false)} style={{ fontSize: 12 }}>{t('editRequest.cancel')}</button>
+              <button type="button" onClick={() => setShowFeedbackForm(false)} className="text-sm">{t('editRequest.cancel')}</button>
             </div>
           </form>
         )}
 
         {feedbackList.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="flex-col flex-gap-sm">
             {feedbackList.map((f) => (
-              <div key={f._id} style={{ padding: '10px 14px', background: 'var(--gov-bg)', borderRadius: 6, fontSize: 13 }}>
-                <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+              <div key={f._id} className="text-sm p-sm" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
+                <div className="flex flex-gap-xs mb-xs">
                   {[1, 2, 3, 4, 5].map((s) => (
-                     <span key={s} style={{ color: s <= f.rating ? 'var(--gov-saffron)' : 'var(--gov-border)', fontSize: 14 }}>★</span>
+                     <span key={s} className="text-base" style={{ color: s <= f.rating ? 'var(--gov-saffron)' : 'var(--gov-border)' }}>★</span>
                   ))}
                   <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
                 </div>
                 {f.comment && <div>{f.comment}</div>}
-                {f.deliveryConfirmed && <div className="small" style={{ color: 'var(--accent-green)', marginTop: 4 }}>{t('requestDetail.deliveryConfirmed')}</div>}
+                {f.deliveryConfirmed && <div className="small mt-xs" style={{ color: 'var(--accent-green)' }}>{t('requestDetail.deliveryConfirmed')}</div>}
               </div>
             ))}
           </div>
         ) : (
-          !showFeedbackForm && <div className="muted" style={{ fontSize: 13 }}>{t('requestDetail.noFeedback')}</div>
+          !showFeedbackForm && <div className="muted text-sm">{t('requestDetail.noFeedback')}</div>
         )}
       </div>
 
       {/* File Preview Modal */}
       {previewFile && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 20 }} onClick={() => setPreviewFile(null)}>
-          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '85vh' }} onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setPreviewFile(null)} style={{ position: 'absolute', top: -32, right: 0, background: 'none', border: 'none', color: 'white', fontSize: 24, cursor: 'pointer' }}>✕</button>
+        <div className="fixed flex-center" style={{ inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, padding: 20 }} onClick={() => setPreviewFile(null)}>
+          <div className="relative" style={{ maxWidth: '90vw', maxHeight: '85vh' }} onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setPreviewFile(null)} className="absolute bg-none border-none cursor-pointer" style={{ top: -32, right: 0, color: 'white', fontSize: 24 }}>✕</button>
             {previewFile.mimetype?.startsWith('image/') ? (
-              <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: 8 }} />
+              <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} className="rounded" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
             ) : previewFile.mimetype === 'application/pdf' ? (
-              <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile.filename} style={{ width: '80vw', height: '80vh', border: 'none', borderRadius: 8, background: 'var(--gov-white)' }} />
+              <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile.filename} className="border-none rounded" style={{ width: '80vw', height: '80vh', background: 'var(--gov-white)' }} />
             ) : (
-              <div style={{ background: 'var(--gov-white)', padding: 32, borderRadius: 8, textAlign: 'center', color: 'var(--gov-text)' }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>&#128196;</div>
-                <div style={{ fontSize: 14, marginBottom: 16 }}>{previewFile.filename}</div>
-                <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary" style={{ padding: '8px 20px', fontSize: 13 }}>Download</a>
+              <div className="text-center p-xl" style={{ background: 'var(--gov-white)', borderRadius: 8, color: 'var(--gov-text)' }}>
+                <div className="text-3xl mb">&#128196;</div>
+                <div className="text-base mb-lg">{previewFile.filename}</div>
+                <a href={`${API_BASE}${previewFile.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary text-sm" style={{ padding: '8px 20px' }}>Download</a>
               </div>
             )}
-            <div style={{ textAlign: 'center', color: 'var(--gov-muted)', fontSize: 12, marginTop: 8 }}>{previewFile.filename}</div>
+            <div className="text-center text-muted-extra text-sm mt-sm">{previewFile.filename}</div>
           </div>
         </div>
       )}

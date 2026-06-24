@@ -49,7 +49,7 @@ function recordAttempt(email, success) {
   }
 }
 
-function checkAndRecordAttempt(email) {
+export function checkAndRecordAttempt(email) {
   const key = getLoginKey(email)
   const now = Date.now()
   const record = loginAttempts.get(key)

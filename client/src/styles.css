@@ -2245,6 +2245,10 @@ button { box-sizing: border-box; }
 .text-capitalize { text-transform: capitalize; }
 .text-nowrap { white-space: nowrap; }
 .text-mono { font-family: var(--font-mono); }
+.text-accent-blue { color: var(--accent-blue); }
+.text-accent-orange { color: var(--accent-orange); }
+.text-accent-green { color: var(--accent-green); }
+.block { display: block; }
 
 /* === Spacing === */
 .m-0 { margin: 0; }

@@ -282,7 +282,7 @@ export default function ZoneHeatMap() {
             {currentUser?.role === 'admin' && (
               <button className="btnPrimary" onClick={openCreate} aria-label="Add zone">{t('zones.addZone')}</button>
             )}
-            <button className="btnSecondary" onClick={fetchWeather} disabled={weatherLoading} style={{ fontSize: 12 }}>
+            <button className="btnSecondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
               {weatherLoading ? '...' : '🌤 ' + (t('zones.weather') || 'Weather')}
             </button>
           </div>
@@ -388,10 +388,10 @@ export default function ZoneHeatMap() {
             </div>
 
             <div className="flex flex-gap-xs mb-sm flex-wrap">
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill + '20', color: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill, border: `1px solid ${(SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill}40` }}>
+              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill + '20', color: (SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill, border: `1px solid ${(SEVERITY_COLORS[selectedZone.severity] || SEVERITY_COLORS.Medium).fill}40` }}>
                 {selectedZone.severity}
               </span>
-              <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600, background: (COVERAGE_COLORS[selectedZone.coverageStatus] || '#999') + '20', color: COVERAGE_COLORS[selectedZone.coverageStatus] || '#999', border: `1px solid ${(COVERAGE_COLORS[selectedZone.coverageStatus] || '#999')}40` }}>
+              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (COVERAGE_COLORS[selectedZone.coverageStatus] || '#999') + '20', color: COVERAGE_COLORS[selectedZone.coverageStatus] || '#999', border: `1px solid ${(COVERAGE_COLORS[selectedZone.coverageStatus] || '#999')}40` }}>
                 {selectedZone.coverageStatus} coverage
               </span>
             </div>
@@ -426,8 +426,8 @@ export default function ZoneHeatMap() {
               <h4 className="m-0 text-sm" style={{ color: 'var(--gov-blue)' }}>{t('zones.weather')}</h4>
               <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label="Close">&times;</button>
             </div>
-            <div className="text-lg" style={{ fontWeight: 700 }}>{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
-            <div className="text-sm text-muted" style={{ marginBottom: 8 }}>{weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}</div>
+            <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
+            <div className="text-sm text-muted mb-sm">{weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}</div>
             <div className="text-sm" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
               {weather.humidity != null && <><span className="text-muted">Humidity</span><span>{weather.humidity}%</span></>}
               {weather.windSpeed != null && <><span className="text-muted">Wind</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}

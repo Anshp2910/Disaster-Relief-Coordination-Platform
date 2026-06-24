@@ -231,7 +231,7 @@ export default function Dashboard() {
       {resourceSummary.length > 0 && (
         <div className="card mb-lg">
           <div className="flex-between mb-sm">
-            <h3 className="m-0 text-base text-bold" style={{ color: 'var(--accent-blue)' }}>{t('dashboard.resourceInventory')}</h3>
+            <h3 className="m-0 text-base text-bold text-accent-blue">{t('dashboard.resourceInventory')}</h3>
             <button onClick={() => navigate('/resources')} className="text-sm" style={{ padding: '5px 12px' }}>{t('dashboard.viewAll')}</button>
           </div>
           <div className="flex flex-gap-sm flex-wrap">
@@ -305,7 +305,7 @@ export default function Dashboard() {
                     <div key={it._id} className="listCard cursor-pointer" onClick={() => navigate(`/requests/${it._id}`)}>
                       <div className="flex-between flex-gap-sm">
                         <div className="flex-1" style={{ minWidth: 0 }}>
-                          <div className="text-bold" style={{ fontSize: 15, color: 'var(--accent-blue)' }}>{it.title}</div>
+                          <div className="text-bold text-accent-blue" style={{ fontSize: 15 }}>{it.title}</div>
                           <div className="flex flex-gap-sm mt-sm flex-wrap">
                             <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
                             <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
@@ -319,7 +319,7 @@ export default function Dashboard() {
                           <div className="muted mt-sm text-base">{it.description?.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
                           <div className="small mt-sm">{it.locationName}</div>
                           {it.createdBy && <div className="small mt-xs">{t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}</div>}
-                          {it.claimedBy && <div className="small mt-xs" style={{ color: 'var(--accent-orange)' }}>{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
+                          {it.claimedBy && <div className="small mt-xs text-accent-orange">{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
                         </div>
                         <OwnerActions id={it._id} item={it} onChanged={load} />
                       </div>
@@ -354,7 +354,7 @@ export default function Dashboard() {
             </div>
             <div className="flex flex-gap-lg mt-md flex-wrap">
               {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
-                <div key={status} className="flex text-sm" style={{ alignItems: 'center', gap: 6 }}>
+                <div key={status} className="gap-row-xs text-sm">
                   <div className="rounded-full" style={{ width: 12, height: 12, background: color }} />
                   <span>{t(`statuses.${status}`)}</span>
                 </div>

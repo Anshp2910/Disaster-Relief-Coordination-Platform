@@ -110,7 +110,7 @@ function StatsPanel({ stats }) {
 
   return (
     <div className="card">
-      <h3 className="m-0 text-bold" style={{ fontSize: 15, color: 'var(--gov-blue)' }}>{t('admin.platformOverview')}</h3>
+      <h3 className="m-0 text-bold text-accent-blue" style={{ fontSize: 15 }}>{t('admin.platformOverview')}</h3>
 
       <div className="admin-stats-grid">
         {summaryCards.map((c) => (
@@ -125,7 +125,7 @@ function StatsPanel({ stats }) {
 
       {stats.dailyRequests?.length > 0 && (
         <div className="mt-xl">
-          <div className="text-semi mb-xs" style={{ fontSize: 13, color: 'var(--gov-blue)' }}>Requests Over Time</div>
+          <div className="text-semi mb-xs text-accent-blue" style={{ fontSize: 13 }}>Requests Over Time</div>
           <MiniBarChart data={stats.dailyRequests} />
         </div>
       )}

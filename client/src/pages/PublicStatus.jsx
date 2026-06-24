@@ -44,7 +44,7 @@ export default function PublicStatus() {
   if (error) return <div className="text-center p-lg"><div className="muted">{t('public.error')}</div><div className="small muted">{error}</div></div>
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
+    <div className="max-w-lg mx-auto p-xl">
       <div className="text-center mb-lg">
         <h1 className="m-0 text-xl">{t('public.title')}</h1>
         <div className="muted text-sm mt-sm">{t('public.subtitle')}</div>
@@ -59,8 +59,8 @@ export default function PublicStatus() {
           if (val === undefined) return null
           return (
             <div key={key} className="card text-center" style={{ padding: 20 }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>{icon}</div>
-              <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent-blue)' }}>
+              <div className="text-3xl mb-sm">{icon}</div>
+              <div className="text-bold" style={{ fontSize: 32, color: 'var(--accent-blue)' }}>
                 {typeof val === 'number' ? val.toLocaleString() : val}
               </div>
               <div className="muted text-sm">{t(labelKey)}</div>
@@ -72,7 +72,7 @@ export default function PublicStatus() {
       {data?.statusBreakdown && Object.keys(data.statusBreakdown).length > 0 && (
         <div className="card mt-lg">
           <h3 className="m-0 mb-sm text-base">{t('public.byStatus')}</h3>
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <div className="flex flex-gap-lg flex-wrap">
             {Object.entries(data.statusBreakdown).map(([status, count]) => (
               <div key={status} className="flex flex-gap-xs" style={{ alignItems: 'center' }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: STATUS_COLORS[status] || '#999' }} />

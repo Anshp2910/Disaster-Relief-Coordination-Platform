@@ -209,7 +209,7 @@ export default function Resources() {
             {summary.map((s) => {
               const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
               return (
-                <div key={s._id} style={{ ...catColors, padding: '6px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>
+                <div key={s._id} className="text-sm text-semi p-sm rounded-sm" style={{ ...catColors }}>
                   {CATEGORY_ICONS[s._id] || CATEGORY_ICONS.Other} {s._id}: {s.totalQty} units ({s.count} items)
                 </div>
               )
@@ -258,7 +258,7 @@ export default function Resources() {
         <div className="card mt-md">
           <h3 className="m-0 mb text-base">{editItem ? t('resources.editResource') : t('resources.addNewResource')}</h3>
           <form onSubmit={handleSubmit} className="grid-3-responsive">
-            <input placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required maxLength={200} style={{ gridColumn: '1 / -1' }} />
+            <input placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required maxLength={200} className="w-full" style={{ gridColumn: '1 / -1' }} />
             <select value={form.category} onChange={(e) => updateForm('category', e.target.value)}>
               {CATEGORIES.filter((c) => c !== 'All').map((c) => (
                 <option key={c} value={c}>{CATEGORY_ICONS[c]} {c}</option>
@@ -313,7 +313,8 @@ export default function Resources() {
                     {r.status === 'Available' && r.quantity > 0 && (
                       <button
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
-                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(74,128,192,.1)', color: 'var(--accent-blue)', border: '1px solid rgba(74,128,192,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        className="text-xs p-xs"
+                        style={{ background: 'rgba(74,128,192,.1)', color: 'var(--accent-blue)', border: '1px solid rgba(74,128,192,.25)', borderRadius: 6, cursor: 'pointer' }}
                         aria-label="Allocate"
                       >
                         {t('resources.allocate')}
@@ -322,7 +323,8 @@ export default function Resources() {
                     {r.allocatedQuantity > 0 && (
                       <button
                         onClick={() => handleDeallocate(r._id)}
-                        style={{ fontSize: 11, padding: '4px 10px', background: 'rgba(248,81,73,.1)', color: 'var(--accent-red)', border: '1px solid rgba(248,81,73,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        className="text-xs p-xs"
+                        style={{ background: 'rgba(248,81,73,.1)', color: 'var(--accent-red)', border: '1px solid rgba(248,81,73,.25)', borderRadius: 6, cursor: 'pointer' }}
                         aria-label="Deallocate"
                       >
                         {t('resources.deallocate')}

@@ -79,21 +79,21 @@ export default function Escalation() {
   return (
     <div className="container">
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>
+        <h2 className="pageTitle m-0 mb" style={{ fontSize: 20 }}>
           {t('nav.escalation') || 'Request Escalation Pipeline'}
         </h2>
-        <div className="small muted" style={{ marginBottom: 12 }}>
+        <div className="small muted mb">
           {t('escalation.subtitle')}
         </div>
 
-        {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
+        {error && <div className="errorText mb">{error}</div>}
 
-        <form onSubmit={handleEscalate} style={{ display: 'grid', gap: 8, marginBottom: 16 }}>
+        <form onSubmit={handleEscalate} className="mb-lg" style={{ display: 'grid', gap: 8 }}>
           <select
             value={requestId}
             onChange={(e) => setRequestId(e.target.value)}
             required
-            style={{ fontSize: 13, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6 }}
+            className="rounded-sm" style={{ fontSize: 13, padding: '8px 12px', border: '1px solid var(--gov-border)' }}
           >
             <option value="">{t('escalation.selectRequest') || 'Select a request...'}</option>
             {allRequests.map((r) => (
@@ -116,33 +116,33 @@ export default function Escalation() {
           </button>
         </form>
 
-        <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+        <div className="flex flex-gap-sm mt">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('escalation.searchPlaceholder') || 'Search by title, reason, or user...'}
-            style={{ flex: 1, padding: '8px 12px', border: '1px solid var(--gov-border)', borderRadius: 6, fontSize: 13 }}
+            className="flex-1 rounded-sm" style={{ padding: '8px 12px', border: '1px solid var(--gov-border)', fontSize: 13 }}
           />
         </div>
       </div>
 
       {loading ? (
-        <div style={{ marginTop: 16 }}><SkeletonList count={3} lines={2} /></div>
+        <div className="mt-lg"><SkeletonList count={3} lines={2} /></div>
       ) : filteredItems.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: 24 }}>{search ? t('escalation.noMatch') : t('escalation.noEscalated')}</div>
+        <div className="card text-center p-xl">{search ? t('escalation.noMatch') : t('escalation.noEscalated')}</div>
       ) : (
-        <div className="gridGap" style={{ marginTop: 12 }}>
+        <div className="gridGap mt">
           {filteredItems.map((item) => (
             <div key={item._id} className="listCard" style={{ borderLeft: '4px solid var(--gov-danger)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--accent-blue)' }}>{item.title}</div>
-                  <div style={{ fontSize: 12, color: 'var(--gov-danger)', marginTop: 2 }}>
+                <div className="flex-1">
+                  <div className="text-bold text-base" style={{ color: 'var(--accent-blue)' }}>{item.title}</div>
+                  <div className="text-sm" style={{ color: 'var(--gov-danger)', marginTop: 2 }}>
                     {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                   </div>
-                  <div style={{ fontSize: 13, marginTop: 4 }}>{item.escalationReason}</div>
-                  <div className="small muted" style={{ marginTop: 4 }}>{t('escalation.by')} {item.createdBy?.displayName || 'Unknown'}</div>
+                  <div className="mt-xs" style={{ fontSize: 13 }}>{item.escalationReason}</div>
+                  <div className="small muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || 'Unknown'}</div>
                 </div>
                 <button
                   onClick={() => handleDeescalate(item._id)}

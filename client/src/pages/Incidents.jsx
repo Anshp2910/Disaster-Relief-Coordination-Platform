@@ -280,10 +280,10 @@ export default function Incidents() {
         {selectedIncident && (
           <div className="card flex-shrink-0" style={{ width: 320 }}>
             <div className="flex-between mb-sm">
-              <h3 className="m-0" style={{ fontSize: 15, color: 'var(--gov-blue)' }}>
+              <h3 className="m-0 text-accent-blue" style={{ fontSize: 15 }}>
                 {DISASTER_ICONS[selectedIncident.disasterType]} {selectedIncident.name}
               </h3>
-              <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer" style={{ fontSize: 18 }} aria-label="Close">&times;</button>
+              <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer text-xl" aria-label="Close">&times;</button>
             </div>
 
             <div className="flex flex-gap-sm mb-sm flex-wrap">
@@ -324,15 +324,15 @@ export default function Incidents() {
       )}
 
       {showForm && (
-        <div className="flex-center" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 2000 }} role="dialog" aria-modal="true">
+        <div className="modal-overlay" role="dialog" aria-modal="true">
           <div className="card" style={{ width: 500, maxHeight: '90vh', overflow: 'auto' }}>
-            <h3 className="m-0 mb-md text-lg" style={{ color: 'var(--gov-blue)' }}>
+            <h3 className="m-0 mb-md text-lg text-accent-blue">
               {editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
             </h3>
-            <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 8 }}>
+            <form onSubmit={handleSubmit} className="grid grid-gap-sm">
               <input placeholder={t('incidents.incidentName')} value={form.name} onChange={updateForm('name')} required />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))', gap: 8 }}>
+              <div className="grid-3-responsive">
                 <select value={form.disasterType} onChange={updateForm('disasterType')}>
                   {Object.keys(DISASTER_ICONS).map((d) => (
                     <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>
@@ -350,7 +350,7 @@ export default function Incidents() {
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 8 }}>
+              <div className="grid-3-responsive">
                 <input type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
                 <input type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
               </div>

@@ -230,29 +230,29 @@ export default function BulkImport() {
   return (
     <div className="container">
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20, margin: '0 0 12px' }}>{t('bulkImport.title')}</h2>
+        <h2 className="pageTitle m-0 mb" style={{ fontSize: 20 }}>{t('bulkImport.title')}</h2>
 
-        <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+        <div className="flex mb-lg" style={{ gap: 6 }}>
           <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>{t('bulkImport.requestsTab')}</button>
           <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>{t('bulkImport.resourcesTab')}</button>
         </div>
 
-        {error && <div className="errorText" style={{ marginBottom: 12 }}>{error}</div>}
+        {error && <div className="errorText mb">{error}</div>}
 
         {!preview && (
           <>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              <button onClick={downloadTemplate} style={{ padding: '8px 16px', borderRadius: 6, border: '1px solid var(--gov-border)', background: 'var(--gov-white)', cursor: 'pointer', fontSize: 13 }}>
+            <div className="flex flex-gap-sm mb-lg">
+              <button onClick={downloadTemplate} className="rounded-sm cursor-pointer" style={{ padding: '8px 16px', border: '1px solid var(--gov-border)', background: 'var(--gov-white)', fontSize: 13 }}>
                 {t('bulkImport.downloadTemplate')}
               </button>
               <button onClick={exportData} className="btnPrimary" style={{ fontSize: 13, padding: '8px 16px' }}>{t('bulkImport.exportCSV')}</button>
             </div>
 
-            <div style={{ border: '2px dashed var(--gov-border)', borderRadius: 8, padding: 32, textAlign: 'center' }}>
-              <div style={{ fontSize: 14, color: 'var(--gov-blue)', marginBottom: 8 }}>{t('bulkImport.importFromCSV', { tab })}</div>
-              <div className="small muted" style={{ marginBottom: 12 }}>{t('bulkImport.uploadHint')}</div>
+            <div className="p-2xl text-center" style={{ border: '2px dashed var(--gov-border)', borderRadius: 8 }}>
+              <div className="text-base mb-sm" style={{ color: 'var(--gov-blue)' }}>{t('bulkImport.importFromCSV', { tab })}</div>
+              <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
               <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} style={{ display: 'none' }} id="csv-upload" />
-              <label htmlFor="csv-upload" className="btnPrimary" style={{ display: 'inline-block', cursor: 'pointer', fontSize: 13, padding: '8px 20px' }}>
+              <label htmlFor="csv-upload" className="btnPrimary cursor-pointer" style={{ display: 'inline-block', fontSize: 13, padding: '8px 20px' }}>
                 {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
               </label>
             </div>
@@ -261,31 +261,31 @@ export default function BulkImport() {
 
         {preview && (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>{t('bulkImport.rowsParsed', { count: preview.length })}</div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={cancelPreview} style={{ fontSize: 12, padding: '6px 14px' }}>{t('bulkImport.cancel')}</button>
+            <div className="flex-between mb">
+              <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
+              <div className="flex flex-gap-sm">
+                <button onClick={cancelPreview} className="text-sm" style={{ padding: '6px 14px' }}>{t('bulkImport.cancel')}</button>
                 <button
                   onClick={handleSubmitImport}
                   disabled={importing || selected.size === 0}
-                  className="btnPrimary"
-                  style={{ fontSize: 12, padding: '6px 14px' }}
+                  className="btnPrimary text-sm"
+                  style={{ padding: '6px 14px' }}
                 >
                   {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
                 </button>
               </div>
             </div>
 
-            <div style={{ overflowX: 'auto', border: '1px solid var(--gov-border)', borderRadius: 6 }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+            <div className="overflow-x-auto rounded-sm" style={{ border: '1px solid var(--gov-border)' }}>
+              <table className="w-full text-sm">
                 <thead>
                   <tr style={{ background: 'var(--gov-bg)' }}>
-                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', textAlign: 'center', width: 40 }}>
+                    <th className="text-center" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 40 }}>
                       <input type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
                     </th>
-                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', textAlign: 'center', width: 40 }}>#</th>
+                    <th className="text-center" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 40 }}>#</th>
                     {headers.map((h) => (
-                      <th key={h} style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', whiteSpace: 'nowrap' }}>{h}</th>
+                      <th key={h} className="text-nowrap" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)' }}>{h}</th>
                     ))}
                     <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 60 }}>{t('bulkImport.edit')}</th>
                   </tr>
@@ -299,27 +299,28 @@ export default function BulkImport() {
                         opacity: selected.has(row._rowId) ? 1 : 0.5,
                       }}
                     >
-                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)' }}>
+                      <td className="text-center" style={{ padding: '6px 10px', borderBottom: '1px solid var(--gov-border)' }}>
                         <input type="checkbox" checked={selected.has(row._rowId)} onChange={() => toggleRow(row._rowId)} />
                       </td>
-                      <td style={{ padding: '6px 10px', textAlign: 'center', borderBottom: '1px solid var(--gov-border)', color: 'var(--gov-muted)' }}>{idx + 1}</td>
+                      <td className="text-center text-muted" style={{ padding: '6px 10px', borderBottom: '1px solid var(--gov-border)' }}>{idx + 1}</td>
                       {headers.map((h) => (
-                        <td key={h} style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <td key={h} className="text-ellipsis" style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', maxWidth: 200 }}>
                           {editingRow === row._rowId ? (
                             <input
                               value={row[h]}
                               onChange={(e) => updateCell(row._rowId, h, e.target.value)}
-                              style={{ width: '100%', padding: '3px 6px', border: '1px solid var(--gov-border)', borderRadius: 3, fontSize: 12, boxSizing: 'border-box' }}
+                              className="w-full text-sm" style={{ padding: '3px 6px', border: '1px solid var(--gov-border)', borderRadius: 3 }}
                             />
                           ) : (
-                            row[h] || <span style={{ color: 'var(--gov-muted)' }}>-</span>
+                            row[h] || <span className="text-muted">-</span>
                           )}
                         </td>
                       ))}
-                      <td style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', textAlign: 'center' }}>
+                      <td className="text-center" style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)' }}>
                         <button
                           onClick={() => setEditingRow(editingRow === row._rowId ? null : row._rowId)}
-                          style={{ background: 'none', border: 'none', color: 'var(--gov-blue)', cursor: 'pointer', fontSize: 12, padding: 4 }}
+                          className="bg-none border-none cursor-pointer text-sm p-xs"
+                          style={{ color: 'var(--gov-blue)' }}
                         >
                           {editingRow === row._rowId ? t('bulkImport.done') : t('bulkImport.edit')}
                         </button>
@@ -333,13 +334,13 @@ export default function BulkImport() {
         )}
 
         {result && (
-          <div style={{ marginTop: 16, padding: 12, borderRadius: 6, background: 'rgba(19,136,8,.06)', border: '1px solid rgba(19,136,8,.2)' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent-green)' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
+          <div className="mt-lg p rounded-sm" style={{ background: 'rgba(19,136,8,.06)', border: '1px solid rgba(19,136,8,.2)' }}>
+            <div className="text-semi" style={{ fontSize: 13, color: 'var(--accent-green)' }}>{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
             {result.errors?.length > 0 && (
-              <div style={{ marginTop: 8 }}>
-                <div style={{ fontSize: 12, color: 'var(--gov-danger)', fontWeight: 600 }}>{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>
+              <div className="mt-sm">
+                <div className="text-sm text-semi" style={{ color: 'var(--gov-danger)' }}>{t('bulkImport.rowsHadErrors', { count: result.errors.length })}</div>
                 {result.errors.slice(0, 10).map((e, i) => (
-                  <div key={i} style={{ fontSize: 12, color: 'var(--gov-muted)', marginTop: 2 }}>Row {e.row}: {e.errors.join(', ')}</div>
+                  <div key={i} className="text-sm text-muted" style={{ marginTop: 2 }}>Row {e.row}: {e.errors.join(', ')}</div>
                 ))}
               </div>
             )}

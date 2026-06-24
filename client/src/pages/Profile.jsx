@@ -72,32 +72,32 @@ export default function Profile() {
 
   return (
     <div className="container" style={{ maxWidth: 700, margin: '20px auto' }}>
-      <div className="card" style={{ marginBottom: 16 }}>
+      <div className="card mb-lg">
         <div className="headerRow">
-          <h2 className="pageTitle" style={{ fontSize: 20, margin: 0 }}>{t('profile.title')}</h2>
+          <h2 className="pageTitle text-2xl m-0">{t('profile.title')}</h2>
           <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
         </div>
       </div>
 
       {/* Profile Info */}
-      <div className="card" style={{ marginBottom: 16 }}>
-        <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('profile.accountInfo')}</h3>
-        <div style={{ fontSize: 13, marginBottom: 8 }}>
+      <div className="card mb-lg">
+        <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('profile.accountInfo')}</h3>
+        <div className="text-sm mb-sm">
           <span className="muted">{t('profile.email')}:</span> <strong>{user?.email}</strong>
         </div>
-        <div style={{ fontSize: 13, marginBottom: 16 }}>
+        <div className="text-sm mb-lg">
           <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${user?.role}`) || user?.role}</strong>
         </div>
 
         <form onSubmit={handleUpdateProfile}>
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('auth.displayName')}</label>
-          <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required style={{ width: '100%', marginBottom: 12 }} />
+          <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required className="w-full mb" />
 
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.phone')}</label>
-          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} style={{ width: '100%', marginBottom: 12 }} />
+          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} className="w-full mb" />
 
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.skills')}</label>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+          <div className="flex flex-gap-xs flex-wrap mb">
             {SKILL_OPTIONS.map((s) => (
               <button
                 key={s}
@@ -111,24 +111,24 @@ export default function Profile() {
           </div>
 
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.notificationPreferences')}</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16, fontSize: 13 }}>
-            <div style={{ display: 'flex', gap: 16 }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+          <div className="flex-col flex-gap-sm mb-lg text-sm">
+            <div className="flex flex-gap-lg">
+              <label className="flex flex-gap-xs cursor-pointer">
                 <input type="checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
               </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+              <label className="flex flex-gap-xs cursor-pointer">
                 <input type="checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
               </label>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--gov-muted)' }}>{t('profile.eventSubscriptions')}</div>
-            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+            <div className="text-sm text-muted-extra">{t('profile.eventSubscriptions')}</div>
+            <div className="flex flex-gap-lg flex-wrap">
+              <label className="flex flex-gap-xs cursor-pointer">
                 <input type="checkbox" checked={notifications.newRequest !== false} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
               </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+              <label className="flex flex-gap-xs cursor-pointer">
                 <input type="checkbox" checked={notifications.statusChange !== false} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
               </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+              <label className="flex flex-gap-xs cursor-pointer">
                 <input type="checkbox" checked={notifications.newComment !== false} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
               </label>
             </div>
@@ -142,16 +142,16 @@ export default function Profile() {
 
       {/* Change Password */}
       <div className="card">
-        <h3 style={{ margin: '0 0 12px', fontSize: 14, color: 'var(--gov-blue)' }}>{t('profile.changePassword')}</h3>
+        <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('profile.changePassword')}</h3>
         <form onSubmit={handleChangePassword}>
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.currentPassword')}</label>
-          <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required style={{ width: '100%', marginBottom: 12 }} />
+          <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full mb" />
 
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.newPassword')}</label>
-          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required style={{ width: '100%', marginBottom: 12 }} />
+          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required className="w-full mb" />
 
           <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('profile.confirmPassword')}</label>
-          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={{ width: '100%', marginBottom: 12 }} />
+          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full mb" />
 
           <button type="submit" className="btnPrimary" disabled={loading} style={{ fontSize: 13 }}>
             {loading ? '...' : t('profile.updatePassword')}

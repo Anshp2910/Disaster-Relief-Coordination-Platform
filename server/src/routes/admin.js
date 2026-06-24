@@ -6,6 +6,8 @@ import { Request } from '../models/Request.js'
 import { Zone } from '../models/Zone.js'
 import { Incident } from '../models/Incident.js'
 
+export const escCsv = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
+
 export const adminRouter = express.Router()
 
 adminRouter.use(requireAuth, requireAdmin)
@@ -132,7 +134,6 @@ adminRouter.get('/export/requests', validateQuery(querySchemas.adminExport), asy
         r.claimedBy?.displayName || r.claimedBy?.email || '',
         r.createdAt,
       ])
-      const escCsv = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
       const csv = [headers.join(','), ...rows.map((row) => row.map(escCsv).join(','))].join('\n')
       res.setHeader('Content-Type', 'text/csv')
       res.setHeader('Content-Disposition', 'attachment; filename=requests-export.csv')

@@ -199,7 +199,7 @@ export default function EditRequest() {
 
   if (fetching) {
     return (
-      <div className="container" style={{ maxWidth: 720 }}>
+      <div className="container max-w-sm">
         <div className="card">
           <div className="small muted">{t('editRequest.loadingRequest')}</div>
         </div>
@@ -208,16 +208,16 @@ export default function EditRequest() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 720 }}>
+    <div className="container max-w-sm">
       <div className="card">
-        <h2 className="pageTitle" style={{ fontSize: 20 }}>{t('editRequest.title')}</h2>
-        <div className="small muted" style={{ marginTop: 4 }}>
+        <h2 className="pageTitle text-2xl">{t('editRequest.title')}</h2>
+        <div className="small muted mt-xs">
           {t('editRequest.subtitle')}
         </div>
 
         {error && <div className="errorText">{error}</div>}
 
-        <form onSubmit={onSubmit} className="inputGrid" style={{ marginTop: 16 }}>
+        <form onSubmit={onSubmit} className="inputGrid mt">
           <input placeholder={t('createRequest.titleLabel')} value={title} onChange={(e) => setTitle(e.target.value)} required />
 
           <textarea
@@ -229,10 +229,10 @@ export default function EditRequest() {
             style={{ resize: 'vertical' }}
           />
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))', gap: 12 }}>
+          <div className="grid-3-responsive">
             <div>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.categoryLabel')}</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%' }}>
+              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full">
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>{t(`categories.${c}`)}</option>
                 ))}
@@ -240,7 +240,7 @@ export default function EditRequest() {
             </div>
             <div>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.priorityLabel')}</label>
-              <select value={priority} onChange={(e) => setPriority(e.target.value)} style={{ width: '100%' }}>
+              <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full">
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>{t(`priorities.${p}`)}</option>
                 ))}
@@ -248,7 +248,7 @@ export default function EditRequest() {
             </div>
             <div>
               <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('editRequest.statusLabel')}</label>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ width: '100%' }}>
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full">
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>{t(`statuses.${s}`)}</option>
                 ))}
@@ -258,16 +258,16 @@ export default function EditRequest() {
 
           <div>
             <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('createRequest.peopleCountLabel')}</label>
-            <input type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} style={{ width: '100%' }} />
+            <input type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} className="w-full" />
           </div>
 
-          <div className="card" style={{ padding: 12, background: 'var(--gov-bg)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
+          <div className="card p-sm" style={{ background: 'var(--gov-bg)' }}>
+            <div className="flex-between" style={{ alignItems: 'baseline', gap: 12 }}>
               <div>
-                <div className="pageTitle" style={{ marginBottom: 4, fontSize: 15 }}>{t('createRequest.selectLocation')}</div>
-                <div style={{ color: 'var(--gov-muted)', fontSize: 13 }}>{t('createRequest.locationHint')}</div>
+                <div className="pageTitle mb-xs text-base">{t('createRequest.selectLocation')}</div>
+                <div className="text-sm text-muted-extra">{t('createRequest.locationHint')}</div>
               </div>
-              <div style={{ fontSize: 13, color: 'var(--gov-muted)' }}>
+              <div className="text-sm text-muted-extra">
                 {lat && lng ? (
                   <>
                     <div><b>{t('createRequest.lat')}</b> {Number(lat).toFixed(5)}</div>
@@ -279,42 +279,39 @@ export default function EditRequest() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 8, marginBlock: 8 }}>
+            <div className="flex flex-gap-sm" style={{ marginBlock: 8 }}>
               <button
                 type="button"
                 onClick={useMyLocation}
                 disabled={locating}
+                className="flex-shrink-0 text-sm p-sm rounded-sm"
                 style={{
-                  flex: '0 0 auto', padding: '8px 14px', borderRadius: 4,
                   border: '1px solid var(--gov-border)', background: 'var(--gov-white)',
-                  color: 'var(--gov-text)', fontSize: 13, whiteSpace: 'nowrap',
+                  color: 'var(--gov-text)', whiteSpace: 'nowrap',
                   cursor: locating ? 'wait' : 'pointer',
                 }}
               >
                 {locating ? t('editRequest.locating') : t('editRequest.useMyLocation')}
               </button>
 
-              <div style={{ position: 'relative', flex: 1 }}>
+              <div className="relative flex-1">
                 <input
                   type="text"
                   value={searchText}
                   onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
                   placeholder={t('createRequest.searchPlaceholder')}
-                  style={{
-                    width: '100%', padding: '10px 12px', paddingRight: 70,
-                    borderRadius: 4, border: '1px solid var(--gov-border)',
-                    background: 'var(--gov-white)', color: 'var(--gov-text)', fontSize: 14, boxSizing: 'border-box',
-                  }}
+                  className="w-full text-base p-sm rounded-sm"
+                  style={{ paddingRight: 70, border: '1px solid var(--gov-border)', background: 'var(--gov-white)', color: 'var(--gov-text)', boxSizing: 'border-box' }}
                 />
                 <button
                   type="button"
                   onClick={onSearch}
                   disabled={searching}
+                  className="absolute text-sm rounded-sm border-none"
                   style={{
-                    position: 'absolute', right: 4, top: 4, bottom: 4,
-                    padding: '4px 12px', borderRadius: 4, border: 'none',
-                    background: 'linear-gradient(135deg, #4a80c0, #6b7fb5)', color: '#fff', fontSize: 13,
+                    right: 4, top: 4, bottom: 4, padding: '4px 12px',
+                    background: 'linear-gradient(135deg, #4a80c0, #6b7fb5)', color: '#fff',
                     cursor: searching ? 'wait' : 'pointer',
                   }}
                 >
@@ -322,19 +319,20 @@ export default function EditRequest() {
                 </button>
 
                 {suggestions.length > 0 && (
-                  <div style={{
-                    position: 'absolute', zIndex: 1000, top: '100%', left: 0, right: 0,
+                  <div className="absolute overflow-auto rounded-sm" style={{
+                    zIndex: 1000, top: '100%', left: 0, right: 0,
                     background: 'var(--gov-white)', border: '1px solid var(--gov-border)',
-                    borderRadius: 4, marginTop: 4, maxHeight: 200, overflowY: 'auto',
+                    marginTop: 4, maxHeight: 200,
                   }}>
                     {suggestions.map((s, i) => (
                       <div
                         key={i}
                         onClick={() => pickSuggestion(s)}
+                        className="text-sm cursor-pointer"
                         style={{
-                          padding: '8px 12px', cursor: 'pointer',
+                          padding: '8px 12px',
                           borderBottom: i < suggestions.length - 1 ? '1px solid var(--gov-border)' : 'none',
-                          color: 'var(--gov-text)', fontSize: 13,
+                          color: 'var(--gov-text)',
                         }}
                         onMouseEnter={(e) => e.currentTarget.style.background = 'var(--gov-bg)'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}

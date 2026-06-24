@@ -140,12 +140,12 @@ export default function MapOverview() {
 
   return (
     <div className="container">
-      <div className="card" style={{ marginBottom: 16 }}>
+      <div className="card mb-lg">
         <div className="headerRow">
-          <h2 className="pageTitle" style={{ fontSize: 20, margin: 0 }}>{t('dashboard.mapView')}</h2>
+          <h2 className="pageTitle m-0" style={{ fontSize: 20 }}>{t('dashboard.mapView')}</h2>
           <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
         </div>
-        <div style={{ display: 'flex', gap: 6, marginTop: 12, flexWrap: 'wrap' }}>
+        <div className="flex flex-wrap mt" style={{ gap: 6 }}>
           {filterOptions.map((f) => (
             <button
               key={f.key}
@@ -157,26 +157,25 @@ export default function MapOverview() {
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-wrap mt-sm" style={{ gap: 6 }}>
           {PRIORITY_FILTER_KEYS.map((p) => (
             <button
               key={p}
               onClick={() => setFilterPriority(p)}
-              className={`filter-pill ${filterPriority === p ? 'active' : ''}`}
-              style={{ fontSize: 11, ...(p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : {}) }}
+              className={`filter-pill text-xs ${filterPriority === p ? 'active' : ''}`}
+              style={{ ...(p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : {}) }}
             >
               {p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}
             </button>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+        <div className="flex flex-wrap mt-sm" style={{ gap: 6 }}>
           {CATEGORY_FILTER_KEYS.map((c) => (
             <button
               key={c}
               onClick={() => setFilterCategory(c)}
-              className={`filter-pill ${filterCategory === c ? 'active' : ''}`}
-              style={{ fontSize: 11 }}
+              className={`filter-pill text-xs ${filterCategory === c ? 'active' : ''}`}
             >
               {c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}
             </button>
@@ -184,14 +183,14 @@ export default function MapOverview() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: 0, position: 'relative' }}>
+      <div className="card p-0 relative">
         {loading && (
           <div style={{ position: 'absolute', inset: 0, zIndex: 1000 }}>
             <SkeletonMap height="70vh" />
           </div>
         )}
 
-        <div ref={mapRef} className="map-container-full" style={{ height: '70vh', width: '100%', maxWidth: '100%' }} />
+        <div ref={mapRef} className="map-container-full w-full" style={{ height: '70vh' }} />
 
         {!loading && error && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
@@ -202,15 +201,15 @@ export default function MapOverview() {
 
         {!loading && !error && items.length === 0 && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.95)', zIndex: 1000 }}>
-            <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" style={{ width: 260, height: 'auto', marginBottom: 16 }} />
+            <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
             <div className="muted">{t('dashboard.noRequests')}</div>
           </div>
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: 16, marginTop: 12, flexWrap: 'wrap' }}>
+      <div className="flex flex-gap-lg mt flex-wrap">
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
-          <div key={status} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+          <div key={status} className="flex text-sm" style={{ alignItems: 'center', gap: 6 }}>
             <div style={{ width: 12, height: 12, borderRadius: '50%', background: color }} />
             <span>{t(`statuses.${status}`)}</span>
           </div>
