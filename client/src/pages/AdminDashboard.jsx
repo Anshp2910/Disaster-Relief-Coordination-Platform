@@ -110,7 +110,7 @@ function StatsPanel({ stats }) {
 
   return (
     <div className="card">
-      <h3 className="m-0 text-bold text-accent-blue" style={{ fontSize: 15 }}>{t('admin.platformOverview')}</h3>
+      <h3 className="m-0 text-bold text-accent-blue text-15">{t('admin.platformOverview')}</h3>
 
       <div className="admin-stats-grid">
         {summaryCards.map((c) => (
@@ -125,7 +125,7 @@ function StatsPanel({ stats }) {
 
       {stats.dailyRequests?.length > 0 && (
         <div className="mt-xl">
-            <div className="text-semi mb-xs text-accent-blue" style={{ fontSize: 13 }}>{t('admin.requestsOverTime')}</div>
+            <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.requestsOverTime')}</div>
           <MiniBarChart data={stats.dailyRequests} />
         </div>
       )}
@@ -483,7 +483,7 @@ export default function AdminDashboard() {
 
         {error && <div className="errorText mt-md">{error}</div>}
 
-        <div className="flex flex-gap-xs mt-xl overflow-x-auto" style={{ borderBottom: '1px solid var(--border)', WebkitOverflowScrolling: 'touch' }}>
+        <div className="flex flex-gap-xs mt-xl overflow-x-auto border-bottom" style={{ WebkitOverflowScrolling: 'touch' }}>
           {tabs.map((tab) => (
             <button
               key={tab.id}

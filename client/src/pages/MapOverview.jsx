@@ -142,10 +142,10 @@ export default function MapOverview() {
     <div className="container">
       <div className="card mb-lg">
         <div className="headerRow">
-          <h2 className="pageTitle m-0" style={{ fontSize: 20 }}>{t('dashboard.mapView')}</h2>
+          <h2 className="pageTitle m-0 text-xl">{t('dashboard.mapView')}</h2>
           <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
         </div>
-        <div className="flex flex-wrap mt" style={{ gap: 6 }}>
+        <div className="flex flex-wrap mt gap-6">
           {filterOptions.map((f) => (
             <button
               key={f.key}
@@ -157,7 +157,7 @@ export default function MapOverview() {
           ))}
         </div>
 
-        <div className="flex flex-wrap mt-sm" style={{ gap: 6 }}>
+        <div className="flex flex-wrap mt-sm gap-6">
           {PRIORITY_FILTER_KEYS.map((p) => (
             <button
               key={p}
@@ -170,7 +170,7 @@ export default function MapOverview() {
           ))}
         </div>
 
-        <div className="flex flex-wrap mt-sm" style={{ gap: 6 }}>
+        <div className="flex flex-wrap mt-sm gap-6">
           {CATEGORY_FILTER_KEYS.map((c) => (
             <button
               key={c}
@@ -193,15 +193,15 @@ export default function MapOverview() {
         <div ref={mapRef} className="map-container-full w-full" />
 
         {!loading && error && (
-          <div className="flex flex-col flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
+          <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
             <div className="text-base" style={{ color: 'var(--danger)', marginBottom: 8 }}>{t('dashboard.error') || 'Error'}</div>
             <div className="muted">{error}</div>
           </div>
         )}
 
         {!loading && !error && items.length === 0 && (
-          <div className="flex flex-col flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
-            <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
+          <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
+            <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" />
             <div className="muted">{t('dashboard.noRequests')}</div>
           </div>
         )}
@@ -209,8 +209,8 @@ export default function MapOverview() {
 
       <div className="flex flex-gap-lg mt flex-wrap">
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
-          <div key={status} className="flex text-sm" style={{ alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 12, height: 12, borderRadius: '50%', background: color }} />
+          <div key={status} className="flex text-sm gap-6" style={{ alignItems: 'center' }}>
+            <div className="icon-12" style={{ background: color }} />
             <span>{t(`statuses.${status}`)}</span>
           </div>
         ))}

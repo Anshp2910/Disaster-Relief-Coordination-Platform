@@ -224,7 +224,7 @@ export default function Dashboard() {
   return (
     <div className="container">
       <div className="mb-xl rounded-lg overflow-hidden relative" style={{ border: '1px solid var(--accent-soft)' }}>
-        <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" className="w-full" style={{ height: 'auto', display: 'block', aspectRatio: '4/1' }} />
+          <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" className="w-full h-auto block" />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(59,130,246,0.04), rgba(129,140,248,0.04))', pointerEvents: 'none' }} />
       </div>
       {resourceSummary.length > 0 && (
@@ -236,7 +236,7 @@ export default function Dashboard() {
           <div className="flex flex-gap-sm flex-wrap">
             {resourceSummary.map((s) => (
               <div key={s._id} className="text-sm rounded-md" style={{ padding: '8px 14px', background: 'var(--accent-soft)', border: '1px solid rgba(59,130,246,0.15)', backdropFilter: 'blur(4px)' }}>
-                <strong style={{ color: 'var(--accent-blue)' }}>{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span style={{ color: 'var(--accent-orange)' }}>({s.lowCount} low)</span>}
+                <strong className="text-accent-blue">{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span className="text-accent-orange">({s.lowCount} low)</span>}
               </div>
             ))}
           </div>
@@ -250,7 +250,7 @@ export default function Dashboard() {
           </div>
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <button onClick={() => navigate('/admin')} style={{ color: 'var(--gov-blue)', borderColor: 'var(--gov-blue)' }}>{t('dashboard.admin')}</button>
+              <button onClick={() => navigate('/admin')} className="text-accent-blue" style={{ borderColor: 'var(--gov-blue)' }}>{t('dashboard.admin')}</button>
             )}
             <button
               onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
@@ -263,7 +263,7 @@ export default function Dashboard() {
         </div>
         {error ? <div className="errorText">{error}</div> : null}
         <form onSubmit={handleSearch} className="flex flex-gap-sm mt-md">
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('admin.searchRequests')} className="flex-1 rounded-sm" style={{ padding: '8px 12px', border: '1px solid var(--gov-border)', fontSize: 13 }} />
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('admin.searchRequests')} className="flex-1 input-pill" />
           <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>{t('createRequest.search')}</button>
         </form>
         <div className="flex flex-gap-sm mt-md flex-wrap">
@@ -276,13 +276,13 @@ export default function Dashboard() {
             <button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''} text-xs`} aria-label={p.label}>{p.label}</button>
           ))}
         </div>
-        <div className="flex flex-wrap flex-gap-sm mt-sm" style={{ alignItems: 'center' }}>
-          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="rounded-sm text-sm" style={{ padding: '6px 10px', border: '1px solid var(--gov-border)' }}>
+          <div className="flex flex-wrap flex-gap-sm mt-sm" style={{ alignItems: 'center' }}>
+          <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov" style={{ padding: '6px 10px' }}>
             {categoryOptions.map((c) => (
               <option key={c.key} value={c.key}>{c.key === 'All' ? t('dashboard.allCategories') : c.label}</option>
             ))}
           </select>
-          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="rounded-sm text-sm" style={{ padding: '6px 10px', border: '1px solid var(--gov-border)' }}>
+          <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov" style={{ padding: '6px 10px' }}>
             {sortOptions.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
             ))}
@@ -296,7 +296,7 @@ export default function Dashboard() {
               <div className="gridGap mt-lg">
                 {items.length === 0 ? (
                   <div className="text-center p-lg">
-                    <img src="/images/empty-requests.svg" alt="No requests" loading="lazy" width="200" height="150" style={{ width: 200, height: 'auto', margin: '0 auto 12px', display: 'block' }} />
+                    <img src="/images/empty-requests.svg" alt="No requests" loading="lazy" width="200" height="150" className="h-auto block mt-0 mx-auto mb" style={{ width: 200 }} />
                     <div className="muted">{t('dashboard.noRequests')}</div>
                   </div>
                 ) : (
@@ -304,7 +304,7 @@ export default function Dashboard() {
                     <div key={it._id} className="listCard cursor-pointer" onClick={() => navigate(`/requests/${it._id}`)}>
                       <div className="flex-between flex-gap-sm">
                         <div className="flex-1" style={{ minWidth: 0 }}>
-                          <div className="text-bold text-accent-blue" style={{ fontSize: 15 }}>{it.title}</div>
+                          <div className="text-bold text-accent-blue text-15">{it.title}</div>
                           <div className="flex flex-gap-sm mt-sm flex-wrap">
                             <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
                             <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
@@ -339,14 +339,14 @@ export default function Dashboard() {
           <>
             <div className="card p-0 relative mt-lg">
               {mapLoading && (
-                <div className="flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
+                <div className="flex-center inset-0 z-100 bg-elevated">
                   <div className="loading-spinner" />
                 </div>
               )}
               <div ref={mapRef} className="map-container-full w-full" />
               {!mapLoading && !error && mapItems.length === 0 && (
-                <div className="flex flex-col flex-center inset-0 z-100" style={{ background: 'var(--bg-elevated)' }}>
-                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" style={{ width: 260, height: 'auto' }} />
+                <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
+                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg h-auto" style={{ width: 260 }} />
                   <div className="muted">{t('dashboard.noRequests')}</div>
                 </div>
               )}
@@ -354,7 +354,7 @@ export default function Dashboard() {
             <div className="flex flex-gap-lg mt-md flex-wrap">
               {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
                 <div key={status} className="gap-row-xs text-sm">
-                  <div className="rounded-full" style={{ width: 12, height: 12, background: color }} />
+                  <div className="icon-12" style={{ background: color }} />
                   <span>{t(`statuses.${status}`)}</span>
                 </div>
               ))}

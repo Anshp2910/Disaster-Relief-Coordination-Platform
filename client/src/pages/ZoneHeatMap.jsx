@@ -340,20 +340,20 @@ export default function ZoneHeatMap() {
             )}
             {!loading && zones.length === 0 && (
               <div className="flex flex-col flex-center p-2xl">
-                <img src="/images/empty-map.svg" alt="No zones" style={{ width: 200, marginBottom: 16 }} />
+                <img src="/images/empty-map.svg" alt="No zones" className="w-200 mb-sm" />
                 <div className="muted">{t('zones.noZones')}</div>
                 {currentUser?.role === 'admin' && (
                   <button className="btnPrimary mt-md" onClick={openCreate} aria-label="Create zone">{t('zones.createZone')}</button>
                 )}
               </div>
             )}
-            <div ref={mapRef} className="map-container-full" style={{ height: '65vh', width: '100%', maxWidth: '100%' }} />
+            <div ref={mapRef} className="map-container-full h-65vh w-full" />
           </div>
 
           <div className="flex flex-gap-lg mt-sm flex-wrap">
             {Object.entries(SEVERITY_COLORS).map(([sev, c]) => (
               <div key={sev} className="gap-row-xs text-sm">
-                <div style={{ width: 14, height: 14, borderRadius: '50%', background: c.fill, border: `2px solid ${c.stroke}` }} />
+                <div className="icon-12" style={{ background: c.fill, border: `2px solid ${c.stroke}` }} />
                 <span>{sev}</span>
               </div>
             ))}
@@ -417,12 +417,12 @@ export default function ZoneHeatMap() {
         {weather && (
           <div className="card flex-shrink-0" style={{ width: 280 }}>
             <div className="flex flex-between mb-sm">
-              <h4 className="m-0 text-sm" style={{ color: 'var(--gov-blue)' }}>{t('zones.weather')}</h4>
+              <h4 className="m-0 text-sm text-accent-blue">{t('zones.weather')}</h4>
               <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}>&times;</button>
             </div>
             <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
             <div className="text-sm text-muted mb-sm">{weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}</div>
-            <div className="text-sm" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
+            <div className="text-sm grid gap-8" style={{ gridTemplateColumns: '1fr 1fr' }}>
               {weather.humidity != null && <><span className="text-muted">{t('zones.humidity')}</span><span>{weather.humidity}%</span></>}
               {weather.windSpeed != null && <><span className="text-muted">{t('zones.wind')}</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
               {weather.precipitation != null && <><span className="text-muted">{t('zones.precipitation')}</span><span>{weather.precipitation} mm</span></>}

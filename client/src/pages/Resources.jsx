@@ -261,7 +261,7 @@ export default function Resources() {
           <h3 className="m-0 mb text-base">{editItem ? t('resources.editResource') : t('resources.addNewResource')}</h3>
           <form onSubmit={handleSubmit} className="grid-3-responsive">
             <label htmlFor="res-name" className="sr-only">{t('resources.resourceNamePlaceholder')}</label>
-            <input id="res-name" placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required maxLength={200} className="w-full" style={{ gridColumn: '1 / -1' }} />
+            <input id="res-name" placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required maxLength={200} className="w-full col-span-full" />
             <label htmlFor="res-category" className="sr-only">{t('resources.category')}</label>
             <select id="res-category" value={form.category} onChange={(e) => updateForm('category', e.target.value)}>
               {CATEGORIES.filter((c) => c !== 'All').map((c) => (
@@ -275,10 +275,10 @@ export default function Resources() {
               <input id="res-unit" placeholder={t('resources.unitPlaceholder')} value={form.unit} onChange={(e) => updateForm('unit', e.target.value)} required className="flex-1" />
             </div>
             <label htmlFor="res-location" className="sr-only">{t('resources.location')}</label>
-            <input id="res-location" placeholder={t('resources.location')} value={form.locationName} onChange={(e) => updateForm('locationName', e.target.value)} required style={{ gridColumn: '1 / -1' }} />
+            <input id="res-location" placeholder={t('resources.location')} value={form.locationName} onChange={(e) => updateForm('locationName', e.target.value)} required className="col-span-full" />
             <label htmlFor="res-notes" className="sr-only">{t('resources.notesOptional')}</label>
-            <textarea id="res-notes" placeholder={t('resources.notesOptional')} value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} style={{ gridColumn: '1 / -1' }} />
-            <div style={{ gridColumn: '1 / -1' }} className="flex flex-gap-sm">
+            <textarea id="res-notes" placeholder={t('resources.notesOptional')} value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} className="col-span-full" />
+            <div className="col-span-full flex flex-gap-sm">
               <button type="submit" className="btnPrimary">{editItem ? t('resources.update') : t('resources.create')}</button>
               <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
             </div>
@@ -293,7 +293,7 @@ export default function Resources() {
         <div className="gridGap mt-md">
           {items.length === 0 ? (
             <div className="text-center p-xl">
-              <img src="/images/empty-requests.svg" alt="No resources" style={{ width: 200, margin: '0 auto 12px', display: 'block' }} />
+              <img src="/images/empty-requests.svg" alt="No resources" className="w-200 mb-sm" />
               <div className="muted">{t('resources.noResources')}</div>
             </div>
           ) : (
@@ -308,7 +308,7 @@ export default function Resources() {
                     </div>
                     <div className="mt-xs text-base">
                       <strong>{r.quantity}</strong> {r.unit}
-                      {r.allocatedQuantity > 0 && <span style={{ color: 'var(--accent-orange)', marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
+                      {r.allocatedQuantity > 0 && <span className="text-accent-orange" style={{ marginLeft: 8 }}>({r.allocatedQuantity} {t('resources.allocated')})</span>}
                     </div>
                     <div className="small muted mt-xs">📍 {r.locationName}</div>
                     {r.allocatedTo && (
@@ -321,8 +321,7 @@ export default function Resources() {
                     {r.status === 'Available' && r.quantity > 0 && (
                       <button
                         onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
-                        className="text-xs p-xs"
-                        style={{ background: 'var(--accent-soft)', color: 'var(--accent-blue)', border: '1px solid rgba(59,130,246,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        className="btn-pill"
                         aria-label={t('resources.allocate')}
                       >
                         {t('resources.allocate')}
@@ -331,8 +330,7 @@ export default function Resources() {
                     {r.allocatedQuantity > 0 && (
                       <button
                         onClick={() => handleDeallocate(r._id)}
-                        className="text-xs p-xs"
-                        style={{ background: 'var(--danger-soft)', color: 'var(--accent-red)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 6, cursor: 'pointer' }}
+                        className="btn-pill"
                         aria-label={t('resources.deallocate')}
                       >
                         {t('resources.deallocate')}
@@ -366,9 +364,9 @@ export default function Resources() {
               <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available
             </div>
             <form onSubmit={handleAllocate}>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="alloc-reqid">{t('resources.requestId')}</label>
+              <label className="small label-block" htmlFor="alloc-reqid">{t('resources.requestId')}</label>
               <input id="alloc-reqid" value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder={t('resources.pasteRequestId')} required className="w-full mb-sm text-base" />
-              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="alloc-qty">{t('resources.quantityToAllocate')}</label>
+              <label className="small label-block" htmlFor="alloc-qty">{t('resources.quantityToAllocate')}</label>
               <input id="alloc-qty" type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} min="1" max={showAllocModal.quantity} required className="w-full mb" />
               <div className="flex flex-gap-sm">
                 <button type="submit" disabled={allocating} className="btnPrimary text-base" aria-label={t('resources.allocate')}>

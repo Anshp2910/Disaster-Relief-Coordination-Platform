@@ -213,10 +213,9 @@ export default function Incidents() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('incidents.searchPlaceholder')}
-            className="flex-1 rounded-sm"
-            style={{ padding: '8px 12px', border: '1px solid var(--gov-border)', fontSize: 13 }}
+            className="flex-1 rounded-sm input-pill"
           />
-          <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>{t('incidents.search')}</button>
+          <button type="submit" className="btnPrimary text-sm">{t('incidents.search')}</button>
         </form>
 
         <div className="flex flex-gap-sm mt-md flex-wrap">
@@ -265,17 +264,17 @@ export default function Incidents() {
           <SkeletonList count={3} lines={2} />
         </div>
       ) : (
-      <div className="flex flex-wrap mt-md" style={{ gap: 12 }}>
-        <div className="flex-1" style={{ minWidth: 0 }}>
+      <div className="flex flex-wrap mt-md gap-12">
+        <div className="flex-1">
           <div className="card p-0">
-            <div ref={mapRef} className="map-container-full w-full" style={{ height: '55vh' }} />
+            <div ref={mapRef} className="map-container-full w-full h-55vh" />
           </div>
         </div>
 
         {selectedIncident && (
           <div className="card flex-shrink-0" style={{ width: 320 }}>
             <div className="flex-between mb-sm">
-              <h3 className="m-0 text-accent-blue" style={{ fontSize: 15 }}>
+              <h3 className="m-0 text-accent-blue text-15">
                 {DISASTER_ICONS[selectedIncident.disasterType]} {selectedIncident.name}
               </h3>
               <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer text-xl" aria-label={t('common.close')}>&times;</button>
@@ -285,16 +284,16 @@ export default function Incidents() {
               <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: (SEVERITY_COLORS[selectedIncident.severity] || '#999') + '20', color: SEVERITY_COLORS[selectedIncident.severity] || '#999', border: `1px solid ${(SEVERITY_COLORS[selectedIncident.severity] || '#999')}40` }}>
                 {selectedIncident.severity}
               </span>
-              <span className="text-xs text-semi" style={{ padding: '2px 8px', borderRadius: 4, background: 'var(--accent-soft)', color: 'var(--accent-blue)', border: '1px solid rgba(59,130,246,.25)' }}>
+              <span className="text-xs text-semi rounded-sm p-xs bg-accent-soft text-accent-blue">
                 {selectedIncident.status}
               </span>
             </div>
 
             {selectedIncident.description && (
-              <div className="mb-sm" style={{ fontSize: 13, lineHeight: 1.5 }}>{selectedIncident.description}</div>
+              <div className="mb-sm text-13" style={{ lineHeight: 1.5 }}>{selectedIncident.description}</div>
             )}
 
-            <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+            <div className="text-13" style={{ lineHeight: 1.8 }}>
               <div>{t('incidents.type')}: <strong>{selectedIncident.disasterType}</strong></div>
               {selectedIncident.affectedPopulation > 0 && (
                 <div>Affected: <strong>{selectedIncident.affectedPopulation.toLocaleString()}</strong></div>
@@ -309,8 +308,8 @@ export default function Incidents() {
 
             {currentUser?.role === 'admin' && (
               <div className="flex flex-gap-sm mt-md">
-                <button onClick={() => openEdit(selectedIncident)} className="text-sm" style={{ padding: '4px 10px' }} aria-label={t('common.edit')}>{t('common.edit')}</button>
-                <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm" style={{ padding: '4px 10px' }} aria-label={t('common.delete')}>{t('common.delete')}</button>
+                <button onClick={() => openEdit(selectedIncident)} className="text-sm p-xs" aria-label={t('common.edit')}>{t('common.edit')}</button>
+                <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm p-xs" aria-label={t('common.delete')}>{t('common.delete')}</button>
               </div>
             )}
           </div>

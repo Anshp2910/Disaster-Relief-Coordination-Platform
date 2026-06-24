@@ -296,7 +296,7 @@ export default function RequestDetail() {
 
         {/* Files Card */}
         <div className="card">
-          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.files')}</h3>
+          <h3 className="m-0 mb text-base text-accent-blue">{t('requestDetail.files')}</h3>
           {item.files?.length > 0 ? (
             <div className="flex-col flex-gap-sm">
           {item.files.map((f) => (
@@ -315,7 +315,7 @@ export default function RequestDetail() {
                   {(f.mimetype?.startsWith('image/') || f.mimetype === 'application/pdf') && (
                     <button onClick={() => setPreviewFile(f)} className="text-xs p-xs">{t('requestDetail.preview') || 'Preview'}</button>
                   )}
-                  <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.open')}</a>
+                  <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm text-accent-blue">{t('requestDetail.open')}</a>
                 </div>
               ))}
             </div>
@@ -332,17 +332,17 @@ export default function RequestDetail() {
 
         {/* Allocate Resources Card */}
         <div className="card">
-          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.allocateResources')}</h3>
+          <h3 className="m-0 mb text-base text-accent-blue">{t('requestDetail.allocateResources')}</h3>
           <form onSubmit={handleAllocate} className="flex flex-gap-sm flex-wrap">
             <label htmlFor="rd-resource" className="sr-only">{t('requestDetail.selectResource')}</label>
-            <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="flex-1 text-sm" style={{ minWidth: 150 }}>
+            <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="flex-1 text-sm min-w-150">
               <option value="">{t('requestDetail.selectResource')}</option>
               {resources.map((r) => (
                 <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>
               ))}
             </select>
             <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
-            <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm" style={{ width: 80 }} />
+            <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
             <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btnPrimary text-sm p-sm">
               {allocating ? '...' : t('requestDetail.allocate')}
             </button>
@@ -356,7 +356,7 @@ export default function RequestDetail() {
       {/* Suggested Resources */}
       {matches.length > 0 && (
         <div className="card mt-lg">
-          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>
+          <h3 className="m-0 mb text-base text-accent-blue">
             Suggested Resources ({matches.length})
           </h3>
           <div className="text-sm text-muted-extra mb-xs">
@@ -388,7 +388,7 @@ export default function RequestDetail() {
 
       {/* Comments */}
       <div className="card mt-lg">
-        <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>
+        <h3 className="m-0 mb text-base text-accent-blue">
           {t('requestDetail.comments')} ({item.comments?.length || 0})
         </h3>
 
@@ -401,8 +401,7 @@ export default function RequestDetail() {
             onChange={(e) => setComment(e.target.value)}
             placeholder={t('requestDetail.addComment')}
             maxLength={2000}
-            className="flex-1 text-sm p-sm"
-            style={{ border: '1px solid var(--gov-border)', borderRadius: 6 }}
+            className="flex-1 text-sm p-sm border-gov rounded-sm"
           />
           <button type="submit" className="btnPrimary text-sm" style={{ padding: '6px 16px' }}>
             {posting ? '...' : t('requestDetail.post')}
@@ -436,7 +435,7 @@ export default function RequestDetail() {
       {/* Activity Log */}
       {item.auditLog?.length > 0 && (
         <div className="card mt-lg">
-          <h3 className="m-0 mb text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.activityLog')}</h3>
+          <h3 className="m-0 mb text-base text-accent-blue">{t('requestDetail.activityLog')}</h3>
           <div className="flex-col flex-gap-xs">
             {[...item.auditLog].reverse().map((entry, idx) => (
               <div key={`${entry.timestamp}-${entry.action}-${idx}`} className="flex flex-gap-sm text-sm text-muted-extra">
@@ -453,13 +452,13 @@ export default function RequestDetail() {
       {/* Chat */}
       <div className="card mt-lg">
         <div className="flex-between" style={{ marginBottom: showChat ? 12 : 0 }}>
-          <h3 className="m-0 text-base" style={{ color: 'var(--gov-blue)' }}>{t('requestDetail.realTimeChat')}</h3>
+          <h3 className="m-0 text-base text-accent-blue">{t('requestDetail.realTimeChat')}</h3>
           <button onClick={() => setShowChat(!showChat)} className="text-sm" style={{ padding: '4px 12px' }}>
             {showChat ? t('requestDetail.hideChat') : t('requestDetail.openChat')}
           </button>
         </div>
         {showChat && (
-          <div className="mt-sm overflow-hidden" style={{ height: 350, border: '1px solid var(--gov-border)', borderRadius: 6 }}>
+          <div className="mt-sm overflow-hidden border-gov rounded-sm" style={{ height: 350 }}>
             <Chat requestId={id} onClose={() => setShowChat(false)} />
           </div>
         )}
@@ -468,7 +467,7 @@ export default function RequestDetail() {
       {/* Feedback */}
       <div className="card mt-lg">
         <div className="flex-between mb">
-          <h3 className="m-0 text-base" style={{ color: 'var(--gov-blue)' }}>
+          <h3 className="m-0 text-base text-accent-blue">
             {t('requestDetail.feedback')} ({feedbackList.length})
           </h3>
           {!showFeedbackForm && (
@@ -481,7 +480,7 @@ export default function RequestDetail() {
         {showFeedbackForm && (
           <form onSubmit={handleFeedbackSubmit} className="p mb" style={{ background: 'var(--gov-bg)', borderRadius: 6 }}>
             <div className="mb-sm">
-              <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('requestDetail.rating')}</label>
+              <label className="small label-block">{t('requestDetail.rating')}</label>
               <div className="flex flex-gap-xs">
                 {[1, 2, 3, 4, 5].map((star) => (
                    <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none text-xl cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--gov-border)' }}>
@@ -512,7 +511,7 @@ export default function RequestDetail() {
                   <span className="small muted" style={{ marginLeft: 8 }}>by {f.submittedBy?.displayName || 'User'}</span>
                 </div>
                 {f.comment && <div>{f.comment}</div>}
-                {f.deliveryConfirmed && <div className="small mt-xs" style={{ color: 'var(--accent-green)' }}>{t('requestDetail.deliveryConfirmed')}</div>}
+                {f.deliveryConfirmed && <div className="small mt-xs text-accent-green">{t('requestDetail.deliveryConfirmed')}</div>}
               </div>
             ))}
           </div>
@@ -523,7 +522,7 @@ export default function RequestDetail() {
 
       {/* File Preview Modal */}
       {previewFile && (
-        <div className="fixed flex-center" style={{ inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, padding: 'var(--space-xl)' }} onClick={() => setPreviewFile(null)}>
+        <div className="fixed flex-center inset-0 p-xl" style={{ background: 'rgba(0,0,0,0.85)', zIndex: 9999 }} onClick={() => setPreviewFile(null)}>
           <div className="relative" style={{ maxWidth: '90vw', maxHeight: '85vh' }} onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setPreviewFile(null)} className="absolute bg-none border-none cursor-pointer" style={{ top: -32, right: 0, color: 'white', fontSize: 24 }}>✕</button>
             {previewFile.mimetype?.startsWith('image/') ? (

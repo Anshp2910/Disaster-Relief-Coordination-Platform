@@ -228,12 +228,12 @@ export default function EditRequest() {
             onChange={(e) => setDescription(e.target.value)}
             required
             rows={4}
-            style={{ resize: 'vertical' }}
+            className="resize-v"
           />
 
           <div className="grid-3-responsive">
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-category">{t('createRequest.categoryLabel')}</label>
+              <label className="small label-block" htmlFor="er-category">{t('createRequest.categoryLabel')}</label>
               <select id="er-category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-full">
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>{t(`categories.${c}`)}</option>
@@ -241,7 +241,7 @@ export default function EditRequest() {
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-priority">{t('createRequest.priorityLabel')}</label>
+              <label className="small label-block" htmlFor="er-priority">{t('createRequest.priorityLabel')}</label>
               <select id="er-priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full">
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>{t(`priorities.${p}`)}</option>
@@ -249,7 +249,7 @@ export default function EditRequest() {
               </select>
             </div>
             <div>
-              <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-status">{t('editRequest.statusLabel')}</label>
+              <label className="small label-block" htmlFor="er-status">{t('editRequest.statusLabel')}</label>
               <select id="er-status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full">
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>{t(`statuses.${s}`)}</option>
@@ -259,12 +259,12 @@ export default function EditRequest() {
           </div>
 
           <div>
-            <label className="small" style={{ display: 'block', marginBottom: 4 }} htmlFor="er-people">{t('createRequest.peopleCountLabel')}</label>
+            <label className="small label-block" htmlFor="er-people">{t('createRequest.peopleCountLabel')}</label>
             <input id="er-people" type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} className="w-full" />
           </div>
 
-          <div className="card p-sm" style={{ background: 'var(--gov-bg)' }}>
-            <div className="flex-between" style={{ alignItems: 'baseline', gap: 12 }}>
+          <div className="card p-sm bg-elevated">
+            <div className="flex-between items-baseline gap-12">
               <div>
                 <div className="pageTitle mb-xs text-base">{t('createRequest.selectLocation')}</div>
                 <div className="text-sm text-muted-extra">{t('createRequest.locationHint')}</div>
@@ -281,17 +281,13 @@ export default function EditRequest() {
               </div>
             </div>
 
-            <div className="flex flex-gap-sm" style={{ marginBlock: 8 }}>
+            <div className="flex flex-gap-sm mt-sm mb-sm">
               <button
                 type="button"
                 onClick={useMyLocation}
                 disabled={locating}
-                className="flex-shrink-0 text-sm p-sm rounded-sm"
-                style={{
-                  border: '1px solid var(--gov-border)', background: 'var(--gov-white)',
-                  color: 'var(--gov-text)', whiteSpace: 'nowrap',
-                  cursor: locating ? 'wait' : 'pointer',
-                }}
+                className="flex-shrink-0 btn-pill"
+                style={{ cursor: locating ? 'wait' : 'pointer' }}
               >
                 {locating ? t('editRequest.locating') : t('editRequest.useMyLocation')}
               </button>
@@ -305,8 +301,8 @@ export default function EditRequest() {
                   onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
                   placeholder={t('createRequest.searchPlaceholder')}
-                  className="w-full text-base p-sm rounded-sm"
-                  style={{ paddingRight: 70, border: '1px solid var(--gov-border)', background: 'var(--gov-white)', color: 'var(--gov-text)', boxSizing: 'border-box' }}
+                  className="w-full input-pill"
+                  style={{ paddingRight: 70 }}
                 />
                 <button
                   type="button"
@@ -323,9 +319,8 @@ export default function EditRequest() {
                 </button>
 
                 {suggestions.length > 0 && (
-                  <div className="absolute overflow-auto rounded-sm" style={{
-                    zIndex: 1000, top: '100%', left: 0, right: 0,
-                    background: 'var(--gov-white)', border: '1px solid var(--gov-border)',
+                  <div className="absolute overflow-auto rounded-sm z-100 border-gov bg-elevated" style={{
+                    top: '100%', left: 0, right: 0,
                     marginTop: 4, maxHeight: 200,
                   }}>
                     {suggestions.map((s, i) => (

@@ -325,7 +325,7 @@ export default function Schedules() {
             <h3 className="m-0 mb text-lg">{editItem ? t('schedules.editSchedule') : t('schedules.createSchedule')}</h3>
             <form onSubmit={handleSubmit} className="grid flex-gap-sm">
               <div>
-                <label htmlFor="sch-volunteer" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.volunteer')}</label>
+                <label htmlFor="sch-volunteer" className="small label-block">{t('schedules.volunteer')}</label>
                 <select id="sch-volunteer" value={form.userId} onChange={updateForm('userId')} required className="w-full">
                   <option value="">{t('schedules.selectVolunteer')}</option>
                   {users.map((u) => (
@@ -335,7 +335,7 @@ export default function Schedules() {
               </div>
 
               <div>
-                <label htmlFor="sch-zone" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.zoneOptional')}</label>
+                <label htmlFor="sch-zone" className="small label-block">{t('schedules.zoneOptional')}</label>
                 <select id="sch-zone" value={form.zoneId} onChange={updateForm('zoneId')} className="w-full">
                   <option value="">{t('schedules.noZone')}</option>
                   {zones.map((z) => (
@@ -346,17 +346,17 @@ export default function Schedules() {
 
               <div className="grid-3-responsive">
                 <div>
-                  <label htmlFor="sch-start" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.start')}</label>
+                  <label htmlFor="sch-start" className="small label-block">{t('schedules.start')}</label>
                   <input id="sch-start" type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required className="w-full" />
                 </div>
                 <div>
-                  <label htmlFor="sch-end" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.end')}</label>
+                  <label htmlFor="sch-end" className="small label-block">{t('schedules.end')}</label>
                   <input id="sch-end" type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required className="w-full" />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="sch-shift" className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.shift')}</label>
+                <label htmlFor="sch-shift" className="small label-block">{t('schedules.shift')}</label>
                 <select id="sch-shift" value={form.shift} onChange={updateForm('shift')} className="w-full">
                   {SHIFT_OPTIONS.map((s) => (
                     <option key={s} value={s}>{s}</option>
@@ -365,7 +365,7 @@ export default function Schedules() {
               </div>
 
               <div>
-                <label className="small" style={{ display: 'block', marginBottom: 4 }}>{t('schedules.skills')}</label>
+                <label className="small label-block">{t('schedules.skills')}</label>
                 <div className="flex flex-gap-xs flex-wrap">
                   {SKILL_OPTIONS.map((s) => {
                     const active = form.skills.includes(s)

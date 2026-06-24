@@ -232,7 +232,7 @@ export default function BulkImport() {
       <div className="card">
         <h2 className="pageTitle m-0 mb" style={{ fontSize: 20 }}>{t('bulkImport.title')}</h2>
 
-        <div className="flex mb-lg" style={{ gap: 6 }}>
+        <div className="flex mb-lg gap-6">
           <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>{t('bulkImport.requestsTab')}</button>
           <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>{t('bulkImport.resourcesTab')}</button>
         </div>
@@ -249,7 +249,7 @@ export default function BulkImport() {
             </div>
 
             <div className="p-2xl text-center" style={{ border: '2px dashed var(--gov-border)', borderRadius: 8 }}>
-              <div className="text-base mb-sm" style={{ color: 'var(--gov-blue)' }}>{t('bulkImport.importFromCSV', { tab })}</div>
+              <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
               <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
               <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} style={{ display: 'none' }} id="csv-upload" />
               <label htmlFor="csv-upload" className="btnPrimary cursor-pointer" style={{ display: 'inline-block', fontSize: 13, padding: '8px 20px' }}>
@@ -264,7 +264,7 @@ export default function BulkImport() {
             <div className="flex-between mb">
               <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
               <div className="flex flex-gap-sm">
-                <button onClick={cancelPreview} className="text-sm" style={{ padding: '6px 14px' }}>{t('bulkImport.cancel')}</button>
+                <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
                 <button
                   onClick={handleSubmitImport}
                   disabled={importing || selected.size === 0}
@@ -276,19 +276,19 @@ export default function BulkImport() {
               </div>
             </div>
 
-            <div className="overflow-x-auto rounded-sm" style={{ border: '1px solid var(--gov-border)' }}>
+            <div className="overflow-x-auto rounded-sm border-gov">
               <table className="w-full text-sm">
                 <thead>
-                  <tr style={{ background: 'var(--gov-bg)' }}>
-                    <th className="text-center" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 40 }}>
-                      <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
-                      <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
-                    </th>
-                    <th className="text-center" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 40 }}>#</th>
+                  <tr className="bg-elevated">
+                      <th className="text-center p-sm border-bottom w-40">
+                        <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
+                        <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
+                      </th>
+                      <th className="text-center p-sm border-bottom w-40">#</th>
                     {headers.map((h) => (
-                      <th key={h} className="text-nowrap" style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)' }}>{h}</th>
+                      <th key={h} className="text-nowrap p-sm border-bottom">{h}</th>
                     ))}
-                    <th style={{ padding: '8px 10px', borderBottom: '1px solid var(--gov-border)', width: 60 }}>{t('bulkImport.edit')}</th>
+                      <th className="p-sm border-bottom w-60">{t('bulkImport.edit')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -300,28 +300,27 @@ export default function BulkImport() {
                         opacity: selected.has(row._rowId) ? 1 : 0.5,
                       }}
                     >
-                      <td className="text-center" style={{ padding: '6px 10px', borderBottom: '1px solid var(--gov-border)' }}>
+                      <td className="text-center border-bottom" style={{ padding: '6px 10px' }}>
                         <input type="checkbox" checked={selected.has(row._rowId)} onChange={() => toggleRow(row._rowId)} aria-label={`Select row ${idx + 1}`} />
                       </td>
-                      <td className="text-center text-muted" style={{ padding: '6px 10px', borderBottom: '1px solid var(--gov-border)' }}>{idx + 1}</td>
+                      <td className="text-center text-muted border-bottom" style={{ padding: '6px 10px' }}>{idx + 1}</td>
                       {headers.map((h) => (
-                        <td key={h} className="text-ellipsis" style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)', maxWidth: 200 }}>
+                        <td key={h} className="text-ellipsis border-bottom max-w-200" style={{ padding: '4px 10px' }}>
                           {editingRow === row._rowId ? (
                             <input
                               value={row[h]}
                               onChange={(e) => updateCell(row._rowId, h, e.target.value)}
-                              className="w-full text-sm" style={{ padding: '3px 6px', border: '1px solid var(--gov-border)', borderRadius: 3 }}
+                              className="w-full text-sm border-gov rounded-sm p-xs"
                             />
                           ) : (
                             row[h] || <span className="text-muted">-</span>
                           )}
                         </td>
                       ))}
-                      <td className="text-center" style={{ padding: '4px 10px', borderBottom: '1px solid var(--gov-border)' }}>
+                      <td className="text-center border-bottom" style={{ padding: '4px 10px' }}>
                         <button
                           onClick={() => setEditingRow(editingRow === row._rowId ? null : row._rowId)}
-                          className="bg-none border-none cursor-pointer text-sm p-xs"
-                          style={{ color: 'var(--gov-blue)' }}
+                          className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
                         >
                           {editingRow === row._rowId ? t('bulkImport.done') : t('bulkImport.edit')}
                         </button>
