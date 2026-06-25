@@ -264,8 +264,11 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
 .btnLoading {
   position: relative;
-  color: transparent !important;
   pointer-events: none;
+}
+.btnPrimary.btnLoading,
+.btnDanger.btnLoading {
+  color: transparent;
 }
 .btnLoading::after {
   content: '';
@@ -282,6 +285,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 .btnSecondary.btnLoading::after {
   border-color: var(--border);
   border-top-color: var(--accent);
+}
+.btnLoading .btn-text {
+  visibility: hidden;
 }
 
 .btnPrimary {
@@ -990,8 +996,8 @@ h1, h2, h3, h4 {
   color: var(--danger);
   animation: sosPulse 2s ease-in-out infinite;
 }
-.notification-badge-urgent {
-  background: var(--danger) !important;
+.notification-badge.notification-badge-urgent {
+  background: var(--danger);
   animation: sosPulse 2s ease-in-out infinite;
 }
 .notification-badge {
