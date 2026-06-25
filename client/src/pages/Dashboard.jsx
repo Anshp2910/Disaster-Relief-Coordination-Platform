@@ -319,7 +319,7 @@ export default function Dashboard() {
             <span className="bento-title">{t('dashboard.mapView')}</span>
             <button onClick={() => navigate('/map')} className="text-xs" style={{ color: 'var(--accent)' }}>{t('dashboard.viewAll')}</button>
           </div>
-          <div className="relative" style={{ height: 240, borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+          <div className="relative dashboard-map">
             {mapLoading && (
               <div className="flex-center inset-0 z-100 bg-elevated" style={{ position: 'absolute' }}>
                 <div className="loading-spinner" />

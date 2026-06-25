@@ -114,27 +114,3 @@
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-@media (prefers-reduced-motion: reduce) {
-  body::before,
-  .govt-auth-wrapper::before,
-  .govt-emblem,
-  .sos-btn,
-  .container {
-    animation: none !important;
-  }
-  .card,
-  .listCard,
-  .btnPrimary,
-  .btnDanger,
-  .filter-pill {
-    transition: none !important;
-  }
-  .card:hover,
-  .listCard:hover {
-    transform: none !important;
-  }
-  .govt-auth-card,
-  .modal-card {
-    animation: none !important;
-  }
-}

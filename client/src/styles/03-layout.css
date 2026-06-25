@@ -5,6 +5,7 @@
   min-height: 100vh;
   position: relative;
   z-index: 1;
+  isolation: isolate;
 }
 
 .gov-main {
@@ -24,7 +25,7 @@
   max-width: 1400px;
   margin: var(--space-xl) auto;
   padding: 0 var(--space-xl);
-  animation: fadeInUp 0.4s var(--ease-out);
+  animation: pageEnter 0.4s var(--ease-out);
 }
 /* === Grid Layouts === */
 .gridGap { display: grid; gap: var(--space-md); }
@@ -33,13 +34,3 @@
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
 .grid-2-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: var(--space-md); }
 .grid-3-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: var(--space-md); }
-.gov-layout {
-  position: relative;
-  isolation: isolate;
-}
-.container {
-  animation: pageEnter 0.4s var(--ease-out);
-}
-.map-container-full {
-  height: 70vh;
-}

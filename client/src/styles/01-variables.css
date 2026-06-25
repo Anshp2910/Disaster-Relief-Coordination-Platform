@@ -134,6 +134,7 @@
   --gradient-main: var(--gradient-bg);
   --gradient-header: linear-gradient(90deg, var(--pri-500), #818cf8, #a78bfa, var(--pri-500));
   --gradient-saffron: linear-gradient(135deg, var(--amber-500), #ea580c);
+  --gradient-login-hero: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #7c3aed 100%);
 
   /* === ECC-Specific === */
   --ecc-glow: 0 0 15px rgba(37, 99, 235, 0.06);
@@ -184,6 +185,8 @@
 
   --ecc-glow: 0 0 15px rgba(96, 165, 250, 0.1);
   --ecc-border-focus: rgba(96, 165, 250, 0.3);
+
+  --gradient-login-hero: linear-gradient(135deg, #0c1a30 0%, #1d4ed8 50%, #6d28d9 100%);
 
   --gov-white: #e2e8f0;
   --gov-card-bg: var(--bg-card);
