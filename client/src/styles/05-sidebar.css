@@ -178,14 +178,27 @@
     top: 0;
     left: 0;
     height: 100vh;
-    z-index: 50;
+    z-index: 101;
   }
 
   .sidebar-close {
     display: none;
   }
 
-  .gov-main {
+  .sidebar-header {
+    display: none;
+  }
+
+  .gov-hamburger {
+    display: none;
+  }
+
+  .gov-main,
+  .gov-header-main {
     margin-left: 270px;
+  }
+
+  .gov-top-strip {
+    padding-left: 270px;
   }
 }
