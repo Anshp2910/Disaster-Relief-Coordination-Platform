@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
-import { useDebounce } from '../hooks/useDebounce'
 import { useConfirm } from '../hooks/useConfirm'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { escapeHtml } from '../utils/escapeHtml'
@@ -108,8 +107,6 @@ export default function Dashboard() {
   const [filterPriority, setFilterPriority] = useState('All')
   const [filterCategory, setFilterCategory] = useState('All')
   const [sortBy, setSortBy] = useState('-createdAt')
-  const [search, setSearch] = useState('')
-  const debouncedSearch = useDebounce(search, 300)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
@@ -131,7 +128,6 @@ export default function Dashboard() {
       if (filterStatus !== 'All') params.status = filterStatus
       if (filterPriority !== 'All') params.priority = filterPriority
       if (filterCategory !== 'All') params.category = filterCategory
-      if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getRequests(params) as { items?: Item[]; pages?: number; total?: number }
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
@@ -141,7 +137,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, filterPriority, filterCategory, sortBy, debouncedSearch])
+  }, [page, filterStatus, filterPriority, filterCategory, sortBy])
 
   const loadMapItems = useCallback(async () => {
     setMapLoading(true)
@@ -150,7 +146,6 @@ export default function Dashboard() {
       if (filterStatus !== 'All') params.status = filterStatus
       if (filterPriority !== 'All') params.priority = filterPriority
       if (filterCategory !== 'All') params.category = filterCategory
-      if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getRequests(params) as { items?: Item[] }
       setMapItems(data.items || [])
     } catch {
@@ -158,7 +153,7 @@ export default function Dashboard() {
     } finally {
       setMapLoading(false)
     }
-  }, [filterStatus, filterPriority, filterCategory, debouncedSearch])
+  }, [filterStatus, filterPriority, filterCategory])
 
   const loadResources = useCallback(async () => {
     try {
@@ -212,11 +207,6 @@ export default function Dashboard() {
       if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
     }
   }, [mapItems, filterStatus])
-
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    setPage(1)
-  }
 
   const { user: currentUser } = useAuth()
   const { connected } = useSocket()
@@ -352,6 +342,40 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Quick Navigation */}
+      <div className="bento-grid mb-lg">
+        <div className="bento-card bento--full">
+          <div className="bento-header">
+            <span className="bento-title">{t('dashboard.quickNav') || 'Quick Navigation'}</span>
+          </div>
+          <div className="flex flex-wrap flex-gap-sm mt-sm" style={{ gap: 'var(--space-sm)' }}>
+            {[
+              { path: '/map', label: t('nav.map') || 'Map', icon: '🗺️', color: 'var(--accent-soft)' },
+              { path: '/resources', label: t('nav.resources') || 'Resources', icon: '📦', color: 'rgba(139,92,246,0.1)' },
+              { path: '/incidents', label: t('nav.incidents') || 'Incidents', icon: '🚨', color: 'rgba(248,81,73,0.1)' },
+              { path: '/zones', label: t('nav.zones') || 'Zones', icon: '🔥', color: 'rgba(245,158,11,0.1)' },
+              { path: '/schedules', label: t('nav.schedules') || 'Schedules', icon: '📅', color: 'rgba(74,128,192,0.1)' },
+              { path: '/geofencing', label: t('nav.geofencing') || 'Geofencing', icon: '📍', color: 'rgba(6,182,212,0.1)' },
+              ...(currentUser?.role === 'admin' ? [
+                { path: '/bulk', label: t('nav.bulkImport') || 'Bulk Import', icon: '📥', color: 'rgba(234,179,8,0.1)' },
+                { path: '/escalation', label: t('nav.escalation') || 'Escalation', icon: '⚠️', color: 'rgba(248,81,73,0.1)' },
+              ] : []),
+              { path: '/requests/new', label: t('dashboard.newRequest'), icon: '➕', color: 'rgba(34,197,94,0.1)' },
+            ].map(({ path, label, icon, color }) => (
+              <button
+                key={path}
+                onClick={() => navigate(path)}
+                className="nav-chip"
+                style={{ background: color }}
+              >
+                <span style={{ fontSize: 'var(--text-lg)', lineHeight: 1 }}>{icon}</span>
+                <span style={{ fontSize: 'var(--text-xs)', fontWeight: 500, color: 'var(--text)' }}>{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Main bento: Map + Activity + SteppedProgress + List */}
       <div className="bento-grid">
         {/* Mini Map */}
@@ -417,10 +441,6 @@ export default function Dashboard() {
           </div>
         </div>
         {error ? <div className="errorText">{error}</div> : null}
-        <form onSubmit={handleSearch} className="flex flex-gap-sm">
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('admin.searchRequests')} className="flex-1 input-pill" />
-          <button type="submit" className="btnPrimary text-sm p-sm">{t('createRequest.search')}</button>
-        </form>
         <nav aria-label="Filters"><div className="flex flex-gap-sm mt-md flex-wrap">
           {filterOptions.map((f) => (
             <button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`} aria-label={f.label}>{f.label}</button>

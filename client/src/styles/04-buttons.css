@@ -179,6 +179,26 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 }
 .admin-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+/* Navigation chips for dashboard quick nav */
+.nav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  font-family: inherit;
+  line-height: 1.2;
+  min-width: 0;
+}
+.nav-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--accent);
+}
+
 /* === Universal Overflow Fixes === */
 
 .btnRow > button,
