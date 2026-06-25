@@ -7,6 +7,7 @@ import { clientApi } from '../api/client'
 import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { escapeHtml } from '../utils/escapeHtml'
+import EmptyState from '../components/EmptyState'
 
 const STATUS_COLORS = {
   Open: 'var(--color-open)',
@@ -200,10 +201,7 @@ export default function MapOverview() {
         )}
 
         {!loading && !error && items.length === 0 && (
-          <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
-            <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg" />
-            <div className="muted">{t('dashboard.noRequests')}</div>
-          </div>
+          <EmptyState icon='🗺️' title={t('dashboard.noRequests')} description={t('map.noRequestsDesc') || 'No request locations to display'} />
         )}
       </div>
 

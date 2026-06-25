@@ -4,6 +4,7 @@ import Header from './Header'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
 import CommandPalette from './CommandPalette'
+import SosFab from './SosFab'
 import { usePwaInstall } from '../hooks/usePwaInstall'
 import { useAuth } from '../context/AuthContext'
 
@@ -22,6 +23,7 @@ export default function Layout({ children }) {
       {isAuthenticated && <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
       <Header onToggleSidebar={() => setSidebarOpen((p) => !p)} />
       <CommandPalette isAdmin={isAdmin} />
+      {isAuthenticated && <SosFab />}
       <main className="gov-main" id="main-content">
         {children}
       </main>

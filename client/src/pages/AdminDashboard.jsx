@@ -7,6 +7,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { SkeletonList } from '../components/Skeleton'
 import { useConfirm } from '../hooks/useConfirm'
+import EmptyState from '../components/EmptyState'
 
 const STATUS_COLORS = {
   Open: { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--color-open)' },
@@ -189,9 +190,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="admin-empty">
-          <div>{search ? t('admin.noUsersMatch') : t('admin.noUsers')}</div>
-        </div>
+        <EmptyState icon='👥' title={search ? t('admin.noUsersMatch') : t('admin.noUsers')} description={search ? t('admin.tryDifferentSearch') || 'Try a different search' : t('admin.noUsersDesc') || 'No users registered yet'} />
       ) : (
         <div className="admin-table-wrapper border-none mt-md">
           <table className="data-table admin-table">
@@ -302,9 +301,7 @@ function RequestsPanel({ requests, onDelete }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="admin-empty">
-          <div>{search || filterStatus !== 'All' ? t('admin.noRequestsMatch') : t('admin.noRequests')}</div>
-        </div>
+        <EmptyState icon='📋' title={search || filterStatus !== 'All' ? t('admin.noRequestsMatch') : t('admin.noRequests')} description={t('admin.noRequestsDesc') || 'No requests created yet'} />
       ) : (
         <div className="admin-table-wrapper border-none mt-md">
           <table className="data-table admin-table">

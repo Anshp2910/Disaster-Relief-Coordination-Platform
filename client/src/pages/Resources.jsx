@@ -6,6 +6,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
+import EmptyState from '../components/EmptyState'
 import { useConfirm } from '../hooks/useConfirm'
 
 const CATEGORY_ICONS = {
@@ -297,10 +298,7 @@ export default function Resources() {
       ) : (
         <div className="gridGap mt-md">
           {items.length === 0 ? (
-            <div className="text-center p-xl">
-              <img src="/images/empty-requests.svg" alt="No resources" className="w-200 mb-sm" />
-              <div className="muted">{t('resources.noResources')}</div>
-            </div>
+            <EmptyState icon='📦' title={t('resources.noResources')} description={t('resources.noResourcesDesc') || 'No resources match your filters'} />
           ) : (
             items.map((r) => (
               <div key={r._id} className="listCard">

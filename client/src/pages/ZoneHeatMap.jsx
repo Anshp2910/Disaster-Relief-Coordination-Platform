@@ -9,6 +9,7 @@ import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
+import EmptyState from '../components/EmptyState'
 
 const SEVERITY_COLORS = {
   Critical: { fill: 'var(--severity-critical)', stroke: 'var(--severity-critical-stroke)', weight: 0.6 },
@@ -342,13 +343,12 @@ export default function ZoneHeatMap() {
               </div>
             )}
             {!loading && zones.length === 0 && (
-              <div className="flex flex-col flex-center p-2xl">
-                <img src="/images/empty-map.svg" alt="No zones" className="w-200 mb-sm" />
-                <div className="muted">{t('zones.noZones')}</div>
-                {currentUser?.role === 'admin' && (
-                  <button className="btnPrimary mt-md" onClick={openCreate} aria-label="Create zone">{t('zones.createZone')}</button>
-                )}
-              </div>
+              <EmptyState
+                icon='🗺️'
+                title={t('zones.noZones')}
+                description={t('zones.noZonesDesc') || 'No disaster zones defined yet'}
+                action={currentUser?.role === 'admin' ? { onClick: openCreate, label: t('zones.createZone') } : undefined}
+              />
             )}
             <div ref={mapRef} className="map-container-full h-65vh w-full" />
           </div>

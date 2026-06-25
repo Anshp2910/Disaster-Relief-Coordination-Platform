@@ -10,6 +10,7 @@ import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useConfirm } from '../hooks/useConfirm'
 import { useAuth } from '../context/AuthContext'
+import EmptyState from '../components/EmptyState'
 
 const DISASTER_ICONS = {
   Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
@@ -267,6 +268,8 @@ export default function Incidents() {
         <div className="mt-md">
           <SkeletonList count={3} lines={2} />
         </div>
+      ) : incidents.length === 0 ? (
+        <EmptyState icon='⚠️' title={t('incidents.noIncidents') || 'No incidents found'} description={t('incidents.noIncidentsDesc') || 'No incidents match your filters'} />
       ) : (
       <div className="flex flex-wrap mt-md gap-12">
         <div className="flex-1">

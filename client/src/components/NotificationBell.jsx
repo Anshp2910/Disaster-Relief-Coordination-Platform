@@ -1,7 +1,37 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSocket } from '../hooks/useSocket'
+
+const NOTIF_TIERS = {
+  sos: { label: 'Alerts', order: 0, icon: '\u{1F6A8}', className: 'notif-tier-alert' },
+  escalation: { label: 'Escalations', order: 1, icon: '\u{1F53A}', className: 'notif-tier-escalation' },
+  update: { label: 'Updates', order: 2, icon: '\u{1F4E2}', className: 'notif-tier-update' },
+}
+
+function getTier(type) {
+  if (type === 'sos:alert') return 'sos'
+  if (type === 'request:escalated' || type === 'request:deleted') return 'escalation'
+  return 'update'
+}
+
+const iconMap = {
+  'request:created': '\u{1F4E2}',
+  'request:updated': '\u{270F}\u{FE0F}',
+  'request:commented': '\u{1F4AC}',
+  'request:escalated': '\u{1F53A}',
+  'request:deleted': '\u{1F5D1}\u{FE0F}',
+  'resource:allocated': '\u{1F4E6}',
+  'resource:created': '\u{2795}',
+  'sos:alert': '\u{1F6A8}',
+}
+
+const BellIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+  </svg>
+)
 
 export default function NotificationBell() {
   const { notifications, unreadCount, markAsRead, markAllRead, clearAll } = useSocket()
@@ -20,6 +50,21 @@ export default function NotificationBell() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  const grouped = useMemo(() => {
+    const groups = {}
+    for (const n of notifications.slice(0, 30)) {
+      const tier = getTier(n.type)
+      if (!groups[tier]) groups[tier] = []
+      groups[tier].push(n)
+    }
+    return Object.entries(NOTIF_TIERS)
+      .filter(([key]) => groups[key]?.length)
+      .sort((a, b) => a[1].order - b[1].order)
+      .map(([key, config]) => ({ ...config, key, items: groups[key] }))
+  }, [notifications])
+
+  const hasUnreadUrgent = notifications.some((n) => !n.read && n.type === 'sos:alert')
+
   function handleNotificationClick(n) {
     markAsRead(n.id)
     if (n.requestId) {
@@ -28,36 +73,18 @@ export default function NotificationBell() {
     setOpen(false)
   }
 
-  const iconMap = {
-    'request:created': '\u{1F4E2}',
-    'request:updated': '\u{270F}\u{FE0F}',
-    'request:commented': '\u{1F4AC}',
-    'request:escalated': '\u{1F53A}',
-    'request:deleted': '\u{1F5D1}\u{FE0F}',
-    'resource:allocated': '\u{1F4E6}',
-    'resource:created': '\u{2795}',
-    'sos:alert': '\u{1F6A8}',
-  }
-
-  const BellIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-    </svg>
-  )
-
   return (
     <div ref={ref} className="notification-bell">
       <button
         onClick={() => setOpen(!open)}
-        className="notification-bell-btn"
+        className={`notification-bell-btn${hasUnreadUrgent ? ' notif-bell-urgent' : ''}`}
         aria-expanded={open}
         aria-label={t('notifications.title')}
         title={t('notifications.title')}
       >
         <BellIcon />
         {unreadCount > 0 && (
-          <span className="notification-badge">
+          <span className={`notification-badge${hasUnreadUrgent ? ' notification-badge-urgent' : ''}`}>
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -88,30 +115,41 @@ export default function NotificationBell() {
               {t('notifications.noNotifications')}
             </div>
           ) : (
-            notifications.slice(0, 20).map((n) => (
-              <div
-                key={n.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => handleNotificationClick(n)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNotificationClick(n) } }}
-                className={`notification-item ${!n.read ? 'notification-unread' : ''}`}
-              >
-                <div className="notification-item-content">
-                  <span className="notification-icon">
-                    {iconMap[n.type] || '\u{1F514}'}
-                  </span>
-                  <div className="notification-text">
-                    <div className="notification-title">{n.title}</div>
-                    <div className="notification-message">{n.message}</div>
-                    <div className="notification-time">
-                      {new Date(n.timestamp).toLocaleTimeString()}
-                    </div>
+            <>
+              {grouped.map((group) => (
+                <div key={group.key}>
+                  <div className={`notif-group-header ${group.className}`}>
+                    <span className="notif-group-icon">{group.icon}</span>
+                    <span className="notif-group-label">{group.label}</span>
+                    <span className="notif-group-count">{group.items.length}</span>
                   </div>
-                  {!n.read && <span className="notification-dot" />}
+                  {group.items.map((n) => (
+                    <div
+                      key={n.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleNotificationClick(n)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNotificationClick(n) } }}
+                      className={`notification-item ${!n.read ? 'notification-unread' : ''} ${group.className}`}
+                    >
+                      <div className="notification-item-content">
+                        <span className="notification-icon">
+                          {iconMap[n.type] || '\u{1F514}'}
+                        </span>
+                        <div className="notification-text">
+                          <div className="notification-title">{n.title}</div>
+                          <div className="notification-message">{n.message}</div>
+                          <div className="notification-time">
+                            {new Date(n.timestamp).toLocaleTimeString()}
+                          </div>
+                        </div>
+                        {!n.read && <span className="notification-dot" />}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))
+              ))}
+            </>
           )}
         </div>
       )}

@@ -14,6 +14,7 @@ import SteppedProgress from '../components/SteppedProgress'
 import ActivityFeed from '../components/ActivityFeed'
 import { useSocket } from '../hooks/useSocket'
 import L from 'leaflet'
+import EmptyState from '../components/EmptyState'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
 const STATUS_COLORS = {
@@ -328,7 +329,7 @@ export default function Dashboard() {
             <div ref={mapRef} className="w-full h-full" />
           </div>
           {!mapLoading && mapItems.length === 0 && (
-            <div className="text-center text-sm muted mt-sm">{t('dashboard.noRequests')}</div>
+            <EmptyState icon='🗺️' title={t('dashboard.noRequests')} />
           )}
           <div className="flex flex-gap-sm mt-sm flex-wrap">
             {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
@@ -409,10 +410,7 @@ export default function Dashboard() {
             <>
               <div className="gridGap mt-lg">
                 {items.length === 0 ? (
-                  <div className="text-center p-lg">
-                    <img src="/images/empty-requests.svg" alt="No requests" loading="lazy" width="200" height="150" className="h-auto block mt-0 mx-auto mb" />
-                    <div className="muted">{t('dashboard.noRequests')}</div>
-                  </div>
+                  <EmptyState icon='📋' title={t('dashboard.noRequests')} description={t('dashboard.noRequestsDesc') || 'No requests match your filters'} />
                 ) : (
                   items.map((it) => (
                     <div key={it._id} className="listCard cursor-pointer" role="button" tabIndex={0} onClick={() => navigate(`/requests/${it._id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${it._id}`) } }}>

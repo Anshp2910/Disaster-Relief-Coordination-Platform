@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
+import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
 
 export const PIN_ICON = L.divIcon({
   className: '',
@@ -23,6 +24,7 @@ export const CATEGORIES = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Sup
 export const PRIORITIES = ['Critical', 'High', 'Medium', 'Low']
 export const STATUSES = ['Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
 export const INITIAL_CENTER = [20.5937, 78.9629]
+const DRAFT_PREFIX = 'draft:request:'
 
 export default function RequestForm({
   initialData,
@@ -39,6 +41,9 @@ export default function RequestForm({
   const mapRef = useRef(null)
   const mapInstance = useRef(null)
   const markerRef = useRef(null)
+  const draftKeyRef = useRef(DRAFT_PREFIX + (initialData?._id || 'new'))
+  const dirtyRef = useRef(false)
+  const [showRestore, setShowRestore] = useState(false)
 
   const [formTitle, setFormTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -55,11 +60,65 @@ export default function RequestForm({
   const [error, setError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
   const [locating, setLocating] = useState(false)
+  const [savedIndicator, setSavedIndicator] = useState(false)
+
+  function getFormState() {
+    return { title: formTitle, description, lat, lng, locationName, category, priority, peopleCount, status }
+  }
+
+  function applyFormState(state) {
+    setFormTitle(state.title || '')
+    setDescription(state.description || '')
+    setCategory(state.category || 'Other')
+    setPriority(state.priority || 'Medium')
+    setPeopleCount(state.peopleCount || 1)
+    setStatus(state.status || 'Open')
+    setLocationName(state.locationName || '')
+    if (state.lat != null) setLat(String(state.lat))
+    if (state.lng != null) setLng(String(state.lng))
+  }
+
+  useEffect(() => {
+    const raw = safeGetItem(draftKeyRef.current)
+    if (raw && !initialData) {
+      try { const draft = JSON.parse(raw); if (draft && draft.title) setShowRestore(true) } catch {}
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!dirtyRef.current) return
+    const timer = setTimeout(() => {
+      safeSetItem(draftKeyRef.current, JSON.stringify(getFormState()))
+      setSavedIndicator(true)
+      setTimeout(() => setSavedIndicator(false), 2000)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [formTitle, description, category, priority, peopleCount, lat, lng, locationName, status])
+
+  function restoreDraft() {
+    const raw = safeGetItem(draftKeyRef.current)
+    if (raw) {
+      try {
+        const draft = JSON.parse(raw)
+        applyFormState(draft)
+      } catch {}
+      setShowRestore(false)
+      dirtyRef.current = true
+    }
+  }
+
+  function dismissRestore() {
+    safeRemoveItem(draftKeyRef.current)
+    setShowRestore(false)
+  }
+
+  function markDirty() { dirtyRef.current = true }
 
   const placeMarker = useCallback((pLat, pLng) => {
     setLat(String(pLat))
     setLng(String(pLng))
     setLocationName(`${pLat.toFixed(5)}, ${pLng.toFixed(5)}`)
+    markDirty()
 
     if (markerRef.current) {
       markerRef.current.setLatLng([pLat, pLng])
@@ -75,15 +134,7 @@ export default function RequestForm({
 
   useEffect(() => {
     if (loading || !initialData) return
-    setFormTitle(initialData.title || '')
-    setDescription(initialData.description || '')
-    setStatus(initialData.status || 'Open')
-    setCategory(initialData.category || 'Other')
-    setPriority(initialData.priority || 'Medium')
-    setPeopleCount(initialData.peopleCount || 1)
-    setLocationName(initialData.locationName || '')
-    if (initialData.lat != null) setLat(String(initialData.lat))
-    if (initialData.lng != null) setLng(String(initialData.lng))
+    applyFormState(initialData)
   }, [initialData, loading])
 
   useEffect(() => {
@@ -187,6 +238,7 @@ export default function RequestForm({
         data.status = status
       }
       await onSubmit(data)
+      safeRemoveItem(draftKeyRef.current)
     } catch (err) {
       setError(err.message || 'Failed to submit')
     } finally {
@@ -209,22 +261,35 @@ export default function RequestForm({
   return (
     <div className="container max-w-sm">
       <div className="card">
-        <h1 className="pageTitle text-2xl">{title}</h1>
-        <div className="small muted mt-xs">
-          {subtitle}
+        <div className="flex-between items-center">
+          <div>
+            <h1 className="pageTitle text-2xl">{title}</h1>
+            <div className="small muted mt-xs">{subtitle}</div>
+          </div>
+          {savedIndicator && <span className="result-count">Draft saved</span>}
         </div>
+
+        {showRestore && (
+          <div className="flex-between items-center gap-sm mt-md p-sm rounded-sm" style={{ background: 'var(--accent-soft)', border: '1px solid var(--border)' }}>
+            <span className="text-sm">{t('createRequest.draftFound') || 'You have an unsaved draft'}</span>
+            <div className="flex flex-gap-xs">
+              <button type="button" onClick={restoreDraft} className="btnPrimary text-xs p-xs">{t('createRequest.restore') || 'Restore'}</button>
+              <button type="button" onClick={dismissRestore} className="text-xs p-xs">{t('createRequest.dismiss') || 'Dismiss'}</button>
+            </div>
+          </div>
+        )}
 
         {error && <div className="errorText">{error}</div>}
 
         <form onSubmit={handleSubmit} className="inputGrid mt">
           <label htmlFor="rf-title" className="sr-only">{t('createRequest.titleLabel')}</label>
-          <input id="rf-title" placeholder={t('createRequest.titleLabel')} value={formTitle} onChange={(e) => setFormTitle(e.target.value)} required maxLength={200} />
+          <input id="rf-title" placeholder={t('createRequest.titleLabel')} value={formTitle} onChange={(e) => { setFormTitle(e.target.value); markDirty() }} required maxLength={200} />
 
           <label htmlFor="rf-desc" className="sr-only">{t('createRequest.descriptionLabel')}</label>
           <textarea id="rf-desc"
             placeholder={t('createRequest.descriptionLabel')}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => { setDescription(e.target.value); markDirty() }}
             required
             rows={4}
             maxLength={5000}
@@ -234,7 +299,7 @@ export default function RequestForm({
           <div className="grid-3-responsive">
             <div>
               <label className="small label-block" htmlFor="rf-category">{t('createRequest.categoryLabel')}</label>
-              <select id="rf-category" value={category} onChange={(e) => setCategory(e.target.value)} className="w-full">
+              <select id="rf-category" value={category} onChange={(e) => { setCategory(e.target.value); markDirty() }} className="w-full">
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>{t(`categories.${c}`)}</option>
                 ))}
@@ -242,7 +307,7 @@ export default function RequestForm({
             </div>
             <div>
               <label className="small label-block" htmlFor="rf-priority">{t('createRequest.priorityLabel')}</label>
-              <select id="rf-priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full">
+              <select id="rf-priority" value={priority} onChange={(e) => { setPriority(e.target.value); markDirty() }} className="w-full">
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>{t(`priorities.${p}`)}</option>
                 ))}
@@ -251,7 +316,7 @@ export default function RequestForm({
             {showStatus && (
               <div>
                 <label className="small label-block" htmlFor="rf-status">{t('editRequest.statusLabel')}</label>
-                <select id="rf-status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full">
+                <select id="rf-status" value={status} onChange={(e) => { setStatus(e.target.value); markDirty() }} className="w-full">
                   {STATUSES.map((s) => (
                     <option key={s} value={s}>{t(`statuses.${s}`)}</option>
                   ))}
@@ -262,7 +327,7 @@ export default function RequestForm({
 
           <div>
             <label className="small label-block" htmlFor="rf-people">{t('createRequest.peopleCountLabel')}</label>
-            <input id="rf-people" type="number" min="1" max="10000" value={peopleCount} onChange={(e) => setPeopleCount(e.target.value)} className="w-full" />
+            <input id="rf-people" type="number" min="1" max="10000" value={peopleCount} onChange={(e) => { setPeopleCount(e.target.value); markDirty() }} className="w-full" />
           </div>
 
           <div className="card p-sm bg-elevated">
@@ -335,7 +400,7 @@ export default function RequestForm({
           </div>
 
           <div className="btnRow">
-            <button disabled={isSubmitting || !lat} type="submit" className="btnPrimary">
+            <button disabled={isSubmitting || !lat} type="submit" className={`btnPrimary${isSubmitting ? ' btnLoading' : ''}`}>
               {isSubmitting ? submitLabel : !lat ? t('createRequest.selectLocationFirst') : submitButtonLabel}
             </button>
             <button type="button" onClick={onCancel}>{t('createRequest.cancel')}</button>

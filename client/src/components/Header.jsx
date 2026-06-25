@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
-import { useConfirm } from '../hooks/useConfirm'
 import { clientApi } from '../api/client'
 import { useToast } from './Toast'
 import NotificationBell from './NotificationBell'
@@ -30,9 +29,13 @@ export default function Header({ onToggleSidebar }) {
   const { theme, toggleTheme } = useTheme()
   const { socket } = useSocket()
   const toast = useToast()
-  const { confirm, ConfirmDialog } = useConfirm()
-  const [sosLoading, setSosLoading] = useState(false)
+  const [cooldown, setCooldown] = useState(0)
+  const timerRef = useRef(null)
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [])
 
   function changeLanguage(langCode) {
     i18n.changeLanguage(langCode)
@@ -40,16 +43,19 @@ export default function Header({ onToggleSidebar }) {
   }
 
   async function handleSOS() {
-    const ok = await confirm({ message: t('sos.confirm'), danger: true })
-    if (!ok) return
-    setSosLoading(true)
+    if (cooldown > 0) return
     try {
       await clientApi.broadcastSOS({ message: `${t('sos.from')} ${currentUser?.displayName || t('sos.user')}` })
       toast.success(t('sos.broadcastSuccess'))
+      setCooldown(5)
+      timerRef.current = setInterval(() => {
+        setCooldown((c) => {
+          if (c <= 1) { clearInterval(timerRef.current); return 0 }
+          return c - 1
+        })
+      }, 1000)
     } catch (e) {
       toast.error(t('sos.broadcastFailed', { error: e.message }))
-    } finally {
-      setSosLoading(false)
     }
   }
 
@@ -97,7 +103,9 @@ export default function Header({ onToggleSidebar }) {
           {isAuthenticated && !isAuthPage && (
             <div className="gov-header-actions">
               <NotificationBell />
-              <button onClick={handleSOS} disabled={sosLoading} className="sos-btn" aria-label="Emergency SOS alert">{sosLoading ? '...' : 'SOS'}</button>
+              <button onClick={handleSOS} disabled={cooldown > 0} className="sos-btn" aria-label={cooldown > 0 ? `SOS cooldown ${cooldown}s` : 'Emergency SOS alert'}>
+                {cooldown > 0 ? `SOS ${cooldown}s` : 'SOS'}
+              </button>
               <button onClick={() => navigate('/profile')} className="gov-nav-link-user header-user-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span className="header-user-name">{currentUser?.displayName || t('nav.profile')}</span>
@@ -113,8 +121,6 @@ export default function Header({ onToggleSidebar }) {
           )}
         </div>
       </div>
-
-      {ConfirmDialog}
     </header>
   )
 }

@@ -75,7 +75,7 @@ export default function PublicStatus() {
           <div className="flex flex-gap-lg flex-wrap">
             {Object.entries(data.statusBreakdown).map(([status, count]) => (
               <div key={status} className="flex flex-gap-xs items-center">
-                <div className="h-10 rounded-full" style={{ background: STATUS_COLORS[status] || '#999' }} />
+                <div className="h-10 rounded-full" style={{ background: STATUS_COLORS[status] || '#999' }} aria-hidden="true" />
                 <span className="text-sm">{status}: <strong>{count}</strong></span>
               </div>
             ))}

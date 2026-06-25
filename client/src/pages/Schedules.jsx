@@ -7,6 +7,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
+import EmptyState from '../components/EmptyState'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(245,158,11,0.1)', text: 'var(--accent-orange)', border: 'rgba(245,158,11,0.25)' },
@@ -250,7 +251,7 @@ export default function Schedules() {
       ) : (
         <div className="gridGap mt-md">
           {items.length === 0 && (
-            <div className="card text-center p-xl">{t('schedules.noSchedules')}</div>
+            <EmptyState icon='📅' title={t('schedules.noSchedules')} description={t('schedules.createFirst') || 'Create your first schedule'} />
           )}
 
           {items.map((item) => {
