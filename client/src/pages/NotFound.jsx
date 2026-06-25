@@ -20,7 +20,7 @@ export default function NotFound() {
         <button className="btnPrimary" onClick={() => navigate('/dashboard')}>
           {t('notFound.goHome') || 'Go to Dashboard'}
         </button>
-        <button onClick={() => navigate(-1)}>
+        <button className="btnSecondary" onClick={() => navigate(-1)}>
           {t('notFound.goBack') || 'Go Back'}
         </button>
       </div>

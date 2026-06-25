@@ -25,11 +25,11 @@ const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DEFAULT_CENTER = [20.5937, 78.9629]
 
 function buildIncidentPopup(inc) {
-  const color = SEVERITY_COLORS[inc.severity] || '#999'
+  const color = SEVERITY_COLORS[inc.severity] || 'var(--text-muted)'
   const stats = inc.stats || {}
   return `
     <div style="font-family:Arial,sans-serif;min-width:180px">
-      <div style="font-weight:700;font-size:13px;color:#3b82f6;margin-bottom:4px">${DISASTER_ICONS[inc.disasterType] || ''} ${escapeHtml(inc.name)}</div>
+      <div style="font-weight:700;font-size:13px;color:var(--pri-500);margin-bottom:4px">${DISASTER_ICONS[inc.disasterType] || ''} ${escapeHtml(inc.name)}</div>
       <div style="font-size:12px;margin-bottom:6px">
         <span style="color:${color};font-weight:600">${escapeHtml(inc.severity)}</span> &middot; ${escapeHtml(inc.status)}
       </div>

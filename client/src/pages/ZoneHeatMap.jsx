@@ -34,10 +34,10 @@ const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 
 function buildPopup(zone, color, t) {
-  const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || '#999'
+  const coverageColor = COVERAGE_COLORS[zone.coverageStatus] || 'var(--text-muted)'
   return `
     <div style="font-family:Arial,sans-serif;min-width:200px">
-      <div style="font-weight:700;font-size:14px;color:#3b82f6;margin-bottom:4px">
+      <div style="font-weight:700;font-size:14px;color:var(--pri-500);margin-bottom:4px">
         ${DISASTER_ICONS[zone.disasterType] || ''} ${escapeHtml(zone.name)}
       </div>
       <div style="font-size:12px;margin-bottom:6px">
@@ -51,14 +51,14 @@ function buildPopup(zone, color, t) {
       }
       <hr style="margin:6px 0;border:none;border-top:1px solid rgba(255,255,255,0.1)"/>
       <div style="font-size:12px">
-        <div>Open requests: <strong style="color:#ef4444">${zone.openRequests}</strong></div>
+        <div>Open requests: <strong style="color:var(--red-500)">${zone.openRequests}</strong></div>
         <div>Resources: <strong>${zone.totalResources}</strong> units</div>
         <div style="margin-top:4px">
-          Coverage: <span style="background:${coverageColor};color:white;padding:1px 6px;border-radius:3px;font-size:11px">${escapeHtml(zone.coverageStatus)}</span>
+          Coverage: <span style="background:${coverageColor};color:var(--gov-white);padding:1px 6px;border-radius:3px;font-size:11px">${escapeHtml(zone.coverageStatus)}</span>
         </div>
       </div>
       <div style="margin-top:8px">
-        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:#3b82f6;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">${t('common.viewDetails')}</button>
+        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:var(--gov-blue);color:var(--gov-white);border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">${t('common.viewDetails')}</button>
       </div>
     </div>
   `

@@ -888,6 +888,10 @@ h1, h2, h3, h4 {
   transition: background var(--duration-fast) var(--ease-out);
 }
 .notification-item:hover { background: var(--accent-soft); }
+.notification-item:focus-visible {
+  outline: 2px solid var(--pri-500);
+  outline-offset: -2px;
+}
 .notification-unread { background: var(--accent-soft); }
 .notification-item-content {
   display: flex;
@@ -1210,7 +1214,7 @@ h1, h2, h3, h4 {
   .headerRow { flex-direction: column; align-items: flex-start; }
   .flex-between { flex-wrap: wrap; gap: var(--space-sm); }
   .btnRow { flex-wrap: wrap; }
-  .mapBox { height: 240px; min-height: 180px; border-radius: 0; border-left: none; border-right: none; }
+  .mapBox { height: 240px; min-height: 180px; border-radius: var(--radius-sm); border-left: none; border-right: none; }
   .map-container-full { height: 45vh; min-height: 220px; }
   .admin-stats-grid { grid-template-columns: 1fr 1fr; }
   .admin-breakdown-grid { grid-template-columns: 1fr; }
@@ -1234,7 +1238,7 @@ h1, h2, h3, h4 {
   .gov-app-subtitle { font-size: var(--text-2xs); }
   .gov-header-main .gov-container { flex-wrap: wrap; }
   .notification-dropdown { width: calc(100vw - 16px); right: -8px; }
-  .mapBox { height: 200px; min-height: 160px; border-radius: 0; border-left: none; border-right: none; }
+  .mapBox { height: 200px; min-height: 160px; border-radius: var(--radius-sm); border-left: none; border-right: none; }
   .map-container-full { height: 40vh; min-height: 200px; }
   .admin-stats-grid { grid-template-columns: 1fr; }
   .card { padding: var(--space-md); border-radius: var(--radius-sm); }

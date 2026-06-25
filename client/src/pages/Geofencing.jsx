@@ -115,7 +115,7 @@ export default function Geofencing() {
       }
 
       ;(result.zones || []).forEach((z) => {
-        addMarker(z.centerLat, z.centerLng, `<b>${escapeHtml(z.name)}</b><br>${escapeHtml(z.severity)} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || '#999')
+        addMarker(z.centerLat, z.centerLng, `<b>${escapeHtml(z.name)}</b><br>${escapeHtml(z.severity)} zone<br>${z.distanceKm} km away`, SEVERITY_COLORS[z.severity] || 'var(--text-muted)')
       })
       ;(result.requests || []).forEach((r) => {
         if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Request:</b> ${escapeHtml(r.title)}<br>${r.distanceKm} km away`, 'var(--gov-danger)')

@@ -1,5 +1,5 @@
-export function SkeletonLine({ width = '100%', height = 14, style = {} }) {
-  return <div className="sk-line" style={{ width, height, ...style }} aria-hidden="true" />
+export function SkeletonLine({ width = '100%', height = 14, style = {}, className = '' }) {
+  return <div className={`sk-line ${className}`} style={{ width, height, ...style }} aria-hidden="true" />
 }
 
 export function SkeletonCard({ lines = 3, style = {} }) {

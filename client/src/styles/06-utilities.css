@@ -256,10 +256,6 @@
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-.map-container-full {
-  height: 70vh;
-}
-
 /* ---- Inline-style replacement utilities ---- */
 /* Sizing */
 .min-w-150 { min-width: 150px; }
@@ -550,6 +546,10 @@
   border-radius: var(--radius-sm);
   border: 1px solid;
   cursor: pointer;
+}
+.skill-pill:focus-visible {
+  outline: 2px solid var(--pri-500);
+  outline-offset: 2px;
 }
 .skill-pill.active {
   background: var(--gov-blue);

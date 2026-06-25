@@ -88,7 +88,7 @@ export default function Header({ onToggleSidebar }) {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
             </button>
           )}
-          <img src="/images/logo.svg" alt="Logo" className="gov-logo" />
+          <img src="/images/logo.svg" alt="" className="gov-logo" />
           <div className="gov-title-group">
             <div className="gov-app-title">{t('appTitle')}</div>
             <div className="gov-app-subtitle">{t('appSubtitle')}</div>
@@ -97,7 +97,7 @@ export default function Header({ onToggleSidebar }) {
           {isAuthenticated && !isAuthPage && (
             <div className="gov-header-actions">
               <NotificationBell />
-              <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">{sosLoading ? '...' : 'SOS'}</button>
+              <button onClick={handleSOS} disabled={sosLoading} className="sos-btn" aria-label="Emergency SOS alert">{sosLoading ? '...' : 'SOS'}</button>
               <button onClick={() => navigate('/profile')} className="gov-nav-link-user header-user-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span className="header-user-name">{currentUser?.displayName || t('nav.profile')}</span>

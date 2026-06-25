@@ -41,7 +41,7 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      <div className="toast-container" role="alert" aria-live="assertive">
+      <div className="toast-container" role="status" aria-live="polite">
         {toasts.map((t) => (
           <div
             key={t.id}
@@ -65,9 +65,9 @@ export function useToast() {
   const ctx = useContext(ToastContext)
   if (!ctx) {
     return (msg, type) => {
-      if (type === 'error') alert(msg)
-      else if (type === 'success') alert(msg)
-      else alert(msg)
+      if (type === 'error') console.error('[Toast]', msg)
+      else console.warn('[Toast]', msg)
+      return msg
     }
   }
   return ctx

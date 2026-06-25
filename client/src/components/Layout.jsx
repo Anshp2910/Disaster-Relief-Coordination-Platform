@@ -30,7 +30,7 @@ export default function Layout({ children }) {
         <div className="pwa-install-banner">
           <span className="pwa-install-text">{t('common.installApp')}</span>
           <button onClick={install} className="btnPrimary pwa-install-btn">{t('common.install')}</button>
-          <button onClick={() => setDismissed(true)} className="pwa-dismiss-btn">&times;</button>
+          <button onClick={() => setDismissed(true)} className="pwa-dismiss-btn" aria-label="Dismiss install banner">&times;</button>
         </div>
       )}
     </div>

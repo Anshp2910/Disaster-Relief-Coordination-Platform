@@ -44,7 +44,7 @@ export default function ActivityFeed({ limit = 20, compact = false }) {
       {unreadCount > 0 && (
         <div className="activity-feed-header">
           <span className="activity-unread-badge">{unreadCount} new</span>
-          <button onClick={markAllRead} className="activity-mark-read">{t('notifications.markAllRead')}</button>
+          <button onClick={markAllRead} className="activity-mark-read" aria-label={t('notifications.markAllRead')}>{t('notifications.markAllRead')}</button>
         </div>
       )}
       <div className={`activity-list ${compact ? 'activity-list--compact' : ''}`}>

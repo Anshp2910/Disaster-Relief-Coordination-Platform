@@ -52,6 +52,7 @@ export default function NotificationBell() {
         onClick={() => setOpen(!open)}
         className="notification-bell-btn"
         aria-expanded={open}
+        aria-label={t('notifications.title')}
         title={t('notifications.title')}
       >
         <BellIcon />

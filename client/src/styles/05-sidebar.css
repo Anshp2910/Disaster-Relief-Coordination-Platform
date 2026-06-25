@@ -168,6 +168,16 @@
     transform: translateX(0);
   }
 
+  [dir="rtl"] .sidebar {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  [dir="rtl"] .sidebar--open {
+    transform: translateX(0);
+  }
+
   .sidebar-backdrop {
     position: fixed;
     inset: 0;
