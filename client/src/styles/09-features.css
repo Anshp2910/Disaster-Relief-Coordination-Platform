@@ -14,23 +14,23 @@
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur, 16px)) saturate(1.08);
   -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(1.08);
-  border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+  border: 1px solid var(--glass-border);
 }
 .glass-vision-strong {
-  background: var(--glass-bg-strong, rgba(255,255,255,0.06));
+  background: var(--glass-bg-strong);
   backdrop-filter: blur(calc(var(--glass-blur, 16px) * 1.5)) saturate(1.15);
   -webkit-backdrop-filter: blur(calc(var(--glass-blur, 16px) * 1.5)) saturate(1.15);
-  border: 1px solid var(--glass-border, rgba(255,255,255,0.08));
-  box-shadow: var(--glass-shadow, var(--shadow-md));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 .glass-inset {
-  background: rgba(200, 210, 226, 0.15);
+  background: var(--glass-inset-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--glass-border);
 }
 .glass-glow {
-  box-shadow: 0 0 30px var(--accent-soft, rgba(59,130,246,0.06)), var(--shadow-md);
+  box-shadow: 0 0 30px var(--accent-soft), var(--shadow-md);
 }
 
 /* =========================================
@@ -39,13 +39,13 @@
 .gov-nav-bar.glass-float {
   backdrop-filter: blur(20px) saturate(1.2);
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.02);
-  border-bottom: 1px solid var(--glass-border, rgba(255,255,255,0.05));
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
 }
 .gov-header-main.glass-float {
   backdrop-filter: blur(24px) saturate(1.1);
   -webkit-backdrop-filter: blur(24px) saturate(1.1);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.02);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--glass-border);
 }
 
 
@@ -251,7 +251,7 @@
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-bg);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   display: flex;
@@ -266,7 +266,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 32px 80px rgba(0,0,0,0.5), var(--glow-blue);
+  box-shadow: var(--shadow-xl), var(--glow-blue);
   overflow: hidden;
   animation: modalIn 0.2s var(--ease-out);
 }

@@ -55,7 +55,6 @@
   --gradient-bg: linear-gradient(160deg, #e4e8f0 0%, #eef1f6 40%, #e8ecf4 100%);
   --gradient-card: linear-gradient(180deg, #ffffff 0%, #f8fafd 100%);
   --gradient-accent: linear-gradient(135deg, var(--pri-500), var(--pri-600));
-  --gradient-accent-subtle: linear-gradient(135deg, var(--pri-500), var(--pri-600));
 
   /* === Shadows === */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -85,14 +84,14 @@
   --duration-fast: 150ms;  --duration-normal: 250ms;  --duration-slow: 400ms;
 
   /* === Legacy vars (keep for compatibility) === */
-  --gov-blue: var(--pri-600);       --gov-blue-light: var(--pri-500);
+  --gov-blue: var(--pri-600);
   --gov-saffron: var(--amber-600);  --gov-green: var(--green-600);
   --gov-white: #ffffff;             --gov-bg: var(--bg);
   --gov-text: var(--text);          --gov-muted: var(--text-secondary);
   --gov-border: var(--border);      --gov-card-bg: var(--bg-card);
   --gov-danger: var(--danger);
 
-  --accent-blue: var(--pri-600);        --accent-blue-light: var(--pri-500);
+  --accent-blue: var(--pri-600);
   --accent-indigo: #818cf8;             --accent-purple: #a78bfa;
   --accent-green: var(--green-600);     --accent-orange: var(--amber-600);
   --accent-red: var(--danger);
@@ -123,6 +122,7 @@
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-bg-strong: #ffffff;
   --glass-border: #c8d2e2;
+  --glass-inset-bg: rgba(200, 210, 226, 0.15);
   --glass-blur: 16px;
   --glass-shadow: var(--shadow-md);
 
@@ -136,6 +136,10 @@
   --gradient-header: linear-gradient(90deg, var(--pri-500), #818cf8, #a78bfa, var(--pri-500));
   --gradient-saffron: linear-gradient(135deg, var(--amber-500), #ea580c);
   --gradient-login-hero: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #7c3aed 100%);
+
+  /* === Overlays === */
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --text-on-accent: #ffffff;
 
   /* === ECC-Specific === */
   --ecc-glow: 0 0 15px rgba(37, 99, 235, 0.06);
@@ -167,6 +171,7 @@
 
   --gradient-bg: linear-gradient(160deg, #070b14 0%, #0c1422 40%, #070b14 100%);
   --gradient-card: linear-gradient(180deg, #131b2c 0%, #0f172a 100%);
+  --gradient-accent: linear-gradient(135deg, var(--pri-400), var(--pri-500));
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -177,6 +182,7 @@
   --glass-bg: rgba(15, 21, 32, 0.88);
   --glass-bg-strong: #131b2c;
   --glass-border: #1e293b;
+  --glass-inset-bg: rgba(30, 41, 59, 0.25);
   --glass-shadow: var(--shadow-md);
 
   --glow-blue: 0 0 20px rgba(96, 165, 250, 0.15);
@@ -188,13 +194,42 @@
   --ecc-glow: 0 0 15px rgba(96, 165, 250, 0.1);
   --ecc-border-focus: rgba(96, 165, 250, 0.3);
 
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+  --text-on-accent: #ffffff;
+
   --gradient-login-hero: linear-gradient(135deg, #0c1a30 0%, #1d4ed8 50%, #6d28d9 100%);
 
+  /* Override legacy vars for dark mode */
   --gov-white: #e2e8f0;
   --gov-card-bg: var(--bg-card);
 
   --color-medium: #eab308;
+  --severity-medium: #eab308;
   --severity-medium-stroke: #a16207;
+  --coverage-partial: #eab308;
+
+  --color-open: var(--pri-400);
+  --color-pending: #a78bfa;
+  --color-progress: var(--amber-400);
+  --color-resolved: var(--green-400);
+  --color-fulfilled: var(--green-400);
+
+  --color-critical: var(--red-400);
+  --color-high: var(--amber-400);
+  --color-low: var(--green-400);
+
+  --severity-critical: var(--red-400);
+  --severity-high: var(--amber-400);
+  --severity-low: var(--green-400);
+  --severity-critical-stroke: #7f1d1d;
+  --severity-high-stroke: #78350f;
+  --severity-low-stroke: #14532d;
+
+  --coverage-covered: var(--green-400);
+  --coverage-gap: var(--red-400);
+
+  --gradient-header: linear-gradient(90deg, var(--pri-400), #a5b4fc, #c4b5fd, var(--pri-400));
+  --gradient-saffron: linear-gradient(135deg, var(--amber-400), #f97316);
 
   /* Category colors for dark mode — brighter to maintain contrast */
   --cat-water: #22d3ee;

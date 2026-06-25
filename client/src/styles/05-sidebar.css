@@ -187,7 +187,7 @@
     position: fixed;
     inset: 0;
     z-index: 199;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--overlay-bg);
     backdrop-filter: blur(4px);
     animation: overlayIn 0.2s var(--ease-out);
   }
