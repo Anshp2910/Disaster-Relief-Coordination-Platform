@@ -248,11 +248,11 @@ export default function BulkImport() {
               <button onClick={exportData} className="btnPrimary text-13 p-sm">{t('bulkImport.exportCSV')}</button>
             </div>
 
-            <div className="p-2xl text-center border-gov rounded" style={{ borderStyle: 'dashed', borderWidth: 2 }}>
+            <div className="p-2xl text-center border-dashed-2 rounded">
               <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
               <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
               <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" />
-              <label htmlFor="csv-upload" className="btnPrimary cursor-pointer inline-block text-13" style={{ padding: '8px 20px' }}>
+              <label htmlFor="csv-upload" className="btnPrimary cursor-pointer inline-block text-13 p-sm">
                 {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
               </label>
             </div>

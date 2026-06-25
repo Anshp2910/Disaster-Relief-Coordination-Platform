@@ -7,7 +7,6 @@ import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './components/Toast'
 import { AuthProvider } from './context/AuthContext'
-import { ThemeProvider } from './context/ThemeContext'
 import { useVersionCheck } from './hooks/useVersionCheck'
 // Leaflet CSS is loaded dynamically in mapInit.js to avoid blocking non-map pages
 import './styles/index.css'
@@ -21,7 +20,11 @@ function WebVitalsReporter() {
   const { useEffect } = React
   useEffect(() => {
     import('./utils/reportWebVitals').then(({ reportWebVitals }) => {
-      reportWebVitals(console.log)
+      reportWebVitals((metric) => {
+        if (metric.name === 'LCP' || metric.name === 'FID' || metric.name === 'CLS') {
+          console.warn('[web-vital]', metric.name, metric.value)
+        }
+      })
     }).catch(() => {})
   }, [])
   return null
@@ -37,17 +40,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       <I18nextProvider i18n={i18n}>
-        <ThemeProvider>
-          <HashRouter>
-            <AuthProvider>
-              <ToastProvider>
-                <VersionChecker />
-                <WebVitalsReporter />
-                <App />
-              </ToastProvider>
-            </AuthProvider>
-          </HashRouter>
-        </ThemeProvider>
+        <HashRouter>
+          <AuthProvider>
+            <ToastProvider>
+              <VersionChecker />
+              <WebVitalsReporter />
+              <App />
+            </ToastProvider>
+          </AuthProvider>
+        </HashRouter>
       </I18nextProvider>
     </ErrorBoundary>
   </React.StrictMode>,

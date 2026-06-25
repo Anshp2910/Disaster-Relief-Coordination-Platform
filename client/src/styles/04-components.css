@@ -412,6 +412,18 @@ button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   transform: translateY(0) scale(0.98);
 }
 
+.btnSecondary {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 500;
+  transition: all 0.2s var(--ease-out);
+}
+.btnSecondary:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
 button:not(.btnPrimary):not(.btnDanger) {
   transition: all 0.2s var(--ease-out);
 }

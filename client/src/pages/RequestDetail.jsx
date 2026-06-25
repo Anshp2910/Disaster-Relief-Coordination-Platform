@@ -7,6 +7,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
+import { useConfirm } from '../hooks/useConfirm'
 import Chat from './Chat'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
@@ -63,6 +64,7 @@ export default function RequestDetail() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const [claiming, setClaiming] = useState(false)
   const [previewFile, setPreviewFile] = useState(null)
+  const { confirm, ConfirmDialog } = useConfirm()
 
   const load = useCallback(async () => {
     try {
@@ -80,7 +82,7 @@ export default function RequestDetail() {
       const data = await clientApi.getResources({ status: 'Available', limit: 100 })
       setResources(data.items || [])
     } catch {
-      // silently fail
+      console.warn('[RequestDetail] Failed to load resources')
     }
   }, [])
 
@@ -89,7 +91,7 @@ export default function RequestDetail() {
       const data = await clientApi.getFeedback(id)
       setFeedbackList(data.feedback || [])
     } catch {
-      // silently fail
+      console.warn('[RequestDetail] Failed to load feedback')
     }
   }, [id])
 
@@ -99,7 +101,7 @@ export default function RequestDetail() {
       const data = await clientApi.matchResources(id)
       setMatches(data.matches || [])
     } catch {
-      // silently fail
+      console.warn('[RequestDetail] Failed to load matches')
     } finally {
       setLoadingMatches(false)
     }
@@ -147,7 +149,8 @@ export default function RequestDetail() {
   }
 
   async function handleUnclaim() {
-    if (!confirm(t('dashboard.unclaimConfirm') || 'Are you sure you want to unclaim this request?')) return
+    const ok = await confirm({ message: t('dashboard.unclaimConfirm') || 'Are you sure you want to unclaim this request?', confirmText: t('dashboard.unclaim'), danger: true })
+    if (!ok) return
     setClaiming(true)
     try {
       const data = await clientApi.unclaimRequest(id)
@@ -192,7 +195,8 @@ export default function RequestDetail() {
   }
 
   async function handleDeleteComment(commentId) {
-    if (!confirm(t('dashboard.deleteConfirm'))) return
+    const ok = await confirm({ message: t('dashboard.deleteConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.deleteComment(id, commentId)
       setItem((prev) => ({ ...prev, comments: (prev.comments || []).filter((c) => c._id !== commentId) }))
@@ -539,6 +543,7 @@ export default function RequestDetail() {
           </div>
         </div>
       )}
+      <ConfirmDialog />
     </article>
   )
 }

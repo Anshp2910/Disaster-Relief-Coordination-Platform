@@ -6,6 +6,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { useAuth } from '../context/AuthContext'
+import { useConfirm } from '../hooks/useConfirm'
 
 const SHIFT_COLORS = {
   Morning: { bg: 'rgba(245,158,11,0.1)', text: 'var(--accent-orange)', border: 'rgba(245,158,11,0.25)' },
@@ -62,6 +63,7 @@ export default function Schedules() {
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [showForm, setShowForm] = useState(false)
+  const { confirm, ConfirmDialog } = useConfirm()
   const [editItem, setEditItem] = useState(null)
   const [users, setUsers] = useState([])
   const [zones, setZones] = useState([])
@@ -157,7 +159,8 @@ export default function Schedules() {
   }
 
   async function handleDelete(id) {
-    if (!confirm(t('schedules.deleteConfirm'))) return
+    const ok = await confirm({ message: t('schedules.deleteConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.deleteSchedule(id)
       load()
@@ -394,6 +397,7 @@ export default function Schedules() {
           </div>
         </div>
       )}
+      <ConfirmDialog />
     </div>
   )
 }

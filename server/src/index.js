@@ -43,13 +43,13 @@ async function start() {
   })
 
   const { default: jwt } = await import('jsonwebtoken')
-  const { getEnv } = await import('./config/env.js')
+  const { getJwtSecret } = await import('./config/env.js')
 
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token || socket.handshake.query?.token
     if (!token) return next(new Error('Authentication required'))
     try {
-      const decoded = jwt.verify(token, getEnv('JWT_SECRET'))
+      const decoded = jwt.verify(token, getJwtSecret())
       socket.userId = decoded.sub
       socket.userRole = decoded.role
       next()

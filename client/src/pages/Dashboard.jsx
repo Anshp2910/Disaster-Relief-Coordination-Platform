@@ -5,6 +5,7 @@ import { clientApi } from '../api/client'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
+import { useConfirm } from '../hooks/useConfirm'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useToast } from '../components/Toast'
@@ -372,12 +373,14 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
   const toast = useToast()
   const { user } = useAuth()
   const [deleting, setDeleting] = useState(false)
+  const { confirm, ConfirmDialog } = useConfirm()
   const isOwner = user?.id && item.createdBy && item.createdBy._id ? item.createdBy._id === user.id : user?.id && String(item.createdBy) === String(user.id)
   const canEdit = isOwner || user?.role === 'admin'
 
   async function del(e) {
     e.stopPropagation()
-    if (!confirm(t('dashboard.deleteConfirm'))) return
+    const ok = await confirm({ message: t('dashboard.deleteConfirm'), confirmText: t('dashboard.delete'), danger: true })
+    if (!ok) return
     setDeleting(true)
     try { await clientApi.deleteRequest(id); onChanged() } catch (e) { toast.error(e.message || 'Failed to delete') } finally { setDeleting(false) }
   }
@@ -388,6 +391,7 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
     <div className="flex flex-col flex-gap-sm items-end">
       <button disabled={!canEdit} onClick={edit} className="btnPrimary text-sm p-xs" aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</button>
       <button disabled={!canEdit || deleting} onClick={del} className="btnDanger text-sm p-xs" aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
+      <ConfirmDialog />
     </div>
   )
 })

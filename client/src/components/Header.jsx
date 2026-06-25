@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useState, useMemo, useEffect, memo } from 'react'
 import NotificationBell from './NotificationBell'
 import { clientApi } from '../api/client'
+import { useConfirm } from '../hooks/useConfirm'
 import { useSocket } from '../hooks/useSocket'
 import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
@@ -106,9 +107,11 @@ export default function Header() {
   }, [mobileMenuOpen])
 
   const [sosLoading, setSosLoading] = useState(false)
+  const { confirm, ConfirmDialog } = useConfirm()
 
   async function handleSOS() {
-    if (!confirm(t('sos.confirm'))) return
+    const ok = await confirm({ message: t('sos.confirm'), danger: true })
+    if (!ok) return
     setSosLoading(true)
     try {
       await clientApi.broadcastSOS({ message: `${t('sos.from')} ${currentUser?.displayName || t('sos.user')}` })
@@ -260,6 +263,7 @@ export default function Header() {
           </div>
         </div>
       )}
+      <ConfirmDialog />
     </header>
   )
 }

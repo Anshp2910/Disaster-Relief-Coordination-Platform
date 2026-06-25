@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { getEnv } from '../config/env.js'
+import { getJwtSecret } from '../config/env.js'
 import { User } from '../models/User.js'
 
 export async function requireAuth(req, res, next) {
@@ -10,7 +10,7 @@ export async function requireAuth(req, res, next) {
 
     let payload
     try {
-      payload = jwt.verify(token, getEnv('JWT_SECRET'))
+      payload = jwt.verify(token, getJwtSecret())
     } catch (jwtErr) {
       console.warn('[auth] JWT verify failed:', jwtErr.name, jwtErr.message)
       return res.status(401).json({ error: 'Token expired or invalid', code: 'INVALID_TOKEN' })

@@ -93,12 +93,18 @@ export function useFormValidation(initialValues = {}) {
 
 export function FormField({ name, label, error, touched, children }) {
   const showError = touched && error
+  const errorId = `${name}-error`
+  const fieldId = `field-${name}`
+  const input = children
+  const cloned = input && typeof input === 'object' && 'type' in input
+    ? <input {...input.props} id={fieldId} aria-invalid={showError || undefined} aria-describedby={showError ? errorId : undefined} />
+    : children
   return (
     <div>
-      {label && <label className="small" style={{ display: 'block', marginBottom: 4 }}>{label}</label>}
-      {children}
+      {label && <label className="small" htmlFor={fieldId} style={{ display: 'block', marginBottom: 4 }}>{label}</label>}
+      {cloned}
       {showError && (
-        <div style={{ color: 'var(--gov-danger)', fontSize: 11, marginTop: 2 }}>{error}</div>
+        <div id={errorId} role="alert" style={{ color: 'var(--gov-danger)', fontSize: 11, marginTop: 2 }}>{error}</div>
       )}
     </div>
   )

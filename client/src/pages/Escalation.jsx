@@ -5,6 +5,7 @@ import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
+import { useConfirm } from '../hooks/useConfirm'
 
 export default function Escalation() {
   const { t } = useTranslation()
@@ -15,6 +16,7 @@ export default function Escalation() {
   const [reason, setReason] = useState('')
   const [allRequests, setAllRequests] = useState([])
   const [search, setSearch] = useState('')
+  const { confirm, ConfirmDialog } = useConfirm()
   const debouncedSearch = useDebounce(search, 300)
 
   const load = useCallback(async () => {
@@ -67,7 +69,8 @@ export default function Escalation() {
   }
 
   async function handleDeescalate(id) {
-    if (!confirm(t('escalation.deEscalateConfirm'))) return
+    const ok = await confirm({ message: t('escalation.deEscalateConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.deescalateRequest(id)
       load()
@@ -155,6 +158,7 @@ export default function Escalation() {
           ))}
         </div>
       )}
+      <ConfirmDialog />
     </div>
   )
 }

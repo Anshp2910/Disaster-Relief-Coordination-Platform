@@ -6,6 +6,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { SkeletonList } from '../components/Skeleton'
+import { useConfirm } from '../hooks/useConfirm'
 
 const STATUS_COLORS = {
   Open: { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--color-open)' },
@@ -415,8 +416,11 @@ export default function AdminDashboard() {
     }
   }, [toast, t])
 
+  const delConfirm = useConfirm()
+
   const deleteUser = useCallback(async (userId) => {
-    if (!confirm(t('admin.deleteUserConfirm'))) return
+    const ok = await delConfirm.confirm({ message: t('admin.deleteUserConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.adminDeleteUser(userId)
       setUsers((prev) => prev.filter((u) => u._id !== userId))
@@ -427,7 +431,8 @@ export default function AdminDashboard() {
   }, [toast, t])
 
   const deleteRequest = useCallback(async (requestId) => {
-    if (!confirm(t('admin.deleteRequestConfirm'))) return
+    const ok = await delConfirm.confirm({ message: t('admin.deleteRequestConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.adminDeleteRequest(requestId)
       setRequests((prev) => prev.filter((r) => r._id !== requestId))
@@ -515,6 +520,7 @@ export default function AdminDashboard() {
       ) : (
         <RequestsPanel requests={requests} onDelete={deleteRequest} />
       )}
+      <delConfirm.ConfirmDialog />
     </div>
   )
 }

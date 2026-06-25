@@ -8,6 +8,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useAuth } from '../context/AuthContext'
+import { useConfirm } from '../hooks/useConfirm'
 
 const SEVERITY_COLORS = {
   Critical: { fill: 'var(--severity-critical)', stroke: 'var(--severity-critical-stroke)', weight: 0.6 },
@@ -83,6 +84,7 @@ export default function ZoneHeatMap() {
   const [filterStatus, setFilterStatus] = useState('All')
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
+  const { confirm, ConfirmDialog } = useConfirm()
 
   const [weather, setWeather] = useState(null)
   const [weatherLoading, setWeatherLoading] = useState(false)
@@ -245,7 +247,8 @@ export default function ZoneHeatMap() {
   }
 
   async function handleDelete(id) {
-    if (!confirm(t('zones.deleteConfirm'))) return
+    const ok = await confirm({ message: t('zones.deleteConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.deleteZone(id)
       setSelectedZone(null)
@@ -481,6 +484,7 @@ export default function ZoneHeatMap() {
           </div>
         </div>
       )}
+      <ConfirmDialog />
     </div>
   )
 }

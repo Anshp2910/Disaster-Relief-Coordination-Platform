@@ -17,9 +17,9 @@ export async function seedAdmin() {
       if (existing.role !== 'admin') {
         existing.role = 'admin'
         await existing.save()
-        console.log(`[seed] promoted existing user ${email} to admin`)
+        console.log('[seed] promoted existing user to admin')
       } else {
-        console.log(`[seed] admin user ${email} already exists`)
+        console.log('[seed] admin user already exists')
       }
       return
     }
@@ -32,7 +32,7 @@ export async function seedAdmin() {
     })
     await user.setPassword(password)
     await user.save()
-    console.log(`[seed] created admin user ${email}`)
+    console.log('[seed] admin user created')
   } catch (err) {
     console.error('[seed] failed to seed admin:', err.message)
   }

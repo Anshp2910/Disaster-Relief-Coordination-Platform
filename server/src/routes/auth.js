@@ -1,6 +1,6 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
-import { getEnv } from '../config/env.js'
+import { getJwtSecret } from '../config/env.js'
 import { User } from '../models/User.js'
 import { requireAuth } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
@@ -81,7 +81,7 @@ authRouter.post('/register', validate('register'), async (req, res) => {
     await user.setPassword(password)
     await user.save()
 
-    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getEnv('JWT_SECRET'), {
+    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), {
       expiresIn: '7d',
     })
 
@@ -111,7 +111,7 @@ authRouter.post('/login', validate('login'), async (req, res) => {
 
     loginAttempts.delete(getLoginKey(email))
 
-    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getEnv('JWT_SECRET'), {
+    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), {
       expiresIn: '24h',
     })
 

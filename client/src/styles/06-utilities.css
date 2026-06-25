@@ -289,6 +289,7 @@
 .label-block { display: block; margin-bottom: 4px; }
 /* Generic border style matching design system */
 .border-gov { border: 1px solid var(--border); }
+.border-dashed-2 { border: 2px dashed var(--border); }
 .border-bottom { border-bottom: 1px solid var(--border); }
 .border-l-accent { border-left: 3px solid var(--accent); }
 /* Icon/badge size */

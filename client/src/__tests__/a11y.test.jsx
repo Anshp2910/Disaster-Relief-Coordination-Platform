@@ -18,9 +18,9 @@ describe('Accessibility compliance', () => {
     expect(nonLeaflet.length).toBe(0)
   })
   
-  it('should not have .dark class references in CSS', () => {
-    const lightPath = path.resolve(__dirname, '../styles/05-light.css')
-    const css = fs.readFileSync(lightPath, 'utf8')
+  it('should not have .dark class references in variables CSS', () => {
+    const basePath = path.resolve(__dirname, '../styles/01-variables.css')
+    const css = fs.readFileSync(basePath, 'utf8')
     expect(css).not.toContain('.dark')
   })
 })

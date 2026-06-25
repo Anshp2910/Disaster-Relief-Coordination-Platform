@@ -89,7 +89,7 @@ export function createApp() {
         if (isOriginAllowed(origin)) {
           callback(null, true)
         } else {
-          console.warn('[CORS] Rejected origin:', origin, '| Allowed:', allowedOrigins)
+          console.warn('[CORS] Rejected origin (not in allowlist)')
           callback(new Error('Not allowed by CORS'), false)
         }
       },

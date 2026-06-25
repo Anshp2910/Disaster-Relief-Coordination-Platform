@@ -1,5 +1,6 @@
 const DANGEROUS_PATTERNS = [
   { regex: /<script[\s>]/gi, replacement: '<blocked-script>' },
+  { regex: /<\/script\s*>/gi, replacement: '' },
   { regex: /javascript\s*:/gi, replacement: 'blocked-javascript:' },
   { regex: /on\w+\s*=/gi, replacement: 'blocked-event=' },
   { regex: /data\s*:\s*text\s*\/\s*html/gi, replacement: 'blocked-data:' },

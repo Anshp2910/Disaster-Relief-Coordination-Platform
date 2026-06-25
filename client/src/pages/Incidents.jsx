@@ -8,6 +8,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
+import { useConfirm } from '../hooks/useConfirm'
 import { useAuth } from '../context/AuthContext'
 
 const DISASTER_ICONS = {
@@ -69,6 +70,7 @@ export default function Incidents() {
   const [showForm, setShowForm] = useState(false)
   const [editIncident, setEditIncident] = useState(null)
   const [form, setForm] = useState(DEFAULT_FORM)
+  const { confirm, ConfirmDialog } = useConfirm()
 
   const mapRef = useRef(null)
   const mapInstanceRef = useRef(null)
@@ -179,7 +181,8 @@ export default function Incidents() {
   }
 
   async function handleDelete(id) {
-    if (!confirm(t('incidents.deleteConfirm'))) return
+    const ok = await confirm({ message: t('incidents.deleteConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.deleteIncident(id)
       setSelectedIncident(null)
@@ -378,6 +381,7 @@ export default function Incidents() {
           <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('common.next')}>{t('common.next')}</button>
         </div>
       )}
+      <ConfirmDialog />
     </div>
   )
 }

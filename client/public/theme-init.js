@@ -1,3 +1,3 @@
 (function() {
-  // Always light mode — no theme switching
+  document.documentElement.classList.add('light')
 })();

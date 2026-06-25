@@ -6,6 +6,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
+import { useConfirm } from '../hooks/useConfirm'
 
 const CATEGORY_ICONS = {
   Food: '', Water: '', Medical: '', Shelter: '', Supplies: '', Healthcare: '', Sanitation: '', Clothing: '', Transportation: '', Communication: '', Power: '', Infrastructure: '', Other: '',
@@ -63,6 +64,7 @@ export default function Resources() {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 300)
   const [summary, setSummary] = useState([])
+  const { confirm, ConfirmDialog } = useConfirm()
 
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState(null)
@@ -140,7 +142,8 @@ export default function Resources() {
   }
 
   async function handleDelete(id) {
-    if (!confirm(t('resources.deleteConfirm'))) return
+    const ok = await confirm({ message: t('resources.deleteConfirm'), danger: true })
+    if (!ok) return
     try {
       await clientApi.deleteResource(id)
       load()
@@ -168,7 +171,8 @@ export default function Resources() {
   }
 
   async function handleDeallocate(id) {
-    if (!confirm(t('resources.deallocatedConfirm'))) return
+    const ok = await confirm({ message: t('resources.deallocatedConfirm'), danger: true })
+    if (!ok) return
     try {
       const resource = items.find((r) => r._id === id)
       const deallocQty = resource?.allocatedQuantity || 0
@@ -380,6 +384,7 @@ export default function Resources() {
           </div>
         </div>
       )}
+      <ConfirmDialog />
     </div>
   )
 }
