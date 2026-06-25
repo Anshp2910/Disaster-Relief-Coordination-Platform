@@ -306,9 +306,9 @@ export default function RequestDetail() {
           {item.files.map((f) => (
             <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs bg-gov-bg rounded-sm">
                   {f.mimetype?.startsWith('image/') ? (
-                    <img src={`${API_BASE}${f.url}`} alt={f.filename} className="cursor-pointer object-cover rounded-sm w-40 h-40" onClick={() => setPreviewFile(f)} />
+                    <img src={`${API_BASE}${f.url}`} alt={f.filename} className="cursor-pointer object-cover rounded-sm w-40 h-40" role="button" tabIndex={0} onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }} />
                   ) : f.mimetype === 'application/pdf' ? (
-                    <span className="text-xl cursor-pointer" onClick={() => setPreviewFile(f)}>&#128196;</span>
+                    <span className="text-xl cursor-pointer" role="button" tabIndex={0} onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }}>&#128196;</span>
                   ) : (
                     <span className="text-xl">&#128196;</span>
                   )}

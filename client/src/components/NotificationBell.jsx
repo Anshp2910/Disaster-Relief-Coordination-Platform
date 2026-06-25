@@ -90,7 +90,10 @@ export default function NotificationBell() {
             notifications.slice(0, 20).map((n) => (
               <div
                 key={n.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleNotificationClick(n)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNotificationClick(n) } }}
                 className={`notification-item ${!n.read ? 'notification-unread' : ''}`}
               >
                 <div className="notification-item-content">

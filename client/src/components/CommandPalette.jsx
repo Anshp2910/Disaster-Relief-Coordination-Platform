@@ -130,7 +130,7 @@ export default memo(function CommandPalette({ isAdmin }) {
             >
               <span className="cmd-item-icon">{cmd.icon}</span>
               <span className="cmd-item-label">{t(cmd.labelKey, FALLBACKS[cmd.labelKey])}</span>
-              {cmd.admin && <span className="cmd-item-badge">{t('common.admin')}</span>}
+              {cmd.admin && <span className="cmd-item-badge">{t('common.adminBadge')}</span>}
             </button>
           ))}
         </div>

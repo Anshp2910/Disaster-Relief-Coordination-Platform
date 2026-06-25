@@ -320,7 +320,7 @@ function RequestsPanel({ requests, onDelete }) {
             </thead>
             <tbody>
               {filtered.map((r) => (
-                <tr key={r._id} className="cursor-pointer" onClick={() => navigate(`/requests/${r._id}`)}>
+                <tr key={r._id} className="cursor-pointer" role="button" tabIndex={0} onClick={() => navigate(`/requests/${r._id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${r._id}`) } }}>
                   <td className="max-w-280">
                     <div className="admin-request-title">{r.title}</div>
                     <div className="admin-request-location">{r.locationName || t('admin.noLocation')}</div>

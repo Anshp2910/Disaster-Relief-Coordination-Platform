@@ -415,7 +415,7 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   items.map((it) => (
-                    <div key={it._id} className="listCard cursor-pointer" onClick={() => navigate(`/requests/${it._id}`)}>
+                    <div key={it._id} className="listCard cursor-pointer" role="button" tabIndex={0} onClick={() => navigate(`/requests/${it._id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${it._id}`) } }}>
                       <div className="flex-between flex-gap-sm">
                         <div className="flex-1 min-w-0">
                           <div className="text-bold text-accent-blue text-15">{it.title}</div>
