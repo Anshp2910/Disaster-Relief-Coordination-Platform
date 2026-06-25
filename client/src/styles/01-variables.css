@@ -195,4 +195,15 @@
 
   --color-medium: #eab308;
   --severity-medium-stroke: #a16207;
+
+  /* Category colors for dark mode — brighter to maintain contrast */
+  --cat-water: #22d3ee;
+  --cat-rescue: #f97316;
+  --cat-supplies: #a5b4fc;
+  --cat-healthcare: #c4b5fd;
+  --cat-sanitation: #2dd4bf;
+  --cat-clothing: #c4b5fd;
+  --cat-transportation: #a5b4fc;
+  --cat-power: #fde047;
+  --cat-infrastructure: #94a3b8;
 }

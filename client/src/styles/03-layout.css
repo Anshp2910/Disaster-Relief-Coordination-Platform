@@ -23,9 +23,14 @@
 .container {
   width: 100%;
   max-width: 1400px;
-  margin: var(--space-xl) auto;
+  margin-top: var(--space-xl);
+  margin-left: auto;
+  margin-right: auto;
   padding: 0 var(--space-xl);
   animation: pageEnter 0.4s var(--ease-out);
+}
+@media (max-width: 600px) {
+  .container { padding: 0 var(--space-md); }
 }
 /* === Grid Layouts === */
 .gridGap { display: grid; gap: var(--space-md); }

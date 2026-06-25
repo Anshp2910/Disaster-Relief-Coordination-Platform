@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
@@ -98,9 +98,9 @@ export default function Login() {
           </form>
           <p className="login-footer-text">
             {t('auth.noAccount')}{' '}
-            <a href="/register" onClick={(e) => (e.preventDefault(), navigate('/register'))} className="login-link">
+            <Link to="/register" className="login-link">
               {t('auth.registerLink')}
-            </a>
+            </Link>
           </p>
         </div>
       </div>

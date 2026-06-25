@@ -17,13 +17,13 @@ body {
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--slate-300);
+  background: var(--border);
   border-radius: 4px;
   transition: background var(--duration-fast);
 }
-::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 @supports (scrollbar-width: thin) {
-  * { scrollbar-width: thin; scrollbar-color: var(--slate-300) transparent; }
+  * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 }
 
 /* === Links === */
