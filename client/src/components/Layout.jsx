@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Header from './Header'
-import Sidebar from './Sidebar'
 import Footer from './Footer'
 import CommandPalette from './CommandPalette'
 import SosFab from './SosFab'
@@ -13,15 +12,13 @@ export default function Layout({ children }) {
   const { canInstall, install } = usePwaInstall()
   const [dismissed, setDismissed] = useState(false)
   const { isAdmin, isAuthenticated } = useAuth()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className={`gov-layout${isAuthenticated ? ' gov-layout--has-sidebar' : ''}`}>
+    <div className="gov-layout">
       <a href="#main-content" className="skip-link">
         {t('common.skipToContent')}
       </a>
-      {isAuthenticated && <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
-      <Header onToggleSidebar={() => setSidebarOpen((p) => !p)} />
+      <Header />
       <CommandPalette isAdmin={isAdmin} />
       {isAuthenticated && <SosFab />}
       <main className="gov-main" id="main-content">

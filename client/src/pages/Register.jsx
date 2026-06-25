@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
@@ -31,96 +31,87 @@ export default function Register() {
   }
 
   return (
-    <div className="govt-auth-wrapper">
-      <div className="govt-auth-card">
-        <div className="card">
-          <div className="govt-emblem">
-            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="emblemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#818cf8" />
-                </linearGradient>
-              </defs>
-              <circle cx="28" cy="28" r="25" stroke="url(#emblemGrad)" strokeWidth="2" fill="none" opacity="0.6" />
-              <circle cx="28" cy="28" r="18" stroke="url(#emblemGrad)" strokeWidth="1" fill="none" opacity="0.3" />
-              <circle cx="28" cy="28" r="5" fill="url(#emblemGrad)" />
-              {[...Array(24)].map((_, i) => {
-                const angle = (i * 15 * Math.PI) / 180
+    <div className="login-split">
+      <div className="login-hero">
+        <div className="login-hero-bg">
+          <div className="login-shape login-shape--1" />
+          <div className="login-shape login-shape--2" />
+          <div className="login-shape login-shape--3" />
+        </div>
+        <div className="login-hero-content">
+          <div className="login-emblem">
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="36" cy="36" r="33" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.5" />
+              <circle cx="36" cy="36" r="22" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.3" />
+              <circle cx="36" cy="36" r="8" fill="currentColor" opacity="0.8" />
+              {Array.from({ length: 24 }).map((_, i) => {
+                const a = (i * 15 * Math.PI) / 180
                 return (
-                  <line
-                    key={i}
-                    x1={28}
-                    y1={28}
-                    x2={28 + 22 * Math.sin(angle)}
-                    y2={28 - 22 * Math.cos(angle)}
-                    stroke="url(#emblemGrad)"
-                    strokeWidth="0.8"
-                    opacity="0.4"
-                  />
+                  <line key={i} x1={36} y1={36} x2={36 + 28 * Math.sin(a)} y2={36 - 28 * Math.cos(a)} stroke="currentColor" strokeWidth="0.6" opacity="0.35" />
                 )
               })}
             </svg>
           </div>
-          <h1 className="govt-app-title">{t('auth.appName')}</h1>
-          <p className="govt-app-slogan">{t('auth.slogan')}</p>
-          <hr className="govt-divider" />
-          <h2 className="pageTitle text-left text-xl">{t('auth.registerTitle')}</h2>
+          <h1 className="login-hero-title">{t('auth.appName')}</h1>
+          <p className="login-hero-slogan">{t('auth.slogan')}</p>
+          <div className="login-hero-features">
+            <div className="login-hero-feature">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Real-time disaster tracking</span>
+            </div>
+            <div className="login-hero-feature">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              <span>Resource coordination hub</span>
+            </div>
+            <div className="login-hero-feature">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Multi-agency collaboration</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <form onSubmit={onSubmit} className="inputGrid">
+      <div className="login-auth">
+        <div className="login-auth-card">
+          <div className="login-auth-header">
+            <h2 className="login-auth-title">{t('auth.registerTitle')}</h2>
+            <p className="login-auth-subtitle">{t('auth.registerSubtitle') || 'Create a new account'}</p>
+          </div>
+          <form onSubmit={onSubmit} className="login-auth-form">
             {error ? <div className="errorText">{error}</div> : null}
-
-            <label htmlFor="reg-name" className="sr-only">{t('auth.displayName')}</label>
-            <input
-              id="reg-name"
-              placeholder={t('auth.displayName')}
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              type="text"
-              required
-            />
-            <label htmlFor="reg-email" className="sr-only">{t('auth.email')}</label>
-            <input
-              id="reg-email"
-              placeholder={t('auth.email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              required
-            />
-            <label htmlFor="reg-password" className="sr-only">{t('auth.password')}</label>
-            <input
-              id="reg-password"
-              placeholder={t('auth.password')}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              required
-            />
-
-            <label className="gridGap gap-6">
-              <span className="small">{t('auth.role')}</span>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                required
-                className="w-full"
-              >
+            <div className="login-field">
+              <label htmlFor="reg-name" className="login-label">{t('auth.displayName')}</label>
+              <input id="reg-name" placeholder={t('auth.displayName')} value={displayName} onChange={(e) => setDisplayName(e.target.value)} type="text" required className="login-input" />
+            </div>
+            <div className="login-field">
+              <label htmlFor="reg-email" className="login-label">{t('auth.email')}</label>
+              <input id="reg-email" placeholder={t('auth.email')} value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="login-input" />
+            </div>
+            <div className="login-field">
+              <label htmlFor="reg-password" className="login-label">{t('auth.password')}</label>
+              <input id="reg-password" placeholder={t('auth.password')} value={password} onChange={(e) => setPassword(e.target.value)} type="password" required className="login-input" />
+            </div>
+            <div className="login-field">
+              <label htmlFor="reg-role" className="login-label">{t('auth.role')}</label>
+              <select id="reg-role" value={role} onChange={(e) => setRole(e.target.value)} required className="login-input login-select">
                 <option value="volunteer">{t('auth.volunteer')}</option>
                 <option value="ngo">{t('auth.ngo')}</option>
               </select>
-            </label>
-
-            <button disabled={loading} type="submit" className="btnPrimary">
-              {loading ? t('auth.creating') : t('auth.createAccount')}
+            </div>
+            <button disabled={loading} type="submit" className="login-btn">
+              {loading ? (
+                <span className="login-btn-loading">
+                  <span className="login-spinner" />
+                  {t('auth.creating')}
+                </span>
+              ) : t('auth.createAccount')}
             </button>
           </form>
-
-          <p className="muted mt-lg">
+          <p className="login-footer-text">
             {t('auth.hasAccount')}{' '}
-            <a href="/login" onClick={(e) => (e.preventDefault(), navigate('/login'))}>
+            <Link to="/login" className="login-link">
               {t('auth.loginLink')}
-            </a>
+            </Link>
           </p>
         </div>
       </div>

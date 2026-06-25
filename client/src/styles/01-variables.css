@@ -78,8 +78,6 @@
   --space-xs: 4px;  --space-sm: 8px;  --space-md: 12px;
   --space-lg: 16px; --space-xl: 24px; --space-2xl: 32px; --space-3xl: 48px;
 
-  --sidebar-width: 270px;
-
   /* === Transitions === */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);

@@ -522,77 +522,6 @@ h6 { font-size: var(--text-sm); }
 }
 
 /* === Auth Pages === */
-.govt-auth-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: var(--space-3xl) var(--space-xl);
-  position: relative;
-  overflow: hidden;
-}
-.govt-auth-wrapper::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background:
-    radial-gradient(circle at 30% 40%, rgba(59,130,246,0.04) 0%, transparent 50%),
-    radial-gradient(circle at 70% 60%, rgba(129,140,248,0.03) 0%, transparent 50%);
-  animation: authBgDrift 20s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-.govt-auth-card { width: 100%; max-width: 420px; position: relative; z-index: 1; animation: cardEntrance 0.6s var(--ease-out); }
-.govt-auth-card .card {
-  text-align: center;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-.govt-emblem {
-  margin-bottom: var(--space-lg);
-  position: relative;
-  animation: emblemFloat 4s var(--ease-out) infinite;
-}
-.govt-emblem::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 80px;
-  height: 80px;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-.govt-app-title {
-  color: var(--pri-400);
-  background: linear-gradient(135deg, var(--pri-400), #818cf8, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 800;
-  font-size: 28px;
-  margin: 0 0 4px;
-  letter-spacing: -0.03em;
-}
-.govt-app-slogan {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  margin: 0 0 var(--space-xl);
-}
-.govt-divider {
-  border: none;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--pri-500), #818cf8, transparent);
-  margin: 0 0 var(--space-xl);
-}
-
 /* === Filter Pills === */
 .filter-pill {
   padding: 5px 14px;
@@ -1275,27 +1204,6 @@ h6 { font-size: var(--text-sm); }
 }
 
 /* === Hamburger / Sidebar Toggle === */
-.gov-hamburger {
-  display: flex;
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 10px;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: var(--radius-sm);
-  flex-shrink: 0;
-  transition: all var(--duration-fast) var(--ease-out);
-  align-items: center;
-  justify-content: center;
-  touch-action: manipulation;
-}
-.gov-hamburger:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
 /* === Header Actions === */
 .gov-header-actions {
   display: flex;
@@ -1455,8 +1363,6 @@ h6 { font-size: var(--text-sm); }
   .admin-table th, .admin-table td { padding: 8px 10px; }
   .notification-dropdown { width: calc(100vw - 32px); right: -16px; }
   .match-card { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .govt-auth-wrapper { padding: var(--space-xl) var(--space-md); }
-  .govt-auth-card,
   .login-auth-card { max-width: 100%; }
   .bento-grid { gap: var(--space-md); }
 }
@@ -1475,7 +1381,6 @@ h6 { font-size: var(--text-sm); }
   .card { padding: var(--space-md); border-radius: var(--radius-sm); }
   .listCard { padding: var(--space-md); }
   .filter-pill { padding: 4px 10px; font-size: var(--text-2xs); }
-  .govt-auth-wrapper { min-height: auto; padding: var(--space-lg) var(--space-md); }
   .headerRow { gap: 8px; }
   .btnRow { gap: 6px; }
   .btnRow button { flex: 1; min-width: 0; white-space: nowrap; font-size: var(--text-sm); padding: 7px 8px; }
@@ -1498,9 +1403,6 @@ h6 { font-size: var(--text-sm); }
   .btnPrimary, .btnDanger, button { padding: 7px 10px; font-size: var(--text-sm); }
   .inputGrid { gap: var(--space-sm); }
   input, textarea, select { padding: 8px 10px; font-size: var(--text-sm); }
-  .govt-auth-wrapper { padding: var(--space-md) 8px; min-height: auto; }
-  .govt-app-title { font-size: 20px; }
-  .govt-app-slogan { font-size: var(--text-xs); }
   .admin-stats-grid { grid-template-columns: 1fr; gap: 10px; }
   .admin-stat-card { padding: var(--space-md); gap: 10px; }
   .admin-stat-value { font-size: 22px; }
@@ -1513,7 +1415,6 @@ h6 { font-size: var(--text-sm); }
   .pwa-install-banner span { font-size: var(--text-sm); }
   .mapBox { height: 180px; min-height: 140px; }
   .map-container-full { height: 35vh; min-height: 160px; }
-  .govt-auth-card,
   .login-auth-card { max-width: 100%; }
 }
 
@@ -1594,20 +1495,18 @@ h6 { font-size: var(--text-sm); }
 
 /* === Landscape Phone === */
 @media (max-height: 500px) and (orientation: landscape) {
-  .govt-auth-wrapper,
   .login-split { min-height: auto; }
-  .govt-auth-card .card { padding: var(--space-lg); }
-  .login-auth-card .card { padding: var(--space-lg); }
-  .govt-emblem { margin-bottom: 8px; }
-  .govt-emblem svg { width: 32px; height: 32px; }
-  .govt-app-title { font-size: var(--text-xl); }
-  .govt-app-slogan { margin-bottom: var(--space-md); }
+  .login-auth-card { padding: var(--space-lg); }
+  .login-emblem { margin-bottom: 8px; }
+  .login-emblem svg { width: 32px; height: 32px; }
+  .login-hero-title { font-size: var(--text-xl); }
+  .login-hero-slogan { margin-bottom: var(--space-md); }
   .map-container-full { height: 55vh; }
 }
 
 /* === Touch Device Optimizations === */
 @media (hover: none) and (pointer: coarse) {
-  button, .filter-pill, .sidebar-link {
+  button, .filter-pill {
     min-height: 44px;
     min-width: 44px;
   }
@@ -1617,7 +1516,6 @@ h6 { font-size: var(--text-sm); }
   }
   .filter-pill { padding: 8px 16px; }
   .sos-btn { min-height: 44px; padding: 8px 16px; }
-  .sidebar-link { padding: 14px 12px; }
 }
 
 /* === High DPI / Retina === */
@@ -2127,7 +2025,7 @@ h6 { font-size: var(--text-sm); }
 
 .login-hero {
   flex: 1;
-  display: none;
+  display: flex;
   position: relative;
   overflow: hidden;
   background: var(--gradient-login-hero);
@@ -2306,6 +2204,21 @@ h6 { font-size: var(--text-sm); }
 .login-btn:active { transform: translateY(0); }
 .login-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
+.login-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.login-select option {
+  background: var(--bg-card);
+  color: var(--text);
+}
+
 .login-btn-loading {
   display: flex;
   align-items: center;
@@ -2337,8 +2250,41 @@ h6 { font-size: var(--text-sm); }
 
 .login-link:hover { text-decoration: underline; }
 
+@media (max-width: 899px) {
+  .login-split {
+    flex-direction: column;
+  }
+  .login-hero {
+    min-height: 240px;
+    flex: none;
+  }
+  .login-hero-content {
+    padding: var(--space-xl) var(--space-lg);
+  }
+  .login-hero-features {
+    display: none;
+  }
+  .login-emblem svg {
+    width: 48px;
+    height: 48px;
+  }
+  .login-hero-title {
+    font-size: 1.4rem;
+    margin: 0 0 var(--space-xs);
+  }
+  .login-hero-slogan {
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+  .login-auth {
+    padding: var(--space-lg);
+  }
+}
+
 @media (min-width: 900px) {
-  .login-hero { display: flex; }
+  .login-hero {
+    min-height: 100vh;
+  }
 }
 
 /* ============================================================

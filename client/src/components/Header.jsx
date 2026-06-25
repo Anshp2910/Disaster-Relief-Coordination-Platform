@@ -21,7 +21,7 @@ const LANGUAGES = [
   { code: 'ur', label: 'اردو' },
 ]
 
-export default function Header({ onToggleSidebar }) {
+export default function Header() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t, i18n } = useTranslation()
@@ -89,11 +89,6 @@ export default function Header({ onToggleSidebar }) {
 
       <div className="gov-header-main">
         <div className="gov-container flex flex-gap-lg">
-          {isAuthenticated && onToggleSidebar && (
-            <button onClick={onToggleSidebar} className="gov-hamburger" aria-label={t('common.toggleMenu')}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-            </button>
-          )}
           <img src="/images/logo.svg" alt="" className="gov-logo" />
           <div className="gov-title-group">
             <div className="gov-app-title">{t('appTitle')}</div>
