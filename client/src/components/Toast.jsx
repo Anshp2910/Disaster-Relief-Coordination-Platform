@@ -53,7 +53,7 @@ export function ToastProvider({ children }) {
               {t.type === 'success' ? '\u2714' : t.type === 'error' ? '\u2718' : t.type === 'warning' ? '\u26A0' : '\u2139'}
             </span>
             <span className="flex-1">{t.message}</span>
-            <span className="text-xs opacity-50">\u00D7</span>
+            <span className="text-xs opacity-50">{'\u00D7'}</span>
           </div>
         ))}
       </div>
