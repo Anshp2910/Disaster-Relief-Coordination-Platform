@@ -76,7 +76,13 @@
     "closeMenu": "Close menu",
     "failedToLoad": "Failed to load data",
     "loginFailed": "Login failed",
-    "registerFailed": "Register failed"
+    "registerFailed": "Register failed",
+    "offlineMessage": "You are offline — some features may be unavailable",
+    "commandPalette": "Command palette",
+    "typeCommand": "Type a command or page name…",
+    "searchCommands": "Search commands",
+    "noResultsFor": "No results for \"{{query}}\"",
+    "adminBadge": "Admin"
   },
   "dashboard": {
     "title": "Disaster Relief Requests",
