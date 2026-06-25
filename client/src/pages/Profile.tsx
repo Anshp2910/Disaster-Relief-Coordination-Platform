@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
@@ -24,6 +24,36 @@ export default function Profile() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(() => localStorage.getItem('avatarUrl'))
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  function handleAvatarClick() {
+    fileInputRef.current?.click()
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedFile(file)
+      setAvatarUrl(URL.createObjectURL(file))
+    }
+  }
+
+  function handleUploadAvatar() {
+    if (avatarUrl) {
+      localStorage.setItem('avatarUrl', avatarUrl)
+      toast.success('Avatar updated')
+      setSelectedFile(null)
+    }
+  }
+
+  function handleRemoveAvatar() {
+    setAvatarUrl(null)
+    setSelectedFile(null)
+    localStorage.removeItem('avatarUrl')
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
 
   function toggleSkill(skill: string) {
     setSkills((prev) => prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill])
@@ -78,6 +108,66 @@ export default function Profile() {
         <div className="headerRow">
           <h2 className="pageTitle text-2xl m-0">{t('profile.title')}</h2>
           <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
+        </div>
+      </div>
+
+      {/* Avatar */}
+      <div className="card mb-lg">
+        <div className="flex flex-col flex-align-center mb-lg">
+          <div
+            onClick={handleAvatarClick}
+            style={{
+              width: 96,
+              height: 96,
+              borderRadius: '50%',
+              background: avatarUrl ? `url(${avatarUrl}) center/cover no-repeat` : 'var(--accent-blue-light)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              position: 'relative',
+              fontSize: 32,
+              color: '#fff',
+              fontWeight: 700,
+            }}
+          >
+            {!avatarUrl && (user?.displayName?.[0]?.toUpperCase() || 'U')}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                background: 'rgba(0,0,0,0.5)',
+                borderRadius: '50%',
+                width: 28,
+                height: 28,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#fff',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".png,.jpg,.jpeg,.webp"
+            onChange={handleFileSelect}
+            style={{ display: 'none' }}
+          />
+          <div className="flex flex-gap-sm mt-sm">
+            <button type="button" className="btnPrimary text-xs" onClick={handleUploadAvatar} disabled={!selectedFile}>
+              Upload Photo
+            </button>
+            <button type="button" className="text-xs" onClick={handleRemoveAvatar} disabled={!avatarUrl}>
+              Remove Photo
+            </button>
+          </div>
         </div>
       </div>
 

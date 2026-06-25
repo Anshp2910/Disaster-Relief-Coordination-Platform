@@ -45,6 +45,17 @@ interface GeofencingResult {
   resources?: ResourceResult[]
 }
 
+interface CheckHistoryEntry {
+  timestamp: Date
+  radius: number
+  position: Position
+  zonesCount: number
+  requestsCount: number
+  resourcesCount: number
+}
+
+const MAX_HISTORY = 20
+
 function createMapIcon(color: string) {
   return L.divIcon({
     className: '',
@@ -61,11 +72,14 @@ export default function Geofencing() {
   const [result, setResult] = useState<GeofencingResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [monitoring, setMonitoring] = useState(false)
+  const [checkHistory, setCheckHistory] = useState<CheckHistoryEntry[]>([])
 
   const mapRef = useRef<HTMLDivElement | null>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
   const circleRef = useRef<L.Circle | null>(null)
   const markersRef = useRef<L.Marker[]>([])
+  const monitorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -85,6 +99,19 @@ export default function Geofencing() {
     try {
       const data = await clientApi.checkGeofencing(position.lat, position.lng, radius) as GeofencingResult
       setResult(data)
+
+      setCheckHistory((prev) => {
+        const entry: CheckHistoryEntry = {
+          timestamp: new Date(),
+          radius,
+          position,
+          zonesCount: (data.zones || []).length,
+          requestsCount: (data.requests || []).length,
+          resourcesCount: (data.resources || []).length,
+        }
+        const next = [entry, ...prev]
+        return next.slice(0, MAX_HISTORY)
+      })
     } catch (e) {
       setError((e as Error).message)
     } finally {
@@ -164,6 +191,37 @@ export default function Geofencing() {
     }
   }, [position, radius, result])
 
+  useEffect(() => {
+    if (monitoring) {
+      monitorIntervalRef.current = setInterval(() => {
+        checkArea()
+      }, 30000)
+    } else {
+      if (monitorIntervalRef.current) {
+        clearInterval(monitorIntervalRef.current)
+        monitorIntervalRef.current = null
+      }
+    }
+    return () => {
+      if (monitorIntervalRef.current) {
+        clearInterval(monitorIntervalRef.current)
+        monitorIntervalRef.current = null
+      }
+    }
+  }, [monitoring, checkArea])
+
+  function toggleMonitoring() {
+    setMonitoring((prev) => !prev)
+  }
+
+  function useMyLocation() {
+    if (!navigator.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {}
+    )
+  }
+
   const renderResultSection = (items: (ZoneResult | RequestResult | ResourceResult)[], color: string, bgLight: string, countLabel: string, itemRenderer: (item: ZoneResult | RequestResult | ResourceResult) => React.ReactNode) => {
     const safeItems = Array.isArray(items) ? items : []
     return (
@@ -177,6 +235,10 @@ export default function Geofencing() {
         ))}
       </div>
     )
+  }
+
+  function formatTime(d: Date): string {
+    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
   }
 
   return (
@@ -201,7 +263,24 @@ export default function Geofencing() {
             max="500"
             className="rounded-sm w-80 text-13 border-gov" style={{ padding: '6px 10px' }}
           />
+          <input
+            type="range"
+            value={radius}
+            onChange={(e) => setRadius(Number(e.target.value))}
+            min="1"
+            max="500"
+            className="w-160"
+            style={{ accentColor: 'var(--gov-blue)' }}
+          />
           {position && <span className="small muted">{position.lat.toFixed(4)}, {position.lng.toFixed(4)}</span>}
+          <button
+            onClick={useMyLocation}
+            disabled={!navigator.geolocation}
+            className="text-sm btn-pill"
+            title="Use My Location"
+          >
+            📍
+          </button>
           <button
             onClick={checkArea}
             disabled={loading || !position}
@@ -209,7 +288,30 @@ export default function Geofencing() {
           >
             {loading ? t('geofencing.checking') : t('geofencing.checkArea')}
           </button>
+          <button
+            onClick={toggleMonitoring}
+            disabled={!position}
+            className={`text-sm p-sm ${monitoring ? 'btn-danger' : 'btn-pill'}`}
+            style={monitoring ? { background: 'var(--gov-danger)', color: '#fff', border: 'none', borderRadius: '4px' } : {}}
+          >
+            {monitoring ? '⏹ Stop Monitoring' : '▶ Start Monitoring'}
+          </button>
         </div>
+
+        {monitoring && (
+          <div className="flex flex-gap-sm mt-sm items-center">
+            <div
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                background: 'var(--gov-danger)',
+                animation: 'geofencePulse 1.5s ease-in-out infinite',
+              }}
+            />
+            <span className="small muted text-12">Monitoring — auto-refreshes every 30s</span>
+          </div>
+        )}
       </div>
 
       <div className="card p-0 mt">
@@ -239,6 +341,36 @@ export default function Geofencing() {
             t('geofencing.resourcesNearby'),
             (r) => <>{'name' in r ? r.name : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} km)</span></>
           )}
+        </div>
+      )}
+
+      {checkHistory.length > 0 && (
+        <div className="card mt">
+          <div className="text-base text-semi mb-sm">Check History</div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-elevated">
+                  <th className="text-left p-xs border-bottom">Time</th>
+                  <th className="text-right p-xs border-bottom">Radius (km)</th>
+                  <th className="text-right p-xs border-bottom">Zones</th>
+                  <th className="text-right p-xs border-bottom">Requests</th>
+                  <th className="text-right p-xs border-bottom">Resources</th>
+                </tr>
+              </thead>
+              <tbody>
+                {checkHistory.map((entry, idx) => (
+                  <tr key={idx}>
+                    <td className="p-xs border-bottom text-nowrap">{formatTime(entry.timestamp)}</td>
+                    <td className="p-xs border-bottom text-right">{entry.radius}</td>
+                    <td className="p-xs border-bottom text-right">{entry.zonesCount}</td>
+                    <td className="p-xs border-bottom text-right">{entry.requestsCount}</td>
+                    <td className="p-xs border-bottom text-right">{entry.resourcesCount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

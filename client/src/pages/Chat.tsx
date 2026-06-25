@@ -19,6 +19,10 @@ interface Message {
   requestId?: string
 }
 
+interface TypingInfo {
+  name: string
+}
+
 interface ChatProps {
   requestId: string
   onClose?: () => void
@@ -30,6 +34,10 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   const { socket } = useSocket()
   const bottomRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null)
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const lastTypingEmitRef = useRef(0)
   const toast = useToast()
 
   const [messages, setMessages] = useState<Message[]>([])
@@ -38,6 +46,9 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   const [sending, setSending] = useState(false)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
+  const [typingUsers, setTypingUsers] = useState<Record<string, TypingInfo>>({})
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [showScrollBtn, setShowScrollBtn] = useState(false)
 
   const loadMessages = useCallback(async (p: number) => {
     try {
@@ -82,22 +93,95 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       }
     }
 
+    function onTyping(data: { sender?: { id?: string; displayName?: string }; requestId?: string; stop?: boolean }) {
+      if (String(data.requestId) !== String(requestId)) return
+      if (data.sender?.id === currentUser?.id) return
+      const id = data.sender?.id || 'unknown'
+      const name = data.sender?.displayName || 'User'
+      if (data.stop) {
+        setTypingUsers((prev) => {
+          const next = { ...prev }
+          delete next[id]
+          return next
+        })
+      } else {
+        setTypingUsers((prev) => ({ ...prev, [id]: { name } }))
+        setTimeout(() => {
+          setTypingUsers((prev) => {
+            const next = { ...prev }
+            delete next[id]
+            return next
+          })
+        }, 3000)
+      }
+    }
+
     if (socket.connected) {
       socket.emit('chat:join', { requestId })
     }
 
     socket.on('connect', onConnect)
     socket.on('chat:message', onMessage)
+    socket.on('chat:typing', onTyping)
     return () => {
       socket.emit('chat:leave', { requestId })
       socket.off('connect', onConnect)
       socket.off('chat:message', onMessage)
+      socket.off('chat:typing', onTyping)
     }
-  }, [socket, requestId])
+  }, [socket, requestId, currentUser?.id])
+
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    }
+  }, [])
+
+  const handleTyping = useCallback(() => {
+    if (!socket) return
+    const now = Date.now()
+    if (now - lastTypingEmitRef.current < 300) return
+    lastTypingEmitRef.current = now
+    socket.emit('chat:typing', { requestId, sender: { id: currentUser?.id, displayName: currentUser?.displayName || 'User' } })
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit('chat:typing', { requestId, sender: { id: currentUser?.id, displayName: currentUser?.displayName || 'User' }, stop: true })
+    }, 500)
+  }, [socket, requestId, currentUser?.id, currentUser?.displayName])
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setText(e.target.value)
+    handleTyping()
+  }
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault()
-    if (!text.trim() || sending) return
+    if ((!text.trim() && !selectedFile) || sending) return
+
+    if (selectedFile) {
+      setSending(true)
+      try {
+        const uploadResult = (await clientApi.uploadFiles(requestId, [selectedFile])) as { files?: { url?: string; name?: string }[] }
+        const uploaded = uploadResult.files?.[0]
+        if (uploaded) {
+          const msg = `\uD83D\uDCCE ${uploaded.name || selectedFile.name}`
+          const data = (await clientApi.sendChatMessage(requestId, msg)) as { message?: Message }
+          if (data.message) {
+            setMessages((prev) => {
+              if (prev.some((m) => m._id === data.message!._id)) return prev
+              return [...prev, data.message!]
+            })
+            setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+          }
+        }
+      } catch (err) {
+        toast.error((err as Error).message)
+      }
+      setSelectedFile(null)
+      setSending(false)
+      return
+    }
+
     const msg = text.trim()
     setText('')
     setSending(true)
@@ -124,6 +208,29 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  function handleScroll() {
+    const el = messagesContainerRef.current
+    if (!el) return
+    setShowScrollBtn(el.scrollHeight - el.scrollTop - el.clientHeight > 300)
+  }
+
+  function scrollToBottom() {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  function handleFileClick() {
+    fileInputRef.current?.click()
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) setSelectedFile(file)
+    if (e.target) e.target.value = ''
+  }
+
+  const typingNames = Object.values(typingUsers)
+  const hasTyping = typingNames.length > 0
+
   return (
     <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
       <div className="flex flex-between flex-center p-sm border-bottom">
@@ -135,7 +242,13 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         )}
       </div>
 
-      <div className="flex-1 overflow-auto flex flex-col flex-gap-sm p-sm" role="log" aria-live="polite">
+      <div
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-auto flex flex-col flex-gap-sm p-sm relative"
+        role="log"
+        aria-live="polite"
+      >
         {hasMore && (
           <button onClick={() => loadMessages(page + 1)} className="text-xs bg-none border-none cursor-pointer" style={{ color: 'var(--gov-saffron)', alignSelf: 'center' }}>
             {t('chat.loadEarlier')}
@@ -166,7 +279,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                     {m.sender?.displayName || 'User'}
                   </div>
                 )}
-                <div className="text-sm" style={{
+                <div className="text-sm chat-bubble" style={{
                   background: isMe ? 'var(--accent)' : 'var(--accent-soft)',
                   color: isMe ? '#fff' : 'var(--text)',
                   padding: '7px 12px',
@@ -181,20 +294,60 @@ export default function Chat({ requestId, onClose }: ChatProps) {
             </div>
           )
         })}
+
+        {hasTyping && (
+          <div className="flex items-center text-xs text-muted typing-indicator">
+            <span>{typingNames.map((t) => t.name).join(', ')} {typingNames.length === 1 ? 'is' : 'are'} typing</span>
+            <span className="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+          </div>
+        )}
+
         <div ref={bottomRef} />
       </div>
 
+      {showScrollBtn && (
+        <button
+          onClick={scrollToBottom}
+          className="scroll-to-bottom-btn"
+          aria-label="Scroll to bottom"
+        >
+          ↓
+        </button>
+      )}
+
+      {selectedFile && (
+        <div className="flex flex-gap-sm p-xs border-top bg-accent-soft items-center">
+          <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>\uD83D\uDCCE {selectedFile.name}</span>
+          <button onClick={() => setSelectedFile(null)} className="bg-none border-none cursor-pointer text-xs text-muted">&times;</button>
+        </div>
+      )}
+
       <form onSubmit={handleSend} className="flex flex-gap-sm p-sm border-top">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+          className="sr-only"
+          onChange={handleFileChange}
+        />
+        <button
+          type="button"
+          onClick={handleFileClick}
+          className="bg-none border-none cursor-pointer text-base p-0"
+          aria-label="Attach file"
+        >
+          \uD83D\uDCCE
+        </button>
         <input
           ref={inputRef}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={handleInputChange}
           placeholder={t('chat.typeMessage')}
           maxLength={2000}
           className="flex-1 text-sm rounded-sm p-sm border-gov"
         />
         <span className="text-xs text-muted self-center">{text.length}/2000</span>
-        <button type="submit" className="btnPrimary text-xs p-sm" disabled={!text.trim() || sending}>
+        <button type="submit" className="btnPrimary text-xs p-sm" disabled={(!text.trim() && !selectedFile) || sending}>
           {sending ? '...' : t('chat.send')}
         </button>
       </form>

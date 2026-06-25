@@ -112,6 +112,14 @@ export default function Resources() {
   const [allocRequestId, setAllocRequestId] = useState('')
   const [allocating, setAllocating] = useState(false)
 
+  const [selectMode, setSelectMode] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkEditOpen, setBulkEditOpen] = useState(false)
+  const [bulkEditStatus, setBulkEditStatus] = useState('')
+  const [bulkEditCategory, setBulkEditCategory] = useState('')
+  const [bulkUpdating, setBulkUpdating] = useState(false)
+  const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 })
+
   const load = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -224,6 +232,94 @@ export default function Resources() {
     }
   }
 
+  function toggleSelectMode() {
+    setSelectMode((prev) => {
+      if (prev) {
+        setSelectedIds(new Set())
+        setBulkEditOpen(false)
+      }
+      return !prev
+    })
+  }
+
+  function handleSelectAll() {
+    if (selectedIds.size === items.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(items.map((r) => r._id)))
+    }
+  }
+
+  function handleSelectOne(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  function openBulkEdit() {
+    setBulkEditStatus('')
+    setBulkEditCategory('')
+    setBulkEditOpen(true)
+  }
+
+  async function handleBulkEdit(e: React.FormEvent) {
+    e.preventDefault()
+    const ids = Array.from(selectedIds)
+    if (ids.length === 0) return
+    setBulkUpdating(true)
+    setBulkProgress({ current: 0, total: ids.length })
+    const payload: Record<string, unknown> = {}
+    if (bulkEditStatus) payload.status = bulkEditStatus
+    if (bulkEditCategory) payload.category = bulkEditCategory
+    if (Object.keys(payload).length === 0) {
+      toast.warning(t('resources.noChanges') || 'No changes selected')
+      setBulkUpdating(false)
+      return
+    }
+    for (const id of ids) {
+      try {
+        await clientApi.updateResource(id, payload)
+        toast.success(`${t('resources.updated') || 'Updated'} ${id.slice(-6)}`)
+      } catch (err) {
+        toast.error(`${id.slice(-6)}: ${(err as Error).message}`)
+      }
+      setBulkProgress((prev) => ({ ...prev, current: prev.current + 1 }))
+    }
+    setBulkUpdating(false)
+    setBulkEditOpen(false)
+    setSelectedIds(new Set())
+    load()
+  }
+
+  function exportSelectedCSV() {
+    const selected = items.filter((r) => selectedIds.has(r._id))
+    if (selected.length === 0) return
+    const headers = ['Name', 'Category', 'Status', 'Quantity', 'Unit', 'Location', 'Notes']
+    const rows = selected.map((r) => [
+      r.name || '',
+      r.category || '',
+      r.status || '',
+      String(r.quantity ?? ''),
+      r.unit || '',
+      r.locationName || '',
+      (r.notes || '').replace(/,/g, ' '),
+    ])
+    const csv = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'selected-resources.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   function exportCSV() {
     clientApi.exportResourcesCSV().catch((err: Error) => toast.error(err.message))
   }
@@ -238,6 +334,9 @@ export default function Resources() {
             <div className="small mt-xs">{total} {t('resources.resourcesTracked')}</div>
           </div>
           <div className="flex flex-gap-sm">
+            <button onClick={toggleSelectMode} className={`text-sm p-xs ${selectMode ? 'btnPrimary' : ''}`} aria-label={t('resources.selectMode') || 'Select Mode'}>
+              {selectMode ? (t('resources.exitSelectMode') || 'Exit Select') : (t('resources.selectMode') || 'Select Mode')}
+            </button>
             <button onClick={exportCSV} className="text-sm p-xs" aria-label={t('common.exportCSV')}>{t('resources.exportCSV')}</button>
             <button className="btnPrimary" onClick={openCreate}>{t('resources.addResource')}</button>
           </div>
@@ -333,12 +432,33 @@ export default function Resources() {
         <SkeletonList count={4} lines={3} />
       ) : (
         <div className="gridGap mt-md">
+          {selectMode && items.length > 0 && (
+            <label className="listCard flex flex-gap-sm items-center cursor-pointer" style={{ padding: '0.5rem 0.75rem', userSelect: 'none', borderBottom: '1px solid var(--border)' }}>
+              <input
+                type="checkbox"
+                checked={selectedIds.size === items.length}
+                onChange={handleSelectAll}
+                style={{ width: 18, height: 18, cursor: 'pointer' }}
+              />
+              <span className="text-sm text-muted">{t('resources.selectAll') || 'Select All'} ({selectedIds.size}/{items.length})</span>
+            </label>
+          )}
           {items.length === 0 ? (
             <EmptyState icon='📦' title={t('resources.noResources')} description={t('resources.noResourcesDesc') || 'No resources match your filters'} />
           ) : (
             items.map((r) => (
-              <div key={r._id} className="listCard">
+              <div key={r._id} className="listCard" style={selectMode ? { paddingLeft: '0.5rem' } : undefined}>
                 <div className="flex flex-between flex-gap-sm">
+                  {selectMode && (
+                    <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingRight: '0.5rem' }}>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(r._id)}
+                        onChange={() => handleSelectOne(r._id)}
+                        style={{ width: 18, height: 18, cursor: 'pointer' }}
+                      />
+                    </label>
+                  )}
                   <div className="flex-1">
                     <div className="flex flex-gap-sm flex-wrap">
                       <span className="text-bold text-lg">{r.name}</span>
@@ -392,6 +512,52 @@ export default function Resources() {
           <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm" aria-label={t('common.previous')}>{t('common.previous')}</button>
           <span className="text-base">{page} / {totalPages}</span>
           <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm" aria-label={t('common.next')}>{t('common.next')}</button>
+        </div>
+      )}
+
+      {/* Bulk Edit Form */}
+      {bulkEditOpen && (
+        <div className="card mt-md">
+          <h3 className="m-0 mb text-base">{t('resources.bulkEdit') || 'Bulk Edit'}</h3>
+          <form onSubmit={handleBulkEdit} className="flex flex-gap-sm flex-wrap items-end">
+            <div>
+              <label className="small label-block">{t('resources.status') || 'Status'}</label>
+              <select value={bulkEditStatus} onChange={(e) => setBulkEditStatus(e.target.value)}>
+                <option value="">{t('common.noChange') || '— No change —'}</option>
+                {STATUSES.filter((s) => s !== 'All').map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="small label-block">{t('resources.category') || 'Category'}</label>
+              <select value={bulkEditCategory} onChange={(e) => setBulkEditCategory(e.target.value)}>
+                <option value="">{t('common.noChange') || '— No change —'}</option>
+                {CATEGORIES.filter((c) => c !== 'All').map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+            <button type="submit" disabled={bulkUpdating} className="btnPrimary">{t('resources.apply') || 'Apply'}</button>
+            <button type="button" onClick={() => setBulkEditOpen(false)} className="text-muted">{t('resources.cancel')}</button>
+            {bulkUpdating && (
+              <span className="text-sm text-muted">
+                {bulkProgress.current}/{bulkProgress.total}
+              </span>
+            )}
+          </form>
+        </div>
+      )}
+
+      {/* Floating Action Bar */}
+      {selectMode && selectedIds.size > 0 && (
+        <div style={{ position: 'sticky', bottom: 0, zIndex: 50, padding: '0.75rem 1rem', background: 'var(--card)', borderTop: '1px solid var(--border)', boxShadow: '0 -4px 12px rgba(0,0,0,0.08)', display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem' }}>
+          <button onClick={openBulkEdit} className="btnPrimary text-sm" disabled={bulkUpdating}>
+            {t('resources.editSelected') || 'Edit Selected'} ({selectedIds.size})
+          </button>
+          <button onClick={exportSelectedCSV} className="text-sm p-xs">
+            {t('resources.exportSelected') || 'Export Selected'}
+          </button>
         </div>
       )}
 

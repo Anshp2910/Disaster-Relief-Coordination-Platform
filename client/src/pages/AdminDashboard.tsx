@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
@@ -78,34 +78,115 @@ function Badge({ label, colors, colorKey }: BadgeProps) {
 
 interface MiniBarChartProps {
   data?: DailyRequest[]
-  maxVal?: number
 }
 
-function MiniBarChart({ data, maxVal }: MiniBarChartProps) {
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return `${months[d.getMonth()]} ${String(d.getDate()).padStart(2, '0')}`
+}
+
+function MiniBarChart({ data }: MiniBarChartProps) {
   const safeData = Array.isArray(data) ? data : []
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; count: number; date: string } | null>(null)
+
   if (!safeData.length) return null
-  const max = maxVal || Math.max(...safeData.map((d) => typeof d.count === 'number' ? d.count : 0), 1)
+
+  const values = safeData.map((d) => typeof d.count === 'number' ? d.count : 0)
+  const max = Math.max(...values, 1)
+  const n = safeData.length
+
+  const PADDING_LEFT = 40
+  const PADDING_BOTTOM = 28
+  const PADDING_TOP = 16
+  const PADDING_RIGHT = 8
+  const SVG_W = 600
+  const SVG_H = 220
+  const chartW = SVG_W - PADDING_LEFT - PADDING_RIGHT
+  const chartH = SVG_H - PADDING_TOP - PADDING_BOTTOM
+  const barGap = Math.max(2, Math.min(6, chartW / n * 0.2))
+  const barW = Math.max(4, (chartW - barGap * (n - 1)) / n)
+
+  const gridLines = [0, 0.25, 0.5, 0.75, 1]
 
   return (
-    <div className="flex mt-sm items-end gap-2 h-60">
-      {safeData.map((d, idx) => {
-        const count = typeof d.count === 'number' ? d.count : 0
-        return (
-          <div key={d.date || idx} className="flex-1 flex flex-col items-center gap-2">
-            <div
-              style={{
-                width: '100%',
-                maxWidth: 20,
-                height: `${Math.max((count / max) * 100, 4)}%`,
-                background: BREAKDOWN_COLORS[idx % BREAKDOWN_COLORS.length],
-                borderRadius: 2,
-              }}
-              title={`${d.date}: ${count}`}
-            />
-            {idx % 5 === 0 && <span className="text-muted text-9">{d.date?.slice(5)}</span>}
-          </div>
-        )
-      })}
+    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+      <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ width: '100%', display: 'block' }} role="img" aria-label="Daily requests bar chart">
+        {gridLines.map((ratio) => {
+          const y = PADDING_TOP + chartH * (1 - ratio)
+          return (
+            <g key={ratio}>
+              <line x1={PADDING_LEFT} y1={y} x2={SVG_W - PADDING_RIGHT} y2={y} stroke="var(--border)" strokeWidth={1} />
+              <text x={PADDING_LEFT - 6} y={y + 4} textAnchor="end" fill="var(--gov-muted)" fontSize={10}>
+                {Math.round(max * ratio)}
+              </text>
+            </g>
+          )
+        })}
+        {safeData.map((d, idx) => {
+          const count = values[idx]
+          const barH = (count / max) * chartH
+          const x = PADDING_LEFT + idx * (barW + barGap)
+          const y = PADDING_TOP + chartH - barH
+          const showLabel = n <= 15 || idx % Math.ceil(n / 10) === 0 || idx === n - 1
+          return (
+            <g key={d.date || idx}>
+              <rect
+                x={x}
+                y={y}
+                width={barW}
+                height={Math.max(barH, 2)}
+                fill="var(--accent)"
+                fillOpacity={0.6}
+                rx={2}
+                style={{ transition: 'height 0.3s ease, y 0.3s ease', cursor: 'pointer' }}
+                onMouseEnter={(e) => {
+                  const rect = (e.target as SVGRectElement).getBoundingClientRect()
+                  const container = containerRef.current
+                  if (container) {
+                    const cr = container.getBoundingClientRect()
+                    setTooltip({
+                      x: rect.left - cr.left + rect.width / 2,
+                      y: rect.top - cr.top,
+                      count,
+                      date: formatDate(d.date || ''),
+                    })
+                  }
+                }}
+                onMouseLeave={() => setTooltip(null)}
+              />
+              {showLabel && (
+                <text x={x + barW / 2} y={SVG_H - PADDING_BOTTOM + 16} textAnchor="middle" fill="var(--gov-muted)" fontSize={9}>
+                  {formatDate(d.date || '')}
+                </text>
+              )}
+            </g>
+          )
+        })}
+      </svg>
+      {tooltip && (
+        <div
+          style={{
+            position: 'absolute',
+            left: tooltip.x,
+            top: tooltip.y - 8,
+            transform: 'translate(-50%, -100%)',
+            background: 'var(--card)',
+            border: '1px solid var(--border)',
+            borderRadius: 4,
+            padding: '4px 8px',
+            fontSize: 12,
+            fontWeight: 600,
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+            zIndex: 20,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+          }}
+        >
+          {tooltip.count} — {tooltip.date}
+        </div>
+      )}
     </div>
   )
 }

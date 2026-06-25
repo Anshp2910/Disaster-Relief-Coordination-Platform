@@ -367,6 +367,85 @@ html body .map-fullscreen-active {
   flex-shrink: 0;
 }
 
+/* =========================================
+   6. CHAT — Typing Indicator & UX
+   ========================================= */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 12px;
+  font-style: italic;
+  animation: fadeIn 0.2s var(--ease-out);
+}
+.typing-dots {
+  display: inline-flex;
+  gap: 1px;
+}
+.typing-dots span {
+  animation: typingDot 1.4s infinite;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--text-muted);
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
 
+@keyframes typingDot {
+  0%, 20% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+  80%, 100% { opacity: 0; transform: translateY(0); }
+}
 
+.chat-bubble {
+  box-shadow: var(--shadow-sm);
+}
+
+.scroll-to-bottom-btn {
+  position: absolute;
+  bottom: 60px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--accent);
+  z-index: 10;
+  transition: all var(--duration-fast) var(--ease-out);
+  line-height: 1;
+}
+.scroll-to-bottom-btn:hover {
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* =========================================
+   7. SEVERITY BADGE — Colored Dot
+   ========================================= */
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.severity-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.severity-badge[data-severity="Critical"]::before { background: var(--severity-critical); }
+.severity-badge[data-severity="High"]::before { background: var(--severity-high); }
+.severity-badge[data-severity="Medium"]::before { background: var(--severity-medium); }
+.severity-badge[data-severity="Low"]::before { background: var(--severity-low); }
 

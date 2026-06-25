@@ -5,7 +5,8 @@ import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
-import { registerRefreshListener } from '../hooks/useSocket'
+import { useSocket, registerRefreshListener } from '../hooks/useSocket'
+import { useToast } from '../components/Toast'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useConfirm } from '../hooks/useConfirm'
@@ -106,6 +107,8 @@ export default function Incidents() {
   const markersRef = useRef<L.Marker[]>([])
 
   const { user: currentUser } = useAuth()
+  const { socket } = useSocket()
+  const toast = useToast()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -133,6 +136,36 @@ export default function Incidents() {
   useEffect(() => {
     return registerRefreshListener(['request:created', 'request:updated', 'request:deleted'], load)
   }, [load])
+
+  useEffect(() => {
+    if (!socket) return
+
+    function onIncidentCreated(data: unknown) {
+      const d = data as Record<string, unknown>
+      const item = d.item as Record<string, unknown> | undefined
+      toast.info(`Incident "${item?.name || 'New'}" created`)
+      load()
+    }
+    function onIncidentUpdated(data: unknown) {
+      const d = data as Record<string, unknown>
+      const item = d.item as Record<string, unknown> | undefined
+      toast.info(`Incident "${item?.name || 'Updated'}" updated`)
+      load()
+    }
+    function onIncidentDeleted() {
+      toast.info('Incident removed')
+      load()
+    }
+
+    socket.on('incident:created', onIncidentCreated)
+    socket.on('incident:updated', onIncidentUpdated)
+    socket.on('incident:deleted', onIncidentDeleted)
+    return () => {
+      socket.off('incident:created', onIncidentCreated)
+      socket.off('incident:updated', onIncidentUpdated)
+      socket.off('incident:deleted', onIncidentDeleted)
+    }
+  }, [socket, load, toast])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return

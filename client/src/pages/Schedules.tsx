@@ -113,6 +113,9 @@ export default function Schedules() {
   const [users, setUsers] = useState<User[]>([])
   const [zones, setZones] = useState<Zone[]>([])
   const [form, setForm] = useState<ScheduleForm>(DEFAULT_FORM)
+  const [viewMode, setViewMode] = useState<'list' | 'week'>('list')
+  const [weekOffset, setWeekOffset] = useState(0)
+  const [selectedDaySchedule, setSelectedDaySchedule] = useState<ScheduleItem | null>(null)
 
   const { user: currentUser } = useAuth()
 
@@ -232,6 +235,54 @@ export default function Schedules() {
 
   const updateForm = (field: keyof ScheduleForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
+  const weekStart = useMemo(() => {
+    const d = new Date()
+    d.setDate(d.getDate() + weekOffset * 7)
+    const day = d.getDay()
+    d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day))
+    d.setHours(0, 0, 0, 0)
+    return d
+  }, [weekOffset])
+
+  const weekEnd = useMemo(() => {
+    const d = new Date(weekStart)
+    d.setDate(d.getDate() + 6)
+    d.setHours(23, 59, 59, 999)
+    return d
+  }, [weekStart])
+
+  const weekDays = useMemo(() => {
+    const days: Date[] = []
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(weekStart)
+      d.setDate(d.getDate() + i)
+      days.push(d)
+    }
+    return days
+  }, [weekStart])
+
+  const weekSchedules = useMemo(() => {
+    return items.filter((item) => {
+      if (!item.startDate) return false
+      const d = new Date(item.startDate)
+      return d >= weekStart && d <= weekEnd
+    })
+  }, [items, weekStart, weekEnd])
+
+  const schedulesByDay = useMemo(() => {
+    const groups: Record<string, ScheduleItem[]> = {}
+    weekDays.forEach((day) => {
+      groups[day.toDateString()] = []
+    })
+    weekSchedules.forEach((item) => {
+      if (!item.startDate) return
+      const d = new Date(item.startDate)
+      const key = d.toDateString()
+      if (groups[key]) groups[key].push(item)
+    })
+    return groups
+  }, [weekSchedules, weekDays])
+
   return (
     <div className="container">
       <div className="card">
@@ -288,10 +339,90 @@ export default function Schedules() {
             <input id="sch-dateto" type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} />
           </div>
         </div>
+        <div className="flex flex-gap-sm mt-sm">
+          <button
+            onClick={() => setViewMode('list')}
+            className={`filter-pill ${viewMode === 'list' ? 'active' : ''}`}
+          >
+            List view
+          </button>
+          <button
+            onClick={() => setViewMode('week')}
+            className={`filter-pill ${viewMode === 'week' ? 'active' : ''}`}
+          >
+            Week view
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <SkeletonList count={4} lines={3} />
+      ) : viewMode === 'week' ? (
+        <div>
+          <div className="flex flex-between flex-gap-sm mt-md">
+            <button onClick={() => setWeekOffset((p) => p - 1)} className="text-sm">&larr; {t('common.previous')}</button>
+            <span className="text-sm text-bold">
+              {weekStart.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+              {' — '}
+              {weekEnd.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </span>
+            <button onClick={() => setWeekOffset((p) => p + 1)} className="text-sm">{t('common.next')} &rarr;</button>
+          </div>
+          <div className="week-grid mt-sm" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
+            {weekDays.map((day, idx) => {
+              const key = day.toDateString()
+              const daySchedules = schedulesByDay[key] || []
+              return (
+                <div key={key} className="card" style={{ padding: 8, minHeight: 120 }}>
+                  <div className="text-xs text-bold" style={{ textAlign: 'center' }}>
+                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][idx]}
+                  </div>
+                  <div className="text-xs" style={{ textAlign: 'center', color: 'var(--gov-muted)' }}>
+                    {day.getDate()} {day.toLocaleDateString('en-IN', { month: 'short' })}
+                  </div>
+                  {daySchedules.length > 0 && (
+                    <div className="text-xs" style={{ textAlign: 'center', margin: '4px 0' }}>
+                      {daySchedules.length} schedule{daySchedules.length > 1 ? 's' : ''}
+                    </div>
+                  )}
+                  {daySchedules.map((s) => {
+                    const shiftC = SHIFT_COLORS[s.shift || 'Full Day'] || SHIFT_COLORS['Full Day']
+                    return (
+                      <div key={s._id} style={{ marginBottom: 2 }}>
+                        <div
+                          onClick={() => setSelectedDaySchedule(selectedDaySchedule?._id === s._id ? null : s)}
+                          className="text-xs"
+                          style={{
+                            background: shiftC.bg,
+                            color: shiftC.text,
+                            border: `1px solid ${shiftC.border}`,
+                            borderRadius: 4,
+                            padding: '2px 4px',
+                            cursor: 'pointer',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : 'Volunteer'}
+                        </div>
+                        {selectedDaySchedule?._id === s._id && (
+                          <div className="mt-xs" style={{ fontSize: 10, padding: '4px 6px', background: 'var(--bg-soft)', borderRadius: 4, border: '1px solid var(--border-color)' }}>
+                            <div><strong>{(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : 'Volunteer'}</strong> — {s.shift}</div>
+                            <div className="muted">{s.startDate ? formatDate(s.startDate) : ''}</div>
+                            {s.zoneId && <div>Zone: {(typeof s.zoneId === 'object' && s.zoneId) ? s.zoneId.name : 'Unknown'}</div>}
+                            {s.skills && s.skills.length > 0 && <div>Skills: {s.skills.join(', ')}</div>}
+                            {s.notes && <div className="muted">{s.notes}</div>}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
+        </div>
       ) : (
         <div className="gridGap mt-md">
           {items.length === 0 && (

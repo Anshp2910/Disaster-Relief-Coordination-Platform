@@ -3,6 +3,31 @@ import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 
+interface ColumnMap {
+  csvCol: string
+  systemCol: string
+}
+
+type ImportStep = 'upload' | 'mapping' | 'preview'
+
+const REQUEST_FIELDS = ['title', 'description', 'category', 'priority', 'status', 'locationName', 'lat', 'lng', 'peopleCount']
+const RESOURCE_FIELDS = ['name', 'category', 'quantity', 'unit', 'status', 'locationName', 'lat', 'lng']
+
+const FIELD_ALIASES: Record<string, string[]> = {
+  title: ['title', 'request', 'request title', 'subject'],
+  description: ['description', 'desc', 'details', 'detail', 'additional info', 'notes', 'information', 'info'],
+  category: ['category', 'type', 'kind', 'classification', 'class'],
+  priority: ['priority', 'priority level', 'level', 'urgency', 'severity'],
+  status: ['status', 'state', 'condition', 'current status'],
+  locationName: ['location', 'locationname', 'location name', 'place', 'area', 'address', 'region', 'city', 'district', 'loc', 'site'],
+  lat: ['lat', 'latitude', 'latitud', 'y coordinate', 'y'],
+  lng: ['lng', 'lon', 'longitude', 'longitud', 'long', 'x coordinate', 'x'],
+  peopleCount: ['peoplecount', 'people count', 'people', 'persons', 'affected people', 'affected', 'no of people', 'number of people'],
+  name: ['name', 'item', 'resource', 'resource name', 'item name'],
+  quantity: ['quantity', 'qty', 'amount', 'count', 'number'],
+  unit: ['unit', 'units', 'uom', 'measurement', 'measure', 'metric'],
+}
+
 function detectDelimiter(text: string): string {
   const firstLine = text.split(/[\r\n]+/)[0] || ''
   const tabs = (firstLine.match(/\t/g) || []).length
@@ -61,6 +86,23 @@ function downloadBlob(content: string, filename: string, mimeType: string = 'tex
   URL.revokeObjectURL(url)
 }
 
+function autoDetectField(csvCol: string, systemFields: string[]): string {
+  const cleaned = csvCol.toLowerCase().replace(/^["'\s]+|["'\s]+$/g, '').trim()
+  const stripped = cleaned.replace(/[^a-z0-9]/g, '')
+  for (const field of systemFields) {
+    const aliases = FIELD_ALIASES[field] || []
+    if (aliases.includes(cleaned) || aliases.some((a) => a.replace(/[^a-z0-9]/g, '') === stripped)) {
+      return field
+    }
+  }
+  for (const field of systemFields) {
+    if (field.toLowerCase() === cleaned || field.toLowerCase().replace(/[^a-z0-9]/g, '') === stripped) {
+      return field
+    }
+  }
+  return ''
+}
+
 const REQUEST_HEADERS = 'title,description,category,priority,status,location,lat,lng'
 const RESOURCE_HEADERS = 'name,category,quantity,unit,status,location,lat,lng'
 const REQUEST_EXAMPLE = 'Flood relief needed,Water and food needed,Food,High,Open,Chennai 13.08 80.27,13.0827,80.2707'
@@ -77,10 +119,20 @@ export default function BulkImport() {
   const [headers, setHeaders] = useState<string[]>([])
   const [selected, setSelected] = useState<Set<string | number>>(new Set())
   const [editingRow, setEditingRow] = useState<string | number | null>(null)
+  const [step, setStep] = useState<ImportStep>('upload')
+  const [rawHeaders, setRawHeaders] = useState<string[]>([])
+  const [rawData, setRawData] = useState<string[][]>([])
+  const [columnMaps, setColumnMaps] = useState<ColumnMap[]>([])
   const fileRef = useRef<HTMLInputElement | null>(null)
 
+  const systemFields = tab === 'requests' ? REQUEST_FIELDS : RESOURCE_FIELDS
+
   function cancelPreview() {
+    setStep('upload')
     setPreview(null)
+    setRawHeaders([])
+    setRawData([])
+    setColumnMaps([])
     setSelected(new Set())
     setEditingRow(null)
     setError('')
@@ -97,7 +149,6 @@ export default function BulkImport() {
 
     setImporting(true)
     setError('')
-    setResult(null)
 
     try {
       let text = await file.text()
@@ -106,19 +157,13 @@ export default function BulkImport() {
 
       if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
 
-      const h = rows[0].map((c) => c.trim().replace(/^\uFEFF/, ''))
-      const normalizedHeaders = h.map((col) => {
-        const lc = col.toLowerCase()
-        const aliases: Record<string, string> = {
-          locationname: 'locationName',
-          peoplecount: 'peopleCount',
-          createdat: 'createdAt',
-          updatedat: 'updatedAt',
-        }
-        return aliases[lc] || lc
-      })
-      const isRequestCSV = normalizedHeaders.includes('title')
-      const isResourceCSV = normalizedHeaders.includes('name')
+      const h = rows[0].map((c) => c.trim())
+      const dataRows = rows.slice(1).filter((row) => row.some((v) => v.trim() !== ''))
+
+      if (dataRows.length === 0) throw new Error('CSV has no data rows after the header')
+
+      const isRequestCSV = h.some((c) => /^title$/i.test(c.trim()))
+      const isResourceCSV = h.some((c) => /^name$/i.test(c.trim()))
 
       if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
         throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
@@ -127,36 +172,15 @@ export default function BulkImport() {
         throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
       }
 
-      const validRequestCols = ['title', 'description', 'category', 'priority', 'status', 'location', 'locationname', 'lat', 'lng', 'peoplecount']
-      const validResourceCols = ['name', 'category', 'quantity', 'unit', 'status', 'location', 'locationname', 'lat', 'lng']
-      const validCols = tab === 'requests' ? validRequestCols : validResourceCols
+      const initialMaps: ColumnMap[] = h.map((col) => ({
+        csvCol: col,
+        systemCol: autoDetectField(col, systemFields),
+      }))
 
-      const cleanHeaders: string[] = []
-      const cleanColIndices: number[] = []
-      normalizedHeaders.forEach((col, i) => {
-        if (validCols.includes(col) || validCols.includes(col.toLowerCase())) {
-          cleanHeaders.push(col)
-          cleanColIndices.push(i)
-        }
-      })
-
-      if (cleanHeaders.length === 0) {
-        throw new Error(`No valid columns found. Expected headers like: ${validCols.slice(0, 5).join(', ')}...`)
-      }
-
-      const dataRows = rows.slice(1).map((vals) => {
-        const row: Record<string, unknown> = {}
-        cleanHeaders.forEach((col, i) => { row[col] = vals[cleanColIndices[i]]?.trim() || '' })
-        row._rowId = Date.now() + Math.random()
-        return row
-      }).filter((row) => {
-        return Object.values(row).some((v) => String(v).trim() !== '')
-      })
-
-      setHeaders(cleanHeaders)
-      setPreview(dataRows)
-      setSelected(new Set(dataRows.map((r) => r._rowId as string | number)))
-      setEditingRow(null)
+      setRawHeaders(h)
+      setRawData(dataRows)
+      setColumnMaps(initialMaps)
+      setStep('mapping')
     } catch (e) {
       const err = e as Error
       setError(err.message)
@@ -164,6 +188,33 @@ export default function BulkImport() {
       setImporting(false)
       if (fileRef.current) fileRef.current.value = ''
     }
+  }
+
+  function updateColumnMap(csvCol: string, systemCol: string) {
+    setColumnMaps((prev) => prev.map((m) => (m.csvCol === csvCol ? { ...m, systemCol } : m)))
+  }
+
+  function confirmMapping() {
+    const activeMaps = columnMaps.filter((m) => m.systemCol !== '')
+    const usedFields = new Set(activeMaps.map((m) => m.systemCol))
+
+    const cleanHeaders = activeMaps.map((m) => m.systemCol)
+    const cleanColIndices = activeMaps.map((m) => rawHeaders.indexOf(m.csvCol))
+
+    const mappedData = rawData.map((vals) => {
+      const row: Record<string, unknown> = {}
+      cleanHeaders.forEach((col, i) => {
+        row[col] = vals[cleanColIndices[i]]?.trim() || ''
+      })
+      row._rowId = Date.now() + Math.random()
+      return row
+    })
+
+    setHeaders(cleanHeaders)
+    setPreview(mappedData)
+    setSelected(new Set(mappedData.map((r) => r._rowId as string | number)))
+    setEditingRow(null)
+    setStep('preview')
   }
 
   function toggleSelectAll() {
@@ -232,6 +283,8 @@ export default function BulkImport() {
     promise.catch((err: Error) => toast.error(err.message))
   }
 
+  const unmatchedCount = columnMaps.filter((m) => m.systemCol === '').length
+
   return (
     <div className="container">
       <div className="card">
@@ -244,7 +297,7 @@ export default function BulkImport() {
 
         {error && <div className="errorText mb">{error}</div>}
 
-        {!preview && (
+        {step === 'upload' && (
           <>
             <div className="flex flex-gap-sm mb-lg">
               <button onClick={downloadTemplate} className="rounded-sm cursor-pointer p-sm border-gov bg-gov-white text-13">
@@ -264,7 +317,69 @@ export default function BulkImport() {
           </>
         )}
 
-        {preview && (
+        {step === 'mapping' && (
+          <>
+            <div className="flex-between mb">
+              <div className="text-base text-semi">Column Mapping</div>
+              <div className="text-sm text-muted">{rawData.length} data rows parsed</div>
+            </div>
+
+            {unmatchedCount > 0 && (
+              <div className="mb p-sm rounded-sm" style={{ background: 'var(--warning-soft, #fff3cd)', border: '1px solid rgba(255,193,7,.3)' }}>
+                <span className="text-13 text-semi" style={{ color: 'var(--warning, #856404)' }}>
+                  ⚠ {unmatchedCount} column{unmatchedCount > 1 ? 's' : ''} will be ignored. Assign a system field or they will be skipped.
+                </span>
+                <ul className="mt-xs mb-0 text-sm" style={{ color: 'var(--warning, #856404)' }}>
+                  {columnMaps.filter((m) => m.systemCol === '').map((m) => (
+                    <li key={m.csvCol}>"{m.csvCol}"</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="overflow-x-auto rounded-sm border-gov mb">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-elevated">
+                    <th className="text-left p-sm border-bottom">CSV Column</th>
+                    <th className="text-left p-sm border-bottom">→</th>
+                    <th className="text-left p-sm border-bottom">System Field</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {columnMaps.map((m) => (
+                    <tr key={m.csvCol}>
+                      <td className="p-sm border-bottom text-nowrap">{m.csvCol}</td>
+                      <td className="p-sm border-bottom text-center">→</td>
+                      <td className="p-sm border-bottom">
+                        <select
+                          value={m.systemCol}
+                          onChange={(e) => updateColumnMap(m.csvCol, e.target.value)}
+                          className="rounded-sm border-gov text-sm w-100"
+                          style={{ padding: '4px 8px' }}
+                        >
+                          <option value="">— Ignore —</option>
+                          {systemFields.map((f) => (
+                            <option key={f} value={f}>{f}</option>
+                          ))}
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex flex-gap-sm">
+              <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
+              <button onClick={confirmMapping} className="btnPrimary text-sm p-sm">
+                Confirm Mapping →
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 'preview' && preview && (
           <>
             <div className="flex-between mb">
               <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
