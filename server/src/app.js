@@ -100,7 +100,9 @@ export function createApp() {
   app.use(sanitizeBody)
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
+  const BUILD_VERSION = Date.now()
   app.get('/health', (req, res) => res.json({ ok: true }))
+  app.get('/api/version', (req, res) => res.json({ version: BUILD_VERSION }))
 
   app.post('/api/log', (req, res) => {
     const { message, stack, componentStack, url, userAgent } = req.body || {}
