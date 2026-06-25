@@ -1,0 +1,37 @@
+/* === Skeleton Loading === */
+/* Skeleton loaders for cards, text, circles, maps */
+
+/* === Skeleton Loading === */
+.sk-line, .sk-card {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
+  background-size: 200% 100%;
+  animation: sk-shimmer 1.5s linear infinite;
+}
+.sk-card {
+  padding: var(--space-lg);
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.sk-list { margin-top: var(--space-lg); }
+.sk-map {
+  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
+  background-size: 200% 100%;
+  animation: sk-shimmer 1.5s linear infinite;
+}
+.sk-circle {
+  border-radius: 50%;
+  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
+  background-size: 200% 100%;
+  animation: sk-shimmer 1.5s linear infinite;
+}
+.sk-text {
+  height: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
+  background-size: 200% 100%;
+  animation: sk-shimmer 1.5s linear infinite;
+}
+.sk-text:last-child { width: 60%; }

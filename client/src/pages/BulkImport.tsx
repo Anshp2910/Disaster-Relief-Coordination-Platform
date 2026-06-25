@@ -1,0 +1,359 @@
+import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { clientApi } from '../api/client'
+import { useToast } from '../components/Toast'
+
+function detectDelimiter(text: string): string {
+  const firstLine = text.split(/[\r\n]+/)[0] || ''
+  const tabs = (firstLine.match(/\t/g) || []).length
+  const semicolons = (firstLine.match(/;/g) || []).length
+  const pipes = (firstLine.match(/\|/g) || []).length
+  if (tabs >= semicolons && tabs >= pipes && tabs > 0) return '\t'
+  if (semicolons >= tabs && semicolons >= pipes && semicolons > 0) return ';'
+  if (pipes >= tabs && pipes >= semicolons && pipes > 0) return '|'
+  return ','
+}
+
+function parseCSV(text: string, delimiter?: string): string[][] {
+  const delim = delimiter || detectDelimiter(text)
+  const result: string[][] = []
+  let row: string[] = []
+  let cell = ''
+  let inQuotes = false
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
+    const next = text[i + 1]
+
+    if (char === '"') {
+      if (inQuotes && next === '"') {
+        cell += '"'
+        i++
+      } else {
+        inQuotes = !inQuotes
+      }
+    } else if (char === delim && !inQuotes) {
+      row.push(cell)
+      cell = ''
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && next === '\n') i++
+      row.push(cell)
+      if (row.some((f) => f.trim())) result.push(row)
+      row = []
+      cell = ''
+    } else {
+      cell += char
+    }
+  }
+
+  row.push(cell)
+  if (row.some((f) => f.trim())) result.push(row)
+  return result
+}
+
+function downloadBlob(content: string, filename: string, mimeType: string = 'text/csv') {
+  const blob = new Blob([content], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+const REQUEST_HEADERS = 'title,description,category,priority,status,location,lat,lng'
+const RESOURCE_HEADERS = 'name,category,quantity,unit,status,location,lat,lng'
+const REQUEST_EXAMPLE = 'Flood relief needed,Water and food needed,Food,High,Open,Chennai 13.08 80.27,13.0827,80.2707'
+const RESOURCE_EXAMPLE = 'Rice bags,Food,100,kg,Available,Chennai Depot,13.0827,80.2707'
+
+export default function BulkImport() {
+  const { t } = useTranslation()
+  const toast = useToast()
+  const [tab, setTab] = useState('requests')
+  const [importing, setImporting] = useState(false)
+  const [result, setResult] = useState<Record<string, unknown> | null>(null)
+  const [error, setError] = useState('')
+  const [preview, setPreview] = useState<Record<string, unknown>[] | null>(null)
+  const [headers, setHeaders] = useState<string[]>([])
+  const [selected, setSelected] = useState<Set<string | number>>(new Set())
+  const [editingRow, setEditingRow] = useState<string | number | null>(null)
+  const fileRef = useRef<HTMLInputElement | null>(null)
+
+  function cancelPreview() {
+    setPreview(null)
+    setSelected(new Set())
+    setEditingRow(null)
+    setError('')
+  }
+
+  function switchTab(newTab: string) {
+    setTab(newTab)
+    cancelPreview()
+  }
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setImporting(true)
+    setError('')
+    setResult(null)
+
+    try {
+      let text = await file.text()
+      text = text.replace(/^\uFEFF/, '')
+      const rows = parseCSV(text)
+
+      if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
+
+      const h = rows[0].map((c) => c.trim().replace(/^\uFEFF/, ''))
+      const normalizedHeaders = h.map((col) => {
+        const lc = col.toLowerCase()
+        const aliases: Record<string, string> = {
+          locationname: 'locationName',
+          peoplecount: 'peopleCount',
+          createdat: 'createdAt',
+          updatedat: 'updatedAt',
+        }
+        return aliases[lc] || lc
+      })
+      const isRequestCSV = normalizedHeaders.includes('title')
+      const isResourceCSV = normalizedHeaders.includes('name')
+
+      if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
+        throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
+      }
+      if (tab === 'resources' && isRequestCSV && !isResourceCSV) {
+        throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
+      }
+
+      const validRequestCols = ['title', 'description', 'category', 'priority', 'status', 'location', 'locationname', 'lat', 'lng', 'peoplecount']
+      const validResourceCols = ['name', 'category', 'quantity', 'unit', 'status', 'location', 'locationname', 'lat', 'lng']
+      const validCols = tab === 'requests' ? validRequestCols : validResourceCols
+
+      const cleanHeaders: string[] = []
+      const cleanColIndices: number[] = []
+      normalizedHeaders.forEach((col, i) => {
+        if (validCols.includes(col) || validCols.includes(col.toLowerCase())) {
+          cleanHeaders.push(col)
+          cleanColIndices.push(i)
+        }
+      })
+
+      if (cleanHeaders.length === 0) {
+        throw new Error(`No valid columns found. Expected headers like: ${validCols.slice(0, 5).join(', ')}...`)
+      }
+
+      const dataRows = rows.slice(1).map((vals) => {
+        const row: Record<string, unknown> = {}
+        cleanHeaders.forEach((col, i) => { row[col] = vals[cleanColIndices[i]]?.trim() || '' })
+        row._rowId = Date.now() + Math.random()
+        return row
+      }).filter((row) => {
+        return Object.values(row).some((v) => String(v).trim() !== '')
+      })
+
+      setHeaders(cleanHeaders)
+      setPreview(dataRows)
+      setSelected(new Set(dataRows.map((r) => r._rowId as string | number)))
+      setEditingRow(null)
+    } catch (e) {
+      const err = e as Error
+      setError(err.message)
+    } finally {
+      setImporting(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
+  function toggleSelectAll() {
+    if (!preview) return
+    if (selected.size === preview.length) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(preview.map((r) => r._rowId as string | number)))
+    }
+  }
+
+  function toggleRow(rowId: string | number) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(rowId)) next.delete(rowId)
+      else next.add(rowId)
+      return next
+    })
+  }
+
+  function updateCell(rowId: string | number, col: string, val: string) {
+    setPreview((prev) => {
+      if (!prev) return prev
+      const next = [...prev]
+      const idx = next.findIndex((r) => r._rowId === rowId)
+      if (idx >= 0) next[idx] = { ...next[idx], [col]: val }
+      return next
+    })
+  }
+
+  async function handleSubmitImport() {
+    if (!preview) return
+    const rowsToImport = preview.filter((_, i) => selected.has(i))
+    if (rowsToImport.length === 0) {
+      setError(t('bulkImport.noRowsSelected'))
+      return
+    }
+
+    setImporting(true)
+    setError('')
+    try {
+      const data = tab === 'requests'
+        ? await clientApi.importRequests(rowsToImport)
+        : await clientApi.importResources(rowsToImport)
+      setResult(data as Record<string, unknown>)
+      if ((data as Record<string, unknown>).imported as number > 0) {
+        setPreview(null)
+        setSelected(new Set())
+      }
+    } catch (e) {
+      const err = e as Error
+      setError(err.message)
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  function downloadTemplate() {
+    const headers = tab === 'requests' ? REQUEST_HEADERS : RESOURCE_HEADERS
+    const example = tab === 'requests' ? REQUEST_EXAMPLE : RESOURCE_EXAMPLE
+    downloadBlob(`${headers}\n${example}`, `${tab}_template.csv`)
+  }
+
+  function exportData() {
+    const promise = tab === 'requests' ? clientApi.exportRequestsCSV() : clientApi.exportResourcesCSV()
+    promise.catch((err: Error) => toast.error(err.message))
+  }
+
+  return (
+    <div className="container">
+      <div className="card">
+        <h2 className="pageTitle m-0 mb text-20">{t('bulkImport.title')}</h2>
+
+        <div className="flex mb-lg gap-6">
+          <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>{t('bulkImport.requestsTab')}</button>
+          <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>{t('bulkImport.resourcesTab')}</button>
+        </div>
+
+        {error && <div className="errorText mb">{error}</div>}
+
+        {!preview && (
+          <>
+            <div className="flex flex-gap-sm mb-lg">
+              <button onClick={downloadTemplate} className="rounded-sm cursor-pointer p-sm border-gov bg-gov-white text-13">
+                {t('bulkImport.downloadTemplate')}
+              </button>
+              <button onClick={exportData} className="btnPrimary text-13 p-sm">{t('bulkImport.exportCSV')}</button>
+            </div>
+
+            <div className="p-2xl text-center border-dashed-2 rounded">
+              <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
+              <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
+              <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" />
+              <label htmlFor="csv-upload" className="btnPrimary cursor-pointer inline-block text-13 p-sm">
+                {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
+              </label>
+            </div>
+          </>
+        )}
+
+        {preview && (
+          <>
+            <div className="flex-between mb">
+              <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
+              <div className="flex flex-gap-sm">
+                <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
+                <button
+                  onClick={handleSubmitImport}
+                  disabled={importing || selected.size === 0}
+                  className="btnPrimary text-sm p-xs"
+                >
+                  {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto rounded-sm border-gov">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-elevated">
+                      <th className="text-center p-sm border-bottom w-40">
+                        <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
+                        <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
+                      </th>
+                      <th className="text-center p-sm border-bottom w-40">#</th>
+                    {headers.map((h) => (
+                      <th key={h} className="text-nowrap p-sm border-bottom">{h}</th>
+                    ))}
+                      <th className="p-sm border-bottom w-60">{t('bulkImport.edit')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {preview.map((row, idx) => {
+                    const rowId = row._rowId as string | number
+                    return (
+                    <tr
+                      key={rowId}
+                      style={{
+                        background: editingRow === rowId ? 'var(--accent-soft)' : selected.has(rowId) ? 'var(--success-soft)' : 'var(--gov-bg)',
+                        opacity: selected.has(rowId) ? 1 : 0.5,
+                      }}
+                    >
+                      <td className="text-center border-bottom p-xs">
+                        <input type="checkbox" checked={selected.has(rowId)} onChange={() => toggleRow(rowId)} aria-label={`Select row ${idx + 1}`} />
+                      </td>
+                      <td className="text-center text-muted border-bottom p-xs">{idx + 1}</td>
+                      {headers.map((h) => (
+                        <td key={h} className="text-ellipsis border-bottom max-w-200 p-xs" style={{ padding: '4px 10px' }}>
+                          {editingRow === rowId ? (
+                            <input
+                              value={row[h] as string || ''}
+                              onChange={(e) => updateCell(rowId, h, e.target.value)}
+                              className="w-full text-sm border-gov rounded-sm p-xs"
+                            />
+                          ) : (
+                            (row[h] as string) || <span className="text-muted">-</span>
+                          )}
+                        </td>
+                      ))}
+                      <td className="text-center border-bottom p-xs">
+                        <button
+                          onClick={() => setEditingRow(editingRow === rowId ? null : rowId)}
+                          className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
+                        >
+                          {editingRow === rowId ? t('bulkImport.done') : t('bulkImport.edit')}
+                        </button>
+                      </td>
+                    </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+
+        {result && (
+          <div className="mt-lg p rounded-sm" style={{ background: 'var(--success-soft)', border: '1px solid rgba(34,197,94,.2)' }}>
+            <div className="text-semi text-13 text-accent-green">{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
+            {(result.errors as Array<Record<string, unknown>>)?.length > 0 && (
+              <div className="mt-sm">
+                <div className="text-sm text-semi text-red">{t('bulkImport.rowsHadErrors', { count: (result.errors as Array<Record<string, unknown>>).length })}</div>
+                {(result.errors as Array<Record<string, unknown>>).slice(0, 10).map((e: Record<string, unknown>, i: number) => (
+                  <div key={i} className="text-sm text-muted mt-xs">Row {e.row as string}: {(e.errors as string[]).join(', ')}</div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

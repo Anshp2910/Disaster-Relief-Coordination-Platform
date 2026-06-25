@@ -1,0 +1,63 @@
+/* === Modal === */
+/* Modal overlay, modal card, confirm dialog */
+
+/* === Modal === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: overlayIn 0.2s var(--ease-out);
+}
+.modal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  max-width: 420px;
+  width: 90%;
+  box-shadow: var(--shadow-2xl);
+  animation: modalIn 0.3s var(--ease-out);
+  position: relative;
+}
+.modal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-accent);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  pointer-events: none;
+}
+.modal-icon { font-size: 36px; margin-bottom: var(--space-md); }
+.modal-title { margin: 0 0 var(--space-sm); font-size: var(--text-xl); color: var(--text); }
+.modal-desc { margin: 0 0 var(--space-xl); color: var(--text-secondary); font-size: var(--text-base); line-height: var(--leading-relaxed); }
+.modal-actions { display: flex; gap: var(--space-md); justify-content: center; }
+.modal-actions .btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.modal-actions .btn:hover { opacity: 0.85; background: var(--accent-soft); }
+.modal-actions .btn-danger {
+  background: linear-gradient(135deg, var(--red-500), var(--red-600));
+  color: var(--text-on-accent);
+  border: none;
+}
+.modal-actions .btn-danger:hover {
+  background: linear-gradient(135deg, var(--red-400), var(--red-500));
+  opacity: 1;
+}

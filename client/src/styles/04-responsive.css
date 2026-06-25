@@ -1,0 +1,373 @@
+/* === Responsive === */
+/* All media queries, touch device optimizations, RTL support */
+
+/* ============================
+   RESPONSIVE BREAKPOINTS
+   ============================ */
+
+/* === Base: Ensure no overflow on any device === */
+
+/* === Max-width breakpoints (descending order for correct cascade) === */
+
+/* === 1200px - Laptops === */
+@media (max-width: 1200px) {
+  .container { max-width: 100%; }
+  .gov-container { max-width: 100%; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .admin-stats-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+
+/* === 900px - Small Laptops === */
+@media (max-width: 900px) {
+  .gov-footer-grid { grid-template-columns: 1fr; gap: var(--space-xl); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .gov-header-main .gov-container { flex-wrap: wrap; }
+  .gov-footer { padding: var(--space-2xl) 0 0; }
+}
+
+/* === 768px - Tablets === */
+@media (max-width: 768px) {
+  .gov-header-actions .header-user-name { display: none; }
+  .gov-top-strip-text { display: none; }
+  .gov-logo { height: 32px; }
+  .gov-app-title { font-size: var(--text-lg); }
+  .gov-app-subtitle { font-size: var(--text-2xs); }
+  .gov-header-main { padding: 10px 0; }
+  .gov-header-main .gov-container { gap: 10px; }
+  .container { padding: 0 var(--space-md); margin: var(--space-md) auto; }
+  .card { padding: var(--space-lg); }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .headerRow { flex-direction: column; align-items: flex-start; }
+  .flex-between { flex-wrap: wrap; gap: var(--space-sm); }
+  .btnRow { flex-wrap: wrap; }
+  .mapBox { height: 240px; min-height: 180px; border-radius: var(--radius-sm); border-left: none; border-right: none; }
+  .map-container-full { height: 45vh; min-height: 220px; }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; }
+  .admin-breakdown-grid { grid-template-columns: 1fr; }
+  .admin-toolbar { flex-direction: column; align-items: stretch; }
+  .admin-search { min-width: 0; }
+  .admin-table { font-size: var(--text-sm); }
+  .admin-table th, .admin-table td { padding: 8px 10px; }
+  .notification-dropdown { width: calc(100vw - 32px); right: -16px; }
+  .match-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .login-auth-card { max-width: 100%; }
+  .bento-grid { gap: var(--space-md); }
+}
+
+/* === 480px - Small Tablets / Large Phones === */
+@media (max-width: 480px) {
+  .gov-top-strip { font-size: var(--text-2xs); padding: 4px 0; }
+  .gov-logo { height: 26px; }
+  .gov-app-title { font-size: var(--text-base); }
+  .gov-app-subtitle { font-size: var(--text-2xs); }
+  .gov-header-main .gov-container { flex-wrap: wrap; }
+  .notification-dropdown { width: calc(100vw - 16px); right: -8px; }
+  .mapBox { height: 200px; min-height: 160px; border-radius: var(--radius-sm); border-left: none; border-right: none; }
+  .map-container-full { height: 40vh; min-height: 200px; }
+  .admin-stats-grid { grid-template-columns: 1fr; }
+  .card { padding: var(--space-md); border-radius: var(--radius-sm); }
+  .listCard { padding: var(--space-md); }
+  .filter-pill { padding: 4px 10px; font-size: var(--text-2xs); }
+  .headerRow { gap: 8px; }
+  .btnRow { gap: 6px; }
+  .btnRow button { flex: 1; min-width: 0; white-space: nowrap; font-size: var(--text-sm); padding: 7px 8px; }
+}
+
+/* === Small Phones (320px-359px) === */
+@media (max-width: 359px) {
+  .gov-container { padding: 0 var(--space-md); }
+  .container { padding: 0 10px; margin: 8px auto; }
+  .card { padding: var(--space-md); border-radius: var(--radius-sm); }
+  .listCard { padding: 10px; }
+  .gov-logo { height: 24px; }
+  .gov-app-title { font-size: var(--text-base); }
+  .gov-app-subtitle { font-size: 9px; letter-spacing: 0.3px; }
+  .gov-header-main { padding: 8px 0; }
+  .gov-header-main .gov-container { gap: 8px; flex-wrap: wrap; }
+  .gov-top-strip { font-size: 9px; padding: 3px 0; }
+  .pageTitle { font-size: var(--text-xl); }
+  .filter-pill { padding: 3px 8px; font-size: 9px; }
+  .btnPrimary, .btnDanger, button { padding: 7px 10px; font-size: var(--text-sm); }
+  .inputGrid { gap: var(--space-sm); }
+  input, textarea, select { padding: 8px 10px; font-size: var(--text-sm); }
+  .admin-stats-grid { grid-template-columns: 1fr; gap: 10px; }
+  .admin-stat-card { padding: var(--space-md); gap: 10px; }
+  .admin-stat-value { font-size: 22px; }
+  .admin-table-wrapper { font-size: var(--text-sm); }
+  .admin-table th, .admin-table td { padding: 6px 8px; font-size: var(--text-2xs); }
+  .admin-toolbar { gap: 8px; }
+  .admin-search { min-width: 0; width: 100%; font-size: var(--text-sm); padding: 6px 8px; }
+  .notification-dropdown { width: calc(100vw - 16px); right: 0; max-height: 70vh; }
+  .pwa-install-banner { padding: 10px 12px; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .pwa-install-banner span { font-size: var(--text-sm); }
+  .mapBox { height: 180px; min-height: 140px; }
+  .map-container-full { height: 35vh; min-height: 160px; }
+  .login-auth-card { max-width: 100%; }
+}
+
+/* === Combined min-width / max-width breakpoints (ascending order) === */
+
+/* === Standard Phones (360px-389px) === */
+@media (min-width: 360px) and (max-width: 389px) {
+  .gov-container { padding: 0 var(--space-md); }
+  .container { padding: 0 var(--space-md); margin: 10px auto; }
+  .card { padding: var(--space-md); }
+  .gov-logo { height: 26px; }
+  .gov-app-title { font-size: var(--text-lg); }
+  .gov-app-subtitle { font-size: var(--text-2xs); }
+  .gov-header-main { padding: 8px 0; }
+  .filter-pill { padding: 4px 10px; font-size: var(--text-2xs); }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .admin-stat-card { padding: var(--space-md); }
+  .notification-dropdown { width: calc(100vw - 16px); right: -8px; }
+  .mapBox { height: 200px; min-height: 160px; }
+  .map-container-full { height: 40vh; min-height: 180px; }
+}
+
+/* === iPhone 14/15 & Standard (390px-427px) === */
+@media (min-width: 390px) and (max-width: 427px) {
+  .gov-logo { height: 28px; }
+  .gov-app-title { font-size: var(--text-lg); }
+  .gov-app-subtitle { font-size: var(--text-2xs); }
+  .container { margin: var(--space-md) auto; }
+  .notification-dropdown { width: calc(100vw - 24px); right: -12px; }
+}
+
+/* === Large Phones (428px-479px) === */
+@media (min-width: 428px) and (max-width: 479px) {
+  .gov-logo { height: 30px; }
+  .gov-app-title { font-size: var(--text-lg); }
+  .notification-dropdown { width: 340px; right: 0; }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* === 600px - Tablets Portrait === */
+@media (min-width: 481px) and (max-width: 600px) {
+  .gov-logo { height: 30px; }
+  .gov-app-title { font-size: var(--text-lg); }
+  .container { margin: var(--space-lg) auto; padding: 0 var(--space-lg); }
+  .card { padding: var(--space-lg); }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+  .grid-2 { grid-template-columns: 1fr; }
+  .notification-dropdown { width: 340px; right: 0; }
+}
+
+/* === 1024px - Tablets Landscape / Small Laptops === */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .gov-container { padding: 0 var(--space-lg); }
+  .container { padding: 0 var(--space-lg); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .gov-footer-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-breakdown-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* === 1440px+ Desktops === */
+@media (min-width: 1440px) {
+  .gov-container { padding: 0 var(--space-2xl); }
+  .container { padding: 0 var(--space-2xl); }
+  .admin-stats-grid { grid-template-columns: repeat(4, 1fr); }
+  .bento-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+}
+
+/* === 1920px+ Large Screens === */
+@media (min-width: 1920px) {
+  .gov-container { max-width: 1600px; padding: 0 var(--space-3xl); }
+  .container { max-width: 1600px; padding: 0 var(--space-3xl); }
+  .gov-app-title { font-size: var(--text-2xl); }
+  .gov-logo { height: 48px; }
+  .card { padding: var(--space-2xl); }
+  .admin-stat-value { font-size: 34px; }
+}
+
+/* === Landscape Phone === */
+@media (max-height: 500px) and (orientation: landscape) {
+  .login-split { min-height: auto; }
+  .login-auth-card { padding: var(--space-lg); }
+  .login-emblem { margin-bottom: 8px; }
+  .login-emblem svg { width: 32px; height: 32px; }
+  .login-hero-title { font-size: var(--text-xl); }
+  .login-hero-slogan { margin-bottom: var(--space-md); }
+  .map-container-full { height: 55vh; }
+}
+
+/* === Touch Device Optimizations === */
+@media (hover: none) and (pointer: coarse) {
+  button, .filter-pill {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  input, textarea, select {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  .filter-pill { padding: 8px 16px; }
+  .sos-btn { min-height: 44px; padding: 8px 16px; }
+}
+
+/* === High DPI / Retina === */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .card, .listCard, .admin-stat-card, .admin-breakdown-card, .admin-table-wrapper {
+    border-width: 0.5px;
+  }
+}
+
+/* === Mobile Map Popup Fixes === */
+@media (max-width: 480px) {
+  .leaflet-popup-content-wrapper {
+    max-width: 200px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .leaflet-popup-content {
+    margin: 8px 10px;
+    font-size: var(--text-sm);
+    color: var(--text);
+  }
+  .leaflet-popup-tip { border-top-color: var(--bg-card); }
+  .leaflet-control-zoom {
+    border: none;
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .leaflet-control-zoom a {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    background: var(--bg-card);
+    color: var(--text);
+    border-color: var(--border);
+  }
+  .leaflet-control-attribution {
+    font-size: 7px;
+    padding: 0 4px;
+  }
+}
+
+/* Login responsive */
+@media (max-width: 899px) {
+  .login-split {
+    flex-direction: column;
+  }
+  .login-hero {
+    min-height: 240px;
+    flex: none;
+  }
+  .login-hero-content {
+    padding: var(--space-xl) var(--space-lg);
+  }
+  .login-hero-features {
+    display: none;
+  }
+  .login-emblem svg {
+    width: 48px;
+    height: 48px;
+  }
+  .login-hero-title {
+    font-size: 1.4rem;
+    margin: 0 0 var(--space-xs);
+  }
+  .login-hero-slogan {
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+  .login-auth {
+    padding: var(--space-lg);
+  }
+}
+
+@media (min-width: 900px) {
+  .login-hero {
+    min-height: 100vh;
+  }
+}
+
+/* Bento grid responsive */
+@media (min-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bento-grid .bento--wide { grid-column: span 2; }
+  .bento-grid .bento--full { grid-column: 1 / -1; }
+  .bento-grid .bento--span-2 { grid-column: span 2; }
+  .bento-grid .bento--tall { grid-row: span 2; }
+}
+
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .bento-grid .bento--wide { grid-column: span 2; }
+}
+
+/* Dashboard map responsive */
+@media (max-width: 768px) {
+  .dashboard-map { height: 200px; }
+}
+@media (max-width: 480px) {
+  .dashboard-map { height: 180px; }
+}
+
+/* === RTL Support === */
+[dir="rtl"] .gov-header-main,
+[dir="rtl"] .gov-nav-inner,
+[dir="rtl"] .gov-nav,
+[dir="rtl"] .container {
+  direction: rtl;
+}
+
+[dir="rtl"] .flex-between {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-sm,
+[dir="rtl"] .mr-md,
+[dir="rtl"] .mr-lg {
+  margin-right: 0;
+}
+
+[dir="rtl"] .ml-sm,
+[dir="rtl"] .ml-md {
+  margin-left: 0;
+}
+
+[dir="rtl"] .search-btn {
+  right: auto;
+  left: 4px;
+}
+
+[dir="rtl"] .gov-logo {
+  margin-right: 0;
+  margin-left: var(--space-sm);
+}
+
+[dir="rtl"] .btnRow {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .input-pill {
+  text-align: right;
+}
+
+[dir="rtl"] .headerRow {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .toast-container {
+  right: auto;
+  left: var(--space-lg);
+}

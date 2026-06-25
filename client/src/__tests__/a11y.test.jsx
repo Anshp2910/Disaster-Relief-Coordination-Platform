@@ -11,11 +11,16 @@ describe('Accessibility compliance', () => {
   })
   
   it('should not have !important in component CSS', () => {
-    const componentsPath = path.resolve(__dirname, '../styles/04-components.css')
-    const css = fs.readFileSync(componentsPath, 'utf8')
-    const lines = css.split('\n').filter(line => line.includes('!important'))
-    const nonLeaflet = lines.filter(l => !l.includes('leaflet') && !l.includes('-webkit-'))
-    expect(nonLeaflet.length).toBe(0)
+    const styleDir = path.resolve(__dirname, '../styles')
+    const files = fs.readdirSync(styleDir).filter(f => f.endsWith('.css'))
+    /** @type {string[]} */
+    const importantLines = []
+    for (const file of files) {
+      const css = fs.readFileSync(path.join(styleDir, file), 'utf8')
+      const lines = css.split('\n').filter(line => line.includes('!important'))
+      importantLines.push(...lines.filter(l => !l.includes('leaflet') && !l.includes('-webkit-')))
+    }
+    expect(importantLines.length).toBe(0)
   })
   
   it('should not have .dark class references in variables CSS', () => {
