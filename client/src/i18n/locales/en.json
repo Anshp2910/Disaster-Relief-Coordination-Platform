@@ -81,7 +81,14 @@
     "sortPriorityAsc": "Priority: Low to High",
     "sortTitleAsc": "Title: A-Z",
     "sortTitleDesc": "Title: Z-A",
-    "unclaimConfirm": "Are you sure you want to unclaim this request?"
+    "unclaimConfirm": "Are you sure you want to unclaim this request?",
+    "live": "Live",
+    "offline": "Offline",
+    "allRequests": "All Requests",
+    "recentActivity": "Recent Activity",
+    "latestRequest": "Latest Request",
+    "noActivity": "No recent activity",
+    "activityWaiting": "Waiting for live updates..."
   },
   "createRequest": {
     "title": "Create Disaster Relief Request",

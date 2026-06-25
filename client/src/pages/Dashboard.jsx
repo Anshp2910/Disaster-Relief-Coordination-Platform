@@ -10,6 +10,9 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
+import SteppedProgress from '../components/SteppedProgress'
+import ActivityFeed from '../components/ActivityFeed'
+import { useSocket } from '../hooks/useSocket'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 
@@ -70,7 +73,6 @@ export default function Dashboard() {
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
   const [resourceSummary, setResourceSummary] = useState([])
-  const [viewMode, setViewMode] = useState('list')
   const navigate = useNavigate()
   const { t } = useTranslation()
   const mapRef = useRef(null)
@@ -127,18 +129,17 @@ export default function Dashboard() {
   }, [])
 
   useEffect(() => { load() }, [load])
-  useEffect(() => { if (viewMode === 'map') loadMapItems() }, [loadMapItems, viewMode])
+  useEffect(() => { loadMapItems() }, [loadMapItems])
 
   useAutoRefresh(load, { interval: 20000 })
 
   useEffect(() => {
-    return registerRefreshListener(['request:created', 'request:updated', 'request:deleted', 'request:commented', 'resource:allocated'], load)
-  }, [load])
+    return registerRefreshListener(['request:created', 'request:updated', 'request:deleted', 'request:commented', 'resource:allocated'], () => { load(); loadMapItems() })
+  }, [load, loadMapItems])
 
   useEffect(() => { loadResources() }, [loadResources])
 
   useEffect(() => {
-    if (viewMode !== 'map') return
     if (!mapRef.current || mapInstanceRef.current) return
     const map = initLeafletMap(mapRef.current)
     mapInstanceRef.current = map
@@ -150,11 +151,11 @@ export default function Dashboard() {
       if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
       cleanupLeafletMap(map); mapInstanceRef.current = null
     }
-  }, [viewMode])
+  }, [])
 
   useEffect(() => {
     const map = mapInstanceRef.current
-    if (!map || viewMode !== 'map') return
+    if (!map) return
     markersRef.current.forEach((m) => map.removeLayer(m))
     markersRef.current = []
     const filtered = filterStatus === 'All' ? mapItems : mapItems.filter((i) => i.status === filterStatus)
@@ -169,7 +170,7 @@ export default function Dashboard() {
       const bounds = L.latLngBounds(filtered.filter((i) => i.lat != null && i.lng != null).map((i) => [i.lat, i.lng]))
       if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
     }
-  }, [mapItems, filterStatus, viewMode])
+  }, [mapItems, filterStatus])
 
   function handleSearch(e) {
     e.preventDefault()
@@ -177,6 +178,17 @@ export default function Dashboard() {
   }
 
   const { user: currentUser } = useAuth()
+  const { connected } = useSocket()
+
+  const kpis = useMemo(() => {
+    const open = items.filter((i) => i.status === 'Open').length
+    const inProgress = items.filter((i) => i.status === 'In Progress').length
+    const resolved = items.filter((i) => i.status === 'Resolved' || i.status === 'Fulfilled').length
+    const critical = items.filter((i) => i.priority === 'Critical').length
+    return { total: items.length, open, inProgress, resolved, critical }
+  }, [items])
+
+  const firstItem = items[0]
 
   const filterOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
@@ -224,46 +236,147 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div className="mb-xl rounded-lg overflow-hidden relative border-gov" style={{ borderColor: 'var(--accent-soft)' }}>
-          <img src="/images/hero-banner.svg" alt="Disaster Relief Coordination Platform" loading="eager" fetchpriority="high" width="1200" height="300" className="w-full h-auto block" />
-        <div className="absolute inset-0 no-pointer-events" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.04), rgba(129,140,248,0.04))' }} />
-      </div>
-      {resourceSummary.length > 0 && (
-        <div className="card mb-lg">
-          <div className="flex-between mb-sm">
-            <h3 className="m-0 text-base text-bold text-accent-blue">{t('dashboard.resourceInventory')}</h3>
-            <button onClick={() => navigate('/resources')} className="text-sm p-xs">{t('dashboard.viewAll')}</button>
+      <div className="flex-between mb-lg">
+        <div>
+          <h1 className="pageTitle text-2xl">{t('dashboard.title')}</h1>
+          <div className="small mt-xs flex items-center gap-sm">
+            <span>{total} {t('dashboard.totalRequests')}</span>
+            <span className={`live-dot ${connected ? '' : 'live-dot--disconnected'}`}>{connected ? t('dashboard.live') : t('dashboard.offline')}</span>
           </div>
-          <div className="flex flex-gap-sm flex-wrap">
-            {resourceSummary.map((s) => (
-              <div key={s._id} className="text-sm rounded-md p-sm bg-accent-soft" style={{ border: '1px solid rgba(59,130,246,0.15)', backdropFilter: 'blur(4px)' }}>
-                <strong className="text-accent-blue">{s._id}</strong>: {s.totalQty} units {s.lowCount > 0 && <span className="text-accent-orange">({s.lowCount} low)</span>}
+        </div>
+        <div className="btnRow">
+          {currentUser?.role === 'admin' && (
+            <button onClick={() => navigate('/admin')} className="text-accent-blue border-gov" style={{ borderColor: 'var(--gov-blue)' }}>{t('dashboard.admin')}</button>
+          )}
+          <button className="btnPrimary" onClick={() => navigate('/requests/new')}>{t('dashboard.newRequest')}</button>
+        </div>
+      </div>
+
+      {/* KPI Row */}
+      <div className="bento-grid mb-lg">
+        <div className="bento-card">
+          <div className="bento-header">
+            <span className="bento-title">{t('dashboard.allRequests') || 'Total'}</span>
+            <div className="bento-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>📊</div>
+          </div>
+          <div className="bento-kpi-value">{total}</div>
+          <div className="mt-sm" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>{kpis.open} open · {kpis.inProgress} in progress</div>
+        </div>
+        <div className="bento-card">
+          <div className="bento-header">
+            <span className="bento-title">{t('statuses.Open')}</span>
+            <div className="bento-icon" style={{ background: STATUS_COLORS.Open.bg, color: STATUS_COLORS.Open.text }}>🟦</div>
+          </div>
+          <div className="bento-kpi-value" style={{ color: 'var(--color-open)' }}>{kpis.open}</div>
+        </div>
+        <div className="bento-card">
+          <div className="bento-header">
+            <span className="bento-title">{t('statuses.In Progress')}</span>
+            <div className="bento-icon" style={{ background: STATUS_COLORS['In Progress'].bg, color: STATUS_COLORS['In Progress'].text }}>🟧</div>
+          </div>
+          <div className="bento-kpi-value" style={{ color: 'var(--color-progress)' }}>{kpis.inProgress}</div>
+        </div>
+        <div className="bento-card">
+          <div className="bento-header">
+            <span className="bento-title">{t('statuses.Resolved')}</span>
+            <div className="bento-icon" style={{ background: STATUS_COLORS.Resolved.bg, color: STATUS_COLORS.Resolved.text }}>🟩</div>
+          </div>
+          <div className="bento-kpi-value" style={{ color: 'var(--color-resolved)' }}>{kpis.resolved}</div>
+        </div>
+        <div className="bento-card">
+          <div className="bento-header">
+            <span className="bento-title">{t('priorities.Critical')}</span>
+            <div className="bento-icon" style={{ background: PRIORITY_COLORS.Critical.bg, color: PRIORITY_COLORS.Critical.text }}>🔴</div>
+          </div>
+          <div className="bento-kpi-value" style={{ color: 'var(--color-critical)' }}>{kpis.critical}</div>
+        </div>
+        {resourceSummary.length > 0 && (
+          <div className="bento-card">
+            <div className="bento-header">
+              <span className="bento-title">{t('dashboard.resourceInventory')}</span>
+              <div className="bento-icon" style={{ background: 'rgba(139,92,246,0.1)', color: 'var(--cat-supplies)' }}>📦</div>
+            </div>
+            <div className="bento-kpi-list">
+              {resourceSummary.slice(0, 5).map((s) => (
+                <div key={s._id} className="bento-kpi">
+                  <span className="bento-kpi-label">{s._id}</span>
+                  <span className="bento-kpi-value" style={{ fontSize: 'var(--text-base)' }}>{s.totalQty} <span className="text-xs" style={{ color: 'var(--text-muted)', fontWeight: 400 }}>units</span></span>
+                </div>
+              ))}
+            </div>
+            {resourceSummary.length > 5 && (
+              <button onClick={() => navigate('/resources')} className="text-xs mt-sm" style={{ color: 'var(--accent)' }}>{t('dashboard.viewAll')}</button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Main bento: Map + Activity + SteppedProgress + List */}
+      <div className="bento-grid">
+        {/* Mini Map */}
+        <div className="bento-card bento--wide">
+          <div className="bento-header">
+            <span className="bento-title">{t('dashboard.mapView')}</span>
+            <button onClick={() => navigate('/map')} className="text-xs" style={{ color: 'var(--accent)' }}>{t('dashboard.viewAll')}</button>
+          </div>
+          <div className="relative" style={{ height: 240, borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+            {mapLoading && (
+              <div className="flex-center inset-0 z-100 bg-elevated" style={{ position: 'absolute' }}>
+                <div className="loading-spinner" />
+              </div>
+            )}
+            <div ref={mapRef} className="w-full h-full" />
+          </div>
+          {!mapLoading && mapItems.length === 0 && (
+            <div className="text-center text-sm muted mt-sm">{t('dashboard.noRequests')}</div>
+          )}
+          <div className="flex flex-gap-sm mt-sm flex-wrap">
+            {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
+              <div key={status} className="gap-row-xs text-xs">
+                <div className="icon-12" style={{ background: color }} />
+                <span>{t(`statuses.${status}`)}</span>
               </div>
             ))}
           </div>
         </div>
-      )}
-      <div className="card">
-        <div className="headerRow">
-          <div>
-            <h1 className="pageTitle text-2xl">{t('dashboard.title')}</h1>
-            <div className="small mt-xs">{total} {t('dashboard.totalRequests')}</div>
+
+        {/* Activity Feed */}
+        <div className="bento-card bento--tall" style={{ padding: 0 }}>
+          <div className="bento-header" style={{ padding: 'var(--space-lg) var(--space-lg) 0' }}>
+            <span className="bento-title">{t('dashboard.recentActivity') || 'Activity'}</span>
           </div>
-          <div className="btnRow">
-            {currentUser?.role === 'admin' && (
-              <button onClick={() => navigate('/admin')} className="text-accent-blue border-gov" style={{ borderColor: 'var(--gov-blue)' }}>{t('dashboard.admin')}</button>
-            )}
+          <ActivityFeed compact />
+        </div>
+
+        {/* Stepped Progress (current request) */}
+        {firstItem && (
+          <div className="bento-card bento--full">
+            <div className="bento-header">
+              <span className="bento-title">{t('dashboard.latestRequest') || 'Latest Request Status'}</span>
+              <button onClick={() => navigate(`/requests/${firstItem._id}`)} className="text-xs" style={{ color: 'var(--accent)' }}>{t('common.viewDetails')}</button>
+            </div>
+            <h3 className="text-base mb-sm" style={{ fontWeight: 600, color: 'var(--text)' }}>{firstItem.title}</h3>
+            <SteppedProgress currentStatus={firstItem.status} />
+          </div>
+        )}
+      </div>
+
+      {/* Filters & List */}
+      <div className="card mt-lg">
+        <div className="flex-between mb-md">
+          <h2 className="text-lg text-bold m-0">{t('dashboard.allRequests')}</h2>
+          <div className="flex flex-gap-sm">
             <button
-              onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-              style={{ color: 'var(--gov-blue)', borderColor: viewMode === 'map' ? 'var(--gov-blue)' : 'var(--gov-border)', background: viewMode === 'map' ? 'var(--accent-soft)' : undefined, fontWeight: viewMode === 'map' ? 600 : 400 }}
+              onClick={() => { loadMapItems() }}
+              className="text-sm p-xs border-gov rounded-sm"
+              style={{ color: 'var(--gov-blue)', borderColor: 'var(--gov-border)' }}
             >
-              {viewMode === 'list' ? t('dashboard.mapView') : t('dashboard.listView')}
+              {t('dashboard.refresh') || 'Refresh'}
             </button>
-            <button className="btnPrimary" onClick={() => navigate('/requests/new')}>{t('dashboard.newRequest')}</button>
           </div>
         </div>
         {error ? <div className="errorText">{error}</div> : null}
-        <form onSubmit={handleSearch} className="flex flex-gap-sm mt-md">
+        <form onSubmit={handleSearch} className="flex flex-gap-sm">
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('admin.searchRequests')} className="flex-1 input-pill" />
           <button type="submit" className="btnPrimary text-sm p-sm">{t('createRequest.search')}</button>
         </form>
@@ -289,11 +402,11 @@ export default function Dashboard() {
             ))}
           </select>
         </div></nav>
-        <section aria-label={t('dashboard.title')} role="region" aria-live="polite">{viewMode === 'list' ? (
-          <>
-            {loading ? (
-              <SkeletonList count={4} lines={3} />
-            ) : (
+        <section aria-label={t('dashboard.title')} role="region" aria-live="polite">
+          {loading ? (
+            <SkeletonList count={4} lines={3} />
+          ) : (
+            <>
               <div className="gridGap mt-lg">
                 {items.length === 0 ? (
                   <div className="text-center p-lg">
@@ -327,41 +440,16 @@ export default function Dashboard() {
                   ))
                 )}
               </div>
-            )}
-            {totalPages > 1 && (
-              <div className="flex flex-center flex-gap-sm mt-lg">
-                <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm p-xs" aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
-                <span className="text-sm p-xs">{page} / {totalPages}</span>
-                <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <div className="card p-0 relative mt-lg">
-              {mapLoading && (
-                <div className="flex-center inset-0 z-100 bg-elevated">
-                  <div className="loading-spinner" />
+              {totalPages > 1 && (
+                <div className="flex flex-center flex-gap-sm mt-lg">
+                  <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm p-xs" aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
+                  <span className="text-sm p-xs">{page} / {totalPages}</span>
+                  <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
                 </div>
               )}
-              <div ref={mapRef} className="map-container-full w-full" />
-              {!mapLoading && !error && mapItems.length === 0 && (
-                <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
-                  <img src="/images/empty-map.svg" alt="No locations" loading="lazy" width="260" height="180" className="mb-lg h-auto" />
-                  <div className="muted">{t('dashboard.noRequests')}</div>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-gap-lg mt-md flex-wrap">
-              {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
-                <div key={status} className="gap-row-xs text-sm">
-                  <div className="icon-12" style={{ background: color }} />
-                  <span>{t(`statuses.${status}`)}</span>
-                </div>
-              ))}
-            </div>
-          </>
-        )}</section>
+            </>
+          )}
+        </section>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 ﻿/* ============================================================
    EMERGENCY COMMAND CENTER DESIGN SYSTEM
-   Tactical | High-Contrast | Light-Only | v2.0
+   Tactical | High-Contrast | Light + Dark | v3.0
    ============================================================ */
 
 :root {
@@ -138,4 +138,56 @@
   /* === ECC-Specific === */
   --ecc-glow: 0 0 15px rgba(37, 99, 235, 0.06);
   --ecc-border-focus: rgba(37, 99, 235, 0.25);
+}
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+[data-theme="dark"] {
+  --bg: #070b14;
+  --bg-elevated: #0f1520;
+  --bg-card: #131b2c;
+  --text: #e8edf5;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #1e293b;
+  --border-light: #1a2332;
+
+  --accent: var(--pri-400);
+  --accent-hover: var(--pri-300);
+  --accent-soft: rgba(96, 165, 250, 0.08);
+  --accent-soft-hover: rgba(96, 165, 250, 0.13);
+
+  --danger-soft: rgba(248, 113, 113, 0.08);
+  --success-soft: rgba(74, 222, 128, 0.08);
+  --warning-soft: rgba(251, 191, 36, 0.08);
+
+  --gradient-bg: linear-gradient(160deg, #070b14 0%, #0c1422 40%, #070b14 100%);
+  --gradient-card: linear-gradient(180deg, #131b2c 0%, #0f172a 100%);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-accent: 0 0 25px rgba(96, 165, 250, 0.12);
+
+  --glass-bg: rgba(15, 21, 32, 0.88);
+  --glass-bg-strong: #131b2c;
+  --glass-border: #1e293b;
+  --glass-shadow: var(--shadow-md);
+
+  --glow-blue: 0 0 20px rgba(96, 165, 250, 0.15);
+  --glow-purple: 0 0 20px rgba(129, 140, 248, 0.15);
+  --glow-green: 0 0 20px rgba(74, 222, 128, 0.15);
+  --glow-red: 0 0 20px rgba(248, 113, 113, 0.15);
+  --glow-orange: 0 0 20px rgba(251, 191, 36, 0.15);
+
+  --ecc-glow: 0 0 15px rgba(96, 165, 250, 0.1);
+  --ecc-border-focus: rgba(96, 165, 250, 0.3);
+
+  --gov-white: #131b2c;
+  --gov-card-bg: var(--bg-card);
+
+  --color-medium: #eab308;
+  --severity-medium-stroke: #a16207;
 }

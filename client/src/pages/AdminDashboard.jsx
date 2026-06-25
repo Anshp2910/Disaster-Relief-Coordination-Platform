@@ -194,7 +194,7 @@ function UsersPanel({ users, onChangeRole, onDelete }) {
         </div>
       ) : (
         <div className="admin-table-wrapper border-none mt-md">
-          <table className="admin-table">
+          <table className="data-table admin-table">
             <thead>
               <tr>
                 <th>{t('admin.userHeader')}</th>
@@ -307,7 +307,7 @@ function RequestsPanel({ requests, onDelete }) {
         </div>
       ) : (
         <div className="admin-table-wrapper border-none mt-md">
-          <table className="admin-table">
+          <table className="data-table admin-table">
             <thead>
               <tr>
                 <th>{t('admin.requestHeader')}</th>

@@ -1,29 +1,14 @@
+import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useState, useMemo, useEffect, memo } from 'react'
-import NotificationBell from './NotificationBell'
-import { clientApi } from '../api/client'
-import { useConfirm } from '../hooks/useConfirm'
-import { useSocket } from '../hooks/useSocket'
-import { useToast } from './Toast'
 import { useAuth } from '../context/AuthContext'
-import { safeSetItem, safeRemoveItem } from '../utils/storage'
-import useFocusTrap from '../hooks/useFocusTrap'
-
-function useOnlineStatus() {
-  const [online, setOnline] = useState(navigator.onLine)
-  useEffect(() => {
-    function goOnline() { setOnline(true) }
-    function goOffline() { setOnline(false) }
-    window.addEventListener('online', goOnline)
-    window.addEventListener('offline', goOffline)
-    return () => {
-      window.removeEventListener('online', goOnline)
-      window.removeEventListener('offline', goOffline)
-    }
-  }, [])
-  return online
-}
+import { useTheme } from '../context/ThemeContext'
+import { useSocket } from '../hooks/useSocket'
+import { useConfirm } from '../hooks/useConfirm'
+import { clientApi } from '../api/client'
+import { useToast } from './Toast'
+import NotificationBell from './NotificationBell'
+import Sidebar from './Sidebar'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -42,72 +27,19 @@ export default function Header() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t, i18n } = useTranslation()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
-  const { socket, connected } = useSocket()
-  const toast = useToast()
   const { user: currentUser, isAuthenticated, logout: authLogout } = useAuth()
-  const online = useOnlineStatus()
-  const mobileRef = useFocusTrap(mobileMenuOpen && isAuthenticated)
-  const logoutRef = useFocusTrap(showLogoutConfirm)
-
-  function logout() {
-    if (socket?.connected) {
-      socket.disconnect()
-    }
-    safeRemoveItem('notifications')
-    authLogout()
-    navigate('/login')
-    setMobileMenuOpen(false)
-    setShowLogoutConfirm(false)
-  }
-
-  function confirmLogout() {
-    setShowLogoutConfirm(true)
-  }
+  const { theme, toggleTheme } = useTheme()
+  const { socket } = useSocket()
+  const toast = useToast()
+  const { confirm, ConfirmDialog } = useConfirm()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sosLoading, setSosLoading] = useState(false)
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
   function changeLanguage(langCode) {
     i18n.changeLanguage(langCode)
-    safeSetItem('language', langCode)
+    try { localStorage.setItem('language', langCode) } catch {}
   }
-
-  function handleNav(path) {
-    navigate(path)
-    setMobileMenuOpen(false)
-  }
-
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
-
-  const navLinks = useMemo(() => isAuthenticated
-    ? [
-        { path: '/dashboard', label: t('nav.dashboard') },
-        { path: '/map', label: t('nav.mapView') || 'Map View' },
-        { path: '/zones', label: t('nav.zones') || 'Zones' },
-        { path: '/resources', label: t('nav.resources') || 'Resources' },
-        { path: '/incidents', label: t('nav.incidents') || 'Incidents' },
-        { path: '/schedules', label: t('nav.schedules') || 'Schedules' },
-        { path: '/geofencing', label: t('nav.geofencing') || 'Geofencing' },
-        { path: '/requests/new', label: t('nav.newRequest') },
-        ...(currentUser?.role === 'admin' ? [
-          { path: '/admin', label: t('nav.admin') },
-          { path: '/escalation', label: t('nav.escalation') || 'Escalation' },
-          { path: '/bulk', label: t('nav.bulkImport') || 'Bulk' },
-        ] : []),
-      ]
-    : []
-  , [isAuthenticated, currentUser, t])
-
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => { document.body.style.overflow = '' }
-  }, [mobileMenuOpen])
-
-  const [sosLoading, setSosLoading] = useState(false)
-  const { confirm, ConfirmDialog } = useConfirm()
 
   async function handleSOS() {
     const ok = await confirm({ message: t('sos.confirm'), danger: true })
@@ -125,144 +57,66 @@ export default function Header() {
 
   return (
     <header role="banner">
-      {!online && (
-        <div className="offline-banner">
-          {t('common.offlineMessage', 'You are offline — some features may be unavailable')}
-        </div>
-      )}
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
       <div className="gov-top-strip">
         <div className="gov-container flex-between">
           <span className="gov-top-strip-text">{t('topStrip')}</span>
-          <select
-            value={i18n.language}
-            onChange={(e) => changeLanguage(e.target.value)}
-            className="lang-select"
-            aria-label={t('header.selectLanguage')}
-          >
-            {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.label}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-gap-sm items-center">
+            <select
+              value={i18n.language}
+              onChange={(e) => changeLanguage(e.target.value)}
+              className="lang-select"
+              aria-label={t('header.selectLanguage')}
+            >
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>{l.label}</option>
+              ))}
+            </select>
+            <button onClick={toggleTheme} className="theme-toggle" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} title={theme === 'light' ? 'Dark mode' : 'Light mode'}>
+              {theme === 'light' ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="gov-header-main">
         <div className="gov-container flex flex-gap-lg">
+          {isAuthenticated && (
+            <button onClick={() => setSidebarOpen(true)} className="gov-hamburger" aria-label={t('common.toggleMenu')}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
+          )}
           <img src="/images/logo.svg" alt="Logo" className="gov-logo" />
           <div className="gov-title-group">
             <div className="gov-app-title">{t('appTitle')}</div>
             <div className="gov-app-subtitle">{t('appSubtitle')}</div>
           </div>
+          <div className="flex-1" />
+          {isAuthenticated && !isAuthPage && (
+            <div className="gov-header-actions">
+              <NotificationBell />
+              <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">{sosLoading ? '...' : 'SOS'}</button>
+              <button onClick={() => navigate('/profile')} className="gov-nav-link-user header-user-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span className="header-user-name">{currentUser?.displayName || t('nav.profile')}</span>
+              </button>
+              <button onClick={() => {
+                if (socket?.connected) socket.disconnect()
+                authLogout()
+                navigate('/login')
+              }} className="header-icon-btn" aria-label={t('nav.logout')} title={t('nav.logout')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {!isAuthPage && (
-        <div className="gov-nav-bar">
-          <nav className="gov-nav flex-1 overflow-x-auto" aria-label="Main navigation">
-            <div className="gov-nav-inner">
-              {navLinks.map((link) => (
-                <button
-                  key={link.path}
-                  onClick={() => handleNav(link.path)}
-                  className={`gov-nav-link ${location.pathname === link.path ? 'active' : ''}`}
-                  aria-current={location.pathname === link.path ? 'page' : undefined}
-                >
-                  {link.label}
-                </button>
-              ))}
-            </div>
-          </nav>
-          {isAuthenticated && (
-            <div className="gov-nav-actions">
-              <div
-                title={!online ? 'Offline' : connected ? 'Connected' : 'Disconnected'}
-                className={`status-dot ${!online ? 'status-dot--offline' : connected ? 'status-dot--online' : 'status-dot--connecting'}`}
-              />
-              <NotificationBell />
-              <button onClick={handleSOS} disabled={sosLoading} className="sos-btn">
-                {sosLoading ? '...' : 'SOS'}
-              </button>
-              <button onClick={() => handleNav('/profile')} className="gov-nav-link gov-nav-link-user">
-                {currentUser?.displayName || t('nav.profile')}
-              </button>
-              <button onClick={confirmLogout} className="gov-nav-link">
-                {t('nav.logout')}
-              </button>
-            </div>
-          )}
-          {isAuthenticated && (
-            <button
-              className="gov-hamburger"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={t('common.toggleMenu')}
-            >
-              {mobileMenuOpen ? '\u2715' : '\u2630'}
-            </button>
-          )}
-        </div>
-      )}
-
-      {mobileMenuOpen && isAuthenticated && (
-        <>
-          <div className="gov-mobile-backdrop" onClick={() => setMobileMenuOpen(false)} />
-          <div className="gov-mobile-menu" ref={mobileRef} role="dialog" aria-modal="true" aria-label={t('nav.dashboard')}>
-            <div className="gov-mobile-header">
-              <span className="gov-mobile-user-name">{currentUser?.displayName || ''}</span>
-              <button className="gov-mobile-close" onClick={() => setMobileMenuOpen(false)} aria-label={t('common.closeMenu')}>✕</button>
-            </div>
-            {navLinks.map((link) => (
-              <button
-                key={link.path}
-                onClick={() => handleNav(link.path)}
-                className={`gov-mobile-link ${location.pathname === link.path ? 'active' : ''}`}
-              >
-                {link.label}
-              </button>
-            ))}
-            <hr className="gov-mobile-divider" />
-            <button onClick={() => handleNav('/profile')} className="gov-mobile-link">
-              {currentUser?.displayName || t('nav.profile')}
-            </button>
-            <button onClick={confirmLogout} className="gov-mobile-link">
-              {t('nav.logout')}
-            </button>
-          </div>
-        </>
-      )}
-
-      {showLogoutConfirm && (
-        <div className="modal-overlay" ref={logoutRef} onClick={() => setShowLogoutConfirm(false)}>
-          <div className="modal-card text-center" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-icon">
-              <svg width="40" height="40" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="logoutEmblem" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#3b82f6" />
-                    <stop offset="100%" stopColor="#818cf8" />
-                  </linearGradient>
-                </defs>
-                <circle cx="28" cy="28" r="25" stroke="url(#logoutEmblem)" strokeWidth="2" fill="none" opacity="0.6" />
-                <circle cx="28" cy="28" r="18" stroke="url(#logoutEmblem)" strokeWidth="1" fill="none" opacity="0.3" />
-                <circle cx="28" cy="28" r="5" fill="url(#logoutEmblem)" />
-                {[...Array(24)].map((_, i) => {
-                  const angle = (i * 15 * Math.PI) / 180
-                  return (
-                    <line key={i} x1={28} y1={28} x2={28 + 22 * Math.sin(angle)} y2={28 - 22 * Math.cos(angle)} stroke="url(#logoutEmblem)" strokeWidth="0.8" opacity="0.4" />
-                  )
-                })}
-              </svg>
-            </div>
-            <h3 className="modal-title">{t('nav.logout')}</h3>
-            <p className="modal-desc">{t('nav.logoutConfirm')}</p>
-            <div className="modal-actions">
-              <button onClick={logout} className="btn btn-danger">{t('nav.logout')}</button>
-              <button onClick={() => setShowLogoutConfirm(false)} className="btn">{t('common.cancel')}</button>
-            </div>
-          </div>
-        </div>
-      )}
       {ConfirmDialog}
     </header>
   )

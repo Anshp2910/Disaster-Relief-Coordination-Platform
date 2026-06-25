@@ -7,6 +7,7 @@ import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './components/Toast'
 import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import { useVersionCheck } from './hooks/useVersionCheck'
 // Leaflet CSS is loaded dynamically in mapInit.js to avoid blocking non-map pages
 import './styles/index.css'
@@ -41,13 +42,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <I18nextProvider i18n={i18n}>
         <HashRouter>
-          <AuthProvider>
-            <ToastProvider>
-              <VersionChecker />
-              <WebVitalsReporter />
-              <App />
-            </ToastProvider>
-          </AuthProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <ToastProvider>
+                <VersionChecker />
+                <WebVitalsReporter />
+                <App />
+              </ToastProvider>
+            </AuthProvider>
+          </ThemeProvider>
         </HashRouter>
       </I18nextProvider>
     </ErrorBoundary>
