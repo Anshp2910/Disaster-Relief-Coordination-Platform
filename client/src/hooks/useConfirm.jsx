@@ -39,7 +39,7 @@ export function useConfirm() {
     ? createPortal(
         <div className="modal-overlay" ref={trapRef} role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message" onKeyDown={handleKeyDown}>
           <div className="modal-card text-center">
-            <div className="modal-icon">{state.danger ? '&#9888;' : '&#63;'}</div>
+            <div className="modal-icon">{state.danger ? '\u26A0' : '?'}</div>
             <h2 id="confirm-title" className="modal-title">{state.title}</h2>
             <p id="confirm-message" className="modal-desc">{state.message}</p>
             <div className="modal-actions mt">
