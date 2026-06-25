@@ -241,7 +241,7 @@
 /* Count-up animation on visible */
 .kpi-count {
   display: inline-block;
-  transition: all 0.3s var(--ease-out);
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 /* =========================================
@@ -356,7 +356,7 @@
 .cmd-item-badge {
   font-size: 9px;
   padding: 1px 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   background: var(--accent-soft);
   color: var(--accent);
   font-weight: 600;

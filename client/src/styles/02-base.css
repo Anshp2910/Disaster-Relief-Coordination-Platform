@@ -19,7 +19,7 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--slate-300);
   border-radius: 4px;
-  transition: background 0.2s;
+  transition: background var(--duration-fast);
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
 @supports (scrollbar-width: thin) {
