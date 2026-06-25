@@ -6,12 +6,10 @@
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(16px); }
   to { opacity: 1; transform: translateX(0); }
@@ -60,37 +58,25 @@
   50% { opacity: 0.5; }
 }
 @keyframes ambientGlow {
-  0% { opacity: 0.6; }
+  0% { opacity: 0.5; }
   50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  100% { opacity: 0.5; }
 }
 @keyframes authBgDrift {
   0% { transform: translate(0, 0) rotate(0deg); }
   100% { transform: translate(-5%, -5%) rotate(3deg); }
 }
 @keyframes cardEntrance {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes overlayIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 @keyframes modalIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes emblemFloat {
   0%, 100% { transform: translateY(0); }
@@ -111,4 +97,26 @@
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+/* === Premium Micro-interactions === */
+@keyframes shimmerSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 8px var(--glow-blue); }
+  50% { box-shadow: 0 0 20px var(--glow-blue); }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

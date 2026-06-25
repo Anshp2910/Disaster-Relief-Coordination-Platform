@@ -42,3 +42,16 @@
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
 .grid-2-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: var(--space-md); }
 .grid-3-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: var(--space-md); }
+
+/* === Content Section === */
+.content-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration-normal) var(--ease-out);
+}
+.content-section:hover {
+  box-shadow: var(--shadow-md);
+}
