@@ -381,7 +381,7 @@ export default function Incidents() {
           <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('common.next')}>{t('common.next')}</button>
         </div>
       )}
-      <ConfirmDialog />
+      {ConfirmDialog}
     </div>
   )
 }

@@ -543,7 +543,7 @@ export default function RequestDetail() {
           </div>
         </div>
       )}
-      <ConfirmDialog />
+      {ConfirmDialog}
     </article>
   )
 }

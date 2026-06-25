@@ -384,7 +384,7 @@ export default function Resources() {
           </div>
         </div>
       )}
-      <ConfirmDialog />
+      {ConfirmDialog}
     </div>
   )
 }

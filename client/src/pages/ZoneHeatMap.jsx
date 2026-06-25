@@ -484,7 +484,7 @@ export default function ZoneHeatMap() {
           </div>
         </div>
       )}
-      <ConfirmDialog />
+      {ConfirmDialog}
     </div>
   )
 }

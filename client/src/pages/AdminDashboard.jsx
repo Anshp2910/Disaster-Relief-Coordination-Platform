@@ -520,7 +520,7 @@ export default function AdminDashboard() {
       ) : (
         <RequestsPanel requests={requests} onDelete={deleteRequest} />
       )}
-      <delConfirm.ConfirmDialog />
+      {delConfirm.ConfirmDialog}
     </div>
   )
 }

@@ -397,7 +397,7 @@ export default function Schedules() {
           </div>
         </div>
       )}
-      <ConfirmDialog />
+      {ConfirmDialog}
     </div>
   )
 }

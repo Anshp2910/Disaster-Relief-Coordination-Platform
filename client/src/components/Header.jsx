@@ -263,7 +263,7 @@ export default function Header() {
           </div>
         </div>
       )}
-      <ConfirmDialog />
+      {ConfirmDialog}
     </header>
   )
 }

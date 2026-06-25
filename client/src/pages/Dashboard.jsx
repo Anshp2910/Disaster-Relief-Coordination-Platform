@@ -391,7 +391,7 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }) {
     <div className="flex flex-col flex-gap-sm items-end">
       <button disabled={!canEdit} onClick={edit} className="btnPrimary text-sm p-xs" aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</button>
       <button disabled={!canEdit || deleting} onClick={del} className="btnDanger text-sm p-xs" aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
-      <ConfirmDialog />
+      {ConfirmDialog}
     </div>
   )
 })

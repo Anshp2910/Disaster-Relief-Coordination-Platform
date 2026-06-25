@@ -158,7 +158,7 @@ export default function Escalation() {
           ))}
         </div>
       )}
-      <ConfirmDialog />
+      {ConfirmDialog}
     </div>
   )
 }
