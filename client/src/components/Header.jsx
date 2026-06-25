@@ -8,7 +8,6 @@ import { useConfirm } from '../hooks/useConfirm'
 import { clientApi } from '../api/client'
 import { useToast } from './Toast'
 import NotificationBell from './NotificationBell'
-import Sidebar from './Sidebar'
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -23,7 +22,7 @@ const LANGUAGES = [
   { code: 'ur', label: 'اردو' },
 ]
 
-export default function Header() {
+export default function Header({ onToggleSidebar }) {
   const navigate = useNavigate()
   const location = useLocation()
   const { t, i18n } = useTranslation()
@@ -32,7 +31,6 @@ export default function Header() {
   const { socket } = useSocket()
   const toast = useToast()
   const { confirm, ConfirmDialog } = useConfirm()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sosLoading, setSosLoading] = useState(false)
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
@@ -57,7 +55,6 @@ export default function Header() {
 
   return (
     <header role="banner">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="gov-top-strip">
         <div className="gov-container flex-between">
@@ -86,8 +83,8 @@ export default function Header() {
 
       <div className="gov-header-main">
         <div className="gov-container flex flex-gap-lg">
-          {isAuthenticated && (
-            <button onClick={() => setSidebarOpen(true)} className="gov-hamburger" aria-label={t('common.toggleMenu')}>
+          {isAuthenticated && onToggleSidebar && (
+            <button onClick={onToggleSidebar} className="gov-hamburger" aria-label={t('common.toggleMenu')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
             </button>
           )}
