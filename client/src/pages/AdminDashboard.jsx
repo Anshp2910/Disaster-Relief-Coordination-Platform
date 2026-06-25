@@ -62,7 +62,7 @@ function MiniBarChart({ data, maxVal }) {
   )
 }
 
-function BreakdownCard({ title, data, total }) {
+function BreakdownCard({ title, data, total, type }) {
   const { t } = useTranslation()
   const safeData = data || {}
   const safeTotal = total || 0
@@ -77,7 +77,7 @@ function BreakdownCard({ title, data, total }) {
         const color = BREAKDOWN_COLORS[i % BREAKDOWN_COLORS.length]
         return (
           <div key={key} className="admin-breakdown-row">
-            <span className="text-medium">{t(`statuses.${key}`) || t(`categories.${key}`) || t(`priorities.${key}`) || key || 'Unknown'}</span>
+            <span className="text-medium">{t(`${type}.${key}`) || key || 'Unknown'}</span>
             <div className="admin-breakdown-bar">
               <div className="admin-breakdown-bar-fill" style={{ width: `${pct}%`, background: color }} />
             </div>
@@ -132,9 +132,9 @@ function StatsPanel({ stats }) {
       )}
 
       <div className="admin-breakdown-grid">
-        <BreakdownCard title={t('admin.byStatus')} data={stats.byStatus} total={totalAll} />
-        <BreakdownCard title={t('admin.byCategory')} data={stats.byCategory} total={stats.totalRequests} />
-        <BreakdownCard title={t('admin.byPriority')} data={stats.byPriority} total={stats.totalRequests} />
+        <BreakdownCard title={t('admin.byStatus')} data={stats.byStatus} total={totalAll} type="statuses" />
+        <BreakdownCard title={t('admin.byCategory')} data={stats.byCategory} total={stats.totalRequests} type="categories" />
+        <BreakdownCard title={t('admin.byPriority')} data={stats.byPriority} total={stats.totalRequests} type="priorities" />
       </div>
     </div>
   )
