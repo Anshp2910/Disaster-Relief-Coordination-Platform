@@ -10,6 +10,7 @@
 .gov-main {
   flex: 1;
   width: 100%;
+  animation: pageSlideIn 0.35s var(--ease-out);
 }
 
 .gov-container {

@@ -61,8 +61,17 @@ export default memo(function CommandPalette({ isAdmin }) {
         setQuery('')
       }
     }
+    function handleCustomToggle() {
+      setOpen(o => !o)
+      setQuery('')
+      setHighlightIndex(0)
+    }
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('toggle-cmd-palette', handleCustomToggle)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('toggle-cmd-palette', handleCustomToggle)
+    }
   }, [open])
 
   useEffect(() => {

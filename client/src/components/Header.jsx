@@ -102,6 +102,15 @@ export default function Header({ onToggleSidebar }) {
           <div className="flex-1" />
           {isAuthenticated && !isAuthPage && (
             <div className="gov-header-actions">
+              <button
+                className="cmd-hint"
+                onClick={() => window.dispatchEvent(new CustomEvent('toggle-cmd-palette'))}
+                aria-label="Open command palette"
+                title="Open command palette"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <kbd>Ctrl+K</kbd>
+              </button>
               <NotificationBell />
               <button onClick={handleSOS} disabled={cooldown > 0} className="sos-btn" aria-label={cooldown > 0 ? `SOS cooldown ${cooldown}s` : 'Emergency SOS alert'}>
                 {cooldown > 0 ? `SOS ${cooldown}s` : 'SOS'}

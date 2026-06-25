@@ -226,7 +226,7 @@ header[role="banner"] {
 .card:hover {
   border-color: var(--accent-soft);
   box-shadow: var(--shadow-lg), 0 0 0 1px var(--accent-soft);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .headerRow {
@@ -999,11 +999,9 @@ h6 { font-size: var(--text-sm); }
 
 .notif-bell-urgent svg {
   color: var(--danger);
-  animation: sosPulse 2s ease-in-out infinite;
 }
 .notification-badge.notification-badge-urgent {
   background: var(--danger);
-  animation: sosPulse 2s ease-in-out infinite;
 }
 .notification-badge {
   position: absolute;
@@ -1108,14 +1106,16 @@ h6 { font-size: var(--text-sm); }
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
-  animation: sosPulse 2s ease-in-out infinite;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
   transition: all var(--duration-normal) var(--ease-out);
   touch-action: manipulation;
 }
 .sos-fab:hover {
   transform: scale(1.1);
   box-shadow: 0 8px 32px rgba(239, 68, 68, 0.6);
+}
+.sos-fab:active {
+  transform: scale(0.95);
 }
 .sos-fab:active {
   transform: scale(0.95);
@@ -1176,14 +1176,13 @@ h6 { font-size: var(--text-sm); }
   letter-spacing: 0.05em;
   flex-shrink: 0;
   transition: all var(--duration-fast) var(--ease-out);
-  text-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
-  animation: sosPulse 2s ease-in-out infinite;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
   min-height: unset;
 }
 .sos-btn:hover {
   background: linear-gradient(135deg, var(--red-400), var(--red-500));
   transform: translateY(-1px);
-  box-shadow: 0 0 32px rgba(239,68,68,0.6);
+  box-shadow: 0 4px 20px rgba(239,68,68,0.5);
 }
 .sos-btn:active {
   transform: translateY(0) scale(0.97);
@@ -1348,6 +1347,39 @@ h6 { font-size: var(--text-sm); }
 .header-icon-btn:hover {
   background: var(--accent-soft);
   color: var(--accent);
+}
+
+/* === Command Palette Hint === */
+.cmd-hint {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  transition: all var(--duration-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+.cmd-hint kbd {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.cmd-hint:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+  color: var(--text);
 }
 
 /* === Theme Toggle === */
