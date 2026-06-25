@@ -24,6 +24,12 @@ body::after {
 }
 
 /* === Top Strip === */
+header[role="banner"] {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
 .offline-banner {
   background: linear-gradient(135deg, var(--red-600), var(--red-700));
   color: var(--text-on-accent);
@@ -88,9 +94,6 @@ body::after {
   -webkit-backdrop-filter: blur(20px);
   padding: 12px 0;
   border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 .gov-header-main::before {
   content: '';
