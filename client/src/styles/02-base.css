@@ -13,8 +13,6 @@ body {
   overflow-x: hidden;
 }
 
-/* === Subtle Background � defined in 04-components.css (body::before/::after) === */
-
 /* === Custom Scrollbar === */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -24,6 +22,9 @@ body {
   transition: background 0.2s;
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
+@supports (scrollbar-width: thin) {
+  * { scrollbar-width: thin; scrollbar-color: var(--slate-300) transparent; }
+}
 
 /* === Links === */
 a {
