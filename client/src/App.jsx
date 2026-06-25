@@ -1,26 +1,27 @@
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import { useAuth } from './context/AuthContext'
+import { retryLazy } from './utils/retryLazy'
 
-const Login = lazy(() => import('./pages/Login'))
-const Register = lazy(() => import('./pages/Register'))
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const CreateRequest = lazy(() => import('./pages/CreateRequest'))
-const EditRequest = lazy(() => import('./pages/EditRequest'))
-const RequestDetail = lazy(() => import('./pages/RequestDetail'))
-const Profile = lazy(() => import('./pages/Profile'))
-const Resources = lazy(() => import('./pages/Resources'))
-const ZoneHeatMap = lazy(() => import('./pages/ZoneHeatMap'))
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
-const Incidents = lazy(() => import('./pages/Incidents'))
-const Schedules = lazy(() => import('./pages/Schedules'))
-const BulkImport = lazy(() => import('./pages/BulkImport'))
-const Escalation = lazy(() => import('./pages/Escalation'))
-const Geofencing = lazy(() => import('./pages/Geofencing'))
-const MapOverview = lazy(() => import('./pages/MapOverview'))
-const PublicStatus = lazy(() => import('./pages/PublicStatus'))
-const NotFound = lazy(() => import('./pages/NotFound'))
+const Login = retryLazy(() => import('./pages/Login'))
+const Register = retryLazy(() => import('./pages/Register'))
+const Dashboard = retryLazy(() => import('./pages/Dashboard'))
+const CreateRequest = retryLazy(() => import('./pages/CreateRequest'))
+const EditRequest = retryLazy(() => import('./pages/EditRequest'))
+const RequestDetail = retryLazy(() => import('./pages/RequestDetail'))
+const Profile = retryLazy(() => import('./pages/Profile'))
+const Resources = retryLazy(() => import('./pages/Resources'))
+const ZoneHeatMap = retryLazy(() => import('./pages/ZoneHeatMap'))
+const AdminDashboard = retryLazy(() => import('./pages/AdminDashboard'))
+const Incidents = retryLazy(() => import('./pages/Incidents'))
+const Schedules = retryLazy(() => import('./pages/Schedules'))
+const BulkImport = retryLazy(() => import('./pages/BulkImport'))
+const Escalation = retryLazy(() => import('./pages/Escalation'))
+const Geofencing = retryLazy(() => import('./pages/Geofencing'))
+const MapOverview = retryLazy(() => import('./pages/MapOverview'))
+const PublicStatus = retryLazy(() => import('./pages/PublicStatus'))
+const NotFound = retryLazy(() => import('./pages/NotFound'))
 
 function PageLoader() {
   return (
