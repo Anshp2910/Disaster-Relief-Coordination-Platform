@@ -6,7 +6,7 @@ import { clientApi } from '../api/client'
 import { useToast } from './Toast'
 import { useConfirm } from '../hooks/useConfirm'
 
-export default function SosFab() {
+export function SosFab() {
   const { t } = useTranslation()
   const toast = useToast()
   const { confirm, ConfirmDialog } = useConfirm()

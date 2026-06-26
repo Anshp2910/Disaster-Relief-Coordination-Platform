@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { LayoutDashboard, Map, Package, PlusSquare, Shield, Phone, Mail, Building2, Heart, Globe, Radio } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-export default function Footer() {
+export function Footer() {
   const { t } = useTranslation()
   const { user: currentUser } = useAuth()
 
