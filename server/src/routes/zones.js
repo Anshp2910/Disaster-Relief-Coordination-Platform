@@ -4,7 +4,7 @@ import { validate, validateObjectId, validateQuery, querySchemas } from '../midd
 import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
-import { haversineKm } from '../utils/geo.js'
+import { haversineKm, escapeRegex } from '../utils/geo.js'
 
 export const zonesRouter = express.Router()
 
@@ -22,7 +22,7 @@ zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (
 
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
     const [items, total] = await Promise.all([
-      Zone.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(Number(limit)).populate('createdBy', 'displayName email'),
+      Zone.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(Number(limit)).populate('createdBy', 'displayName email').lean(),
       Zone.countDocuments(filter),
     ])
 
@@ -157,7 +157,7 @@ zonesRouter.get('/heatmap', requireAuth, async (req, res) => {
 
 zonesRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
-    const zone = await Zone.findById(req.params.id).populate('createdBy', 'displayName email')
+    const zone = await Zone.findById(req.params.id).populate('createdBy', 'displayName email').lean()
     if (!zone) return res.status(404).json({ error: 'Zone not found' })
 
     const radiusMeters = (zone.radiusKm || 10) * 1000

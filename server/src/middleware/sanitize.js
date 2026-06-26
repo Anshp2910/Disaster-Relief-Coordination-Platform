@@ -5,6 +5,12 @@ const DANGEROUS_PATTERNS = [
   { regex: /on\w+\s*=/gi, replacement: 'blocked-event=' },
   { regex: /data\s*:\s*text\s*\/\s*html/gi, replacement: 'blocked-data:' },
   { regex: /expression\s*\(/gi, replacement: 'blocked-expression(' },
+  { regex: /eval\s*\(/gi, replacement: 'blocked-eval(' },
+  { regex: /document\.cookie/gi, replacement: 'blocked-cookie' },
+  { regex: /<iframe[\s>]/gi, replacement: '<blocked-iframe>' },
+  { regex: /<object[\s>]/gi, replacement: '<blocked-object>' },
+  { regex: /<embed[\s>]/gi, replacement: '<blocked-embed>' },
+  { regex: /<svg[\s>]/gi, replacement: '<blocked-svg>' },
 ]
 
 function stripDangerous(str) {

@@ -5,6 +5,7 @@ import { User } from '../models/User.js'
 import { Request } from '../models/Request.js'
 import { Zone } from '../models/Zone.js'
 import { Incident } from '../models/Incident.js'
+import { ChatMessage } from '../models/ChatMessage.js'
 
 export const escCsv = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
 
@@ -94,6 +95,11 @@ adminRouter.delete('/users/:id', validateObjectId('id'), async (req, res) => {
     const user = await User.findById(id)
     if (!user) return res.status(404).json({ error: 'User not found' })
 
+    await Promise.all([
+      ChatMessage.deleteMany({ sender: id }),
+      Request.updateMany({ createdBy: id }, { $unset: { createdBy: '' } }),
+      Request.updateMany({ claimedBy: id }, { $unset: { claimedBy: '' } }),
+    ])
     await user.deleteOne()
     return res.json({ deleted: true })
   } catch (err) {
@@ -108,6 +114,7 @@ adminRouter.delete('/requests/:id', validateObjectId('id'), async (req, res) => 
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
 
+    await ChatMessage.deleteMany({ requestId: id })
     await item.deleteOne()
     return res.json({ deleted: true })
   } catch (err) {

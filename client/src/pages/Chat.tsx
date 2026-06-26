@@ -41,6 +41,12 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastTypingEmitRef = useRef(0)
+  const timeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
+
+  useEffect(() => {
+    const ts = timeoutsRef.current
+    return () => ts.forEach(clearTimeout)
+  }, [])
   const toast = useToast()
 
   const [messages, setMessages] = useState<Message[]>([])
@@ -63,7 +69,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       }
       if (p === 1) {
         setMessages(data.messages || [])
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'auto' }), 100)
+        const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'auto' }), 100)
+        timeoutsRef.current.add(t)
       } else {
         setMessages((prev) => [...(data.messages || []), ...prev])
       }
@@ -95,7 +102,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           if (prev.some((m) => m._id === data.message!._id)) return prev
           return [...prev, data.message!]
         })
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+        const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+        timeoutsRef.current.add(t)
       }
     }
 
@@ -112,13 +120,14 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         })
       } else {
         setTypingUsers((prev) => ({ ...prev, [id]: { name } }))
-        setTimeout(() => {
+        const t = setTimeout(() => {
           setTypingUsers((prev) => {
             const next = { ...prev }
             delete next[id]
             return next
           })
         }, 3000)
+        timeoutsRef.current.add(t)
       }
     }
 
@@ -177,7 +186,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
               if (prev.some((m) => m._id === data.message!._id)) return prev
               return [...prev, data.message!]
             })
-            setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+            const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+            timeoutsRef.current.add(t)
           }
         }
       } catch (err) {
@@ -198,7 +208,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           if (prev.some((m) => m._id === data.message!._id)) return prev
           return [...prev, data.message!]
         })
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+        const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+        timeoutsRef.current.add(t)
       }
       inputRef.current?.focus()
     } catch (err) {

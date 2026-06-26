@@ -3,7 +3,7 @@ import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Resource } from '../models/Resource.js'
 import { Request } from '../models/Request.js'
-import { haversineKm } from '../utils/geo.js'
+import { haversineKm, escapeRegex } from '../utils/geo.js'
 
 export const resourcesRouter = express.Router()
 
@@ -21,7 +21,7 @@ resourcesRouter.get('/', requireAuth, validateQuery(querySchemas.resourcesList),
     const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20))
     const skip = (Math.max(1, Number(page)) - 1) * limit
     const [items, total] = await Promise.all([
-      Resource.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(limit).populate('allocatedTo', 'title status').populate('updatedBy', 'displayName email'),
+      Resource.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(limit).populate('allocatedTo', 'title status').populate('updatedBy', 'displayName email').lean(),
       Resource.countDocuments(filter),
     ])
 
@@ -146,7 +146,7 @@ resourcesRouter.post('/:id/allocate', requireAuth, validateObjectId('id'), valid
 
     if (resource.quantity < allocQuantity) return res.status(400).json({ error: 'Insufficient quantity' })
 
-    const request = await Request.findById(requestId)
+    const request = await Request.findById(requestId).lean()
     if (!request) return res.status(404).json({ error: 'Request not found' })
 
     resource.quantity -= allocQuantity

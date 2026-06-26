@@ -222,7 +222,17 @@
     "userDeleted": "User deleted successfully",
     "requestDeleted": "Request deleted successfully",
     "noLocation": "No location",
-    "requestsOverTime": "Requests Over Time"
+    "requestsOverTime": "Requests Over Time",
+    "registeredUsers": "Registered users",
+    "totalRequestsDesc": "All-time requests",
+    "needsAttention": "Needs attention",
+    "completed": "Completed",
+    "noUsersDesc": "No users registered yet",
+    "loadFailed": "Failed to load admin data",
+    "updateRoleFailed": "Failed to update role",
+    "deleteUserFailed": "Failed to delete user",
+    "deleteRequestFailed": "Failed to delete request",
+    "exportFailed": "Export failed"
   },
   "categories": {
     "Medical": "Medical",
@@ -579,14 +589,16 @@
     "statusCritical": "CRITICAL",
     "statusHigh": "HIGH",
     "statusWarning": "WARNING",
-    "statusMonitor": "MONITOR"
+    "statusMonitor": "MONITOR",
+    "listening": "Listening for real-time events..."
   },
   "sos": {
     "confirm": "Send SOS emergency alert to all connected users?",
     "from": "SOS from",
     "user": "User",
     "broadcastSuccess": "SOS alert broadcasted!",
-    "broadcastFailed": "Failed: {{error}}"
+    "broadcastFailed": "Failed: {{error}}",
+    "noActiveAlerts": "No active SOS alerts"
   },
   "common": {
     "loading": "Loading...",

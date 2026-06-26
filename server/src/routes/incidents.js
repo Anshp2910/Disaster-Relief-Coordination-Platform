@@ -5,7 +5,7 @@ import { Incident } from '../models/Incident.js'
 import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
-import { haversineKm } from '../utils/geo.js'
+import { haversineKm, escapeRegex } from '../utils/geo.js'
 
 export const incidentsRouter = express.Router()
 

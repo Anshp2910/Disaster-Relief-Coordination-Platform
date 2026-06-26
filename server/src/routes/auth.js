@@ -202,12 +202,23 @@ authRouter.post('/refresh', async (req, res) => {
     const { token } = req.body || {}
     if (!token) return res.status(400).json({ error: 'Token required' })
 
-    const decoded = jwt.verify(token, getJwtSecret(), { ignoreExpiration: true })
+    let decoded
+    try {
+      decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] })
+    } catch (verifyErr) {
+      if (verifyErr.name === 'TokenExpiredError') {
+        decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'], ignoreExpiration: true })
+      } else {
+        return res.status(401).json({ error: 'Invalid token' })
+      }
+    }
+
+    if (!decoded.sub || !decoded.exp || !decoded.iat) {
+      return res.status(401).json({ error: 'Invalid token payload' })
+    }
+
     const user = await User.findById(decoded.sub)
     if (!user) return res.status(401).json({ error: 'User not found' })
-
-    const now = Math.floor(Date.now() / 1000)
-    if (decoded.exp <= now) return res.status(401).json({ error: 'Token expired' })
 
     const originalDuration = decoded.exp - decoded.iat
     const newToken = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), {
@@ -245,7 +256,7 @@ authRouter.get('/notifications', requireAuth, async (req, res) => {
   }
 })
 
-authRouter.put('/notifications', requireAuth, async (req, res) => {
+authRouter.put('/notifications', requireAuth, validate('updateNotifications'), async (req, res) => {
   try {
     const { email, sms, newRequest, statusChange, newComment } = req.body || {}
     const notifications = {}

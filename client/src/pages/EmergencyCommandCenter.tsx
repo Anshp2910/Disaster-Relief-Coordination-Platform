@@ -387,7 +387,7 @@ export default function EmergencyCommandCenter() {
               <Shield size={16} />
             </div>
             <div className="cc-topbar-title">
-              Emergency <span>Command</span> Center
+              {t('commandCenter.title')}
             </div>
             <div className="cc-topbar-badge">{t('commandCenter.version')} · {t('commandCenter.subtitle')}</div>
           </div>
@@ -467,7 +467,7 @@ export default function EmergencyCommandCenter() {
                 ) : errorSos ? (
                   <ErrorState message={errorSos} onRetry={loadSos} />
                 ) : sosAlerts.length === 0 ? (
-                  <div className="cc-sos-item"><div className="cc-sos-info"><div className="cc-sos-title">No active SOS alerts</div></div></div>
+                  <div className="cc-sos-item"><div className="cc-sos-info"><div className="cc-sos-title">{t('sos.noActiveAlerts')}</div></div></div>
                 ) : sosAlerts.map(a => (
                   <motion.div key={a.id} className="cc-sos-item" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                     <div className="cc-sos-icon"><AlertTriangle size={14} /></div>
@@ -637,7 +637,7 @@ export default function EmergencyCommandCenter() {
               <div className="cc-feed" style={{ flex: 1, overflow: 'auto' }}>
                 {notifications.length === 0 ? (
                   <div className="cc-feed-item cc-feed-item--info" style={{ opacity: 0.5, justifyContent: 'center' }}>
-                    <span className="cc-feed-text">Listening for real-time events...</span>
+                    <span className="cc-feed-text">{t('commandCenter.listening')}</span>
                   </div>
                 ) : (
                   <AnimatedFeed items={notifications} activeIndex={activeFeed} variants={feedVariants} />

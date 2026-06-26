@@ -208,7 +208,7 @@ function BreakdownCard({ title, data, total, type }: BreakdownCardProps) {
         const color = BREAKDOWN_COLORS[i % BREAKDOWN_COLORS.length]
         return (
           <div key={key} className="admin-breakdown-row">
-            <span className="text-medium">{t(`${type}.${key}`) || key || 'Unknown'}</span>
+            <span className="text-medium">{t(`${type}.${key}`) || key || t('common.unknown')}</span>
             <div className="admin-breakdown-bar">
               <motion.div
                 className="admin-breakdown-bar-fill"
@@ -240,23 +240,23 @@ function StatsPanel({ stats }: StatsPanelProps) {
     {
       label: t('admin.totalUsers'), value: stats.totalUsers || 0,
       icon: <Users size={20} />, color: 'var(--color-open)',
-      subtitle: t('admin.registeredUsers') || 'Registered users',
+      subtitle: t('admin.registeredUsers'),
     },
     {
       label: t('admin.totalRequests'), value: stats.totalRequests || 0,
       icon: <FileText size={20} />, color: 'var(--accent-indigo)',
-      subtitle: t('admin.totalRequestsDesc') || 'All-time requests',
+      subtitle: t('admin.totalRequestsDesc'),
     },
     {
       label: t('admin.openRequests'), value: byStatus.Open || 0,
       icon: <Activity size={20} />, color: 'var(--color-open)',
-      subtitle: t('admin.needsAttention') || 'Needs attention',
+      subtitle: t('admin.needsAttention'),
     },
     {
       label: t('admin.resolved'),
       value: (byStatus.Resolved || 0) + (byStatus.Fulfilled || 0),
       icon: <CheckCircle size={20} />, color: 'var(--color-resolved)',
-      subtitle: t('admin.completed') || 'Completed',
+      subtitle: t('admin.completed'),
     },
   ]
 
@@ -414,7 +414,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
           columnVisibility
           stickyHeader
           emptyTitle={t('admin.noUsers')}
-          emptyDescription={t('admin.noUsersDesc') || 'No users registered yet'}
+          emptyDescription={t('admin.noUsersDesc')}
           renderTop={renderTop}
         />
       </motion.div>
@@ -556,7 +556,7 @@ export default function AdminDashboard() {
       setUsers(u.users || [])
       setRequests(r.items || [])
     } catch (e) {
-      setError((e as Error).message || 'Failed to load admin data')
+      setError((e as Error).message || t('admin.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -578,7 +578,7 @@ export default function AdminDashboard() {
       setUsers((prev) => prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u)))
       toast.success(t('admin.roleUpdated'))
     } catch (e) {
-      toast.error((e as Error).message || 'Failed to update role')
+      toast.error((e as Error).message || t('admin.updateRoleFailed'))
     }
   }, [toast, t])
 
@@ -592,7 +592,7 @@ export default function AdminDashboard() {
       setUsers((prev) => prev.filter((u) => u._id !== userId))
       toast.success(t('admin.userDeleted'))
     } catch (e) {
-      toast.error((e as Error).message || 'Failed to delete user')
+      toast.error((e as Error).message || t('admin.deleteUserFailed'))
     }
   }, [toast, t])
 
@@ -604,7 +604,7 @@ export default function AdminDashboard() {
       setRequests((prev) => prev.filter((r) => r._id !== requestId))
       toast.success(t('admin.requestDeleted'))
     } catch (e) {
-      toast.error((e as Error).message || 'Failed to delete request')
+      toast.error((e as Error).message || t('admin.deleteRequestFailed'))
     }
   }, [toast, t])
 
@@ -623,7 +623,7 @@ export default function AdminDashboard() {
         URL.revokeObjectURL(url)
       }
     } catch (e) {
-      toast?.error?.((e as Error).message || 'Export failed')
+      toast?.error?.((e as Error).message || t('admin.exportFailed'))
     }
   }
 

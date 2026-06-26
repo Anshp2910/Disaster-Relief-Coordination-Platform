@@ -293,6 +293,14 @@ const querySchemas = {
     lng: Joi.number().min(-180).max(180).required(),
     radiusKm: Joi.number().min(0.1).max(500).default(10),
   }),
+
+  updateNotifications: Joi.object({
+    email: Joi.boolean(),
+    sms: Joi.boolean(),
+    newRequest: Joi.boolean(),
+    statusChange: Joi.boolean(),
+    newComment: Joi.boolean(),
+  }).min(1),
 }
 
 export function validate(schemaName) {

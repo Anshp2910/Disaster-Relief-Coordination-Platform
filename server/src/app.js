@@ -8,7 +8,7 @@ import fs from 'fs'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 
-import { authRouter, requireCsrf } from './routes/auth.js'
+import { authRouter } from './routes/auth.js'
 import { requestsRouter } from './routes/requests.js'
 import { adminRouter } from './routes/admin.js'
 import { resourcesRouter } from './routes/resources.js'
@@ -118,7 +118,6 @@ export function createApp() {
   })
 
   app.use('/api/auth', authLimiter, authRouter)
-  app.use('/api', requireCsrf)
   const writeLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many write requests, please slow down' })
   const requestsLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 60, message: 'Too many requests, please slow down' })
   const geofencingLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many geofencing requests, please slow down' })

@@ -5,6 +5,7 @@ import fs from 'fs'
 import { fileURLToPath } from 'url'
 import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
+import { escapeRegex } from '../utils/geo.js'
 import { Request } from '../models/Request.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -30,10 +31,6 @@ const upload = multer({
     cb(null, ext && mime)
   },
 })
-
-function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
 
 export const requestsRouter = express.Router()
 
@@ -349,6 +346,10 @@ requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), upload.ar
     const { id } = req.params
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
+
+    if (item.createdBy?.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized' })
+    }
 
     const multerFiles = req.files || []
     if (multerFiles.length === 0) {

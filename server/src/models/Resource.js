@@ -26,6 +26,7 @@ const ResourceSchema = new mongoose.Schema(
     allocatedQuantity: { type: Number, default: 0, min: 0 },
     notes: { type: String, trim: true, maxlength: 2000 },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true },
 )

@@ -27,7 +27,7 @@ feedbackRouter.post('/request/:requestId', requireAuth, validateObjectId('reques
     const item = await Request.findById(req.params.requestId)
     if (!item) return res.status(404).json({ error: 'Request not found' })
 
-    const existing = await Feedback.findOne({ requestId: req.params.requestId, submittedBy: req.user._id })
+    const existing = await Feedback.findOne({ requestId: req.params.requestId, submittedBy: req.user._id }).lean()
     if (existing) return res.status(409).json({ error: 'You already submitted feedback for this request' })
 
     const feedback = await Feedback.create({
