@@ -1,6 +1,6 @@
 import { Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { Layout } from './components/Layout'
+import Layout from './components/Layout'
 import { useAuth } from './context/AuthContext'
 import { retryLazy } from './utils/retryLazy'
 

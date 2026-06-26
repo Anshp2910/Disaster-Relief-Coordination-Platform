@@ -14,7 +14,7 @@ interface LayoutProps {
   children: ReactNode
 }
 
-export function Layout({ children }: LayoutProps) {
+function Layout({ children }: LayoutProps) {
   const { t } = useTranslation()
   const location = useLocation()
   const { canInstall, install } = usePwaInstall()
@@ -59,3 +59,5 @@ export function Layout({ children }: LayoutProps) {
     </div>
   )
 }
+
+export default Layout
