@@ -6,12 +6,13 @@ import { createStagger, createListItem } from '../utils/animations'
 import { MapPin, ShieldCheck, Activity, Eye, EyeOff, Loader2, GitBranch, Globe } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../components/Toast'
 
 const STATS = [
-  { value: '12,450+', label: 'Relief Operations' },
-  { value: '2,800+', label: 'Active Volunteers' },
-  { value: '340+', label: 'Partner NGOs' },
-  { value: '98.2%', label: 'Response Rate' },
+  { value: '12,450+', key: 'auth.statOps' },
+  { value: '2,800+', key: 'auth.statVolunteers' },
+  { value: '340+', key: 'auth.statNgos' },
+  { value: '98.2%', key: 'auth.statResponse' },
 ]
 
 const container = createStagger(0.08, 0.1)
@@ -51,6 +52,11 @@ export default function Login() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { login } = useAuth()
+  const toast = useToast()
+
+  function handleSocialLogin(provider: 'google' | 'github') {
+    toast.info(t('auth.socialLoginComingSoon', { provider: provider.charAt(0).toUpperCase() + provider.slice(1) }))
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -62,7 +68,7 @@ export default function Login() {
       navigate('/dashboard')
     } catch (err) {
       const e = err as Error
-      setError(e.message || 'Login failed')
+      setError(e.message || t('common.loginFailed'))
     } finally {
       setLoading(false)
     }
@@ -109,25 +115,25 @@ export default function Login() {
             <ShieldCheck size={28} />
           </motion.div>
           <motion.h1 className="auth-hero-title" variants={item}>
-            Disaster Relief<br />Coordination Platform
+            {t('appTitle')}
           </motion.h1>
           <motion.p className="auth-hero-sub" variants={item}>
-            A unified command system for emergency response, resource coordination, and real-time disaster management across India.
+            {t('auth.heroSubtitle')}
           </motion.p>
 
           {/* Stats */}
           <motion.div className="auth-stats-grid" variants={item}>
             {STATS.map((s) => (
-              <motion.div key={s.label} className="auth-stat" whileHover={{ scale: 1.05 }}>
+              <motion.div key={s.key} className="auth-stat" whileHover={{ scale: 1.05 }}>
                 <div className="auth-stat-value">{s.value}</div>
-                <div className="auth-stat-label">{s.label}</div>
+                <div className="auth-stat-label">{t(s.key)}</div>
               </motion.div>
             ))}
           </motion.div>
 
           <motion.div className="auth-mission" variants={item}>
             <Activity size={14} aria-hidden="true" />
-            <span>Government of India &middot; National Disaster Management Authority</span>
+            <span>{t('auth.mission')}</span>
           </motion.div>
         </div>
       </motion.div>
@@ -146,8 +152,8 @@ export default function Login() {
                 <MapPin size={22} />
               </div>
               <div>
-                <div className="auth-logo-text">DisasterRelief</div>
-                <div className="auth-logo-sub">Government of India</div>
+                <div className="auth-logo-text">{t('auth.appName')}</div>
+                <div className="auth-logo-sub">{t('auth.govtOfIndia')}</div>
               </div>
             </motion.div>
 
@@ -155,16 +161,16 @@ export default function Login() {
 
             {/* Social Login */}
             <motion.div className="auth-social" variants={item}>
-              <button className="auth-social-btn" aria-label="Sign in with Google">
+              <button className="auth-social-btn" aria-label={t('auth.signInWithGoogle')} onClick={() => handleSocialLogin('google')}>
                 <Globe size={18} aria-hidden="true" /> Google
               </button>
-              <button className="auth-social-btn" aria-label="Sign in with GitHub">
+              <button className="auth-social-btn" aria-label={t('auth.signInWithGitHub')} onClick={() => handleSocialLogin('github')}>
                 <GitBranch size={18} aria-hidden="true" /> GitHub
               </button>
             </motion.div>
 
             <motion.div className="auth-divider" variants={item}>
-              <span>or continue with email</span>
+              <span>{t('auth.orEmail')}</span>
             </motion.div>
 
             {/* Form */}
@@ -182,7 +188,7 @@ export default function Login() {
                     className="auth-input"
                     placeholder=" "
                   />
-                  <label htmlFor="login-email" className="auth-label">Email address</label>
+                  <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
                 </div>
               </motion.div>
 
@@ -197,12 +203,12 @@ export default function Login() {
                     className="auth-input"
                     placeholder=" "
                   />
-                  <label htmlFor="login-password" className="auth-label">Password</label>
+                  <label htmlFor="login-password" className="auth-label">{t('auth.password')}</label>
                   <button
                     type="button"
                     className="auth-pw-toggle"
                     onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                     tabIndex={-1}
                   >
                     {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
@@ -214,7 +220,7 @@ export default function Login() {
               <motion.div className="auth-options" variants={item}>
                 <label className="auth-checkbox">
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                  <span>Remember me</span>
+                  <span>{t('auth.rememberMe')}</span>
                 </label>
                 <Link to="/forgot-password" className="auth-forgot">{t('auth.forgotPassword')}</Link>
               </motion.div>

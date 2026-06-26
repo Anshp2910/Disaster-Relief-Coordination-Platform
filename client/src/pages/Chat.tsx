@@ -79,7 +79,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       setMessageError('')
     } catch {
       if (p === 1) setMessages([])
-      setMessageError('Failed to load messages')
+    setMessageError(t('chat.failedToLoad'))
     } finally {
       setLoading(false)
     }
@@ -111,7 +111,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       if (String(data.requestId) !== String(requestId)) return
       if (data.sender?.id === currentUser?.id) return
       const id = data.sender?.id || 'unknown'
-      const name = data.sender?.displayName || 'User'
+      const name = data.sender?.displayName || t('chat.userFallback')
       if (data.stop) {
         setTypingUsers((prev) => {
           const next = { ...prev }
@@ -157,10 +157,10 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     const now = Date.now()
     if (now - lastTypingEmitRef.current < 300) return
     lastTypingEmitRef.current = now
-    socket.emit('chat:typing', { requestId, sender: { id: currentUser?.id, displayName: currentUser?.displayName || 'User' } })
+    socket.emit('chat:typing', { requestId, sender: { id: currentUser?.id, displayName: currentUser?.displayName || t('chat.userFallback') } })
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
     typingTimeoutRef.current = setTimeout(() => {
-      socket.emit('chat:typing', { requestId, sender: { id: currentUser?.id, displayName: currentUser?.displayName || 'User' }, stop: true })
+      socket.emit('chat:typing', { requestId, sender: { id: currentUser?.id, displayName: currentUser?.displayName || t('chat.userFallback') }, stop: true })
     }, 500)
   }, [socket, requestId, currentUser?.id, currentUser?.displayName])
 
@@ -179,7 +179,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         const uploadResult = (await clientApi.uploadFiles(requestId, [selectedFile])) as { files?: { url?: string; name?: string }[] }
         const uploaded = uploadResult.files?.[0]
         if (uploaded) {
-          const msg = `\uD83D\uDCCE ${uploaded.name || selectedFile.name}`
+          const msg = t('chat.fileAttached', { filename: uploaded.name || selectedFile.name })
           const data = (await clientApi.sendChatMessage(requestId, msg)) as { message?: Message }
           if (data.message) {
             setMessages((prev) => {
@@ -311,7 +311,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                 {!isMe && (
                   <div className="text-xs text-semi mb-xs flex items-center gap-xs" style={{ color: 'var(--gov-blue)' }}>
                     <User size={12} aria-hidden="true" />
-                    {m.sender?.displayName || 'User'}
+                    {m.sender?.displayName || t('chat.userFallback')}
                   </div>
                 )}
                 <div className="text-sm chat-bubble" style={{
@@ -332,7 +332,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
         {hasTyping && (
           <div className="flex items-center text-xs text-muted typing-indicator">
-            <span>{typingNames.map((t) => t.name).join(', ')} {typingNames.length === 1 ? 'is' : 'are'} typing</span>
+            <span>{typingNames.length === 1 ? t('chat.typingSingle', { name: typingNames[0].name }) : t('chat.typingMultiple', { names: typingNames.map((n) => n.name).join(', ') })}</span>
             <span className="typing-dots"><span>.</span><span>.</span><span>.</span></span>
           </div>
         )}
@@ -344,7 +344,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <button
           onClick={scrollToBottom}
           className="scroll-to-bottom-btn"
-          aria-label="Scroll to bottom"
+          aria-label={t('chat.scrollToBottom')}
         >
           ↓
         </button>
@@ -370,7 +370,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           type="button"
           onClick={handleFileClick}
           className="bg-none border-none cursor-pointer text-base p-0"
-          aria-label="Attach file"
+          aria-label={t('chat.attachFile')}
         >
           <Paperclip size={18} />
         </button>

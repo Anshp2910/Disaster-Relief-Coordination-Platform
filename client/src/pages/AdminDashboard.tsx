@@ -15,6 +15,8 @@ import type { ColumnDef } from '../components/ui/DataTable'
 import Badge from '../components/Badge'
 import { SkeletonList } from '../components/Skeleton'
 
+
+
 interface User {
   _id: string
   displayName?: string
@@ -264,7 +266,7 @@ function StatsPanel({ stats }: StatsPanelProps) {
     <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
       <h3 className="m-0 text-bold text-accent-blue text-15">{t('admin.platformOverview')}</h3>
 
-      <section aria-label="Statistics">
+      <section aria-label={t('admin.statisticsLabel')}>
         <div className="admin-stats-grid">
           {summaryCards.map((c) => (
             <motion.div key={c.label} className="bento-card" variants={itemVariants}>
@@ -400,7 +402,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   ]
 
   return (
-    <section aria-label="User Management">
+    <section aria-label={t('admin.userManagementLabel')}>
       <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
         <DataTable
           columns={columns}
@@ -511,7 +513,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
   ]
 
   return (
-    <section aria-label="Request Management">
+    <section aria-label={t('admin.requestManagementLabel')}>
       <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
         <DataTable
           columns={columns}
@@ -612,8 +614,10 @@ export default function AdminDashboard() {
     try {
       if (format === 'csv') {
         await clientApi.adminExportRequests('csv')
+        toast.success(t('admin.exportSuccess') || 'Export downloaded successfully')
       } else {
-        const data = await clientApi.adminExportRequests('json')
+        const resp = await clientApi.adminExportRequests('json') as unknown as { items?: Record<string, unknown>[]; total?: number }
+        const data = resp?.items || resp || []
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -621,9 +625,10 @@ export default function AdminDashboard() {
         a.download = 'requests-export.json'
         a.click()
         URL.revokeObjectURL(url)
+        toast.success(t('admin.exportSuccess') || 'Export downloaded successfully')
       }
     } catch (e) {
-      toast?.error?.((e as Error).message || t('admin.exportFailed'))
+      toast.error((e as Error).message || t('admin.exportFailed'))
     }
   }
 

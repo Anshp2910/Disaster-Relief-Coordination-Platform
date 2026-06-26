@@ -31,7 +31,7 @@ interface IncidentData {
 interface NotificationItem {
   id: number; text: string; type: string; time: string
 }
-interface Marker { x: string; y: string; color: string; size: 'sm' | 'md' | 'lg'; pulse?: boolean }
+interface Marker { x: string; y: string; color: string; size: 'sm' | 'md' | 'lg'; pulse?: boolean; label?: string }
 interface HeatmapBlob { x: string; y: string; size: number; color: string }
 
 const ORBIT_RINGS = [
@@ -70,15 +70,8 @@ function severityColor(sev: string): 'red' | 'orange' | 'blue' | 'green' | 'cyan
   if (s === 'critical' || s === 'emergency') return 'red'
   if (s === 'high') return 'orange'
   if (s === 'medium' || s === 'warning') return 'blue'
-  return 'green'
-}
-
-function severityToColorName(sev: string): string {
-  const s = (sev || '').toLowerCase()
-  if (s === 'critical' || s === 'emergency') return 'red'
-  if (s === 'high') return 'orange'
-  if (s === 'medium' || s === 'warning') return 'orange'
-  return 'blue'
+  if (s === 'low') return 'green'
+  return 'cyan'
 }
 
 function WeatherIcon({ condition }: { condition: string }) {
@@ -141,12 +134,12 @@ export default function EmergencyCommandCenter() {
       const zones = (zoneData as { total?: number })?.total || 0
 
       setCounters([
-        { id: 1, label: 'Active Incidents', value: openCount || 0, color: 'blue', trend: 'up', trendVal: 0 },
-        { id: 2, label: 'Resources Deployed', value: resources, color: 'cyan', trend: 'up', trendVal: 0 },
-        { id: 3, label: 'Personnel Active', value: totalUsers, color: 'green', trend: 'up', trendVal: 0 },
-        { id: 4, label: 'Affected Zones', value: zones, color: 'orange', trend: 'up', trendVal: 0 },
-        { id: 5, label: 'Evacuated', value: (stats.evacuated as number) || 0, color: 'purple', trend: 'up', trendVal: 0 },
-        { id: 6, label: 'Fatalities', value: (stats.fatalities as number) || 0, color: 'red', trend: 'up', trendVal: 0 },
+        { id: 1, label: t('commandCenter.labelActiveIncidents'), value: openCount || 0, color: 'blue', trend: 'up', trendVal: 0 },
+        { id: 2, label: t('commandCenter.labelResourcesDeployed'), value: resources, color: 'cyan', trend: 'up', trendVal: 0 },
+        { id: 3, label: t('commandCenter.labelPersonnelActive'), value: totalUsers, color: 'green', trend: 'up', trendVal: 0 },
+        { id: 4, label: t('commandCenter.labelAffectedZones'), value: zones, color: 'orange', trend: 'up', trendVal: 0 },
+        { id: 5, label: t('commandCenter.labelEvacuated'), value: (stats.evacuated as number) || 0, color: 'purple', trend: 'up', trendVal: 0 },
+        { id: 6, label: t('commandCenter.labelFatalities'), value: (stats.fatalities as number) || 0, color: 'red', trend: 'up', trendVal: 0 },
       ])
     } catch (err) {
       setErrorCounters((err as Error).message)
@@ -162,7 +155,7 @@ export default function EmergencyCommandCenter() {
       const items = data.items || []
       setSosAlerts(items.map((a, i) => ({
         id: i + 1,
-        title: (a.title as string) || (a.location as string) || 'SOS Alert',
+        title: (a.title as string) || (a.location as string) || t('sos.noActiveAlerts'),
         meta: `${(a.location as string) || 'Unknown'} · Priority ${(a.priority as number) || 1}`,
         time: timeAgo((a.createdAt as string) || new Date().toISOString()),
         icon: (a.type as string) || 'Emergency',
@@ -245,8 +238,9 @@ export default function EmergencyCommandCenter() {
         const col = severityColor(sev)
         const sz = sev.toLowerCase() === 'critical' || sev.toLowerCase() === 'emergency' ? 'lg' as const
                : sev.toLowerCase() === 'high' ? 'md' as const : 'sm' as const
-        newMarkers.push({ x: p.x, y: p.y, color: col, size: sz, pulse: sev.toLowerCase() === 'critical' || sev.toLowerCase() === 'emergency' })
-        newBlobs.push({ x: p.x, y: p.y, size: sev.toLowerCase() === 'critical' ? 180 : sev.toLowerCase() === 'high' ? 140 : 100, color: severityToColorName(sev) })
+        const lbl = (inc.title as string) || (inc.location as string) || (inc.locationName as string) || ''
+        newMarkers.push({ x: p.x, y: p.y, color: col, size: sz, pulse: sev.toLowerCase() === 'critical' || sev.toLowerCase() === 'emergency', label: lbl })
+        newBlobs.push({ x: p.x, y: p.y, size: sev.toLowerCase() === 'critical' ? 180 : sev.toLowerCase() === 'high' ? 140 : 100, color: severityColor(sev) })
       })
 
       resItems.forEach((res) => {
@@ -348,21 +342,28 @@ export default function EmergencyCommandCenter() {
     show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const } },
   }
 
+  const mapCenter = useMemo(() => {
+    if (markers.length === 0) return { lat: '19.0760', lon: '72.8777' }
+    const latMin = 8, latMax = 37, lonMin = 68, lonMax = 97
+    const avgXPct = markers.reduce((s, m) => s + parseFloat(m.x), 0) / markers.length
+    const avgYPct = markers.reduce((s, m) => s + parseFloat(m.y), 0) / markers.length
+    const lon = lonMin + (avgXPct / 100) * (lonMax - lonMin)
+    const lat = latMax - (avgYPct / 100) * (latMax - latMin)
+    return { lat: lat.toFixed(4), lon: lon.toFixed(4) }
+  }, [markers])
+
   const totalEvents = useMemo(() => counters.reduce((s, c) => s + c.value, 0), [counters])
 
-  /* ── Location labels from incidents ── */
+  /* ── Location labels from markers ── */
   const locationLabels = useMemo(() => {
-    const locs = incidents.slice(0, 6).map(inc => {
-      const lat = 0, lon = 0
-      const top = 10, bottom = 90, left = 10, right = 90
-      const latMin = 8, latMax = 37, lonMin = 68, lonMax = 97
-      const x = left + ((lon - lonMin) / (lonMax - lonMin)) * (right - left)
-      const y = top + ((latMax - lat) / (latMax - latMin)) * (bottom - top)
-      return { x: `${Math.max(5, Math.min(95, x))}%`, y: `${Math.max(5, Math.min(95, y))}%`, label: inc.location, status: inc.severity }
-    })
-    if (locs.length === 0) return defaultLabels
-    return locs
-  }, [incidents])
+    const combinedMarkers = markers.map(m => ({
+      x: m.x, y: m.y,
+      label: m.label || `${m.color.toUpperCase()} ${m.size === 'lg' ? 'CRITICAL' : m.size === 'md' ? 'HIGH' : 'ACTIVE'}`,
+      status: m.color === 'red' ? 'CRITICAL' : m.color === 'orange' ? 'HIGH' : m.color === 'cyan' ? 'ACTIVE' : 'MONITOR',
+    }))
+    if (combinedMarkers.length === 0) return defaultLabels
+    return combinedMarkers.slice(0, 6)
+  }, [markers])
 
   const defaultLabels = [
     { x: '25%', y: '35%', label: 'Mumbai', status: 'CRITICAL' },
@@ -598,7 +599,7 @@ export default function EmergencyCommandCenter() {
                     key={i}
                     className={`cc-marker cc-marker--${m.color}${m.size === 'lg' ? ' cc-marker--lg' : ''}${m.pulse ? ' cc-marker--pulse' : ''}`}
                     style={{ left: m.x, top: m.y }}
-                    title={`Marker ${i + 1}`}
+                    title={m.label || `Marker ${i + 1}`}
                   />
                 ))}
               </div>
@@ -621,7 +622,7 @@ export default function EmergencyCommandCenter() {
 
               {/* Coordinates */}
               <div className="cc-map-coords">
-                {t('commandCenter.mapCoords', { lat: '19.0760', lon: '72.8777', zoom: '8' })}
+                {t('commandCenter.mapCoords', { lat: mapCenter.lat, lon: mapCenter.lon, zoom: '8' })}
               </div>
             </div>
           </div>

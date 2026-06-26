@@ -7,14 +7,17 @@ import { PageHeader, RippleBtn, PageTransition } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../components/Toast'
 import { clientApi } from '../api/client'
-
-const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other']
+import { evaluatePasswordStrength } from '../utils/passwordStrength'
 
 export default function Profile() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, updateUser } = useAuth()
   const toast = useToast()
+  const SKILL_OPTIONS = useMemo(() => [
+    t('profile.skillMedical'), t('profile.skillRescue'), t('profile.skillLogistics'),
+    t('profile.skillCommunication'), t('profile.skillShelter'), t('profile.skillFood'), t('profile.skillOther'),
+  ], [t])
 
   const [displayName, setDisplayName] = useState(user?.displayName || '')
   const [phone, setPhone] = useState(user?.phone || '')
@@ -54,7 +57,10 @@ export default function Profile() {
       })
       const data = await clientApi.updateProfile({ avatar: b64 }) as { user: Record<string, unknown> }
       updateUser(data.user)
-      toast.success('Avatar updated')
+      const avatarStr = data.user?.avatar as string || b64
+      localStorage.setItem('avatarUrl', avatarStr)
+      setAvatarUrl(avatarStr)
+      toast.success(t('profile.avatarUpdated'))
       setSelectedFile(null)
     } catch (err) {
       toast.error((err as Error).message)
@@ -71,17 +77,9 @@ export default function Profile() {
   }
 
   const newPasswordStrength = useMemo(() => {
-    if (!newPassword) return null
-    let score = 0
-    if (newPassword.length >= 8) score++
-    if (/[a-z]/.test(newPassword)) score++
-    if (/[A-Z]/.test(newPassword)) score++
-    if (/\d/.test(newPassword)) score++
-    if (/[!@#$%^&*]/.test(newPassword)) score++
-    const classes = ['weak', 'weak', 'weak', 'medium', 'strong', 'very-strong']
-    const labels = ['Weak', 'Weak', 'Weak', 'Medium', 'Strong', 'Very Strong']
-    return { className: classes[score], label: labels[score] }
-  }, [newPassword])
+    const result = evaluatePasswordStrength(newPassword)
+    return result ? { className: result.className, label: t(result.labelKey) } : null
+  }, [newPassword, t])
 
   function toggleSkill(skill: string) {
     setSkills((prev) => prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill])
@@ -91,9 +89,7 @@ export default function Profile() {
     e.preventDefault()
     setLoading(true)
     try {
-      const payload: Record<string, unknown> = { displayName, notifications }
-      if (phone) payload.phone = phone
-      payload.skills = skills
+      const payload: Record<string, unknown> = { displayName, notifications, phone: phone || '', skills }
       const data = (await clientApi.updateProfile(payload)) as { user: Record<string, unknown> }
       updateUser(data.user)
       toast.success(t('profile.profileUpdated'))
@@ -152,7 +148,7 @@ export default function Profile() {
             onClick={handleAvatarClick}
             role="button"
             tabIndex={0}
-            aria-label="Upload avatar photo"
+            aria-label={t('profile.uploadAvatar') || 'Upload avatar photo'}
             onKeyDown={(e) => { if (e.key === 'Enter') handleAvatarClick() }}
             style={{
               width: 96,
@@ -197,10 +193,10 @@ export default function Profile() {
           />
           <div className="flex flex-gap-sm mt-sm">
             <RippleBtn type="button" className="text-xs" onClick={handleUploadAvatar} disabled={!selectedFile} aria-label="Upload photo">
-              Upload Photo
+              {t('profile.uploadPhoto')}
             </RippleBtn>
-            <button type="button" className="text-xs" onClick={handleRemoveAvatar} disabled={!avatarUrl} aria-label="Remove photo">
-              Remove Photo
+            <button type="button" className="text-xs" onClick={handleRemoveAvatar} disabled={!avatarUrl} aria-label={t('profile.removePhoto')}>
+              {t('profile.removePhoto')}
             </button>
           </div>
         </div>
@@ -296,13 +292,13 @@ export default function Profile() {
               <div className="text-sm text-muted-extra">{t('profile.eventSubscriptions')}</div>
               <div className="flex flex-gap-lg flex-wrap">
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={notifications.newRequest !== false} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
+                  <input type="checkbox" checked={notifications.newRequest === true} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
                 </label>
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={notifications.statusChange !== false} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
+                  <input type="checkbox" checked={notifications.statusChange === true} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
                 </label>
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={notifications.newComment !== false} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
+                  <input type="checkbox" checked={notifications.newComment === true} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
                 </label>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { Upload, FileText, CheckCircle, AlertTriangle, Download, ChevronLeft, Ch
 import { PageHeader, ErrorState, RippleBtn, PageTransition } from '../components/ui'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
+import { downloadBlob } from '../utils/export'
 
 interface ColumnMap {
   csvCol: string
@@ -79,16 +80,6 @@ function parseCSV(text: string, delimiter?: string): string[][] {
   return result
 }
 
-function downloadBlob(content: string, filename: string, mimeType: string = 'text/csv') {
-  const blob = new Blob([content], { type: mimeType })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
-}
-
 function autoDetectField(csvCol: string, systemFields: string[]): string {
   const cleaned = csvCol.toLowerCase().replace(/^["'\s]+|["'\s]+$/g, '').trim()
   const stripped = cleaned.replace(/[^a-z0-9]/g, '')
@@ -160,21 +151,21 @@ export default function BulkImport() {
       text = text.replace(/^\uFEFF/, '')
       const rows = parseCSV(text)
 
-      if (rows.length < 2) throw new Error('CSV must have a header row and at least one data row')
+      if (rows.length < 2) throw new Error(t('bulkImport.csvMustHaveRows'))
 
       const h = rows[0].map((c) => c.trim())
       const dataRows = rows.slice(1).filter((row) => row.some((v) => v.trim() !== ''))
 
-      if (dataRows.length === 0) throw new Error('CSV has no data rows after the header')
+      if (dataRows.length === 0) throw new Error(t('bulkImport.csvNoDataRows'))
 
       const isRequestCSV = h.some((c) => /^title$/i.test(c.trim()))
       const isResourceCSV = h.some((c) => /^name$/i.test(c.trim()))
 
       if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
-        throw new Error('This looks like a Resources CSV. Switch to the Resources tab.')
+        throw new Error(t('bulkImport.wrongCSVType', { type: 'Resources' }))
       }
       if (tab === 'resources' && isRequestCSV && !isResourceCSV) {
-        throw new Error('This looks like a Requests CSV. Switch to the Requests tab.')
+        throw new Error(t('bulkImport.wrongCSVType', { type: 'Requests' }))
       }
 
       const initialMaps: ColumnMap[] = h.map((col) => ({
@@ -264,8 +255,9 @@ export default function BulkImport() {
       const data = tab === 'requests'
         ? await clientApi.importRequests(rowsToImport)
         : await clientApi.importResources(rowsToImport)
-      setResult(data as Record<string, unknown>)
-      if ((data as Record<string, unknown>).imported as number > 0) {
+      const importResult = data as Record<string, unknown>
+      setResult(importResult)
+      if (Number(importResult.imported) > 0) {
         setPreview(null)
         setSelected(new Set())
       }
@@ -283,9 +275,13 @@ export default function BulkImport() {
     downloadBlob(`${headers}\n${example}`, `${tab}_template.csv`)
   }
 
-  function exportData() {
-    const promise = tab === 'requests' ? clientApi.exportRequestsCSV() : clientApi.exportResourcesCSV()
-    promise.catch((err: Error) => toast.error(err.message))
+  async function exportData() {
+    try {
+      await (tab === 'requests' ? clientApi.exportRequestsCSV() : clientApi.exportResourcesCSV())
+      toast.success(t('bulkImport.exportSuccess') || 'CSV exported successfully')
+    } catch (err) {
+      toast.error((err as Error).message)
+    }
   }
 
   const unmatchedCount = columnMaps.filter((m) => m.systemCol === '').length
@@ -340,9 +336,9 @@ export default function BulkImport() {
               <div className="flex-between mb">
                 <div className="text-base text-semi flex items-center gap-xs">
                   <FileText size={16} aria-hidden="true" />
-                  Column Mapping
+                  {t('bulkImport.columnMapping')}
                 </div>
-                <div className="text-sm text-muted">{rawData.length} data rows parsed</div>
+                <div className="text-sm text-muted">{t('bulkImport.dataRowsParsed', { count: rawData.length })}</div>
               </div>
 
               {unmatchedCount > 0 && (
@@ -360,11 +356,11 @@ export default function BulkImport() {
               )}
 
               <div className="overflow-x-auto rounded-sm border-gov mb">
-                <div className="w-full text-sm dt-inline-table" role="grid" aria-label="Column mapping">
+                <div className="w-full text-sm dt-inline-table" role="grid" aria-label={t('bulkImport.columnMapping')}>
                   <div className="dt-inline-row dt-inline-header" role="row">
-                    <div className="dt-inline-cell text-left" role="columnheader">CSV Column</div>
+                    <div className="dt-inline-cell text-left" role="columnheader">{t('bulkImport.csvColumn')}</div>
                     <div className="dt-inline-cell text-center" role="columnheader"><ArrowRight size={14} aria-hidden="true" /></div>
-                    <div className="dt-inline-cell text-left" role="columnheader">System Field</div>
+                    <div className="dt-inline-cell text-left" role="columnheader">{t('bulkImport.systemField')}</div>
                   </div>
                   {columnMaps.map((m) => (
                     <div key={m.csvCol} className="dt-inline-row" role="row">
@@ -377,7 +373,7 @@ export default function BulkImport() {
                           className="rounded-sm border-gov text-sm w-100 p-xs"
                           aria-label={`Map column "${m.csvCol}" to system field`}
                         >
-                          <option value="">— Ignore —</option>
+                          <option value="">{t('bulkImport.ignoreColumn')}</option>
                           {systemFields.map((f) => (
                             <option key={f} value={f}>{f}</option>
                           ))}
@@ -391,7 +387,7 @@ export default function BulkImport() {
               <div className="flex flex-gap-sm">
                 <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
                 <RippleBtn onClick={confirmMapping} className="text-sm p-sm flex items-center gap-xs">
-                  Confirm Mapping <ArrowRight size={14} />
+                  {t('bulkImport.confirmMapping')} <ArrowRight size={14} />
                 </RippleBtn>
               </div>
             </motion.div>

@@ -19,12 +19,21 @@ export default function ForgotPassword() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError(t('auth.invalidEmail'))
+      return
+    }
     setLoading(true)
     try {
       await clientApi.forgotPassword(email)
       setSent(true)
     } catch (err) {
-      setError((err as Error).message || 'Something went wrong')
+      const msg = (err as Error).message
+      if (msg.includes('429') || msg.toLowerCase().includes('too many') || msg.toLowerCase().includes('rate limit')) {
+        setError(t('auth.rateLimited') || 'Too many requests. Please wait a moment and try again.')
+      } else {
+        setError(msg || t('auth.somethingWentWrong'))
+      }
     } finally {
       setLoading(false)
     }

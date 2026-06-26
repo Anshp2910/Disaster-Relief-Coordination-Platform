@@ -6,12 +6,14 @@ import { createStagger, createListItem } from '../utils/animations'
 import { MapPin, ShieldCheck, Users, Eye, EyeOff, Loader2, GitBranch, Globe, User, Mail } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../components/Toast'
+import { evaluatePasswordStrength } from '../utils/passwordStrength'
 
 const STATS = [
-  { value: '12,450+', label: 'Relief Operations' },
-  { value: '2,800+', label: 'Active Volunteers' },
-  { value: '340+', label: 'Partner NGOs' },
-  { value: '98.2%', label: 'Response Rate' },
+  { value: '12,450+', key: 'auth.statOps' },
+  { value: '2,800+', key: 'auth.statVolunteers' },
+  { value: '340+', key: 'auth.statNgos' },
+  { value: '98.2%', key: 'auth.statResponse' },
 ]
 
 const container = createStagger(0.08, 0.1)
@@ -52,18 +54,15 @@ export default function Register() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { login } = useAuth()
+  const toast = useToast()
+
+  function handleSocialLogin(provider: 'google' | 'github') {
+    toast.info(t('auth.socialLoginComingSoon', { provider: provider.charAt(0).toUpperCase() + provider.slice(1) }))
+  }
 
   const strength = useMemo(() => {
-    if (!password) return null
-    let score = 0
-    if (password.length >= 8) score++
-    if (/[a-z]/.test(password)) score++
-    if (/[A-Z]/.test(password)) score++
-    if (/\d/.test(password)) score++
-    if (/[!@#$%^&*]/.test(password)) score++
-    const classes = ['weak', 'weak', 'weak', 'medium', 'strong', 'very-strong']
-    const labels = ['Weak', 'Weak', 'Weak', 'Medium', 'Strong', 'Very Strong']
-    return { className: classes[score], label: labels[score] }
+    const result = evaluatePasswordStrength(password)
+    return result ? { className: result.className, labelKey: result.labelKey } : null
   }, [password])
 
   async function onSubmit(e: React.FormEvent) {
@@ -76,7 +75,7 @@ export default function Register() {
       navigate('/dashboard')
     } catch (err) {
       const e = err as Error
-      setError(e.message || 'Register failed')
+      setError(e.message || t('common.registerFailed'))
     } finally {
       setLoading(false)
     }
@@ -122,24 +121,24 @@ export default function Register() {
             <ShieldCheck size={28} />
           </motion.div>
           <motion.h1 className="auth-hero-title" variants={item}>
-            Join the Network<br />Make a Difference
+            {t('auth.registerHeroTitle')}
           </motion.h1>
           <motion.p className="auth-hero-sub" variants={item}>
-            Register to coordinate disaster relief efforts, manage resources, and connect with volunteers and NGOs across the nation.
+            {t('auth.registerHeroSub')}
           </motion.p>
 
           <motion.div className="auth-stats-grid" variants={item}>
             {STATS.map((s) => (
-              <motion.div key={s.label} className="auth-stat" whileHover={{ scale: 1.05 }}>
+              <motion.div key={s.key} className="auth-stat" whileHover={{ scale: 1.05 }}>
                 <div className="auth-stat-value">{s.value}</div>
-                <div className="auth-stat-label">{s.label}</div>
+                  <div className="auth-stat-label">{t(s.key)}</div>
               </motion.div>
             ))}
           </motion.div>
 
           <motion.div className="auth-mission" variants={item}>
             <Users size={14} aria-hidden="true" />
-            <span>Join 2,800+ volunteers already on the platform</span>
+            <span>{t('auth.registerMission')}</span>
           </motion.div>
         </div>
       </motion.div>
@@ -157,8 +156,8 @@ export default function Register() {
                 <MapPin size={22} />
               </div>
               <div>
-                <div className="auth-logo-text">DisasterRelief</div>
-                <div className="auth-logo-sub">Government of India</div>
+                <div className="auth-logo-text">{t('auth.appName')}</div>
+                <div className="auth-logo-sub">{t('auth.govtOfIndia')}</div>
               </div>
             </motion.div>
 
@@ -166,16 +165,16 @@ export default function Register() {
 
             {/* Social Login */}
             <motion.div className="auth-social" variants={item}>
-              <button className="auth-social-btn" aria-label="Sign up with Google">
+              <button className="auth-social-btn" aria-label={t('auth.signUpWithGoogle')} onClick={() => handleSocialLogin('google')}>
                 <Globe size={18} aria-hidden="true" /> Google
               </button>
-              <button className="auth-social-btn" aria-label="Sign up with GitHub">
+              <button className="auth-social-btn" aria-label={t('auth.signUpWithGitHub')} onClick={() => handleSocialLogin('github')}>
                 <GitBranch size={18} aria-hidden="true" /> GitHub
               </button>
             </motion.div>
 
             <motion.div className="auth-divider" variants={item}>
-              <span>or continue with email</span>
+              <span>{t('auth.orEmail')}</span>
             </motion.div>
 
             {/* Form */}
@@ -184,25 +183,25 @@ export default function Register() {
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">
-                  <input id="reg-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required className="auth-input" placeholder=" " />
-                  <label htmlFor="reg-name" className="auth-label">Full name</label>
+                  <input id="reg-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} className="auth-input" placeholder=" " />
+                  <label htmlFor="reg-name" className="auth-label">{t('auth.fullName')}</label>
                   <User size={16} className="auth-input-icon" aria-hidden="true" />
                 </div>
               </motion.div>
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">
-                  <input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="auth-input" placeholder=" " />
-                  <label htmlFor="reg-email" className="auth-label">Email address</label>
+                  <input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={128} className="auth-input" placeholder=" " />
+                  <label htmlFor="reg-email" className="auth-label">{t('auth.email')}</label>
                   <Mail size={16} className="auth-input-icon" aria-hidden="true" />
                 </div>
               </motion.div>
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">
-                  <input id="reg-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required className="auth-input" placeholder=" " />
-                  <label htmlFor="reg-password" className="auth-label">Password</label>
-                  <button type="button" className="auth-pw-toggle" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'} tabIndex={-1}>
+                  <input id="reg-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required maxLength={128} className="auth-input" placeholder=" " />
+                  <label htmlFor="reg-password" className="auth-label">{t('auth.password')}</label>
+                  <button type="button" className="auth-pw-toggle" onClick={() => setShowPassword(!showPassword)}                     aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={-1}>
                     {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                   </button>
                 </div>
@@ -215,7 +214,7 @@ export default function Register() {
                       <div key={i} className={`password-strength-bar ${strength.className}`} />
                     ))}
                   </div>
-                  <div className="password-strength-label">{strength.label}</div>
+                  <div className="password-strength-label">{t(strength.labelKey)}</div>
                 </motion.div>
               )}
 
