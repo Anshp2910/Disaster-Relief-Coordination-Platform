@@ -1,5 +1,8 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Upload, FileText, CheckCircle, AlertTriangle, Download, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { Modal, PageHeader, ErrorState } from '../components/ui'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 
@@ -291,214 +294,246 @@ export default function BulkImport() {
   return (
     <div className="container">
       <div className="card">
-        <h2 className="pageTitle m-0 mb text-20">{t('bulkImport.title')}</h2>
+        <PageHeader title={t('bulkImport.title')} />
 
-        <div className="flex mb-lg gap-6">
-          <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`}>{t('bulkImport.requestsTab')}</button>
-          <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`}>{t('bulkImport.resourcesTab')}</button>
-        </div>
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
+        >
+          <motion.div className="flex mb-lg gap-6" variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } }}>
+            <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`} aria-label={t('bulkImport.requestsTab')}>{t('bulkImport.requestsTab')}</button>
+            <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`} aria-label={t('bulkImport.resourcesTab')}>{t('bulkImport.resourcesTab')}</button>
+          </motion.div>
 
-        {error && <div className="errorText mb">{error}</div>}
+          {error && <ErrorState message={error} />}
 
-        {step === 'upload' && (
-          <>
-            <div className="flex flex-gap-sm mb-lg">
-              <button onClick={downloadTemplate} className="rounded-sm cursor-pointer p-sm border-gov bg-gov-white text-13">
-                {t('bulkImport.downloadTemplate')}
-              </button>
-              <button onClick={exportData} className="btnPrimary text-13 p-sm">{t('bulkImport.exportCSV')}</button>
-            </div>
-
-            <div className="p-2xl text-center border-dashed-2 rounded">
-              <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
-              <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
-              <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" />
-              <label htmlFor="csv-upload" className="btnPrimary cursor-pointer inline-block text-13 p-sm">
-                {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
-              </label>
-            </div>
-          </>
-        )}
-
-        {step === 'mapping' && (
-          <>
-            <div className="flex-between mb">
-              <div className="text-base text-semi">Column Mapping</div>
-              <div className="text-sm text-muted">{rawData.length} data rows parsed</div>
-            </div>
-
-            {unmatchedCount > 0 && (
-              <div className="mb p-sm rounded-sm" style={{ background: 'var(--warning-soft, #fff3cd)', border: '1px solid rgba(255,193,7,.3)' }}>
-                <span className="text-13 text-semi" style={{ color: 'var(--warning, #856404)' }}>
-                  ⚠ {unmatchedCount} column{unmatchedCount > 1 ? 's' : ''} will be ignored. Assign a system field or they will be skipped.
-                </span>
-                <ul className="mt-xs mb-0 text-sm" style={{ color: 'var(--warning, #856404)' }}>
-                  {columnMaps.filter((m) => m.systemCol === '').map((m) => (
-                    <li key={m.csvCol}>"{m.csvCol}"</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div className="overflow-x-auto rounded-sm border-gov mb">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-elevated">
-                    <th className="text-left p-sm border-bottom">CSV Column</th>
-                    <th className="text-left p-sm border-bottom">→</th>
-                    <th className="text-left p-sm border-bottom">System Field</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {columnMaps.map((m) => (
-                    <tr key={m.csvCol}>
-                      <td className="p-sm border-bottom text-nowrap">{m.csvCol}</td>
-                      <td className="p-sm border-bottom text-center">→</td>
-                      <td className="p-sm border-bottom">
-                        <select
-                          value={m.systemCol}
-                          onChange={(e) => updateColumnMap(m.csvCol, e.target.value)}
-                          className="rounded-sm border-gov text-sm w-100"
-                          style={{ padding: '4px 8px' }}
-                        >
-                          <option value="">— Ignore —</option>
-                          {systemFields.map((f) => (
-                            <option key={f} value={f}>{f}</option>
-                          ))}
-                        </select>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="flex flex-gap-sm">
-              <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
-              <button onClick={confirmMapping} className="btnPrimary text-sm p-sm">
-                Confirm Mapping →
-              </button>
-            </div>
-          </>
-        )}
-
-        {step === 'preview' && preview && (
-          <>
-            <div className="flex-between mb">
-              <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
-              <div className="flex flex-gap-sm">
-                <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
-                <button
-                  onClick={handleSubmitImport}
-                  disabled={importing || selected.size === 0}
-                  className="btnPrimary text-sm p-xs"
-                >
-                  {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
+          {step === 'upload' && (
+            <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+              <div className="flex flex-gap-sm mb-lg">
+                <button onClick={downloadTemplate} className="rounded-sm cursor-pointer p-sm border-gov bg-gov-white text-13 flex items-center gap-xs" aria-label={t('bulkImport.downloadTemplate')}>
+                  <Download size={16} />
+                  {t('bulkImport.downloadTemplate')}
+                </button>
+                <button onClick={exportData} className="btnPrimary text-13 p-sm flex items-center gap-xs" aria-label={t('bulkImport.exportCSV')}>
+                  <Download size={16} />
+                  {t('bulkImport.exportCSV')}
                 </button>
               </div>
-            </div>
 
-            <div className="overflow-x-auto rounded-sm border-gov">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-elevated">
-                      <th className="text-center p-sm border-bottom w-40">
-                        <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
-                        <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" />
-                      </th>
-                      <th className="text-center p-sm border-bottom w-40">#</th>
-                    {headers.map((h) => (
-                      <th key={h} className="text-nowrap p-sm border-bottom">{h}</th>
+              <div className="p-2xl text-center border-dashed-2 rounded">
+                <div className="mb-sm text-accent-blue">
+                  <Upload size={32} className="inline-block" aria-hidden="true" />
+                </div>
+                <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
+                <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
+                <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label="Upload CSV file" />
+                <label htmlFor="csv-upload" className="btnPrimary cursor-pointer inline-block text-13 p-sm">
+                  {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
+                </label>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 'mapping' && (
+            <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+              <div className="flex-between mb">
+                <div className="text-base text-semi flex items-center gap-xs">
+                  <FileText size={16} aria-hidden="true" />
+                  Column Mapping
+                </div>
+                <div className="text-sm text-muted">{rawData.length} data rows parsed</div>
+              </div>
+
+              {unmatchedCount > 0 && (
+                <div className="mb p-sm rounded-sm" style={{ background: 'var(--warning-soft, #fff3cd)', border: '1px solid rgba(255,193,7,.3)' }}>
+                  <span className="text-13 text-semi flex items-center gap-xs" style={{ color: 'var(--warning, #856404)' }}>
+                    <AlertTriangle size={14} />
+                    {unmatchedCount} column{unmatchedCount > 1 ? 's' : ''} will be ignored. Assign a system field or they will be skipped.
+                  </span>
+                  <ul className="mt-xs mb-0 text-sm" style={{ color: 'var(--warning, #856404)' }}>
+                    {columnMaps.filter((m) => m.systemCol === '').map((m) => (
+                      <li key={m.csvCol}>"{m.csvCol}"</li>
                     ))}
-                      <th className="p-sm border-bottom w-60">{t('bulkImport.edit')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(() => {
-                    const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
-                    const rowOffset = (previewPage - 1) * PREVIEW_PAGE_SIZE
-                    const paginatedPreview = preview.slice(rowOffset, rowOffset + PREVIEW_PAGE_SIZE)
-                    return paginatedPreview.map((row, idx) => {
-                    const rowId = row._rowId as string | number
-                    return (
-                    <tr
-                      key={rowId}
-                      style={{
-                        background: editingRow === rowId ? 'var(--accent-soft)' : selected.has(rowId) ? 'var(--success-soft)' : 'var(--gov-bg)',
-                        opacity: selected.has(rowId) ? 1 : 0.5,
-                      }}
-                    >
-                      <td className="text-center border-bottom p-xs">
-                        <input type="checkbox" checked={selected.has(rowId)} onChange={() => toggleRow(rowId)} aria-label={`Select row ${rowOffset + idx + 1}`} />
-                      </td>
-                      <td className="text-center text-muted border-bottom p-xs">{rowOffset + idx + 1}</td>
-                      {headers.map((h) => (
-                        <td key={h} className="text-ellipsis border-bottom max-w-200 p-xs" style={{ padding: '4px 10px' }}>
-                          {editingRow === rowId ? (
-                            <input
-                              value={row[h] as string || ''}
-                              onChange={(e) => updateCell(rowId, h, e.target.value)}
-                              className="w-full text-sm border-gov rounded-sm p-xs"
-                            />
-                          ) : (
-                            (row[h] as string) || <span className="text-muted">-</span>
-                          )}
-                        </td>
-                      ))}
-                      <td className="text-center border-bottom p-xs">
-                        <button
-                          onClick={() => setEditingRow(editingRow === rowId ? null : rowId)}
-                          className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
-                        >
-                          {editingRow === rowId ? t('bulkImport.done') : t('bulkImport.edit')}
-                        </button>
-                      </td>
+                  </ul>
+                </div>
+              )}
+
+              <div className="overflow-x-auto rounded-sm border-gov mb">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-elevated">
+                      <th className="text-left p-sm border-bottom">CSV Column</th>
+                      <th className="text-left p-sm border-bottom text-center"><ArrowRight size={14} aria-hidden="true" /></th>
+                      <th className="text-left p-sm border-bottom">System Field</th>
                     </tr>
-                    )
-                    })
-                  })()}
-                </tbody>
-              </table>
-            </div>
-            {(() => {
-              const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
-              if (totalPages <= 1) return null
-              return (
-                <div className="flex flex-center flex-gap-sm mt-sm">
+                  </thead>
+                  <tbody>
+                    {columnMaps.map((m) => (
+                      <tr key={m.csvCol}>
+                        <td className="p-sm border-bottom text-nowrap">{m.csvCol}</td>
+                        <td className="p-sm border-bottom text-center"><ArrowRight size={14} className="text-muted" aria-hidden="true" /></td>
+                        <td className="p-sm border-bottom">
+                          <select
+                            value={m.systemCol}
+                            onChange={(e) => updateColumnMap(m.csvCol, e.target.value)}
+                            className="rounded-sm border-gov text-sm w-100"
+                            style={{ padding: '4px 8px' }}
+                            aria-label={`Map column "${m.csvCol}" to system field`}
+                          >
+                            <option value="">— Ignore —</option>
+                            {systemFields.map((f) => (
+                              <option key={f} value={f}>{f}</option>
+                            ))}
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="flex flex-gap-sm">
+                <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
+                <button onClick={confirmMapping} className="btnPrimary text-sm p-sm flex items-center gap-xs">
+                  Confirm Mapping <ArrowRight size={14} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 'preview' && preview && (
+            <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+              <div className="flex-between mb">
+                <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
+                <div className="flex flex-gap-sm">
+                  <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
                   <button
-                    disabled={previewPage <= 1}
-                    onClick={() => setPreviewPage((p) => Math.max(1, p - 1))}
-                    className="text-sm p-xs border-gov rounded-sm cursor-pointer"
+                    onClick={handleSubmitImport}
+                    disabled={importing || selected.size === 0}
+                    className="btnPrimary text-sm p-xs flex items-center gap-xs"
                   >
-                    {t('dashboard.previous') || 'Previous'}
-                  </button>
-                  <span className="text-sm p-xs">{previewPage} / {totalPages}</span>
-                  <button
-                    disabled={previewPage >= totalPages}
-                    onClick={() => setPreviewPage((p) => Math.min(totalPages, p + 1))}
-                    className="text-sm p-xs border-gov rounded-sm cursor-pointer"
-                  >
-                    {t('dashboard.next') || 'Next'}
+                    {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
                   </button>
                 </div>
-              )
-            })()}
-          </>
-        )}
-
-        {result && (
-          <div className="mt-lg p rounded-sm" style={{ background: 'var(--success-soft)', border: '1px solid rgba(34,197,94,.2)' }}>
-            <div className="text-semi text-13 text-accent-green">{t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}</div>
-            {(result.errors as Array<Record<string, unknown>>)?.length > 0 && (
-              <div className="mt-sm">
-                <div className="text-sm text-semi text-red">{t('bulkImport.rowsHadErrors', { count: (result.errors as Array<Record<string, unknown>>).length })}</div>
-                {(result.errors as Array<Record<string, unknown>>).slice(0, 10).map((e: Record<string, unknown>, i: number) => (
-                  <div key={i} className="text-sm text-muted mt-xs">Row {e.row as string}: {(e.errors as string[]).join(', ')}</div>
-                ))}
               </div>
-            )}
-          </div>
-        )}
+
+              <div className="overflow-x-auto rounded-sm border-gov">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-elevated">
+                      <th className="text-center p-sm border-bottom w-40">
+                        <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
+                        <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" aria-label="Select all rows" />
+                      </th>
+                      <th className="text-center p-sm border-bottom w-40">#</th>
+                      {headers.map((h) => (
+                        <th key={h} className="text-nowrap p-sm border-bottom">{h}</th>
+                      ))}
+                      <th className="p-sm border-bottom w-60">{t('bulkImport.edit')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(() => {
+                      const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
+                      const rowOffset = (previewPage - 1) * PREVIEW_PAGE_SIZE
+                      const paginatedPreview = preview.slice(rowOffset, rowOffset + PREVIEW_PAGE_SIZE)
+                      return paginatedPreview.map((row, idx) => {
+                      const rowId = row._rowId as string | number
+                      return (
+                      <tr
+                        key={rowId}
+                        style={{
+                          background: editingRow === rowId ? 'var(--accent-soft)' : selected.has(rowId) ? 'var(--success-soft)' : 'var(--gov-bg)',
+                          opacity: selected.has(rowId) ? 1 : 0.5,
+                        }}
+                      >
+                        <td className="text-center border-bottom p-xs">
+                          <input type="checkbox" checked={selected.has(rowId)} onChange={() => toggleRow(rowId)} aria-label={`Select row ${rowOffset + idx + 1}`} />
+                        </td>
+                        <td className="text-center text-muted border-bottom p-xs">{rowOffset + idx + 1}</td>
+                        {headers.map((h) => (
+                          <td key={h} className="text-ellipsis border-bottom max-w-200 p-xs" style={{ padding: '4px 10px' }}>
+                            {editingRow === rowId ? (
+                              <input
+                                value={row[h] as string || ''}
+                                onChange={(e) => updateCell(rowId, h, e.target.value)}
+                                className="w-full text-sm border-gov rounded-sm p-xs"
+                                aria-label={`Edit ${h}`}
+                              />
+                            ) : (
+                              (row[h] as string) || <span className="text-muted">-</span>
+                            )}
+                          </td>
+                        ))}
+                        <td className="text-center border-bottom p-xs">
+                          <button
+                            onClick={() => setEditingRow(editingRow === rowId ? null : rowId)}
+                            className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
+                            aria-label={editingRow === rowId ? 'Done editing' : `Edit row ${rowOffset + idx + 1}`}
+                          >
+                            {editingRow === rowId ? t('bulkImport.done') : t('bulkImport.edit')}
+                          </button>
+                        </td>
+                      </tr>
+                      )
+                      })
+                    })()}
+                  </tbody>
+                </table>
+              </div>
+              {(() => {
+                const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
+                if (totalPages <= 1) return null
+                return (
+                  <div className="flex flex-center flex-gap-sm mt-sm">
+                    <button
+                      disabled={previewPage <= 1}
+                      onClick={() => setPreviewPage((p) => Math.max(1, p - 1))}
+                      className="text-sm p-xs border-gov rounded-sm cursor-pointer flex items-center gap-xs"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft size={14} /> {t('dashboard.previous') || 'Previous'}
+                    </button>
+                    <span className="text-sm p-xs">{previewPage} / {totalPages}</span>
+                    <button
+                      disabled={previewPage >= totalPages}
+                      onClick={() => setPreviewPage((p) => Math.min(totalPages, p + 1))}
+                      className="text-sm p-xs border-gov rounded-sm cursor-pointer flex items-center gap-xs"
+                      aria-label="Next page"
+                    >
+                      {t('dashboard.next') || 'Next'} <ChevronRight size={14} />
+                    </button>
+                  </div>
+                )
+              })()}
+            </motion.div>
+          )}
+
+          {result && (
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
+              className="mt-lg p rounded-sm"
+              style={{ background: 'var(--success-soft)', border: '1px solid rgba(34,197,94,.2)' }}
+            >
+              <div className="text-semi text-13 text-accent-green flex items-center gap-xs">
+                <CheckCircle size={16} />
+                {t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}
+              </div>
+              {(result.errors as Array<Record<string, unknown>>)?.length > 0 && (
+                <div className="mt-sm">
+                  <div className="text-sm text-semi text-red flex items-center gap-xs">
+                    <AlertTriangle size={14} />
+                    {t('bulkImport.rowsHadErrors', { count: (result.errors as Array<Record<string, unknown>>).length })}
+                  </div>
+                  {(result.errors as Array<Record<string, unknown>>).slice(0, 10).map((e: Record<string, unknown>, i: number) => (
+                    <div key={i} className="text-sm text-muted mt-xs">Row {e.row as string}: {(e.errors as string[]).join(', ')}</div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </motion.div>
       </div>
     </div>
   )

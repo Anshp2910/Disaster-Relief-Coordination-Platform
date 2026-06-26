@@ -1,9 +1,12 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { MapPin, Thermometer, Plus, Edit, Trash2, Search, Filter, Users, Activity, AlertTriangle, Droplets, Wind } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { SkeletonMap } from '../components/Skeleton'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard } from '../components/ui'
+import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
@@ -63,7 +66,7 @@ const SEVERITY_COLORS: Record<string, { fill: string; stroke: string; weight: nu
 }
 
 const DISASTER_ICONS: Record<string, string> = {
-  Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
+  Flood: '\u{1F327}', Earthquake: '\u{1F30A}', Cyclone: '\u{1F300}', Drought: '\u2600', Fire: '\u{1F525}', Landslide: '\u26F0', Other: '\u{1F4CC}',
 }
 
 const COVERAGE_COLORS: Record<string, string> = {
@@ -77,6 +80,16 @@ const DEFAULT_CENTER: [number, number] = [20.5937, 78.9629]
 const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { transition: { staggerChildren: 0.05 } },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
+}
 
 function buildPopup(zone: Zone, color: { fill: string }, t: (key: string) => string) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus || ''] || 'var(--text-muted)'
@@ -312,224 +325,247 @@ export default function ZoneHeatMap() {
   const updateForm = (field: keyof ZoneForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   return (
-    <div className="container">
-      <div className="card">
-        <div className="headerRow">
-          <div>
-            <h1 className="pageTitle">{t('zones.title')}</h1>
-            <div className="small mt-xs">
-              {zones.length} zones &middot; {totalOpen} open requests &middot; {totalGap} coverage gaps &middot; {totalAffected.toLocaleString()} affected
-            </div>
-          </div>
+    <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+      <PageHeader
+        title={t('zones.title')}
+        subtitle={`${zones.length} zones \u00B7 ${totalOpen} open requests \u00B7 ${totalGap} coverage gaps \u00B7 ${totalAffected.toLocaleString()} affected`}
+        actions={
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <button className="btnPrimary" onClick={openCreate} aria-label="Add zone">{t('zones.addZone')}</button>
+              <button className="btnPrimary" onClick={openCreate} aria-label="Add zone">
+                <Plus size={16} />
+                <span className="ml-xs">{t('zones.addZone')}</span>
+              </button>
             )}
             <button className="btnSecondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
-              {weatherLoading ? '...' : '🌤 ' + (t('zones.weather') || 'Weather')}
+              <Thermometer size={16} />
+              <span className="ml-xs">{weatherLoading ? '...' : (t('zones.weather') || 'Weather')}</span>
             </button>
           </div>
-        </div>
-        {error && <div className="errorText mt-sm">{error}</div>}
+        }
+      />
 
-        <form onSubmit={(e) => { e.preventDefault(); load() }} className="flex flex-gap-sm mt-md">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('zones.searchPlaceholder') || 'Search zones...'}
-            className="flex-1"
-          />
-        </form>
+      {error && <ErrorState message={error} onRetry={load} />}
 
-        <div className="flex flex-gap-xs mt-sm flex-wrap">
-          {STATUS_OPTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setFilterStatus(s) }}
-              className={`filter-pill text-xs ${filterStatus === s ? 'active' : ''}`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
+      <FilterBar
+        search={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={t('zones.searchPlaceholder') || 'Search zones...'}
+        filters={[
+          {
+            key: 'status',
+            label: 'Status',
+            options: STATUS_OPTIONS.map((s) => ({ key: s, label: s })),
+            value: filterStatus,
+            onChange: setFilterStatus,
+          },
+          {
+            key: 'severity',
+            label: 'Severity',
+            options: SEVERITY_OPTIONS.map((s) => ({ key: s, label: s })),
+            value: filterSeverity,
+            onChange: setFilterSeverity,
+          },
+          {
+            key: 'disaster',
+            label: 'Disaster Type',
+            options: DISASTER_OPTIONS.map((d) => ({ key: d, label: d })),
+            value: filterDisaster,
+            onChange: setFilterDisaster,
+          },
+        ]}
+      />
 
-        <div className="flex flex-gap-xs mt-xs flex-wrap">
-          {SEVERITY_OPTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setFilterSeverity(s) }}
-              className={`filter-pill text-xs ${filterSeverity === s ? 'active' : ''}`}
-              style={s !== 'All' && SEVERITY_COLORS[s] ? { borderLeft: `3px solid ${SEVERITY_COLORS[s].fill}` } : {}}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
+      <motion.div variants={containerVariants} initial="hidden" animate="show">
+        <motion.div className="flex flex-gap mt-md flex-wrap" variants={itemVariants}>
+          <div className="flex-1">
+            <div className="card p-0 relative">
+              {loading && (
+                <div className="inset-0 z-100">
+                  <SkeletonMap height="65vh" />
+                </div>
+              )}
+              {!loading && zones.length === 0 && (
+                <EmptyState
+                  icon=' '
+                  title={t('zones.noZones')}
+                  description={t('zones.noZonesDesc') || 'No disaster zones defined yet'}
+                  action={currentUser?.role === 'admin' ? { onClick: openCreate, label: t('zones.createZone') } : undefined}
+                />
+              )}
+              <div ref={mapRef} className="map-container-full h-65vh w-full" />
+            </div>
 
-        <div className="flex flex-gap-xs mt-xs flex-wrap">
-          {DISASTER_OPTIONS.map((d) => (
-            <button
-              key={d}
-              onClick={() => { setFilterDisaster(d) }}
-              className={`filter-pill text-xs ${filterDisaster === d ? 'active' : ''}`}
-            >
-              {d !== 'All' ? `${DISASTER_ICONS[d]} ` : ''}{d}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex flex-gap mt-md flex-wrap">
-        <div className="flex-1">
-          <div className="card p-0 relative">
-            {loading && (
-              <div className="inset-0 z-100">
-                <SkeletonMap height="65vh" />
-              </div>
-            )}
-            {!loading && zones.length === 0 && (
-              <EmptyState
-                icon='🗺️'
-                title={t('zones.noZones')}
-                description={t('zones.noZonesDesc') || 'No disaster zones defined yet'}
-                action={currentUser?.role === 'admin' ? { onClick: openCreate, label: t('zones.createZone') } : undefined}
-              />
-            )}
-            <div ref={mapRef} className="map-container-full h-65vh w-full" />
+            <div className="flex flex-gap-lg mt-sm flex-wrap">
+              {Object.entries(SEVERITY_COLORS).map(([sev, c]) => (
+                <div key={sev} className="gap-row-xs text-sm flex items-center gap-xs">
+                  <div className="w-3 h-3 rounded-sm" style={{ background: c.fill, border: `2px solid ${c.stroke}` }} />
+                  <span>{sev}</span>
+                </div>
+              ))}
+              <span className="text-sm text-muted">&middot;</span>
+              {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
+                <div key={cov} className="gap-row-xs text-sm flex items-center gap-xs">
+                  <div className="w-3 h-3 rounded-sm" style={{ background: c }} />
+                  <span>{cov}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="flex flex-gap-lg mt-sm flex-wrap">
-            {Object.entries(SEVERITY_COLORS).map(([sev, c]) => (
-              <div key={sev} className="gap-row-xs text-sm">
-                <div className="icon-12" style={{ background: c.fill, border: `2px solid ${c.stroke}` }} />
-                <span>{sev}</span>
+          {selectedZone && (
+            <div className="card flex-shrink-0 w-320">
+              <div className="flex flex-between mb-sm">
+                <div>
+                  <h3 className="m-0 text-lg flex items-center gap-xs">
+                    <MapPin size={16} />
+                    {selectedZone.name}
+                  </h3>
+                  <div className="text-sm mt-xs text-muted">
+                    {selectedZone.disasterType} &middot; {selectedZone.status}
+                  </div>
+                </div>
+                <button onClick={() => setSelectedZone(null)} className="bg-none border-none cursor-pointer text-xl p-0" aria-label={t('common.close')}>&times;</button>
               </div>
-            ))}
-            <span className="text-sm text-muted">&middot;</span>
-            {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
-              <div key={cov} className="gap-row-xs text-sm">
-                <div className="w-10 h-10 rounded-sm" style={{ background: c }} />
-                <span>{cov}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {selectedZone && (
-          <div className="card flex-shrink-0 w-320">
-            <div className="flex flex-between mb-sm">
-              <div>
-                <h3 className="m-0 text-lg">
-                  {DISASTER_ICONS[selectedZone.disasterType || '']} {selectedZone.name}
-                </h3>
-                <div className="text-sm mt-xs text-muted">
-                  {selectedZone.disasterType} &middot; {selectedZone.status}
+              <div className="flex flex-gap-xs mb-sm flex-wrap">
+                <span className="severity-badge" data-severity={selectedZone.severity}>
+                  {selectedZone.severity}
+                </span>
+                <span className="coverage-badge" data-coverage={selectedZone.coverageStatus}>
+                  {selectedZone.coverageStatus} coverage
+                </span>
+              </div>
+
+              <div className="text-base">
+                <div className="flex items-center gap-xs">
+                  <MapPin size={14} />
+                  <span>{t('zones.radiusLabel')} <strong>{selectedZone.radiusKm} {t('zones.km')}</strong></span>
+                </div>
+                {(selectedZone.affectedPopulation ?? 0) > 0 && (
+                  <div className="flex items-center gap-xs">
+                    <Users size={14} />
+                    <span>Affected: <strong>{selectedZone.affectedPopulation?.toLocaleString()}</strong></span>
+                  </div>
+                )}
+                <div className="flex items-center gap-xs">
+                  <Activity size={14} />
+                  <span>Open requests: <strong className="text-red">{selectedZone.openRequests}</strong></span>
+                </div>
+                <div className="flex items-center gap-xs">
+                  <MapPin size={14} />
+                  <span>{t('zones.totalResources')}: <strong>{selectedZone.totalResources}</strong> {t('zones.units')}</span>
                 </div>
               </div>
-              <button onClick={() => setSelectedZone(null)} className="bg-none border-none cursor-pointer text-xl p-0" aria-label={t('common.close')}>&times;</button>
-            </div>
 
-            <div className="flex flex-gap-xs mb-sm flex-wrap">
-              <span className="severity-badge" data-severity={selectedZone.severity}>
-                {selectedZone.severity}
-              </span>
-              <span className="coverage-badge" data-coverage={selectedZone.coverageStatus}>
-                {selectedZone.coverageStatus} coverage
-              </span>
-            </div>
-
-            <div className="text-base">
-              <div>{t('zones.radiusLabel')} <strong>{selectedZone.radiusKm} {t('zones.km')}</strong></div>
-              {(selectedZone.affectedPopulation ?? 0) > 0 && (
-                <div>Affected: <strong>{selectedZone.affectedPopulation?.toLocaleString()}</strong></div>
+              {selectedZone.stats && (selectedZone.stats.openRequests ?? 0) > 0 && (
+                <div className="mt-md rounded-sm text-sm p-sm bg-warning-soft flex items-center gap-xs">
+                  <AlertTriangle size={14} />
+                  <span><strong className="text-red">{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}</span>
+                </div>
               )}
-              <div>Open requests: <strong className="text-red">{selectedZone.openRequests}</strong></div>
-              <div>{t('zones.totalResources')}: <strong>{selectedZone.totalResources}</strong> {t('zones.units')}</div>
+
+              {currentUser?.role === 'admin' && (
+                <div className="flex flex-gap-sm mt-md">
+                  <button onClick={() => openEdit(selectedZone)} className="text-sm p-xs flex items-center gap-xs" aria-label={t('common.edit')}>
+                    <Edit size={14} />
+                    {t('common.edit')}
+                  </button>
+                  <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger text-sm p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
+                    <Trash2 size={14} />
+                    {t('common.delete')}
+                  </button>
+                </div>
+              )}
             </div>
+          )}
 
-            {selectedZone.stats && (selectedZone.stats.openRequests ?? 0) > 0 && (
-              <div className="mt-md rounded-sm text-sm p-sm bg-warning-soft">
-                <strong className="text-red">{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}
+          {weather && (
+            <div className="card flex-shrink-0 w-280">
+              <div className="flex flex-between mb-sm">
+                <h4 className="m-0 text-sm text-accent-blue flex items-center gap-xs">
+                  <Thermometer size={14} />
+                  {t('zones.weather')}
+                </h4>
+                <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}>&times;</button>
               </div>
-            )}
+              <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
+              <div className="text-sm text-muted mb-sm flex items-center gap-xs">
+                <Activity size={14} />
+                {weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}
+              </div>
+              <div className="text-sm grid-2 gap-8">
+                {weather.humidity != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.humidity')}</span><span>{weather.humidity}%</span></>}
+                {weather.windSpeed != null && <><span className="text-muted flex items-center gap-xs"><Wind size={14} /> {t('zones.wind')}</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
+                {weather.precipitation != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.precipitation')}</span><span>{weather.precipitation} mm</span></>}
+                {weather.dailyPrecipitation != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> 24h total</span><span>{weather.dailyPrecipitation} mm</span></>}
+              </div>
+              <button onClick={fetchWeather} className="text-xs mt-sm p-xs" disabled={weatherLoading}>
+                {weatherLoading ? '...' : t('zones.refreshWeather') || 'Refresh'}
+              </button>
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
 
-            {currentUser?.role === 'admin' && (
-              <div className="flex flex-gap-sm mt-md">
-                <button onClick={() => openEdit(selectedZone)} className="text-sm p-xs" aria-label={t('common.edit')}>{t('common.edit')}</button>
-                <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger text-sm p-xs" aria-label={t('common.delete')}>{t('common.delete')}</button>
-              </div>
-            )}
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}
+      >
+        <form onSubmit={handleSubmit} className="grid flex-gap-sm">
+          <label htmlFor="zone-name" className="sr-only">{t('zones.zoneNamePlaceholder')}</label>
+          <input id="zone-name" placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />
+
+          <div className="grid-3-responsive">
+            <label htmlFor="zone-disastertype" className="sr-only">Disaster type</label>
+            <select id="zone-disastertype" value={form.disasterType} onChange={updateForm('disasterType')}>
+              {Object.keys(DISASTER_ICONS).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+            <label htmlFor="zone-severity" className="sr-only">Severity</label>
+            <select id="zone-severity" value={form.severity} onChange={updateForm('severity')}>
+              {Object.keys(SEVERITY_COLORS).map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <label htmlFor="zone-status" className="sr-only">Status</label>
+            <select id="zone-status" value={form.status} onChange={updateForm('status')}>
+              {['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
           </div>
-        )}
 
-        {weather && (
-          <div className="card flex-shrink-0 w-280">
-            <div className="flex flex-between mb-sm">
-              <h4 className="m-0 text-sm text-accent-blue">{t('zones.weather')}</h4>
-              <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}>&times;</button>
-            </div>
-            <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
-            <div className="text-sm text-muted mb-sm">{weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}</div>
-            <div className="text-sm grid-2 gap-8">
-              {weather.humidity != null && <><span className="text-muted">{t('zones.humidity')}</span><span>{weather.humidity}%</span></>}
-              {weather.windSpeed != null && <><span className="text-muted">{t('zones.wind')}</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
-              {weather.precipitation != null && <><span className="text-muted">{t('zones.precipitation')}</span><span>{weather.precipitation} mm</span></>}
-              {weather.dailyPrecipitation != null && <><span className="text-muted">24h total</span><span>{weather.dailyPrecipitation} mm</span></>}
-            </div>
-            <button onClick={fetchWeather} className="text-xs mt-sm p-xs" disabled={weatherLoading}>
-              {weatherLoading ? '...' : t('zones.refreshWeather') || 'Refresh'}
+          <div className="grid-3-responsive">
+            <label htmlFor="zone-centerlat" className="sr-only">{t('zones.centerLat')}</label>
+            <input id="zone-centerlat" type="number" step="any" placeholder={t('zones.centerLat')} value={form.centerLat} onChange={updateForm('centerLat')} required />
+            <label htmlFor="zone-centerlng" className="sr-only">{t('zones.centerLng')}</label>
+            <input id="zone-centerlng" type="number" step="any" placeholder={t('zones.centerLng')} value={form.centerLng} onChange={updateForm('centerLng')} required />
+          </div>
+
+          <div className="grid-3-responsive">
+            <label htmlFor="zone-radius" className="sr-only">{t('zones.radiusKm')}</label>
+            <input id="zone-radius" type="number" placeholder={t('zones.radiusKm')} value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
+            <label htmlFor="zone-population" className="sr-only">{t('zones.affectedPopulationPlaceholder')}</label>
+            <input id="zone-population" type="number" placeholder={t('zones.affectedPopulationPlaceholder')} value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
+          </div>
+
+          <label htmlFor="zone-description" className="sr-only">{t('zones.description')}</label>
+          <textarea id="zone-description" placeholder={t('zones.description')} value={form.description} onChange={updateForm('description')} rows={2} />
+          <label htmlFor="zone-notes" className="sr-only">{t('zones.notes')}</label>
+          <textarea id="zone-notes" placeholder={t('zones.notes')} value={form.notes} onChange={updateForm('notes')} rows={2} />
+
+          <div className="flex flex-gap-sm mt-xs">
+            <button type="submit" className="btnPrimary" disabled={saving} aria-label={t('common.submit')}>
+              {saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}
             </button>
+            <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
           </div>
-        )}
-      </div>
-
-      {showForm && (
-        <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="card overflow-auto w-500" style={{ maxHeight: '90vh' }}>
-            <h3 className="m-0 mb text-lg">{editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}</h3>
-            <form onSubmit={handleSubmit} className="grid flex-gap-sm">
-              <input placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />
-
-              <div className="grid-3-responsive">
-                <select value={form.disasterType} onChange={updateForm('disasterType')}>
-                  {Object.keys(DISASTER_ICONS).map((d) => (
-                    <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>
-                  ))}
-                </select>
-                <select value={form.severity} onChange={updateForm('severity')}>
-                  {Object.keys(SEVERITY_COLORS).map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-                <select value={form.status} onChange={updateForm('status')}>
-                  {['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="grid-3-responsive">
-                <input type="number" step="any" placeholder={t('zones.centerLat')} value={form.centerLat} onChange={updateForm('centerLat')} required />
-                <input type="number" step="any" placeholder={t('zones.centerLng')} value={form.centerLng} onChange={updateForm('centerLng')} required />
-              </div>
-
-              <div className="grid-3-responsive">
-                <input type="number" placeholder={t('zones.radiusKm')} value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
-                <input type="number" placeholder={t('zones.affectedPopulationPlaceholder')} value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
-              </div>
-
-              <textarea placeholder={t('zones.description')} value={form.description} onChange={updateForm('description')} rows={2} />
-              <textarea placeholder={t('zones.notes')} value={form.notes} onChange={updateForm('notes')} rows={2} />
-
-              <div className="flex flex-gap-sm mt-xs">
-                <button type="submit" className="btnPrimary" disabled={saving} aria-label={t('common.submit')}>{saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}</button>
-                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+        </form>
+      </Modal>
       {ConfirmDialog}
-    </div>
+    </motion.div>
   )
 }

@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { ArrowLeft, Edit } from 'lucide-react'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
 
@@ -43,34 +45,60 @@ export default function EditRequest() {
 
   if (fetching) {
     return (
-      <div className="container max-w-sm">
+      <motion.div
+        className="container max-w-sm"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      >
         <div className="card">
-          <div className="small muted">{t('editRequest.loadingRequest')}</div>
+          <div className="small muted flex items-center gap-xs">
+            <Edit size={14} /> {t('editRequest.loadingRequest')}
+          </div>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
   if (error) {
     return (
-      <div className="container max-w-sm">
+      <motion.div
+        className="container max-w-sm"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      >
         <div className="card">
           <div className="errorText">{error}</div>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
   return (
-    <RequestForm
-      initialData={loadedRequest as Record<string, unknown> | undefined}
-      title={t('editRequest.title')}
-      subtitle={t('editRequest.subtitle')}
-      submitLabel={t('editRequest.saving')}
-      submitButtonLabel={t('editRequest.saveChanges')}
-      onSubmit={async (data) => { await clientApi.updateRequest(id!, data); navigate('/dashboard') }}
-      onCancel={() => navigate('/dashboard')}
-      showStatus
-    />
+    <motion.div
+      className="container max-w-sm"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <button
+        onClick={() => navigate('/dashboard')}
+        className="mb btn-ghost btn-sm flex items-center gap-xs"
+        aria-label="Go back to dashboard"
+      >
+        <ArrowLeft size={16} /> Back
+      </button>
+      <RequestForm
+        initialData={loadedRequest as Record<string, unknown> | undefined}
+        title={t('editRequest.title')}
+        subtitle={t('editRequest.subtitle')}
+        submitLabel={t('editRequest.saving')}
+        submitButtonLabel={t('editRequest.saveChanges')}
+        onSubmit={async (data) => { await clientApi.updateRequest(id!, data); navigate('/dashboard') }}
+        onCancel={() => navigate('/dashboard')}
+        showStatus
+      />
+    </motion.div>
   )
 }

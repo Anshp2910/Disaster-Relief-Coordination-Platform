@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Search, MapPin, Crosshair, Target, Users, Package, Activity } from 'lucide-react'
+import { PageHeader, ErrorState } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
@@ -222,10 +225,14 @@ export default function Geofencing() {
     )
   }
 
-  const renderResultSection = (items: (ZoneResult | RequestResult | ResourceResult)[], color: string, bgLight: string, countLabel: string, itemRenderer: (item: ZoneResult | RequestResult | ResourceResult) => React.ReactNode) => {
+  const renderResultSection = (items: (ZoneResult | RequestResult | ResourceResult)[], color: string, bgLight: string, countLabel: string, itemRenderer: (item: ZoneResult | RequestResult | ResourceResult) => React.ReactNode, icon?: React.ReactNode) => {
     const safeItems = Array.isArray(items) ? items : []
     return (
-      <div className="card text-center">
+      <motion.div
+        className="card text-center"
+        variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+      >
+        {icon && <div className="mb-xs" style={{ color }}>{icon}</div>}
         <div className="text-3xl text-bold" style={{ color }}>{safeItems.length}</div>
         <div className="small muted">{countLabel}</div>
         {safeItems.map((item, idx) => (
@@ -233,7 +240,7 @@ export default function Geofencing() {
             {itemRenderer(item)}
           </div>
         ))}
-      </div>
+      </motion.div>
     )
   }
 
@@ -243,25 +250,28 @@ export default function Geofencing() {
 
   return (
     <div className="container">
-      <div className="card">
-        <div className="headerRow">
-          <div>
-            <h2 className="pageTitle text-20">{t('nav.geofencing') || 'Geofencing Alerts'}</h2>
-            <div className="small mt-xs">{t('geofencing.subtitle')}</div>
-          </div>
-        </div>
+      <motion.div
+        className="card"
+        initial="hidden"
+        animate="show"
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
+      >
+        <PageHeader title={t('nav.geofencing') || 'Geofencing Alerts'} subtitle={t('geofencing.subtitle')} />
 
-        {error && <div className="errorText mt-sm">{error}</div>}
+        {error && <ErrorState message={error} />}
 
-        <div className="flex flex-gap-sm mt">
-          <label className="small text-nowrap">{t('geofencing.radiusLabel')}</label>
+        <motion.div className="flex flex-gap-sm mt items-center flex-wrap" variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+          <label className="small text-nowrap" htmlFor="geo-radius">{t('geofencing.radiusLabel')}</label>
           <input
+            id="geo-radius"
             type="number"
             value={radius}
             onChange={(e) => setRadius(Number(e.target.value))}
             min="1"
             max="500"
-            className="rounded-sm w-80 text-13 border-gov" style={{ padding: '6px 10px' }}
+            className="rounded-sm w-80 text-13 border-gov"
+            style={{ padding: '6px 10px' }}
+            aria-label={t('geofencing.radiusLabel')}
           />
           <input
             type="range"
@@ -271,35 +281,49 @@ export default function Geofencing() {
             max="500"
             className="w-160"
             style={{ accentColor: 'var(--gov-blue)' }}
+            aria-label="Radius slider"
           />
-          {position && <span className="small muted">{position.lat.toFixed(4)}, {position.lng.toFixed(4)}</span>}
+          {position && (
+            <span className="small muted flex items-center gap-xs">
+              <MapPin size={14} aria-hidden="true" />
+              {position.lat.toFixed(4)}, {position.lng.toFixed(4)}
+            </span>
+          )}
           <button
             onClick={useMyLocation}
             disabled={!navigator.geolocation}
-            className="text-sm btn-pill"
-            title="Use My Location"
+            className="text-sm btn-pill flex items-center gap-xs"
+            title={t('geofencing.useMyLocation') || 'Use My Location'}
+            aria-label={t('geofencing.useMyLocation') || 'Use My Location'}
           >
-            📍
+            <Crosshair size={16} />
           </button>
           <button
             onClick={checkArea}
             disabled={loading || !position}
-            className="btnPrimary text-sm p-sm"
+            className="btnPrimary text-sm p-sm flex items-center gap-xs"
+            aria-label={t('geofencing.checkArea')}
           >
+            <Target size={16} />
             {loading ? t('geofencing.checking') : t('geofencing.checkArea')}
           </button>
           <button
             onClick={toggleMonitoring}
             disabled={!position}
-            className={`text-sm p-sm ${monitoring ? 'btn-danger' : 'btn-pill'}`}
+            className={`text-sm p-sm flex items-center gap-xs ${monitoring ? 'btn-danger' : 'btn-pill'}`}
             style={monitoring ? { background: 'var(--gov-danger)', color: '#fff', border: 'none', borderRadius: '4px' } : {}}
+            aria-label={monitoring ? 'Stop monitoring' : 'Start monitoring'}
           >
-            {monitoring ? '⏹ Stop Monitoring' : '▶ Start Monitoring'}
+            <Activity size={16} />
+            {monitoring ? 'Stop Monitoring' : 'Start Monitoring'}
           </button>
-        </div>
+        </motion.div>
 
         {monitoring && (
-          <div className="flex flex-gap-sm mt-sm items-center">
+          <motion.div
+            className="flex flex-gap-sm mt-sm items-center"
+            variants={{ hidden: { opacity: 0 }, show: { opacity: 1 } }}
+          >
             <div
               style={{
                 width: 10,
@@ -308,44 +332,63 @@ export default function Geofencing() {
                 background: 'var(--gov-danger)',
                 animation: 'geofencePulse 1.5s ease-in-out infinite',
               }}
+              aria-hidden="true"
             />
             <span className="small muted text-12">Monitoring — auto-refreshes every 30s</span>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
-      <div className="card p-0 mt">
-        <div ref={mapRef} className="map-container-full map-container-60vh" />
-      </div>
+      <motion.div
+        className="card p-0 mt"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
+      >
+        <div ref={mapRef} className="map-container-full map-container-60vh" aria-label="Geofencing map" />
+      </motion.div>
 
       {result && (
-        <div className="grid-3 mt">
+        <motion.div
+          className="grid-3 mt"
+          initial="hidden"
+          animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
+        >
           {renderResultSection(
             result.zones || [],
             'var(--gov-blue)',
             'var(--accent-soft)',
             t('geofencing.zonesInArea'),
-            (z) => <>{'name' in z ? z.name : ''} <span className="text-muted">({'distanceKm' in z ? z.distanceKm : ''} km)</span></>
+            (z) => <>{'name' in z ? z.name : ''} <span className="text-muted">({'distanceKm' in z ? z.distanceKm : ''} km)</span></>,
+            <Target size={24} />
           )}
           {renderResultSection(
             result.requests || [],
             'var(--gov-danger)',
             'var(--danger-soft)',
             t('geofencing.requestsNearby'),
-            (r) => <>{'title' in r ? r.title : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} km)</span></>
+            (r) => <>{'title' in r ? r.title : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} km)</span></>,
+            <Activity size={24} />
           )}
           {renderResultSection(
             result.resources || [],
             'var(--gov-green)',
             'var(--success-soft)',
             t('geofencing.resourcesNearby'),
-            (r) => <>{'name' in r ? r.name : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} km)</span></>
+            (r) => <>{'name' in r ? r.name : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} km)</span></>,
+            <Package size={24} />
           )}
-        </div>
+        </motion.div>
       )}
 
       {checkHistory.length > 0 && (
-        <div className="card mt">
+        <motion.div
+          className="card mt"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+        >
           <div className="text-base text-semi mb-sm">Check History</div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -371,7 +414,7 @@ export default function Geofencing() {
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   )

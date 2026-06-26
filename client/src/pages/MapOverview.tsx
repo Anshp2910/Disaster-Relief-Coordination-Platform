@@ -1,5 +1,8 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
+﻿import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Map, Filter, MapPin, Layers } from 'lucide-react'
+import { PageHeader, ErrorState } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { useTranslation } from 'react-i18next'
@@ -151,18 +154,25 @@ export default function MapOverview() {
   })), [t])
 
   return (
-    <div className="container">
+    <motion.div
+      className="container"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+    >
       <div className="card mb-lg">
-        <div className="headerRow">
-          <h2 className="pageTitle m-0 text-xl">{t('dashboard.mapView')}</h2>
-          <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
-        </div>
-        <div className="flex flex-wrap mt gap-6">
+        <PageHeader
+          title={t('dashboard.mapView')}
+          actions={<button onClick={() => navigate('/dashboard')} aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
+        />
+        <div className="flex flex-wrap gap-6">
+          <Filter size={16} className="text-muted self-center" aria-hidden="true" />
           {filterOptions.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilterStatus(f.key)}
               className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
+              aria-label={`Filter by status: ${f.label}`}
             >
               {f.label}
             </button>
@@ -176,6 +186,7 @@ export default function MapOverview() {
               onClick={() => setFilterPriority(p)}
               className={`filter-pill text-xs ${filterPriority === p ? 'active' : ''}`}
               style={p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : undefined}
+              aria-label={`Filter by priority: ${p === 'All' ? 'All' : p}`}
             >
               {p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}
             </button>
@@ -188,6 +199,7 @@ export default function MapOverview() {
               key={c}
               onClick={() => setFilterCategory(c)}
               className={`filter-pill text-xs ${filterCategory === c ? 'active' : ''}`}
+              aria-label={`Filter by category: ${c === 'All' ? 'All' : c}`}
             >
               {c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}
             </button>
@@ -202,12 +214,11 @@ export default function MapOverview() {
           </div>
         )}
 
-        <div ref={mapRef} className="map-container-full w-full" />
+        <div ref={mapRef} className="map-container-full w-full" aria-label="Map overview of requests" />
 
         {!loading && error && (
           <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
-            <div className="text-base text-red mb-sm">{t('dashboard.error') || 'Error'}</div>
-            <div className="muted">{error}</div>
+            <ErrorState message={error} />
           </div>
         )}
 
@@ -219,11 +230,11 @@ export default function MapOverview() {
       <div className="flex flex-gap-lg mt flex-wrap">
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
           <div key={status} className="flex text-sm gap-6 items-center">
-            <div className="icon-12" style={{ background: color }} />
+            <MapPin size={14} style={{ color }} aria-hidden="true" />
             <span>{t(`statuses.${status}`)}</span>
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   )
 }

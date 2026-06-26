@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { Send, Paperclip, Image, Smile, User, ChevronLeft, MoreVertical, Phone, Video } from 'lucide-react'
+import { ErrorState } from '../components/ui'
 import { useSocket } from '../hooks/useSocket'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
@@ -235,11 +238,13 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
       <div className="flex flex-between flex-center p-sm border-bottom">
         <h3 className="m-0 text-sm text-accent-blue">{t('chat.title')}</h3>
-        {onClose && (
-          <button onClick={onClose} className="bg-none border-none cursor-pointer text-xl" aria-label={t('chat.close') || 'Close chat'}>
-            &times;
-          </button>
-        )}
+        <div className="flex items-center gap-xs">
+          {onClose && (
+            <button onClick={onClose} className="bg-none border-none cursor-pointer" aria-label={t('chat.close') || 'Close chat'}>
+              <ChevronLeft size={20} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div
@@ -263,19 +268,33 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
           if (isSystem) {
             return (
-              <div key={m._id || m.createdAt} className="flex flex-center">
-                <div className="text-xs text-muted bg-accent-soft rounded-xl p-xs">
-                  {m.text}
+              <motion.div
+                key={m._id || m.createdAt}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="flex flex-center">
+                  <div className="text-xs text-muted bg-accent-soft rounded-xl p-xs">
+                    {m.text}
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             )
           }
 
           return (
-            <div key={m._id || m.createdAt} className={`flex ${isMe ? 'justify-end' : ''}`}>
+            <motion.div
+              key={m._id || m.createdAt}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className={`flex ${isMe ? 'justify-end' : ''}`}
+            >
               <div className="max-w-75p">
                 {!isMe && (
-                  <div className="text-xs text-semi mb-xs" style={{ color: 'var(--gov-blue)' }}>
+                  <div className="text-xs text-semi mb-xs flex items-center gap-xs" style={{ color: 'var(--gov-blue)' }}>
+                    <User size={12} aria-hidden="true" />
                     {m.sender?.displayName || 'User'}
                   </div>
                 )}
@@ -291,7 +310,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                   {formatTime(m.createdAt)}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )
         })}
 
@@ -317,7 +336,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
       {selectedFile && (
         <div className="flex flex-gap-sm p-xs border-top bg-accent-soft items-center">
-          <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>\uD83D\uDCCE {selectedFile.name}</span>
+          <Paperclip size={14} aria-hidden="true" />
+          <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedFile.name}</span>
           <button onClick={() => setSelectedFile(null)} className="bg-none border-none cursor-pointer text-xs text-muted">&times;</button>
         </div>
       )}
@@ -336,7 +356,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           className="bg-none border-none cursor-pointer text-base p-0"
           aria-label="Attach file"
         >
-          \uD83D\uDCCE
+          <Paperclip size={18} />
         </button>
         <input
           ref={inputRef}
@@ -345,10 +365,11 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           placeholder={t('chat.typeMessage')}
           maxLength={2000}
           className="flex-1 text-sm rounded-sm p-sm border-gov"
+          aria-label={t('chat.typeMessage') || 'Type a message'}
         />
         <span className="text-xs text-muted self-center">{text.length}/2000</span>
-        <button type="submit" className="btnPrimary text-xs p-sm" disabled={(!text.trim() && !selectedFile) || sending}>
-          {sending ? '...' : t('chat.send')}
+        <button type="submit" className="btnPrimary text-xs p-sm flex items-center gap-xs" disabled={(!text.trim() && !selectedFile) || sending}>
+          {sending ? '...' : <><Send size={14} /> {t('chat.send')}</>}
         </button>
       </form>
     </div>

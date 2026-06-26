@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { AlertTriangle, Plus, Edit, Trash2, Search, Filter, MapPin, Clock, User, CheckCircle, XCircle, Activity } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard } from '../components/ui'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useSocket, registerRefreshListener } from '../hooks/useSocket'
@@ -42,7 +45,7 @@ interface IncidentForm {
 }
 
 const DISASTER_ICONS: Record<string, string> = {
-  Flood: '', Earthquake: '', Cyclone: '', Drought: '', Fire: '', Landslide: '', Other: '',
+  Flood: '\u{1F327}', Earthquake: '\u{1F30A}', Cyclone: '\u{1F300}', Drought: '\u2600', Fire: '\u{1F525}', Landslide: '\u26F0', Other: '\u{1F4CC}',
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
@@ -53,6 +56,16 @@ const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DEFAULT_CENTER: [number, number] = [20.5937, 78.9629]
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { transition: { staggerChildren: 0.05 } },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
+}
 
 function buildIncidentPopup(inc: Incident) {
   const color = SEVERITY_COLORS[inc.severity || ''] || 'var(--text-muted)'
@@ -257,186 +270,187 @@ export default function Incidents() {
   const updateForm = (field: keyof IncidentForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   return (
-    <div className="container">
-      <div className="card">
-        <div className="headerRow">
-          <div>
-            <h2 className="pageTitle text-2xl">{t('nav.incidents') || 'Incident Grouping'}</h2>
-            <div className="small mt-xs">{incidents.length} {t('incidents.incidentsTracked')}</div>
-          </div>
-          {currentUser?.role === 'admin' && (
-            <button className="btnPrimary" onClick={openCreate}>{t('incidents.createIncident')}</button>
-          )}
-        </div>
-
-        {error && <div className="errorText mt-sm">{error}</div>}
-
-        <form onSubmit={(e) => { e.preventDefault(); setPage(1); load() }} className="flex flex-gap-sm mt-md">
-          <label htmlFor="inc-search" className="sr-only">{t('incidents.searchPlaceholder')}</label>
-          <input
-            id="inc-search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('incidents.searchPlaceholder')}
-            className="flex-1 rounded-sm input-pill"
-          />
-          <button type="submit" className="btnPrimary text-sm">{t('incidents.search')}</button>
-        </form>
-
-        <div className="flex flex-gap-sm mt-md flex-wrap">
-          {STATUS_OPTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setFilterStatus(s); setPage(1) }}
-              className={`filter-pill ${filterStatus === s ? 'active' : ''}`}
-              aria-label={s}
-            >
-              {s}
+    <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+      <PageHeader
+        title={t('nav.incidents') || 'Incident Grouping'}
+        subtitle={`${incidents.length} ${t('incidents.incidentsTracked')}`}
+        actions={
+          currentUser?.role === 'admin' ? (
+            <button className="btnPrimary" onClick={openCreate}>
+              <Plus size={16} />
+              <span className="ml-xs">{t('incidents.createIncident')}</span>
             </button>
-          ))}
-        </div>
+          ) : undefined
+        }
+      />
 
-        <div className="flex flex-gap-sm mt-sm flex-wrap">
-          {SEVERITY_OPTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setFilterSeverity(s); setPage(1) }}
-              className={`filter-pill ${filterSeverity === s ? 'active' : ''} text-xs`}
-              style={s !== 'All' ? { borderLeft: `3px solid ${SEVERITY_COLORS[s] || '#999'}` } : undefined}
-              aria-label={s}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
+      {error && <ErrorState message={error} onRetry={load} />}
 
-        <div className="flex flex-gap-sm mt-sm flex-wrap">
-          {DISASTER_OPTIONS.map((d) => (
-            <button
-              key={d}
-              onClick={() => { setFilterDisaster(d); setPage(1) }}
-              className={`filter-pill ${filterDisaster === d ? 'active' : ''} text-xs`}
-              aria-label={d}
-            >
-              {d !== 'All' ? `${DISASTER_ICONS[d]} ` : ''}{d}
-            </button>
-          ))}
-        </div>
-      </div>
+      <FilterBar
+        search={search}
+        onSearchChange={(v) => { setSearch(v); setPage(1) }}
+        searchPlaceholder={t('incidents.searchPlaceholder')}
+        filters={[
+          {
+            key: 'status',
+            label: 'Status',
+            options: STATUS_OPTIONS.map((s) => ({ key: s, label: s })),
+            value: filterStatus,
+            onChange: (v) => { setFilterStatus(v); setPage(1) },
+          },
+          {
+            key: 'severity',
+            label: 'Severity',
+            options: SEVERITY_OPTIONS.map((s) => ({ key: s, label: s })),
+            value: filterSeverity,
+            onChange: (v) => { setFilterSeverity(v); setPage(1) },
+          },
+          {
+            key: 'disaster',
+            label: 'Disaster Type',
+            options: DISASTER_OPTIONS.map((d) => ({ key: d, label: d })),
+            value: filterDisaster,
+            onChange: (v) => { setFilterDisaster(v); setPage(1) },
+          },
+        ]}
+      />
 
-      <section aria-label={t('nav.incidents')}>
-      {loading ? (
-        <div className="mt-md">
-          <SkeletonList count={3} lines={2} />
-        </div>
-      ) : incidents.length === 0 ? (
-        <EmptyState icon='⚠️' title={t('incidents.noIncidents') || 'No incidents found'} description={t('incidents.noIncidentsDesc') || 'No incidents match your filters'} />
-      ) : (
-      <div className="flex flex-wrap mt-md gap-12">
-        <div className="flex-1">
-          <div className="card p-0">
-            <div ref={mapRef} className="map-container-full w-full h-55vh" />
-          </div>
-        </div>
-
-        {selectedIncident && (
-          <div className="card flex-shrink-0 w-320">
-            <div className="flex-between mb-sm">
-              <h3 className="m-0 text-accent-blue text-15">
-                {DISASTER_ICONS[selectedIncident.disasterType || '']} {selectedIncident.name}
-              </h3>
-              <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer text-xl" aria-label={t('common.close')}>&times;</button>
+      <motion.section
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        aria-label={t('nav.incidents')}
+      >
+        {loading ? (
+          <motion.div variants={itemVariants} key="loading">
+            <SkeletonList count={3} lines={2} />
+          </motion.div>
+        ) : incidents.length === 0 ? (
+          <motion.div variants={itemVariants} key="empty">
+            <EmptyState icon=' ' title={t('incidents.noIncidents') || 'No incidents found'} description={t('incidents.noIncidentsDesc') || 'No incidents match your filters'} />
+          </motion.div>
+        ) : (
+          <motion.div className="flex flex-wrap gap-12" variants={itemVariants} key="content">
+            <div className="flex-1">
+              <div className="card p-0">
+                <div ref={mapRef} className="map-container-full w-full h-55vh" />
+              </div>
             </div>
 
-            <div className="flex flex-gap-sm mb-sm flex-wrap">
-              <span className="text-xs text-semi severity-badge" data-severity={selectedIncident.severity}>
-                {selectedIncident.severity}
-              </span>
-              <span className="text-xs text-semi rounded-sm p-xs bg-accent-soft text-accent-blue">
-                {selectedIncident.status}
-              </span>
-            </div>
+            {selectedIncident && (
+              <div className="card flex-shrink-0 w-320">
+                <div className="flex-between mb-sm">
+                  <h3 className="m-0 text-accent-blue text-15 flex items-center gap-xs">
+                    <AlertTriangle size={16} />
+                    {selectedIncident.name}
+                  </h3>
+                  <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer text-xl" aria-label={t('common.close')}>&times;</button>
+                </div>
 
-            {selectedIncident.description && (
-              <div className="mb-sm text-13 leading-normal">{selectedIncident.description}</div>
-            )}
+                <div className="flex flex-gap-sm mb-sm flex-wrap">
+                  <span className="text-xs text-semi severity-badge" data-severity={selectedIncident.severity}>
+                    {selectedIncident.severity}
+                  </span>
+                  <span className="text-xs text-semi rounded-sm p-xs bg-accent-soft text-accent-blue">
+                    {selectedIncident.status}
+                  </span>
+                </div>
 
-            <div className="text-13 leading-lg">
-              <div>{t('incidents.type')}: <strong>{selectedIncident.disasterType}</strong></div>
-              {(selectedIncident.affectedPopulation ?? 0) > 0 && (
-                <div>Affected: <strong>{(selectedIncident.affectedPopulation ?? 0).toLocaleString()}</strong></div>
-              )}
-              {selectedIncident.stats && (
-                <>
-                  <div>{t('incidents.requests')}: <strong>{selectedIncident.stats.requestCount || 0}</strong> ({selectedIncident.stats.openRequests || 0} {t('incidents.open')})</div>
-                  <div>{t('incidents.resourcesNearby')}: <strong>{selectedIncident.stats.resourceCount || 0}</strong></div>
-                </>
-              )}
-            </div>
+                {selectedIncident.description && (
+                  <div className="mb-sm text-13 leading-normal">{selectedIncident.description}</div>
+                )}
 
-            {currentUser?.role === 'admin' && (
-              <div className="flex flex-gap-sm mt-md">
-                <button onClick={() => openEdit(selectedIncident)} className="text-sm p-xs" aria-label={t('common.edit')}>{t('common.edit')}</button>
-                <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm p-xs" aria-label={t('common.delete')}>{t('common.delete')}</button>
+                <div className="text-13 leading-lg">
+                  <div className="flex items-center gap-xs">
+                    <MapPin size={14} />
+                    <span>{t('incidents.type')}: <strong>{selectedIncident.disasterType}</strong></span>
+                  </div>
+                  {(selectedIncident.affectedPopulation ?? 0) > 0 && (
+                    <div className="flex items-center gap-xs">
+                      <User size={14} />
+                      <span>Affected: <strong>{(selectedIncident.affectedPopulation ?? 0).toLocaleString()}</strong></span>
+                    </div>
+                  )}
+                  {selectedIncident.stats && (
+                    <>
+                      <div className="flex items-center gap-xs">
+                        <Activity size={14} />
+                        <span>{t('incidents.requests')}: <strong>{selectedIncident.stats.requestCount || 0}</strong> ({selectedIncident.stats.openRequests || 0} {t('incidents.open')})</span>
+                      </div>
+                      <div className="flex items-center gap-xs">
+                        <MapPin size={14} />
+                        <span>{t('incidents.resourcesNearby')}: <strong>{selectedIncident.stats.resourceCount || 0}</strong></span>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {currentUser?.role === 'admin' && (
+                  <div className="flex flex-gap-sm mt-md">
+                    <button onClick={() => openEdit(selectedIncident)} className="text-sm p-xs flex items-center gap-xs" aria-label={t('common.edit')}>
+                      <Edit size={14} />
+                      {t('common.edit')}
+                    </button>
+                    <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
+                      <Trash2 size={14} />
+                      {t('common.delete')}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
-          </div>
+          </motion.div>
         )}
-      </div>
-      )}
-      </section>
+      </motion.section>
 
-      {showForm && (
-        <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="card w-500 overflow-auto" style={{ maxHeight: '90vh' }}>
-            <h3 className="m-0 mb-md text-lg text-accent-blue">
-              {editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
-            </h3>
-            <form onSubmit={handleSubmit} className="grid grid-gap-sm">
-              <label htmlFor="inc-name" className="sr-only">{t('incidents.incidentName')}</label>
-              <input id="inc-name" placeholder={t('incidents.incidentName')} value={form.name} onChange={updateForm('name')} required />
+      <Modal
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        title={editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
+      >
+        <form onSubmit={handleSubmit} className="grid grid-gap-sm">
+          <label htmlFor="inc-name" className="sr-only">{t('incidents.incidentName')}</label>
+          <input id="inc-name" placeholder={t('incidents.incidentName')} value={form.name} onChange={updateForm('name')} required />
 
-              <div className="grid-3-responsive">
-                <label htmlFor="inc-disastertype" className="sr-only">Disaster type</label>
-                <select id="inc-disastertype" value={form.disasterType} onChange={updateForm('disasterType')}>
-                  {Object.keys(DISASTER_ICONS).map((d) => (
-                    <option key={d} value={d}>{DISASTER_ICONS[d]} {d}</option>
-                  ))}
-                </select>
-                <label htmlFor="inc-severity" className="sr-only">Severity</label>
-                <select id="inc-severity" value={form.severity} onChange={updateForm('severity')}>
-                  {Object.keys(SEVERITY_COLORS).map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-                <label htmlFor="inc-status" className="sr-only">Status</label>
-                <select id="inc-status" value={form.status} onChange={updateForm('status')}>
-                  {STATUS_OPTIONS.slice(1).map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="grid-3-responsive">
-                <label htmlFor="inc-centerlat" className="sr-only">Center Latitude</label>
-                <input id="inc-centerlat" type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
-                <label htmlFor="inc-centerlng" className="sr-only">Center Longitude</label>
-                <input id="inc-centerlng" type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
-              </div>
-
-              <label htmlFor="inc-population" className="sr-only">Affected population</label>
-              <input id="inc-population" type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
-              <label htmlFor="inc-description" className="sr-only">Description</label>
-              <textarea id="inc-description" placeholder="Description" value={form.description} onChange={updateForm('description')} rows={3} />
-
-              <div className="flex flex-gap-sm mt-xs">
-                <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
-                <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
-              </div>
-            </form>
+          <div className="grid-3-responsive">
+            <label htmlFor="inc-disastertype" className="sr-only">Disaster type</label>
+            <select id="inc-disastertype" value={form.disasterType} onChange={updateForm('disasterType')}>
+              {Object.keys(DISASTER_ICONS).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+            <label htmlFor="inc-severity" className="sr-only">Severity</label>
+            <select id="inc-severity" value={form.severity} onChange={updateForm('severity')}>
+              {Object.keys(SEVERITY_COLORS).map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <label htmlFor="inc-status" className="sr-only">Status</label>
+            <select id="inc-status" value={form.status} onChange={updateForm('status')}>
+              {STATUS_OPTIONS.slice(1).map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
           </div>
-        </div>
-      )}
+
+          <div className="grid-3-responsive">
+            <label htmlFor="inc-centerlat" className="sr-only">Center Latitude</label>
+            <input id="inc-centerlat" type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
+            <label htmlFor="inc-centerlng" className="sr-only">Center Longitude</label>
+            <input id="inc-centerlng" type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
+          </div>
+
+          <label htmlFor="inc-population" className="sr-only">Affected population</label>
+          <input id="inc-population" type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
+          <label htmlFor="inc-description" className="sr-only">Description</label>
+          <textarea id="inc-description" placeholder="Description" value={form.description} onChange={updateForm('description')} rows={3} />
+
+          <div className="flex flex-gap-sm mt-xs">
+            <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
+            <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
+          </div>
+        </form>
+      </Modal>
 
       {totalPages > 1 && (
         <div className="flex flex-center flex-gap-sm mt-lg">
@@ -446,6 +460,6 @@ export default function Incidents() {
         </div>
       )}
       {ConfirmDialog}
-    </div>
+    </motion.div>
   )
 }

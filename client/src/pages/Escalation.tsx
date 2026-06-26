@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+﻿import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { TrendingUp, Search, AlertTriangle, ArrowUp, ArrowDown, Filter } from 'lucide-react'
+import { PageHeader, ErrorState, DataList, FilterBar } from '../components/ui'
 import { clientApi } from '../api/client'
-import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
@@ -130,18 +132,25 @@ export default function Escalation() {
 
   return (
     <div className="container">
-      <div className="card">
-        <h2 className="pageTitle m-0 mb text-20">
-          {t('nav.escalation') || 'Request Escalation Pipeline'}
-        </h2>
-        <div className="small muted mb">
-          {t('escalation.subtitle')}
-        </div>
+      <motion.div
+        className="card"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <PageHeader
+          title={t('nav.escalation') || 'Request Escalation Pipeline'}
+          subtitle={t('escalation.subtitle')}
+        />
 
-        {error && <div className="errorText mb">{error}</div>}
+        {error && <ErrorState message={error} />}
 
         <form onSubmit={handleEscalate} className="mb-lg grid gap-8">
           <div ref={reqSearchRef} className="relative">
+            <div className="flex items-center gap-xs mb-xs">
+              <Search size={16} className="text-muted" aria-hidden="true" />
+              <span className="text-sm text-semi">{t('escalation.searchRequest') || 'Search for a request...'}</span>
+            </div>
             <input
               type="text"
               value={reqSearch}
@@ -169,6 +178,7 @@ export default function Escalation() {
               placeholder={t('escalation.searchRequest') || 'Search for a request...'}
               required
               className="rounded-sm text-13 border-gov p-sm w-full"
+              aria-label={t('escalation.searchRequest') || 'Search for a request'}
             />
             {showReqDropdown && (
               <div className="absolute z-1000 bg-white border-gov rounded-sm mt-1 w-full shadow-lg" style={{ maxHeight: 280, overflowY: 'auto' }}>
@@ -204,51 +214,54 @@ export default function Escalation() {
             required
             maxLength={2000}
             className="text-13"
+            aria-label={t('escalation.reasonForEscalation')}
           />
-          <button type="submit" className="btnPrimary text-13 p-sm justify-self-start">
+          <button type="submit" className="btnPrimary text-13 p-sm justify-self-start flex items-center gap-xs" aria-label="Escalate request">
+            <ArrowUp size={16} />
             {t('escalation.escalateRequest')}
           </button>
         </form>
 
-        <div className="flex flex-gap-sm mt">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('escalation.searchPlaceholder') || 'Search by title, reason, or user...'}
-            className="flex-1 rounded-sm p-sm border-gov text-13"
-          />
-        </div>
-      </div>
+        <FilterBar
+          search={search}
+          onSearchChange={setSearch}
+          searchPlaceholder={t('escalation.searchPlaceholder') || 'Search by title, reason, or user...'}
+          filters={[]}
+        />
+      </motion.div>
 
-      {loading ? (
-        <div className="mt-lg"><SkeletonList count={3} lines={2} /></div>
-      ) : filteredItems.length === 0 ? (
-        <div className="card text-center p-xl">{search ? t('escalation.noMatch') : t('escalation.noEscalated')}</div>
-      ) : (
-        <div className="gridGap mt">
-          {filteredItems.map((item) => (
-            <div key={item._id} className="listCard border-l-4" style={{ borderLeftColor: 'var(--gov-danger)' }}>
-              <div className="flex-between">
-                <div className="flex-1">
-                  <div className="text-bold text-base text-accent-blue">{item.title}</div>
-                  <div className="text-sm text-red mt-xs">
-                    {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
-                  </div>
-                  <div className="mt-xs text-13">{item.escalationReason}</div>
-                  <div className="small muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || 'Unknown'}</div>
+      <DataList
+        items={filteredItems}
+        loading={loading}
+        emptyTitle={search ? t('escalation.noMatch') : t('escalation.noEscalated')}
+        renderItem={(item) => (
+          <div className="listCard border-l-4" style={{ borderLeftColor: 'var(--gov-danger)' }}>
+            <div className="flex-between">
+              <div className="flex-1">
+                <div className="text-bold text-base text-accent-blue">{item.title}</div>
+                <div className="text-sm text-red mt-xs">
+                  <AlertTriangle size={14} className="inline-block mr-xs" aria-hidden="true" />
+                  {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                 </div>
-                <button
-                  onClick={() => handleDeescalate(item._id)}
-                  className="deescalate-btn"
-                >
-                   {t('escalation.deEscalate')}
-                </button>
+                <div className="mt-xs text-13">{item.escalationReason}</div>
+                <div className="small muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || 'Unknown'}</div>
               </div>
+              <button
+                onClick={() => handleDeescalate(item._id)}
+                className="deescalate-btn flex items-center gap-xs"
+                aria-label={`${t('escalation.deEscalate')} ${item.title}`}
+              >
+                <ArrowDown size={14} />
+                {t('escalation.deEscalate')}
+              </button>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        )}
+        keyExtractor={(item) => item._id}
+        skeletonCount={3}
+        skeletonLines={2}
+      />
+
       {ConfirmDialog}
     </div>
   )

@@ -1,6 +1,9 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { User, Camera, Save, Shield, Bell, Key, Award, Mail, Phone, MapPin } from 'lucide-react'
+import { PageHeader, ErrorState } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../components/Toast'
 import { clientApi } from '../api/client'
@@ -103,19 +106,32 @@ export default function Profile() {
   }
 
   return (
-    <div className="container max-w-sm mt-lg mb-lg">
+    <motion.div
+      className="container max-w-sm mt-lg mb-lg"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+    >
       <div className="card mb-lg">
-        <div className="headerRow">
-          <h2 className="pageTitle text-2xl m-0">{t('profile.title')}</h2>
-          <button onClick={() => navigate('/dashboard')}>{t('admin.backToDashboard')}</button>
-        </div>
+        <PageHeader
+          title={t('profile.title')}
+          actions={<button onClick={() => navigate('/dashboard')} aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
+        />
       </div>
 
-      {/* Avatar */}
-      <div className="card mb-lg">
+      <motion.div
+        className="card mb-lg"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+      >
         <div className="flex flex-col flex-align-center mb-lg">
           <div
             onClick={handleAvatarClick}
+            role="button"
+            tabIndex={0}
+            aria-label="Upload avatar photo"
+            onKeyDown={(e) => { if (e.key === 'Enter') handleAvatarClick() }}
             style={{
               width: 96,
               height: 96,
@@ -147,10 +163,7 @@ export default function Profile() {
                 color: '#fff',
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
+              <Camera size={14} />
             </div>
           </div>
           <input
@@ -161,23 +174,32 @@ export default function Profile() {
             style={{ display: 'none' }}
           />
           <div className="flex flex-gap-sm mt-sm">
-            <button type="button" className="btnPrimary text-xs" onClick={handleUploadAvatar} disabled={!selectedFile}>
+            <button type="button" className="btnPrimary text-xs" onClick={handleUploadAvatar} disabled={!selectedFile} aria-label="Upload photo">
               Upload Photo
             </button>
-            <button type="button" className="text-xs" onClick={handleRemoveAvatar} disabled={!avatarUrl}>
+            <button type="button" className="text-xs" onClick={handleRemoveAvatar} disabled={!avatarUrl} aria-label="Remove photo">
               Remove Photo
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Profile Info */}
-      <div className="card mb-lg">
-        <h3 className="m-0 mb text-base text-accent-blue">{t('profile.accountInfo')}</h3>
-        <div className="text-sm mb-sm">
+      <motion.div
+        className="card mb-lg"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <h3 className="m-0 mb text-base text-accent-blue flex items-center gap-xs">
+          <User size={16} aria-hidden="true" />
+          {t('profile.accountInfo')}
+        </h3>
+        <div className="text-sm mb-sm flex items-center gap-xs">
+          <Mail size={14} className="text-muted" aria-hidden="true" />
           <span className="muted">{t('profile.email')}:</span> <strong>{user?.email}</strong>
         </div>
-        <div className="text-sm mb-lg">
+        <div className="text-sm mb-lg flex items-center gap-xs">
+          <Shield size={14} className="text-muted" aria-hidden="true" />
           <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${user?.role}` as any) || user?.role}</strong>
         </div>
 
@@ -188,7 +210,10 @@ export default function Profile() {
           <label className="small label-block" htmlFor="prof-phone">{t('profile.phone')}</label>
           <input id="prof-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} className="w-full mb" />
 
-          <label className="small label-block">{t('profile.skills')}</label>
+          <label className="small label-block flex items-center gap-xs">
+            <Award size={14} aria-hidden="true" />
+            {t('profile.skills')}
+          </label>
           <div className="flex flex-gap-xs flex-wrap mb">
             {SKILL_OPTIONS.map((s) => (
               <button
@@ -196,13 +221,17 @@ export default function Profile() {
                 type="button"
                 onClick={() => toggleSkill(s)}
                 className={`filter-pill ${skills.includes(s) ? 'active' : ''}`}
+                aria-label={`${t('profile.skills')}: ${s}`}
               >
                 {s}
               </button>
             ))}
           </div>
 
-          <label className="small label-block">{t('profile.notificationPreferences')}</label>
+          <label className="small label-block flex items-center gap-xs">
+            <Bell size={14} aria-hidden="true" />
+            {t('profile.notificationPreferences')}
+          </label>
           <div className="flex-col flex-gap-sm mb-lg text-sm">
             <div className="flex flex-gap-lg">
               <label className="flex flex-gap-xs cursor-pointer">
@@ -226,15 +255,23 @@ export default function Profile() {
             </div>
           </div>
 
-          <button type="submit" className="btnPrimary text-13" disabled={loading}>
+          <button type="submit" className="btnPrimary text-13 flex items-center gap-xs" disabled={loading}>
+            <Save size={16} aria-hidden="true" />
             {loading ? '...' : t('profile.updateProfile')}
           </button>
         </form>
-      </div>
+      </motion.div>
 
-      {/* Change Password */}
-      <div className="card">
-        <h3 className="m-0 mb text-base text-accent-blue">{t('profile.changePassword')}</h3>
+      <motion.div
+        className="card"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+      >
+        <h3 className="m-0 mb text-base text-accent-blue flex items-center gap-xs">
+          <Key size={16} aria-hidden="true" />
+          {t('profile.changePassword')}
+        </h3>
         <form onSubmit={handleChangePassword}>
           <label className="small label-block" htmlFor="prof-curpwd">{t('profile.currentPassword')}</label>
           <input id="prof-curpwd" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full mb" />
@@ -249,7 +286,7 @@ export default function Profile() {
             {loading ? '...' : t('profile.updatePassword')}
           </button>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
