@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { AnimatedCounter } from './ui'
-import { TrendingUp, Box, AlertTriangle, UserCheck, Handshake, ListChecks } from 'lucide-react'
+import { TrendingUp, FileText, AlertTriangle, UserCheck, CheckCircle, ListChecks } from 'lucide-react'
 
 interface AdminStats {
   totalUsers: number
@@ -18,11 +18,11 @@ interface KpiCardsProps {
 }
 
 const KPI_CONFIG = [
-  { id: 'resources', label: 'Resources', icon: Box, color: '#0ea5e9', key: 'totalRequests' as const },
-  { id: 'incidents', label: 'Incidents', icon: AlertTriangle, color: '#ef4444', key: 'totalRequests' as const },
-  { id: 'volunteers', label: 'Volunteers', icon: UserCheck, color: '#22c55e', key: 'totalUsers' as const },
-  { id: 'ngos', label: 'NGOs', icon: Handshake, color: '#8b5cf6', key: 'totalUsers' as const },
-  { id: 'pending', label: 'Pending Requests', icon: ListChecks, color: '#f97316', key: 'totalRequests' as const },
+  { id: 'total', label: 'Total Requests', icon: FileText, color: 'var(--accent)' },
+  { id: 'open', label: 'Open', icon: ListChecks, color: 'var(--warning)' },
+  { id: 'resolved', label: 'Resolved', icon: CheckCircle, color: 'var(--success)' },
+  { id: 'critical', label: 'Critical', icon: AlertTriangle, color: 'var(--danger)' },
+  { id: 'volunteers', label: 'Volunteers', icon: UserCheck, color: 'var(--blue-500)' },
 ]
 
 const cardVariants = {
@@ -49,16 +49,13 @@ function KpiCard({ label, icon: Icon, color, value, loading }: { label: string; 
 }
 
 function KpiCardsInner({ stats, loading = false }: KpiCardsProps) {
-  const totalRequests = stats?.totalRequests ?? 0
-  const totalUsers = stats?.totalUsers ?? 0
-
   const values: Record<string, number> = useMemo(() => ({
-    resources: totalRequests,
-    incidents: Math.round(totalRequests * 0.1),
-    volunteers: totalUsers,
-    ngos: Math.round(totalUsers * 0.05),
-    pending: stats?.byStatus?.Open ?? 0,
-  }), [totalRequests, totalUsers, stats])
+    total: stats?.totalRequests ?? 0,
+    open: stats?.byStatus?.Open ?? 0,
+    resolved: (stats?.byStatus?.Resolved ?? 0) + (stats?.byStatus?.Fulfilled ?? 0),
+    critical: stats?.byPriority?.Critical ?? 0,
+    volunteers: stats?.totalUsers ?? 0,
+  }), [stats])
 
   return (
     <div className="kpi-grid mb-lg">

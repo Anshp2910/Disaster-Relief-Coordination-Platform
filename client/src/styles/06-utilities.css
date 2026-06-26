@@ -24,9 +24,6 @@
 /* ── Grid ── */
 .grid { display: grid; }
 .gridGap { display: grid; gap: var(--space-md); }
-.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
 
 /* ── Text ── */
 .text-left { text-align: left; }
@@ -106,6 +103,9 @@
 .max-w-200 { max-width: 200px; }
 .max-w-400 { max-width: 400px; }
 .h-full { height: 100%; }
+.h-55vh { height: 55vh; }
+.h-65vh { height: 65vh; }
+.map-container-60vh { width: 100%; height: 60vh; touch-action: manipulation; }
 
 /* ── Border / Radius ── */
 .border-gov { border: 1px solid var(--border); }

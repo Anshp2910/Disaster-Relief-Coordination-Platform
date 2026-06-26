@@ -267,7 +267,7 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           {/* Charts */}
           <motion.div className="bento-card mb-md" variants={itemVariants}>
-            <Suspense fallback={<div className="text-sm text-muted p-lg text-center">Loading chart...</div>}>
+            <Suspense fallback={<div className="sk-card" style={{ height: 200 }} />}>
               <RequestsChart data={chartData} />
             </Suspense>
           </motion.div>
@@ -293,14 +293,14 @@ export default function Dashboard() {
             </div>
             <div className="flex flex-wrap gap-sm" style={{ gap: 'var(--space-sm)' }}>
               {[
-                { path: '/requests/new', label: t('dashboard.newRequest'), icon: FilePlus, color: '#22c55e' },
-                { path: '/map', label: t('dashboard.mapView'), icon: MapIcon, color: '#0ea5e9' },
-                { path: '/resources', label: t('nav.resources') || 'Resources', icon: Box, color: '#8b5cf6' },
-                { path: '/incidents', label: t('nav.incidents') || 'Incidents', icon: AlertTriangle, color: '#ef4444' },
-                { path: '/command-center', label: t('nav.commandCenter') || 'Command Center', icon: Radio, color: '#0ea5e9' },
-                { path: '/zones', label: t('nav.zones') || 'Zones', icon: MapPin, color: '#f97316' },
+                { path: '/requests/new', label: t('dashboard.newRequest'), icon: FilePlus, color: 'var(--success)' },
+                { path: '/map', label: t('dashboard.mapView'), icon: MapIcon, color: 'var(--accent)' },
+                { path: '/resources', label: t('nav.resources') || 'Resources', icon: Box, color: 'var(--blue-500)' },
+                { path: '/incidents', label: t('nav.incidents') || 'Incidents', icon: AlertTriangle, color: 'var(--danger)' },
+                { path: '/command-center', label: t('nav.commandCenter') || 'Command Center', icon: Radio, color: 'var(--accent)' },
+                { path: '/zones', label: t('nav.zones') || 'Zones', icon: MapPin, color: 'var(--warning)' },
                 ...(currentUser?.role === 'admin' ? [
-                  { path: '/admin', label: t('nav.admin') || 'Admin', icon: ShieldCheck, color: '#f59e0b' },
+                  { path: '/admin', label: t('nav.admin') || 'Admin', icon: ShieldCheck, color: 'var(--amber-500)' },
                 ] : []),
               ].map((action) => {
                 const Icon = action.icon
@@ -309,7 +309,6 @@ export default function Dashboard() {
                     key={action.path}
                     onClick={() => navigate(action.path)}
                     className="nav-chip"
-                    style={{ background: `${action.color}15`, borderColor: `${action.color}30` }}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
                   >

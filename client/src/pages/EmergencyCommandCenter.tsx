@@ -387,7 +387,7 @@ export default function EmergencyCommandCenter() {
               <Shield size={16} />
             </div>
             <div className="cc-topbar-title">
-              {t('commandCenter.title')}
+              Emergency <span>Command</span> Center
             </div>
             <div className="cc-topbar-badge">{t('commandCenter.version')} · {t('commandCenter.subtitle')}</div>
           </div>

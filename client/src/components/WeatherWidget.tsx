@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { motion } from 'framer-motion'
-import { Cloud, Sun, Droplets, Wind } from 'lucide-react'
+import { Cloud, Sun, CloudRain, CloudSnow, CloudLightning, CloudFog, Droplets, Wind } from 'lucide-react'
 
 interface WeatherData {
   temp: number
@@ -22,9 +22,17 @@ const cardVariants = {
 function WeatherWidgetInner({ weather, loading = false }: WeatherWidgetProps) {
   const conditionIcon = weather?.condition?.includes('Cloud')
     ? <Cloud size={18} className="text-accent" />
-    : weather?.condition?.includes('Sun')
+    : weather?.condition?.includes('Sun') || weather?.condition?.includes('Clear')
       ? <Sun size={18} className="text-accent-orange" />
-      : <Cloud size={18} className="text-accent" />
+      : weather?.condition?.includes('Rain') || weather?.condition?.includes('Drizzle')
+        ? <CloudRain size={18} className="text-accent-blue" />
+        : weather?.condition?.includes('Snow')
+          ? <CloudSnow size={18} style={{ color: 'var(--blue-300)' }} />
+          : weather?.condition?.includes('Thunder') || weather?.condition?.includes('Storm')
+            ? <CloudLightning size={18} style={{ color: 'var(--warning)' }} />
+            : weather?.condition?.includes('Fog') || weather?.condition?.includes('Mist') || weather?.condition?.includes('Haze')
+              ? <CloudFog size={18} className="text-muted" />
+              : <Cloud size={18} className="text-accent" />
 
   return (
     <motion.div className="bento-card" variants={cardVariants}>

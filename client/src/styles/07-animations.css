@@ -26,17 +26,6 @@
 [data-animate="scale"] { animation-name: scaleIn; }
 [data-animate="slide-down"] { animation-name: slideDown; }
 
-/* ── Card Hover ── */
-.bento-card {
-  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
-}
-.bento-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-
-.listCard {
-  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
-}
-.listCard:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
 /* ── Map Marker Pulse ── */
 .marker-pulse {
   width: 16px; height: 16px;
