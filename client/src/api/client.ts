@@ -25,7 +25,7 @@ interface ApiFetchOptions {
   timeout?: number
 }
 
-async function apiFetch(path: string, { method = 'GET', body, auth = true, formData = false, timeout = 15000 }: ApiFetchOptions = {}): Promise<unknown> {
+async function apiFetch<T = Record<string, unknown>>(path: string, { method = 'GET', body, auth = true, formData = false, timeout = 15000 }: ApiFetchOptions = {}): Promise<T> {
   const headers: Record<string, string> = {}
   if (auth) {
     const token = getToken()
@@ -58,7 +58,7 @@ async function apiFetch(path: string, { method = 'GET', body, auth = true, formD
       const msg = (data?.error as string) || `Request failed with status ${res.status}`
       throw new Error(msg)
     }
-    return data
+    return data as T
   } catch (err) {
     clearTimeout(timer)
     if ((err as Error).name === 'AbortError') {
@@ -69,6 +69,21 @@ async function apiFetch(path: string, { method = 'GET', body, auth = true, formD
     }
     throw err
   }
+}
+
+async function exportCSV(path: string, filename: string): Promise<void> {
+  const token = getToken()
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) throw new Error('Export failed')
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 export const clientApi = {
@@ -154,42 +169,8 @@ export const clientApi = {
   updateIncident: (id: string, payload: Record<string, unknown>) => apiFetch(`/api/incidents/${id}`, { method: 'PUT', body: payload }),
   deleteIncident: (id: string) => apiFetch(`/api/incidents/${id}`, { method: 'DELETE' }),
 
-  exportRequestsCSV: () => {
-    const token = getToken()
-    return fetch(`${API_BASE}/api/bulk/requests/export`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }).then((res: Response) => {
-      if (!res.ok) throw new Error('Export failed')
-      return res.blob()
-    }).then((blob: Blob) => {
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'requests-export.csv'
-      a.click()
-      URL.revokeObjectURL(url)
-    }).catch((err: unknown) => {
-      throw err
-    })
-  },
-  exportResourcesCSV: () => {
-    const token = getToken()
-    return fetch(`${API_BASE}/api/bulk/resources/export`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }).then((res: Response) => {
-      if (!res.ok) throw new Error('Export failed')
-      return res.blob()
-    }).then((blob: Blob) => {
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'resources-export.csv'
-      a.click()
-      URL.revokeObjectURL(url)
-    }).catch((err: unknown) => {
-      throw err
-    })
-  },
+  exportRequestsCSV: () => exportCSV('/api/bulk/requests/export', 'requests-export.csv'),
+  exportResourcesCSV: () => exportCSV('/api/bulk/resources/export', 'resources-export.csv'),
   importRequests: (rows: Record<string, unknown>[]) => apiFetch('/api/bulk/requests/import', { method: 'POST', body: { rows }, timeout: 120000 }),
   importResources: (rows: Record<string, unknown>[]) => apiFetch('/api/bulk/resources/import', { method: 'POST', body: { rows }, timeout: 120000 }),
 

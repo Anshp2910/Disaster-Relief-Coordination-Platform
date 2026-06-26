@@ -12,7 +12,7 @@ import pa from './locales/pa.json'
 import ur from './locales/ur.json'
 
 let savedLang = 'en'
-try { savedLang = localStorage.getItem('language') || 'en' } catch {}
+try { savedLang = localStorage.getItem('language') || 'en' } catch (e) { console.warn('Failed to read language:', (e as Error).message) }
 
 i18n.use(initReactI18next).init({
   resources: {

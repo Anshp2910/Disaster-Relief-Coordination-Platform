@@ -26,8 +26,8 @@ export function useVersionCheck(): void {
         if (versionRef.current !== serverVer) {
           window.location.reload()
         }
-      } catch {
-        // ignore — server might be restarting
+      } catch (e) {
+        console.warn('Version check failed:', (e as Error).message)
       }
     }
 

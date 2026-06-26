@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo, memo } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
@@ -8,6 +8,8 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import EmptyState from '../components/EmptyState'
 import { useConfirm } from '../hooks/useConfirm'
+import { CATEGORY_COLORS, RESOURCE_STATUS_COLORS, CATEGORY_OPTIONS, RESOURCE_STATUS_OPTIONS } from '../utils/constants'
+import Badge from '../components/Badge'
 
 interface ResourceItem {
   _id: string
@@ -39,50 +41,12 @@ interface SummaryItem {
   count?: number
 }
 
-interface BadgeProps {
-  label: string
-  colors: Record<string, { bg: string; border: string; text: string }>
-  colorKey?: string
-}
-
 const CATEGORY_ICONS: Record<string, string> = {
   Food: '', Water: '', Medical: '', Shelter: '', Supplies: '', Healthcare: '', Sanitation: '', Clothing: '', Transportation: '', Communication: '', Power: '', Infrastructure: '', Other: '',
 }
 
-const CATEGORY_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  Food: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--cat-food)' },
-  Water: { bg: 'rgba(6,182,212,.1)', border: 'rgba(6,182,212,.25)', text: 'var(--cat-water)' },
-  Medical: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--cat-medical)' },
-  Shelter: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-shelter)' },
-  Supplies: { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.25)', text: 'var(--cat-supplies)' },
-  Healthcare: { bg: 'rgba(236,72,153,.1)', border: 'rgba(236,72,153,.25)', text: 'var(--cat-healthcare)' },
-  Sanitation: { bg: 'rgba(20,184,166,.1)', border: 'rgba(20,184,166,.25)', text: 'var(--cat-sanitation)' },
-  Clothing: { bg: 'rgba(168,85,247,.1)', border: 'rgba(168,85,247,.25)', text: 'var(--cat-clothing)' },
-  Transportation: { bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.25)', text: 'var(--cat-transportation)' },
-  Communication: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--cat-communication)' },
-  Power: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--cat-power)' },
-  Infrastructure: { bg: 'rgba(100,116,139,.1)', border: 'rgba(100,116,139,.25)', text: 'var(--cat-infrastructure)' },
-  Other: { bg: 'rgba(156,163,175,.1)', border: 'rgba(156,163,175,.25)', text: 'var(--cat-other)' },
-}
-
-const STATUS_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  Available: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
-  Low: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-high)' },
-  Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
-  Reserved: { bg: 'rgba(129,140,248,.1)', border: 'rgba(129,140,248,.25)', text: 'var(--accent-indigo)' },
-}
-
-const CATEGORIES = ['All', 'Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
-const STATUSES = ['All', 'Available', 'Low', 'Depleted', 'Reserved']
-
-const Badge = memo(function Badge({ label, colors, colorKey }: BadgeProps) {
-  const c = colors[colorKey || label] || colors['Other'] || { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: 'var(--gov-muted)' }
-  return (
-    <span className="cat-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
-      {label}
-    </span>
-  )
-})
+const CATEGORIES = ['All', ...CATEGORY_OPTIONS]
+const STATUSES = ['All', ...RESOURCE_STATUS_OPTIONS]
 
 const EMPTY_FORM: ResourceFormState = { name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' }
 
@@ -463,7 +427,7 @@ export default function Resources() {
                     <div className="flex flex-gap-sm flex-wrap">
                       <span className="text-bold text-lg">{r.name}</span>
                       <Badge label={r.category || 'Other'} colors={CATEGORY_COLORS} colorKey={r.category} />
-                      <Badge label={r.status || 'Available'} colors={STATUS_COLORS} colorKey={r.status} />
+                      <Badge label={r.status || 'Available'} colors={RESOURCE_STATUS_COLORS} colorKey={r.status} />
                     </div>
                     <div className="mt-xs text-base">
                       <strong>{r.quantity}</strong> {r.unit}
@@ -551,7 +515,7 @@ export default function Resources() {
 
       {/* Floating Action Bar */}
       {selectMode && selectedIds.size > 0 && (
-        <div style={{ position: 'sticky', bottom: 0, zIndex: 50, padding: '0.75rem 1rem', background: 'var(--card)', borderTop: '1px solid var(--border)', boxShadow: '0 -4px 12px rgba(0,0,0,0.08)', display: 'flex', gap: '0.5rem', justifyContent: 'center', marginTop: '1rem' }}>
+        <div className="sticky-bar z-50">
           <button onClick={openBulkEdit} className="btnPrimary text-sm" disabled={bulkUpdating}>
             {t('resources.editSelected') || 'Edit Selected'} ({selectedIds.size})
           </button>

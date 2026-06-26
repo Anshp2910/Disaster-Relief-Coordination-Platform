@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { io, type Socket } from 'socket.io-client'
 import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
 
@@ -71,6 +71,11 @@ export function useSocket() {
     }
   })
   const unreadCount = notifications.filter((n) => !n.read).length
+  const socketRef = useRef<Socket | null>(null)
+
+  if (!socketRef.current) {
+    socketRef.current = getSocket()
+  }
 
   const addNotification = useCallback((notification: Omit<Notification, 'id' | 'read' | 'timestamp'>) => {
     setNotifications((prev) => {
@@ -84,7 +89,7 @@ export function useSocket() {
   }, [])
 
   useEffect(() => {
-    const s = getSocket()
+    const s = socketRef.current || getSocket()
 
     function onConnect() { setConnected(true) }
     function onDisconnect() { setConnected(false) }
@@ -138,5 +143,5 @@ export function useSocket() {
     safeRemoveItem('notifications')
   }, [])
 
-  return { socket: getSocket(), connected, notifications, unreadCount, markAsRead, markAllRead, clearAll }
+  return { socket: socketRef.current, connected, notifications, unreadCount, markAsRead, markAllRead, clearAll }
 }

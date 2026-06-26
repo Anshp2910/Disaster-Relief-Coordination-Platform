@@ -119,9 +119,6 @@
 /* === Grid === */
 .grid { display: grid; }
 .grid-center { display: grid; place-items: center; }
-.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
-.grid-3-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: var(--space-md); }
-.grid-2-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: var(--space-md); }
 .grid-gap-sm { gap: var(--space-sm); }
 .grid-gap { gap: var(--space-md); }
 .grid-gap-lg { gap: var(--space-lg); }
@@ -210,19 +207,40 @@
 /* === Z-index === */
 .z-1 { z-index: 1; }
 .z-10 { z-index: 10; }
-.z-100 { z-index: 100; }
+.z-50 { z-index: var(--z-sticky); }
+.z-100 { z-index: var(--z-dropdown); }
+.z-800 { z-index: var(--z-modal-backdrop); }
+.z-900 { z-index: var(--z-modal); }
+.z-1000 { z-index: var(--z-toast); }
+.z-1100 { z-index: var(--z-notification); }
+.z-1200 { z-index: var(--z-tooltip); }
+.z-1300 { z-index: var(--z-command-palette); }
 
 /* === Divider === */
 .divider { border: none; height: 1px; background: var(--border); margin: var(--space-md) 0; }
 
 /* === Dark mode overrides for utilities === */
 
+/* === Sticky floating action bar === */
+.sticky-bar {
+  position: sticky;
+  bottom: 0;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 /* === Toast container === */
 .toast-container {
   position: fixed;
   top: 16px;
   right: 16px;
-  z-index: 999999;
+  z-index: var(--z-toast);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);

@@ -130,17 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth(): AuthContextType {
   const ctx = useContext(AuthContext)
   if (!ctx) {
-    return {
-      user: parseUser() as User | null,
-      token: safeGetItem('token'),
-      isAuthenticated: !!safeGetItem('token'),
-      isAdmin: (() => { try { return JSON.parse(safeGetItem('user') || 'null')?.role === 'admin' } catch { return false } })(),
-      login: (t: string, u: User) => { safeSetItem('token', t); safeSetItem('user', JSON.stringify(u)) },
-      logout: () => { safeRemoveItem('token'); safeRemoveItem('user') },
-      updateUser: () => {},
-      idleWarning: false,
-      resetIdleTimer: () => {},
-    }
+    throw new Error('useAuth must be used within an AuthProvider. Wrap your component tree with <AuthProvider>.')
   }
   return ctx
 }

@@ -533,7 +533,7 @@ export default function AdminDashboard() {
         clientApi.adminStats(),
         clientApi.adminUsers(),
         clientApi.adminRequests({ limit: '100' }),
-      ]) as [Stats, { users: User[] }, { items: Request[] }]
+      ]) as unknown as [Stats, { users: User[] }, { items: Request[] }]
       setStats(s)
       setUsers(u.users || [])
       setRequests(r.items || [])

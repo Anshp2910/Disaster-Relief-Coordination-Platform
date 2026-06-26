@@ -1,9 +1,13 @@
-export function escapeHtml(str: string | null | undefined): string {
-  if (!str) return ''
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
+const ESCAPE_MAP: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}
+const ESCAPE_RE = /[&<>"']/g
+
+export function escapeHtml(str: string | number | boolean | null | undefined): string {
+  if (str == null) return ''
+  return String(str).replace(ESCAPE_RE, (ch) => ESCAPE_MAP[ch] || ch)
 }

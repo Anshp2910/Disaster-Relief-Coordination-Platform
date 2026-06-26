@@ -144,6 +144,16 @@
 
   --ecc-glow: 0 0 15px rgba(37, 99, 235, 0.05);
   --ecc-border-focus: rgba(37, 99, 235, 0.2);
+
+  /* === Z-Index Scale === */
+  --z-dropdown: 100;
+  --z-sticky: 50;
+  --z-modal-backdrop: 800;
+  --z-modal: 900;
+  --z-toast: 1000;
+  --z-notification: 1100;
+  --z-tooltip: 1200;
+  --z-command-palette: 1300;
 }
 
 /* ============================================================

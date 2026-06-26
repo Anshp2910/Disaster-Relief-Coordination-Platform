@@ -37,8 +37,8 @@ describe('escapeHtml', () => {
     expect(escapeHtml(42)).toBe('42')
   })
 
-  it('handles zero as falsy value', () => {
-    expect(escapeHtml(0)).toBe('')
+  it('handles zero as value', () => {
+    expect(escapeHtml(0)).toBe('0')
   })
 
   it('handles strings without special chars', () => {
@@ -58,8 +58,8 @@ describe('escapeHtml', () => {
     expect(escapeHtml(true)).toBe('true')
   })
 
-  it('handles false as falsy value', () => {
-    expect(escapeHtml(false)).toBe('')
+  it('handles false as value', () => {
+    expect(escapeHtml(false)).toBe('false')
   })
 })
 

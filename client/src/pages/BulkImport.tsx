@@ -124,6 +124,8 @@ export default function BulkImport() {
   const [rawData, setRawData] = useState<string[][]>([])
   const [columnMaps, setColumnMaps] = useState<ColumnMap[]>([])
   const fileRef = useRef<HTMLInputElement | null>(null)
+  const [previewPage, setPreviewPage] = useState(1)
+  const PREVIEW_PAGE_SIZE = 25
 
   const systemFields = tab === 'requests' ? REQUEST_FIELDS : RESOURCE_FIELDS
 
@@ -214,6 +216,7 @@ export default function BulkImport() {
     setPreview(mappedData)
     setSelected(new Set(mappedData.map((r) => r._rowId as string | number)))
     setEditingRow(null)
+    setPreviewPage(1)
     setStep('preview')
   }
 
@@ -411,7 +414,11 @@ export default function BulkImport() {
                   </tr>
                 </thead>
                 <tbody>
-                  {preview.map((row, idx) => {
+                  {(() => {
+                    const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
+                    const rowOffset = (previewPage - 1) * PREVIEW_PAGE_SIZE
+                    const paginatedPreview = preview.slice(rowOffset, rowOffset + PREVIEW_PAGE_SIZE)
+                    return paginatedPreview.map((row, idx) => {
                     const rowId = row._rowId as string | number
                     return (
                     <tr
@@ -422,9 +429,9 @@ export default function BulkImport() {
                       }}
                     >
                       <td className="text-center border-bottom p-xs">
-                        <input type="checkbox" checked={selected.has(rowId)} onChange={() => toggleRow(rowId)} aria-label={`Select row ${idx + 1}`} />
+                        <input type="checkbox" checked={selected.has(rowId)} onChange={() => toggleRow(rowId)} aria-label={`Select row ${rowOffset + idx + 1}`} />
                       </td>
-                      <td className="text-center text-muted border-bottom p-xs">{idx + 1}</td>
+                      <td className="text-center text-muted border-bottom p-xs">{rowOffset + idx + 1}</td>
                       {headers.map((h) => (
                         <td key={h} className="text-ellipsis border-bottom max-w-200 p-xs" style={{ padding: '4px 10px' }}>
                           {editingRow === rowId ? (
@@ -448,10 +455,34 @@ export default function BulkImport() {
                       </td>
                     </tr>
                     )
-                  })}
+                    })
+                  })()}
                 </tbody>
               </table>
             </div>
+            {(() => {
+              const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
+              if (totalPages <= 1) return null
+              return (
+                <div className="flex flex-center flex-gap-sm mt-sm">
+                  <button
+                    disabled={previewPage <= 1}
+                    onClick={() => setPreviewPage((p) => Math.max(1, p - 1))}
+                    className="text-sm p-xs border-gov rounded-sm cursor-pointer"
+                  >
+                    {t('dashboard.previous') || 'Previous'}
+                  </button>
+                  <span className="text-sm p-xs">{previewPage} / {totalPages}</span>
+                  <button
+                    disabled={previewPage >= totalPages}
+                    onClick={() => setPreviewPage((p) => Math.min(totalPages, p + 1))}
+                    className="text-sm p-xs border-gov rounded-sm cursor-pointer"
+                  >
+                    {t('dashboard.next') || 'Next'}
+                  </button>
+                </div>
+              )
+            })()}
           </>
         )}
 

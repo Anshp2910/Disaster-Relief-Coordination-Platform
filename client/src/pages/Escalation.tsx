@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
@@ -35,6 +35,10 @@ export default function Escalation() {
   const [search, setSearch] = useState('')
   const { confirm, ConfirmDialog } = useConfirm()
   const debouncedSearch = useDebounce(search, 300)
+  const [reqSearch, setReqSearch] = useState('')
+  const [showReqDropdown, setShowReqDropdown] = useState(false)
+  const [reqActiveIndex, setReqActiveIndex] = useState(-1)
+  const reqSearchRef = useRef<HTMLDivElement>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -72,6 +76,31 @@ export default function Escalation() {
       (item.createdBy?.displayName || '').toLowerCase().includes(q)
     )
   }, [items, debouncedSearch])
+
+  const filteredRequests = useMemo(() => {
+    if (!reqSearch.trim()) return allRequests
+    const q = reqSearch.toLowerCase()
+    return allRequests.filter((r) =>
+      (r.title || '').toLowerCase().includes(q) ||
+      (r.locationName || '').toLowerCase().includes(q)
+    )
+  }, [allRequests, reqSearch])
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (reqSearchRef.current && !reqSearchRef.current.contains(e.target as Node)) {
+        setShowReqDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  function selectRequest(r: RequestOption) {
+    setRequestId(r._id)
+    setReqSearch(`${r.title} (${r.status || 'Open'}) — ${r.locationName || r._id}`)
+    setShowReqDropdown(false)
+  }
 
   async function handleEscalate(e: React.FormEvent) {
     e.preventDefault()
@@ -112,19 +141,61 @@ export default function Escalation() {
         {error && <div className="errorText mb">{error}</div>}
 
         <form onSubmit={handleEscalate} className="mb-lg grid gap-8">
-          <select
-            value={requestId}
-            onChange={(e) => setRequestId(e.target.value)}
-            required
-            className="rounded-sm text-13 border-gov p-sm"
-          >
-            <option value="">{t('escalation.selectRequest') || 'Select a request...'}</option>
-            {allRequests.map((r) => (
-              <option key={r._id} value={r._id}>
-                {r.title} ({r.status || 'Open'}) — {r.locationName || r._id}
-              </option>
-            ))}
-          </select>
+          <div ref={reqSearchRef} className="relative">
+            <input
+              type="text"
+              value={reqSearch}
+              onChange={(e) => {
+                setReqSearch(e.target.value)
+                setShowReqDropdown(true)
+                if (requestId) setRequestId('')
+                setReqActiveIndex(-1)
+              }}
+              onFocus={() => setShowReqDropdown(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'ArrowDown') {
+                  e.preventDefault()
+                  setReqActiveIndex((prev) => Math.min(prev + 1, filteredRequests.length - 1))
+                } else if (e.key === 'ArrowUp') {
+                  e.preventDefault()
+                  setReqActiveIndex((prev) => Math.max(prev - 1, 0))
+                } else if (e.key === 'Enter' && reqActiveIndex >= 0 && filteredRequests[reqActiveIndex]) {
+                  e.preventDefault()
+                  selectRequest(filteredRequests[reqActiveIndex])
+                } else if (e.key === 'Escape') {
+                  setShowReqDropdown(false)
+                }
+              }}
+              placeholder={t('escalation.searchRequest') || 'Search for a request...'}
+              required
+              className="rounded-sm text-13 border-gov p-sm w-full"
+            />
+            {showReqDropdown && (
+              <div className="absolute z-1000 bg-white border-gov rounded-sm mt-1 w-full shadow-lg" style={{ maxHeight: 280, overflowY: 'auto' }}>
+                {filteredRequests.length === 0 ? (
+                  <div className="p-sm text-muted text-13">{t('common.noResults') || 'No matching requests'}</div>
+                ) : (
+                  filteredRequests.map((r, idx) => (
+                    <div
+                      key={r._id}
+                      role="option"
+                      aria-selected={idx === reqActiveIndex}
+                      onClick={() => selectRequest(r)}
+                      onMouseEnter={() => setReqActiveIndex(idx)}
+                      className="p-sm cursor-pointer text-13 border-bottom"
+                      style={{
+                        background: idx === reqActiveIndex ? 'var(--accent-soft)' : 'transparent',
+                      }}
+                    >
+                      <span className="text-semi">{r.title}</span>
+                      <span className="text-muted"> ({r.status || 'Open'})</span>
+                      {r.locationName && <span className="text-muted"> — {r.locationName}</span>}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
           <textarea
             placeholder={t('escalation.reasonForEscalation')}
             value={reason}
