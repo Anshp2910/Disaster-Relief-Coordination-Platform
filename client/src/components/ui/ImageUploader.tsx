@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, type DragEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { Upload, X, Image, AlertCircle } from 'lucide-react'
 
 interface ImageUploaderProps {
@@ -26,23 +27,25 @@ export default function ImageUploader({
 }: ImageUploaderProps) {
   const [dragOver, setDragOver] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const showError = touched && error
+  const { t } = useTranslation()
+  const showError = touched && (error || errorMsg)
 
   const handleFile = useCallback((file: File | null) => {
     if (!file) { setPreview(null); onChange(null); return }
     if (file.size > maxSize * 1024 * 1024) {
-      alert(`File too large. Max ${maxSize}MB.`)
+      setErrorMsg(t('imageUploader.fileTooLarge', { maxSize }))
       return
     }
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file.')
+      setErrorMsg(t('imageUploader.notAnImage'))
       return
     }
     onChange(file)
     const url = URL.createObjectURL(file)
     setPreview(url)
-  }, [maxSize, onChange])
+  }, [maxSize, onChange, t])
 
   function handleDrop(e: DragEvent) {
     e.preventDefault()
@@ -78,11 +81,11 @@ export default function ImageUploader({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        onClick={() => !displayPreview && inputRef.current?.click()}
+        onClick={() => { setErrorMsg(null); if (!displayPreview) inputRef.current?.click() }}
         role="button"
         tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter' && !displayPreview) inputRef.current?.click() }}
-        aria-label="Upload image"
+        onKeyDown={e => { if (e.key === 'Enter' && !displayPreview) { setErrorMsg(null); inputRef.current?.click() } }}
+        aria-label={t('imageUploader.uploadImage')}
       >
         <input
           ref={inputRef}
@@ -105,7 +108,7 @@ export default function ImageUploader({
               <button
                 className="iu-remove"
                 onClick={e => { e.stopPropagation(); remove() }}
-                aria-label="Remove image"
+                aria-label={t('imageUploader.removeImage')}
               >
                 <X size={16} />
               </button>
@@ -120,13 +123,13 @@ export default function ImageUploader({
               {dragOver ? (
                 <>
                   <Upload size={28} className="iu-icon iu-icon-active" />
-                  <span className="iu-text-active">Drop image here</span>
+                  <span className="iu-text-active">{t('imageUploader.dropHere')}</span>
                 </>
               ) : (
                 <>
                   <Image size={28} className="iu-icon" />
-                  <span className="iu-text">Drop an image or click to browse</span>
-                  <span className="iu-hint">PNG, JPG, WEBP up to {maxSize}MB</span>
+                  <span className="iu-text">{t('imageUploader.dropOrClick')}</span>
+                  <span className="iu-hint">{t('imageUploader.hint', { maxSize })}</span>
                 </>
               )}
             </motion.div>
@@ -135,7 +138,7 @@ export default function ImageUploader({
       </div>
 
       <AnimatePresence mode="wait">
-        {showError && (
+        {(showError || errorMsg) && (
           <motion.div
             className="ff-msg ff-msg-error"
             initial={{ opacity: 0, y: -4, height: 0 }}
@@ -143,7 +146,7 @@ export default function ImageUploader({
             exit={{ opacity: 0, y: -4, height: 0 }}
             transition={{ duration: 0.15 }}
           >
-            <AlertCircle size={12} /> {error}
+            <AlertCircle size={12} /> {errorMsg || error}
           </motion.div>
         )}
         {!showError && hint && (

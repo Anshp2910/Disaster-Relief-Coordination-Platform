@@ -26,10 +26,13 @@ interface GroupData extends GroupConfig {
   items: NotificationItem[]
 }
 
-const NOTIF_TIERS: Record<string, GroupConfig> = {
-  sos: { label: 'Alerts', order: 0, icon: <AlertTriangle size={12} />, className: 'notif-tier-alert' },
-  escalation: { label: 'Escalations', order: 1, icon: <ArrowUp size={12} />, className: 'notif-tier-escalation' },
-  update: { label: 'Updates', order: 2, icon: <Bell size={12} />, className: 'notif-tier-update' },
+function useNotifTiers() {
+  const { t } = useTranslation()
+  return {
+    sos: { label: t('notificationBell.alerts'), order: 0, icon: <AlertTriangle size={12} />, className: 'notif-tier-alert' },
+    escalation: { label: t('notificationBell.escalations'), order: 1, icon: <ArrowUp size={12} />, className: 'notif-tier-escalation' },
+    update: { label: t('notificationBell.updates'), order: 2, icon: <Bell size={12} />, className: 'notif-tier-update' },
+  } as Record<string, GroupConfig>
 }
 
 function getTier(type: string): string {
@@ -66,6 +69,7 @@ export default function NotificationBell() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  const NOTIF_TIERS = useNotifTiers()
   const grouped = useMemo<GroupData[]>(() => {
     const groups: Record<string, NotificationItem[]> = {}
     for (const n of notifications.slice(0, 30)) {
@@ -77,7 +81,7 @@ export default function NotificationBell() {
       .filter(([key]) => groups[key]?.length)
       .sort((a, b) => a[1].order - b[1].order)
       .map(([key, config]) => ({ ...config, key, items: groups[key] }))
-  }, [notifications])
+  }, [notifications, NOTIF_TIERS])
 
   const hasUnreadUrgent = notifications.some((n) => !n.read && n.type === 'sos:alert')
 

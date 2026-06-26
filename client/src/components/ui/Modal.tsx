@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
+import useReducedMotion from '../../hooks/useReducedMotion'
 
 interface ModalProps {
   open: boolean
@@ -11,6 +12,7 @@ interface ModalProps {
 }
 
 export default function Modal({ open, onClose, title, children, maxWidth = 500 }: ModalProps) {
+  const reduced = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -37,10 +39,10 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
       {open && (
         <motion.div
           className="modal-overlay"
-          initial={{ opacity: 0 }}
+          initial={reduced ? { opacity: 1 } : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
+          exit={reduced ? { opacity: 1 } : { opacity: 0 }}
+          transition={reduced ? { duration: 0 } : { duration: 0.15 }}
           onClick={onClose}
         >
           <motion.div
@@ -51,10 +53,10 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
             aria-modal="true"
             aria-labelledby="modal-title"
             tabIndex={-1}
-            initial={{ opacity: 0, scale: 0.96, y: 12 }}
+            initial={reduced ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 12 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            exit={reduced ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.96, y: 12 }}
+            transition={reduced ? { duration: 0 } : { duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             onClick={e => e.stopPropagation()}
           >
             {title && (

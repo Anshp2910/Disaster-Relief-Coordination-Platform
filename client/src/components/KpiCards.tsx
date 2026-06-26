@@ -1,7 +1,9 @@
 import { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { AnimatedCounter } from './ui'
 import { TrendingUp, FileText, AlertTriangle, UserCheck, CheckCircle, ListChecks } from 'lucide-react'
+import useReducedMotion from '../hooks/useReducedMotion'
 
 interface AdminStats {
   totalUsers: number
@@ -17,22 +19,17 @@ interface KpiCardsProps {
   loading?: boolean
 }
 
-const KPI_CONFIG = [
-  { id: 'total', label: 'Total Requests', icon: FileText, color: 'var(--accent)' },
-  { id: 'open', label: 'Open', icon: ListChecks, color: 'var(--warning)' },
-  { id: 'resolved', label: 'Resolved', icon: CheckCircle, color: 'var(--success)' },
-  { id: 'critical', label: 'Critical', icon: AlertTriangle, color: 'var(--danger)' },
-  { id: 'volunteers', label: 'Volunteers', icon: UserCheck, color: 'var(--blue-500)' },
+const KPI_CONFIG = (t: (key: string) => string) => [
+  { id: 'total', label: t('kpi.totalRequests'), icon: FileText, color: 'var(--accent)' },
+  { id: 'open', label: t('kpi.open'), icon: ListChecks, color: 'var(--warning)' },
+  { id: 'resolved', label: t('kpi.resolved'), icon: CheckCircle, color: 'var(--success)' },
+  { id: 'critical', label: t('kpi.critical'), icon: AlertTriangle, color: 'var(--danger)' },
+  { id: 'volunteers', label: t('kpi.volunteers'), icon: UserCheck, color: 'var(--blue-500)' },
 ]
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
-}
-
-function KpiCard({ label, icon: Icon, color, value, loading }: { label: string; icon: React.ElementType; color: string; value: number; loading: boolean }) {
+function KpiCard({ label, icon: Icon, color, value, loading, reduced }: { label: string; icon: React.ElementType; color: string; value: number; loading: boolean; reduced: boolean }) {
   return (
-    <motion.div className="kpi-card" variants={cardVariants}>
+    <motion.div className="kpi-card" variants={reduced ? {} : cardVariants}>
       <div className="kpi-header">
         <span className="kpi-label">{label}</span>
         <Icon size={18} style={{ color }} />
@@ -42,13 +39,16 @@ function KpiCard({ label, icon: Icon, color, value, loading }: { label: string; 
       </div>
       <div className="kpi-change" style={{ color: 'var(--success)' }}>
         <TrendingUp size={12} />
-        <span className="ml-xs">Live</span>
+        <span className="ml-xs">{t('kpi.live')}</span>
       </div>
     </motion.div>
   )
 }
 
 function KpiCardsInner({ stats, loading = false }: KpiCardsProps) {
+  const { t } = useTranslation()
+  const reduced = useReducedMotion()
+  const config = KPI_CONFIG(t)
   const values: Record<string, number> = useMemo(() => ({
     total: stats?.totalRequests ?? 0,
     open: stats?.byStatus?.Open ?? 0,
@@ -59,8 +59,8 @@ function KpiCardsInner({ stats, loading = false }: KpiCardsProps) {
 
   return (
     <div className="kpi-grid mb-lg">
-      {KPI_CONFIG.map((kpi) => (
-        <KpiCard key={kpi.id} label={kpi.label} icon={kpi.icon} color={kpi.color} value={values[kpi.id] ?? 0} loading={loading} />
+      {config.map((kpi) => (
+        <KpiCard key={kpi.id} label={kpi.label} icon={kpi.icon} color={kpi.color} value={values[kpi.id] ?? 0} loading={loading} reduced={reduced} />
       ))}
     </div>
   )

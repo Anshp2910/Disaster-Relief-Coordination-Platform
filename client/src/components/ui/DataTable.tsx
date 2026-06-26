@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { Search, ChevronUp, ChevronDown, ChevronsUpDown, X, Download, Columns3, Check, Trash2, CheckSquare, Square } from 'lucide-react'
 
 export interface ColumnDef<T> {
@@ -49,7 +50,7 @@ interface DataTableProps<T> {
 
 export default function DataTable<T>({
   columns: rawColumns, data, keyExtractor,
-  searchable = true, searchPlaceholder = 'Search...',
+  searchable = true, searchPlaceholder: searchPlaceholderProp,
   pageSize = 10, pageSizeOptions = [10, 25, 50, 100],
   sortable: globalSortable = true,
   filterable = true,
@@ -57,11 +58,11 @@ export default function DataTable<T>({
   columnVisibility: showColumnVisibility = true,
   stickyHeader = true,
   loading = false,
-  emptyTitle = 'No data',
+  emptyTitle: emptyTitleProp,
   emptyDescription,
   contextMenu,
   bulkActions = false,
-  bulkActionLabel = 'Delete selected',
+  bulkActionLabel: bulkActionLabelProp,
   onBulkAction,
   onRowClick,
   getRowClass,
@@ -69,6 +70,10 @@ export default function DataTable<T>({
   className = '',
   renderTop,
 }: DataTableProps<T>) {
+  const { t } = useTranslation()
+  const searchPlaceholder = searchPlaceholderProp ?? t('dataTable.searchPlaceholder')
+  const emptyTitle = emptyTitleProp ?? t('dataTable.noData')
+  const bulkActionLabel = bulkActionLabelProp ?? t('dataTable.deleteSelected')
   const [globalSearch, setGlobalSearch] = useState('')
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({})
   const [sortColumn, setSortColumn] = useState<string | null>(null)
@@ -211,7 +216,7 @@ export default function DataTable<T>({
       <div className={`dt-container ${className}`}>
         <div className="dt-loading">
           <div className="dt-loading-spinner" />
-          <span>Loading data...</span>
+          <span>{t('dataTable.loadingData')}</span>
         </div>
       </div>
     )
@@ -227,18 +232,18 @@ export default function DataTable<T>({
           {searchable && (
             <div className="dt-search-wrap">
               <Search size={15} className="dt-search-icon" />
-              <input
-                className="dt-search-input"
-                placeholder={searchPlaceholder}
-                value={globalSearch}
-                onChange={e => setGlobalSearch(e.target.value)}
-                aria-label={searchPlaceholder}
-              />
-              {globalSearch && (
-                <button className="dt-clear-btn" onClick={() => setGlobalSearch('')} aria-label="Clear search">
-                  <X size={14} />
-                </button>
-              )}
+                <input
+                  className="dt-search-input"
+                  placeholder={t('dataTable.searchPlaceholder')}
+                  value={globalSearch}
+                  onChange={e => setGlobalSearch(e.target.value)}
+                  aria-label={t('dataTable.searchPlaceholder')}
+                />
+                {globalSearch && (
+                  <button className="dt-clear-btn" onClick={() => setGlobalSearch('')} aria-label={t('dataTable.clearSearch')}>
+                    <X size={14} />
+                  </button>
+                )}
             </div>
           )}
 
@@ -255,7 +260,7 @@ export default function DataTable<T>({
                     onChange={e => {
                       setColumnFilters(prev => ({ ...prev, [col.id]: e.target.value }))
                     }}
-                    aria-label={`Filter by ${col.header}`}
+                    aria-label={t('dataTable.filterBy', { name: col.header })}
                   >
                     <option value="all">{col.header}</option>
                     {vals.map(v => (
@@ -268,24 +273,24 @@ export default function DataTable<T>({
           )}
 
           {hasActiveFilters && (
-            <button className="dt-clear-all" onClick={clearFilters} aria-label="Clear all filters">
-              <X size={13} /> Clear
+            <button className="dt-clear-all" onClick={clearFilters} aria-label={t('dataTable.clearAllFilters')}>
+              <X size={13} /> {t('dataTable.clear')}
             </button>
           )}
         </div>
 
         <div className="dt-toolbar-right">
-          <span className="dt-count">{sorted.length} rows</span>
+          <span className="dt-count">{t('dataTable.rowsCount', { count: sorted.length })}</span>
 
           {exportable && (
-            <button className="dt-tool-btn" onClick={exportCSV} aria-label="Export CSV" title="Export CSV">
+            <button className="dt-tool-btn" onClick={exportCSV} aria-label={t('dataTable.exportCSV')} title={t('dataTable.exportCSV')}>
               <Download size={15} />
             </button>
           )}
 
           {showColumnVisibility && (
             <div className="dt-col-vis" ref={colMenuRef}>
-              <button className="dt-tool-btn" onClick={() => setShowColMenu(p => !p)} aria-label="Columns" title="Columns">
+              <button className="dt-tool-btn" onClick={() => setShowColMenu(p => !p)} aria-label={t('dataTable.columns')} title={t('dataTable.columns')}>
                 <Columns3 size={15} />
               </button>
               <AnimatePresence>
@@ -325,7 +330,7 @@ export default function DataTable<T>({
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
         >
-          <span className="dt-bulk-count">{selected.size} selected</span>
+          <span className="dt-bulk-count">{t('dataTable.selectedCount', { count: selected.size })}</span>
           {onBulkAction && (
             <button className="dt-bulk-action" onClick={() => { onBulkAction(paged.filter(r => selected.has(keyExtractor(r)))); setSelected(new Set()) }}>
               <Trash2 size={14} /> {bulkActionLabel}
@@ -343,7 +348,7 @@ export default function DataTable<T>({
           <div className="dt-empty-title">{emptyTitle}</div>
           {emptyDescription && <div className="dt-empty-desc">{emptyDescription}</div>}
           {hasActiveFilters && (
-            <button className="dt-clear-all" onClick={clearFilters}>Clear filters</button>
+            <button className="dt-clear-all" onClick={clearFilters}>{t('dataTable.clearFilters')}</button>
           )}
         </div>
       ) : (
@@ -404,7 +409,7 @@ export default function DataTable<T>({
                         <button
                           className="dt-check-btn"
                           onClick={() => toggleSelect(rowId)}
-                          aria-label={isSelected ? 'Deselect row' : 'Select row'}
+                          aria-label={isSelected ? t('dataTable.deselectRow') : t('dataTable.selectRow')}
                           aria-checked={isSelected}
                           role="checkbox"
                         >
@@ -438,7 +443,7 @@ export default function DataTable<T>({
       {totalPages > 1 && (
         <div className="dt-pagination">
           <div className="dt-page-size">
-            <span>Rows per page:</span>
+            <span>{t('dataTable.rowsPerPage')}</span>
             <select
               value={pageSz}
               onChange={e => { setPageSz(Number(e.target.value)); setPage(0) }}
@@ -451,7 +456,7 @@ export default function DataTable<T>({
           </div>
 
           <div className="dt-page-info">
-            {page * pageSz + 1}–{Math.min((page + 1) * pageSz, sorted.length)} of {sorted.length}
+            {t('dataTable.pageInfo', { start: page * pageSz + 1, end: Math.min((page + 1) * pageSz, sorted.length), total: sorted.length })}
           </div>
 
           <div className="dt-page-nav" role="navigation" aria-label="Pagination">
@@ -459,7 +464,7 @@ export default function DataTable<T>({
               className="dt-page-btn"
               disabled={page === 0}
               onClick={() => setPage(p => Math.max(0, p - 1))}
-              aria-label="Previous page"
+              aria-label={t('dataTable.previousPage')}
             >
               <ChevronDown size={14} style={{ rotate: '90deg' }} />
             </button>
@@ -485,7 +490,7 @@ export default function DataTable<T>({
               className="dt-page-btn"
               disabled={page >= totalPages - 1}
               onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-              aria-label="Next page"
+              aria-label={t('dataTable.nextPage')}
             >
               <ChevronDown size={14} style={{ rotate: '-90deg' }} />
             </button>

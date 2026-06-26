@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react'
 
 export interface Step {
@@ -26,9 +27,13 @@ interface StepFormProps {
 export default function StepForm({
   steps, currentStep, onStepChange, children,
   onNext, onPrev, onComplete,
-  nextLabel = 'Next', prevLabel = 'Back', completeLabel = 'Complete',
+  nextLabel, prevLabel, completeLabel,
   canNext = true, loading = false,
 }: StepFormProps) {
+  const { t } = useTranslation()
+  const resolvedNext = nextLabel ?? t('stepForm.next')
+  const resolvedPrev = prevLabel ?? t('stepForm.back')
+  const resolvedComplete = completeLabel ?? t('stepForm.complete')
   const total = steps.length
   const progress = ((currentStep + 1) / total) * 100
   const isLast = currentStep === total - 1
@@ -92,7 +97,7 @@ export default function StepForm({
       {/* Footer */}
       <div className="sf-footer">
         <div className="sf-footer-info">
-          Step {currentStep + 1} of {total}
+          {t('stepForm.stepOf', { current: currentStep + 1, total })}
         </div>
         <div className="sf-footer-actions">
           {currentStep > 0 && (
@@ -102,7 +107,7 @@ export default function StepForm({
               onClick={onPrev}
               disabled={loading}
             >
-              <ChevronLeft size={16} aria-hidden="true" /> {prevLabel}
+               <ChevronLeft size={16} aria-hidden="true" /> {resolvedPrev}
             </button>
           )}
           {isLast ? (
@@ -112,7 +117,7 @@ export default function StepForm({
               onClick={onComplete}
               disabled={!canNext || loading}
             >
-              {loading ? 'Processing...' : completeLabel} {!loading && <Check size={16} aria-hidden="true" />}
+              {loading ? t('stepForm.processing') : resolvedComplete} {!loading && <Check size={16} aria-hidden="true" />}
             </button>
           ) : (
             <button
@@ -121,7 +126,7 @@ export default function StepForm({
               onClick={onNext}
               disabled={!canNext || loading}
             >
-              {nextLabel} <ChevronRight size={16} aria-hidden="true" />
+              {resolvedNext} <ChevronRight size={16} aria-hidden="true" />
             </button>
           )}
         </div>

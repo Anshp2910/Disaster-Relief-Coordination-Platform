@@ -5,9 +5,11 @@ import { AlertTriangle } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useToast } from './Toast'
 import { useConfirm } from '../hooks/useConfirm'
+import useReducedMotion from '../hooks/useReducedMotion'
 
 export function SosFab() {
   const { t } = useTranslation()
+  const reduced = useReducedMotion()
   const toast = useToast()
   const { confirm, ConfirmDialog } = useConfirm()
   const [loading, setLoading] = useState(false)
@@ -60,10 +62,10 @@ export function SosFab() {
         onMouseLeave={() => { setShowLabel(false); clearTimeout(hideLabelRef.current!) }}
         onFocus={() => setShowLabel(true)}
         onBlur={() => { hideLabelRef.current = setTimeout(() => setShowLabel(false), 200) }}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.95 }}
-        animate={cooldown > 0 ? { rotate: [0, -10, 10, -10, 0] } : {}}
-        transition={{ duration: 0.5 }}
+        whileHover={reduced ? {} : { scale: 1.08 }}
+        whileTap={reduced ? {} : { scale: 0.95 }}
+        animate={reduced || cooldown <= 0 ? {} : { rotate: [0, -10, 10, -10, 0] }}
+        transition={reduced ? { duration: 0 } : { duration: 0.5 }}
       >
         <AlertTriangle size={24} />
         {cooldown > 0 && <span className="sos-cooldown">{cooldown}</span>}
@@ -71,10 +73,10 @@ export function SosFab() {
           {showLabel && (
             <motion.span
               className="sos-fab-label"
-              initial={{ opacity: 0, x: 8 }}
+              initial={reduced ? { opacity: 1, x: 0 } : { opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 8 }}
-              transition={{ duration: 0.15 }}
+              exit={reduced ? { opacity: 1, x: 0 } : { opacity: 0, x: 8 }}
+              transition={reduced ? { duration: 0 } : { duration: 0.15 }}
             >
               {cooldown > 0 ? `SOS ${cooldown}s` : t('sos.trigger') || 'SOS'}
             </motion.span>

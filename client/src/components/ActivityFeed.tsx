@@ -33,6 +33,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { notifications, unreadCount, markAsRead, markAllRead } = useSocket()
+  const formatTime = useFormatTime()
   const [items, setItems] = useState<NotificationItem[]>([])
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
     <div className="activity-feed">
       {unreadCount > 0 && (
         <div className="activity-feed-header">
-          <span className="activity-unread-badge">{unreadCount} new</span>
+          <span className="activity-unread-badge">{t('activityFeed.newCount', { count: unreadCount })}</span>
           <button onClick={markAllRead} className="activity-mark-read" aria-label={t('notifications.markAllRead')}>{t('notifications.markAllRead')}</button>
         </div>
       )}
@@ -86,11 +87,14 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
   )
 }
 
-function formatTime(ts: string) {
-  if (!ts) return ''
-  const diff = Date.now() - new Date(ts).getTime()
-  if (diff < 60000) return 'just now'
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`
-  return `${Math.floor(diff / 86400000)}d ago`
+function useFormatTime() {
+  const { t } = useTranslation()
+  return function formatTime(ts: string) {
+    if (!ts) return ''
+    const diff = Date.now() - new Date(ts).getTime()
+    if (diff < 60000) return t('activityFeed.justNow')
+    if (diff < 3600000) return t('activityFeed.minutesAgo', { count: Math.floor(diff / 60000) })
+    if (diff < 86400000) return t('activityFeed.hoursAgo', { count: Math.floor(diff / 3600000) })
+    return t('activityFeed.daysAgo', { count: Math.floor(diff / 86400000) })
+  }
 }

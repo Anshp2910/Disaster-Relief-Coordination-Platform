@@ -1,6 +1,8 @@
 import { memo } from 'react'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { Cloud, Sun, CloudRain, CloudSnow, CloudLightning, CloudFog, Droplets, Wind } from 'lucide-react'
+import useReducedMotion from '../hooks/useReducedMotion'
 
 interface WeatherData {
   temp: number
@@ -20,6 +22,8 @@ const cardVariants = {
 }
 
 function WeatherWidgetInner({ weather, loading = false }: WeatherWidgetProps) {
+  const { t } = useTranslation()
+  const reduced = useReducedMotion()
   const conditionIcon = weather?.condition?.includes('Cloud')
     ? <Cloud size={18} className="text-accent" />
     : weather?.condition?.includes('Sun') || weather?.condition?.includes('Clear')
@@ -35,9 +39,9 @@ function WeatherWidgetInner({ weather, loading = false }: WeatherWidgetProps) {
               : <Cloud size={18} className="text-accent" />
 
   return (
-    <motion.div className="bento-card" variants={cardVariants}>
+    <motion.div className="bento-card" variants={reduced ? {} : cardVariants}>
       <div className="flex-between mb-sm">
-        <span className="bento-title">Weather</span>
+        <span className="bento-title">{t('weather.title')}</span>
         {loading ? <div className="sk-line" style={{ width: 18, height: 18, borderRadius: '50%' }} /> : conditionIcon}
       </div>
       {loading ? (
@@ -57,7 +61,7 @@ function WeatherWidgetInner({ weather, loading = false }: WeatherWidgetProps) {
           </div>
         </>
       ) : (
-        <div className="text-sm text-muted p-md text-center">Weather unavailable</div>
+        <div className="text-sm text-muted p-md text-center">{t('weather.unavailable')}</div>
       )}
     </motion.div>
   )

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ListChecks } from 'lucide-react'
 import Badge from './Badge'
+import useReducedMotion from '../hooks/useReducedMotion'
 import { PRIORITY_COLORS } from '../utils/constants'
 
 interface TaskItem {
@@ -19,17 +20,17 @@ interface TaskListProps {
   loading?: boolean
 }
 
-function timeSince(dateStr: string): string {
+function timeSince(dateStr: string, t: (key: string, opts?: object) => string): string {
   const now = Date.now()
   const then = new Date(dateStr).getTime()
   const diff = now - then
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return 'Just now'
-  if (mins < 60) return `${mins}m ago`
+  if (mins < 1) return t('taskList.justNow')
+  if (mins < 60) return t('taskList.minutesAgo', { count: mins })
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}h ago`
+  if (hours < 24) return t('taskList.hoursAgo', { count: hours })
   const days = Math.floor(hours / 24)
-  return `${days}d ago`
+  return t('taskList.daysAgo', { count: days })
 }
 
 const cardVariants = {
@@ -40,6 +41,7 @@ const cardVariants = {
 function TaskListInner({ requests, loading = false }: TaskListProps) {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const reduced = useReducedMotion()
 
   const tasks = useMemo(() => {
     const highPriority = ['Critical', 'High']
@@ -56,9 +58,9 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
 
   if (loading) {
     return (
-      <motion.div className="bento-card mb-md" variants={cardVariants}>
-        <div className="bento-header">
-          <span className="bento-title"><ListChecks size={14} /> Upcoming Tasks</span>
+    <motion.div className="bento-card mb-md" variants={reduced ? {} : cardVariants}>
+      <div className="bento-header">
+        <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {Array.from({ length: 4 }).map((_, i) => (
@@ -75,18 +77,18 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
   return (
     <motion.div className="bento-card mb-md" variants={cardVariants}>
       <div className="bento-header">
-        <span className="bento-title"><ListChecks size={14} /> Upcoming Tasks</span>
-        <span className="text-xs text-muted">{tasks.length} open</span>
+        <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
+        <span className="text-xs text-muted">{t('taskList.openCount', { count: tasks.length })}</span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {tasks.length === 0 ? (
-          <div className="text-sm text-muted p-md text-center">No open tasks</div>
+          <div className="text-sm text-muted p-md text-center">{t('taskList.noOpenTasks')}</div>
         ) : (
           tasks.map((task) => (
             <motion.div
               key={task._id}
               className="listCard px-md py-sm cursor-pointer"
-              whileHover={{ scale: 1.01 }}
+              whileHover={reduced ? {} : { scale: 1.01 }}
               onClick={() => navigate(`/requests/${task._id}`)}
               role="button"
               tabIndex={0}
@@ -96,7 +98,7 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-bold">{task.title}</div>
                   <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    {task.createdAt ? timeSince(task.createdAt) : ''}
+                    {task.createdAt ? timeSince(task.createdAt, t) : ''}
                     {task.status ? ` · ${t(`statuses.${task.status}`)}` : ''}
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import { useState, useCallback, type ReactNode, type MouseEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import useReducedMotion from '../../hooks/useReducedMotion'
 
 interface RippleBtnProps {
   children: ReactNode
@@ -21,9 +22,11 @@ interface Ripple {
 export default function RippleBtn({
   children, onClick, className = '', type = 'button', disabled, 'aria-label': ariaLabel, style,
 }: RippleBtnProps) {
+  const reduced = useReducedMotion()
   const [ripples, setRipples] = useState<Ripple[]>([])
 
   const handleClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    if (reduced) { onClick?.(e); return }
     const rect = e.currentTarget.getBoundingClientRect()
     const size = Math.max(rect.width, rect.height)
     const x = e.clientX - rect.left - size / 2
@@ -32,7 +35,7 @@ export default function RippleBtn({
     setRipples((prev) => [...prev, { id, x, y, size }])
     setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 600)
     onClick?.(e)
-  }, [onClick])
+  }, [reduced, onClick])
 
   return (
     <button
@@ -44,7 +47,7 @@ export default function RippleBtn({
       style={{ position: 'relative', overflow: 'hidden', ...style }}
     >
       {children}
-      <AnimatePresence>
+      {!reduced && <AnimatePresence>
         {ripples.map((r) => (
           <motion.span
             key={r.id}
@@ -62,7 +65,7 @@ export default function RippleBtn({
             }}
           />
         ))}
-      </AnimatePresence>
+      </AnimatePresence>}
     </button>
   )
 }

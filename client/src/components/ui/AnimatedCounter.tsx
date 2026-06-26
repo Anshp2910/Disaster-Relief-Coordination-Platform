@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
+import useReducedMotion from '../../hooks/useReducedMotion'
 
 interface AnimatedCounterProps {
   from?: number
@@ -14,12 +15,14 @@ interface AnimatedCounterProps {
 const AnimatedCounter = memo(function AnimatedCounter({
   from = 0, to, duration = 1.5, suffix = '', prefix = '', decimals = 0, formatter,
 }: AnimatedCounterProps) {
+  const reduced = useReducedMotion()
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true })
   const [displayed, setDisplayed] = useState(from)
 
   useEffect(() => {
     if (!inView) return
+    if (reduced) { setDisplayed(to); return }
     const startTime = performance.now()
     const range = to - from
 
@@ -32,18 +35,19 @@ const AnimatedCounter = memo(function AnimatedCounter({
     }
 
     requestAnimationFrame(tick)
-  }, [inView, from, to, duration])
+  }, [inView, from, to, duration, reduced])
 
+  const final = reduced ? to : displayed
   const formatted = formatter
-    ? formatter(displayed)
-    : displayed.toFixed(decimals)
+    ? formatter(final)
+    : final.toFixed(decimals)
 
   return (
     <motion.span
       ref={ref}
-      initial={{ opacity: 0, y: 8 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      initial={reduced ? {} : { opacity: 0, y: 8 }}
+      animate={reduced ? {} : (inView ? { opacity: 1, y: 0 } : {})}
+      transition={reduced ? { duration: 0 } : { duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
       {prefix}{formatted}{suffix}
     </motion.span>

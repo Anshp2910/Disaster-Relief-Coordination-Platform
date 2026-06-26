@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { RippleBtn } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import useFocusTrap from '../hooks/useFocusTrap'
 
 export default function IdleWarningModal() {
+  const { t } = useTranslation()
   const { idleWarning, resetIdleTimer } = useAuth()
   const trapRef = useFocusTrap(idleWarning)
   const [countdown, setCountdown] = useState(60)
@@ -25,19 +27,19 @@ export default function IdleWarningModal() {
       <div className="modal-card text-center">
         <div className="modal-icon">&#9200;</div>
         <h2 className="modal-title">
-          Session Expiring
+          {t('idleWarning.title')}
         </h2>
         <p className="modal-desc">
-          You've been inactive. For security, your session will expire in:
+          {t('idleWarning.description')}
         </p>
         <div aria-live="polite">
           <span className={`stat-value ${countdown <= 10 ? 'text-error' : ''}`}>
-            {countdown}s
+            {t('idleWarning.seconds', { count: countdown })}
           </span>
         </div>
         <div className="modal-actions mt">
           <RippleBtn onClick={resetIdleTimer} className="">
-            Stay Logged In
+            {t('idleWarning.stayLoggedIn')}
           </RippleBtn>
         </div>
       </div>

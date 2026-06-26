@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { CalendarDays, ChevronLeft, ChevronRight, X } from 'lucide-react'
+import useReducedMotion from '../../hooks/useReducedMotion'
 
 interface DatePickerProps {
   value: string
@@ -16,13 +18,15 @@ interface DatePickerProps {
   max?: string
 }
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+const MONTH_KEYS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+const DAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 
 export default function DatePicker({
   value, onChange, label, error, hint, touched, required,
   className = '', type = 'date', min, max,
 }: DatePickerProps) {
+  const { t, i18n } = useTranslation()
+  const reduced = useReducedMotion()
   const [open, setOpen] = useState(false)
   const [focused, setFocused] = useState(false)
   const [viewDate, setViewDate] = useState(() => value ? new Date(value) : new Date())
@@ -55,9 +59,9 @@ export default function DatePicker({
 
   function formatDisplay(d: Date): string {
     if (type === 'datetime-local') {
-      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+      return d.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
     }
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    return d.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
   function selectDate(day: number) {
@@ -112,10 +116,10 @@ export default function DatePicker({
         <div className="dp-trigger" onClick={() => setOpen(p => !p)}>
           <CalendarDays size={15} className="dp-icon" />
           <span className={`dp-value ${value ? '' : 'dp-placeholder'}`}>
-            {value ? formatDisplay(new Date(value)) : 'Select date...'}
+            {value ? formatDisplay(new Date(value)) : t('datePicker.selectDate')}
           </span>
           {value && (
-            <button className="dp-clear" onClick={e => { e.stopPropagation(); clearDate() }} tabIndex={-1} aria-label="Clear date">
+              <button className="dp-clear" onClick={e => { e.stopPropagation(); clearDate() }} tabIndex={-1} aria-label={t('datePicker.clearDate')}>
               <X size={13} />
             </button>
           )}
@@ -129,18 +133,18 @@ export default function DatePicker({
           {open && (
             <motion.div
               className="dp-calendar"
-              initial={{ opacity: 0, y: -4, scaleY: 0.95 }}
+              initial={reduced ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.95 }}
               animate={{ opacity: 1, y: 0, scaleY: 1 }}
-              exit={{ opacity: 0, y: -4, scaleY: 0.95 }}
-              transition={{ duration: 0.12 }}
+              exit={reduced ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.95 }}
+              transition={reduced ? { duration: 0 } : { duration: 0.12 }}
             >
               <div className="dp-header">
-                <button className="dp-nav" onClick={prevMonth} aria-label="Previous month"><ChevronLeft size={15} /></button>
-                <span className="dp-month">{MONTHS[month]} {year}</span>
-                <button className="dp-nav" onClick={nextMonth} aria-label="Next month"><ChevronRight size={15} /></button>
+                <button className="dp-nav" onClick={prevMonth} aria-label={t('datePicker.previousMonth')}><ChevronLeft size={15} /></button>
+                <span className="dp-month">{t(`datePicker.${MONTH_KEYS[month]}`)} {year}</span>
+                <button className="dp-nav" onClick={nextMonth} aria-label={t('datePicker.nextMonth')}><ChevronRight size={15} /></button>
               </div>
               <div className="dp-weekdays">
-                {DAYS.map(d => <div key={d} className="dp-weekday">{d}</div>)}
+                {DAY_KEYS.map(k => <div key={k} className="dp-weekday">{t(`datePicker.${k}`)}</div>)}
               </div>
               <div className="dp-days">
                 {daysInMonth.map((day, i) => (
@@ -149,7 +153,7 @@ export default function DatePicker({
                     className={`dp-day ${day === null ? 'dp-day-empty' : ''} ${day !== null && isToday(day) ? 'dp-day-today' : ''} ${day !== null && isSelected(day) ? 'dp-day-selected' : ''} ${day !== null && isDisabled(day) ? 'dp-day-disabled' : ''}`}
                     onClick={() => { if (day !== null && !isDisabled(day)) selectDate(day) }}
                     role="gridcell"
-                    aria-label={day ? `${MONTHS[month]} ${day}, ${year}` : undefined}
+                     aria-label={day ? `${t(`datePicker.${MONTH_KEYS[month]}`)} ${day}, ${year}` : undefined}
                     aria-disabled={day !== null && isDisabled(day)}
                   >
                     {day ?? ''}

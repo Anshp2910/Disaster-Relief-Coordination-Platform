@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useMemo, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, Search, X, Check } from 'lucide-react'
+import useReducedMotion from '../../hooks/useReducedMotion'
 
 export interface SelectOption {
   value: string
@@ -26,8 +28,11 @@ interface ModernSelectProps {
 
 export default function ModernSelect({
   value, onChange, options, label, error, hint, touched, required,
-  searchable = true, className = '', placeholder = 'Select...', disabled = false,
+  searchable = true, className = '', placeholder: placeholderProp, disabled = false,
 }: ModernSelectProps) {
+  const { t } = useTranslation()
+  const reduced = useReducedMotion()
+    const placeholder = placeholderProp ?? 'Select...'
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [focused, setFocused] = useState(false)
@@ -120,7 +125,7 @@ export default function ModernSelect({
           <div className="ms-value">
             {selected ? <span className="ms-selected">{selected.label}</span> : <span className="ms-placeholder">{placeholder}</span>}
           </div>
-          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.15 }}>
+          <motion.div animate={reduced ? {} : { rotate: open ? 180 : 0 }} transition={reduced ? { duration: 0 } : { duration: 0.15 }}>
             <ChevronDown size={15} className="ms-chevron" />
           </motion.div>
         </div>
@@ -133,10 +138,10 @@ export default function ModernSelect({
           {open && (
             <motion.div
               className="ms-dropdown"
-              initial={{ opacity: 0, y: -4, scaleY: 0.95 }}
+              initial={reduced ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.95 }}
               animate={{ opacity: 1, y: 0, scaleY: 1 }}
-              exit={{ opacity: 0, y: -4, scaleY: 0.95 }}
-              transition={{ duration: 0.12 }}
+              exit={reduced ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.95 }}
+              transition={reduced ? { duration: 0 } : { duration: 0.12 }}
             >
               {searchable && (
                 <div className="ms-search-wrap">
@@ -144,12 +149,12 @@ export default function ModernSelect({
                   <input
                     ref={searchRef}
                     className="ms-search-input"
-                    placeholder="Search..."
+                    placeholder={t('dataTable.searchPlaceholder')}
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     onKeyDown={handleKeyDown}
                     onClick={e => e.stopPropagation()}
-                    aria-label="Search options"
+                    aria-label={t('dataTable.searchOptions')}
                   />
                   {search && (
                     <button className="ms-search-clear" onClick={() => setSearch('')} tabIndex={-1}>
@@ -160,7 +165,7 @@ export default function ModernSelect({
               )}
               <div className="ms-options" ref={listRef} role="listbox">
                 {filtered.length === 0 ? (
-                  <div className="ms-no-options">No options found</div>
+                  <div className="ms-no-options">{t('dataTable.noOptionsFound')}</div>
                 ) : (
                   filtered.map((opt, idx) => (
                     <div

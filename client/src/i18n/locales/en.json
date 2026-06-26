@@ -211,6 +211,131 @@
     "commentDeleted": "Comment deleted",
     "preview": "Preview"
   },
+  "kpi": {
+    "totalRequests": "Total Requests",
+    "open": "Open",
+    "resolved": "Resolved",
+    "critical": "Critical",
+    "volunteers": "Volunteers",
+    "live": "Live"
+  },
+  "risk": {
+    "title": "Disaster Risk",
+    "critical": "Critical",
+    "high": "High",
+    "moderate": "Moderate",
+    "low": "Low",
+    "unknown": "Unknown"
+  },
+  "weather": {
+    "title": "Weather",
+    "unavailable": "Weather unavailable",
+    "humidity": "Humidity",
+    "wind": "Wind"
+  },
+  "requestsChart": {
+    "title": "Requests Over Time",
+    "noData": "No request data available"
+  },
+  "idleWarning": {
+    "title": "Session Expiring",
+    "description": "You've been inactive. For security, your session will expire in:",
+    "stayLoggedIn": "Stay Logged In",
+    "seconds": "{{count}}s"
+  },
+  "errorState": {
+    "retry": "Retry"
+  },
+  "dataTable": {
+    "searchPlaceholder": "Search...",
+    "noData": "No data",
+    "deleteSelected": "Delete selected",
+    "loadingData": "Loading data...",
+    "clear": "Clear",
+    "clearFilters": "Clear filters",
+    "rowsCount": "{{count}} rows",
+    "selectedCount": "{{count}} selected",
+    "rowsPerPage": "Rows per page:",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageInfo": "{{start}}–{{end}} of {{total}}",
+    "noOptionsFound": "No options found",
+    "searchOptions": "Search options",
+    "selectRow": "Select row",
+    "deselectRow": "Deselect row",
+    "filterBy": "Filter by {{name}}",
+    "exportCSV": "Export CSV",
+    "columns": "Columns",
+    "clearSearch": "Clear search",
+    "clearAllFilters": "Clear all filters"
+  },
+  "pagination": {
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page {{page}}"
+  },
+  "stepForm": {
+    "next": "Next",
+    "back": "Back",
+    "complete": "Complete",
+    "processing": "Processing...",
+    "stepOf": "Step {{current}} of {{total}}"
+  },
+  "imageUploader": {
+    "dropHere": "Drop image here",
+    "dropOrClick": "Drop an image or click to browse",
+    "hint": "PNG, JPG, WEBP up to {{maxSize}}MB",
+    "fileTooLarge": "File too large. Max {{maxSize}}MB.",
+    "notAnImage": "Please select an image file.",
+    "uploadImage": "Upload image",
+    "removeImage": "Remove image"
+  },
+  "datePicker": {
+    "selectDate": "Select date...",
+    "clearDate": "Clear date",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December",
+    "sunday": "Su",
+    "monday": "Mo",
+    "tuesday": "Tu",
+    "wednesday": "We",
+    "thursday": "Th",
+    "friday": "Fr",
+    "saturday": "Sa"
+  },
+  "activityFeed": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago",
+    "newCount": "{{count}} new"
+  },
+  "taskList": {
+    "title": "Upcoming Tasks",
+    "openCount": "{{count}} open",
+    "noOpenTasks": "No open tasks",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
+  "notificationBell": {
+    "alerts": "Alerts",
+    "escalations": "Escalations",
+    "updates": "Updates"
+  },
   "admin": {
     "title": "Admin Dashboard",
     "subtitle": "Manage users, requests, and view platform statistics",

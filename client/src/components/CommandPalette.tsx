@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LayoutDashboard, Map, MapPin, Package, AlertTriangle, Calendar, Crosshair, PlusSquare, Settings, Upload, TrendingUp, User, Search, Radio } from 'lucide-react'
+import useFocusTrap from '../hooks/useFocusTrap'
 
 interface Command {
   id: string
@@ -56,6 +57,7 @@ export const CommandPalette = memo(function CommandPalette({ isAdmin }: CommandP
   const [highlightIndex, setHighlightIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const navigate = useNavigate()
+  const trapRef = useFocusTrap(open)
 
   const filtered = COMMANDS.filter(c => {
     if (c.admin && !isAdmin) return false
@@ -120,6 +122,7 @@ export const CommandPalette = memo(function CommandPalette({ isAdmin }: CommandP
     <AnimatePresence>
       {open && (
         <motion.div
+          ref={trapRef}
           className="cmd-palette-overlay"
           onClick={() => { setOpen(false); setQuery('') }}
           onKeyDown={handleKeyDown}
