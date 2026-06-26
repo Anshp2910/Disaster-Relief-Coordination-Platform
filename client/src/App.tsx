@@ -22,6 +22,7 @@ const Geofencing = retryLazy(() => import('./pages/Geofencing'))
 const MapOverview = retryLazy(() => import('./pages/MapOverview'))
 const PublicStatus = retryLazy(() => import('./pages/PublicStatus'))
 const NotFound = retryLazy(() => import('./pages/NotFound'))
+const EmergencyCommandCenter = retryLazy(() => import('./pages/EmergencyCommandCenter'))
 
 function PageLoader() {
   return (
@@ -47,30 +48,37 @@ function RequireAdmin({ children }: { children: ReactNode }) {
 
 export default function App() {
   return (
-    <Layout>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/public" element={<PublicStatus />} />
-          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-          <Route path="/map" element={<RequireAuth><MapOverview /></RequireAuth>} />
-          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-          <Route path="/resources" element={<RequireAuth><Resources /></RequireAuth>} />
-          <Route path="/zones" element={<RequireAuth><ZoneHeatMap /></RequireAuth>} />
-          <Route path="/requests/new" element={<RequireAuth><CreateRequest /></RequireAuth>} />
-          <Route path="/requests/:id" element={<RequireAuth><RequestDetail /></RequireAuth>} />
-          <Route path="/requests/:id/edit" element={<RequireAuth><EditRequest /></RequireAuth>} />
-          <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
-          <Route path="/incidents" element={<RequireAuth><Incidents /></RequireAuth>} />
-          <Route path="/schedules" element={<RequireAuth><Schedules /></RequireAuth>} />
-          <Route path="/bulk" element={<RequireAdmin><BulkImport /></RequireAdmin>} />
-          <Route path="/escalation" element={<RequireAdmin><Escalation /></RequireAdmin>} />
-          <Route path="/geofencing" element={<RequireAuth><Geofencing /></RequireAuth>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </Layout>
+    <Routes>
+      {/* Standalone routes (no Layout wrapper) */}
+      <Route path="/command-center" element={<EmergencyCommandCenter />} />
+      {/* Standard routes with Layout */}
+      <Route path="/*" element={
+        <Layout>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/public" element={<PublicStatus />} />
+              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+              <Route path="/map" element={<RequireAuth><MapOverview /></RequireAuth>} />
+              <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+              <Route path="/resources" element={<RequireAuth><Resources /></RequireAuth>} />
+              <Route path="/zones" element={<RequireAuth><ZoneHeatMap /></RequireAuth>} />
+              <Route path="/requests/new" element={<RequireAuth><CreateRequest /></RequireAuth>} />
+              <Route path="/requests/:id" element={<RequireAuth><RequestDetail /></RequireAuth>} />
+              <Route path="/requests/:id/edit" element={<RequireAuth><EditRequest /></RequireAuth>} />
+              <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
+              <Route path="/incidents" element={<RequireAuth><Incidents /></RequireAuth>} />
+              <Route path="/schedules" element={<RequireAuth><Schedules /></RequireAuth>} />
+              <Route path="/bulk" element={<RequireAdmin><BulkImport /></RequireAdmin>} />
+              <Route path="/escalation" element={<RequireAdmin><Escalation /></RequireAdmin>} />
+              <Route path="/geofencing" element={<RequireAuth><Geofencing /></RequireAuth>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </Layout>
+      } />
+    </Routes>
   )
 }

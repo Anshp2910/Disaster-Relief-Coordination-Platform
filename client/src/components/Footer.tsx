@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { LayoutDashboard, Map, Package, PlusSquare, Shield, Phone, Mail, Building2, Heart, Globe } from 'lucide-react'
+import { LayoutDashboard, Map, Package, PlusSquare, Shield, Phone, Mail, Building2, Heart, Globe, Radio } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 export default function Footer() {
@@ -18,6 +18,7 @@ export default function Footer() {
               <li><Link to="/zones"><Map size={14} /> {t('nav.zones') || 'Zones'}</Link></li>
               <li><Link to="/resources"><Package size={14} /> {t('nav.resources') || 'Resources'}</Link></li>
               <li><Link to="/requests/new"><PlusSquare size={14} /> {t('footer.newRequestLink')}</Link></li>
+              <li><Link to="/command-center"><Radio size={14} /> {t('nav.commandCenter') || 'Command Center'}</Link></li>
               {currentUser?.role === 'admin' && (
                 <li><Link to="/admin"><Shield size={14} /> {t('footer.adminPanel')}</Link></li>
               )}

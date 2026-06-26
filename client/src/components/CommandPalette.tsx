@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, memo, type ReactNode } from '
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LayoutDashboard, Map, MapPin, Package, AlertTriangle, Calendar, Crosshair, PlusSquare, Settings, Upload, TrendingUp, User, Search } from 'lucide-react'
+import { LayoutDashboard, Map, MapPin, Package, AlertTriangle, Calendar, Crosshair, PlusSquare, Settings, Upload, TrendingUp, User, Search, Radio } from 'lucide-react'
 
 interface Command {
   id: string
@@ -28,6 +28,7 @@ const COMMANDS: Command[] = [
   { id: 'admin', labelKey: 'nav.admin', path: '/admin', icon: <Settings size={16} />, admin: true },
   { id: 'bulk', labelKey: 'nav.bulkImport', path: '/bulk', icon: <Upload size={16} />, admin: true },
   { id: 'escalation', labelKey: 'nav.escalation', path: '/escalation', icon: <TrendingUp size={16} />, admin: true },
+  { id: 'command-center', labelKey: 'nav.commandCenter', path: '/command-center', icon: <Radio size={16} /> },
   { id: 'profile', labelKey: 'nav.profile', path: '/profile', icon: <User size={16} /> },
 ]
 
@@ -43,6 +44,7 @@ const FALLBACKS: Record<string, string> = {
   'nav.admin': 'Admin Dashboard',
   'nav.bulkImport': 'Bulk Import',
   'nav.escalation': 'Escalation',
+  'nav.commandCenter': 'Command Center',
   'nav.profile': 'Profile',
 }
 

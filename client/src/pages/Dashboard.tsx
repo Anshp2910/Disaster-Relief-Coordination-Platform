@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { BarChart3, Activity, ShieldCheck, AlertTriangle, MapPin, Box, FilePlus, LayoutDashboard, ArrowUpRight } from 'lucide-react'
+import { BarChart3, Activity, ShieldCheck, AlertTriangle, MapPin, Box, FilePlus, LayoutDashboard, ArrowUpRight, Radio } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
@@ -320,6 +320,7 @@ export default function Dashboard() {
               { path: '/zones', label: t('nav.zones') || 'Zones', icon: <MapPin size={18} />, color: 'rgba(245,158,11,0.1)' },
               { path: '/schedules', label: t('nav.schedules') || 'Schedules', icon: <BarChart3 size={18} />, color: 'rgba(74,128,192,0.1)' },
               { path: '/geofencing', label: t('nav.geofencing') || 'Geofencing', icon: <MapPin size={18} />, color: 'rgba(6,182,212,0.1)' },
+              { path: '/command-center', label: t('nav.commandCenter') || 'Command Center', icon: <Radio size={18} />, color: 'rgba(14,165,233,0.1)' },
               ...(currentUser?.role === 'admin' ? [
                 { path: '/bulk', label: t('nav.bulkImport') || 'Bulk Import', icon: <FilePlus size={18} />, color: 'rgba(234,179,8,0.1)' },
                 { path: '/escalation', label: t('nav.escalation') || 'Escalation', icon: <AlertTriangle size={18} />, color: 'rgba(248,81,73,0.1)' },

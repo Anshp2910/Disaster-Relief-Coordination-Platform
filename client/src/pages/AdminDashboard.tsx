@@ -1,8 +1,9 @@
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Users, Shield, Activity, BarChart3, AlertTriangle, Plus, Edit, Trash2, Search, X, CheckCircle, XCircle, Filter, ArrowLeft, Download } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
@@ -86,115 +87,82 @@ function formatDate(dateStr: string): string {
   return `${months[d.getMonth()]} ${String(d.getDate()).padStart(2, '0')}`
 }
 
-interface MiniBarChartProps {
-  data?: DailyRequest[]
-}
-
-function MiniBarChart({ data }: MiniBarChartProps) {
+function DailyRequestsChart({ data }: { data?: DailyRequest[] }) {
   const safeData = Array.isArray(data) ? data : []
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; count: number; date: string } | null>(null)
-
   if (!safeData.length) return null
 
-  const values = safeData.map((d) => typeof d.count === 'number' ? d.count : 0)
-  const max = Math.max(...values, 1)
-  const n = safeData.length
-
-  const PADDING_LEFT = 40
-  const PADDING_BOTTOM = 28
-  const PADDING_TOP = 16
-  const PADDING_RIGHT = 8
-  const SVG_W = 600
-  const SVG_H = 220
-  const chartW = SVG_W - PADDING_LEFT - PADDING_RIGHT
-  const chartH = SVG_H - PADDING_TOP - PADDING_BOTTOM
-  const barGap = Math.max(2, Math.min(6, chartW / n * 0.2))
-  const barW = Math.max(4, (chartW - barGap * (n - 1)) / n)
-
-  const gridLines = [0, 0.25, 0.5, 0.75, 1]
+  const chartData = safeData.map((d) => ({
+    date: formatDate(d.date || ''),
+    count: typeof d.count === 'number' ? d.count : 0,
+  }))
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
-      <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ width: '100%', display: 'block' }} role="img" aria-label="Daily requests bar chart">
-        {gridLines.map((ratio) => {
-          const y = PADDING_TOP + chartH * (1 - ratio)
-          return (
-            <g key={ratio}>
-              <line x1={PADDING_LEFT} y1={y} x2={SVG_W - PADDING_RIGHT} y2={y} stroke="var(--border)" strokeWidth={1} />
-              <text x={PADDING_LEFT - 6} y={y + 4} textAnchor="end" fill="var(--gov-muted)" fontSize={10}>
-                {Math.round(max * ratio)}
-              </text>
-            </g>
-          )
-        })}
-        {safeData.map((d, idx) => {
-          const count = values[idx]
-          const barH = (count / max) * chartH
-          const x = PADDING_LEFT + idx * (barW + barGap)
-          const y = PADDING_TOP + chartH - barH
-          const showLabel = n <= 15 || idx % Math.ceil(n / 10) === 0 || idx === n - 1
-          return (
-            <g key={d.date || idx}>
-              <motion.rect
-                x={x}
-                y={y}
-                width={barW}
-                height={Math.max(barH, 2)}
-                fill="var(--accent)"
-                fillOpacity={0.6}
-                rx={2}
-                initial={{ height: 0, y: PADDING_TOP + chartH }}
-                animate={{ height: Math.max(barH, 2), y }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: idx * 0.02 }}
-                style={{ cursor: 'pointer' }}
-                onMouseEnter={(e) => {
-                  const rect = (e.target as SVGRectElement).getBoundingClientRect()
-                  const container = containerRef.current
-                  if (container) {
-                    const cr = container.getBoundingClientRect()
-                    setTooltip({
-                      x: rect.left - cr.left + rect.width / 2,
-                      y: rect.top - cr.top,
-                      count,
-                      date: formatDate(d.date || ''),
-                    })
-                  }
-                }}
-                onMouseLeave={() => setTooltip(null)}
-              />
-              {showLabel && (
-                <text x={x + barW / 2} y={SVG_H - PADDING_BOTTOM + 16} textAnchor="middle" fill="var(--gov-muted)" fontSize={9}>
-                  {formatDate(d.date || '')}
-                </text>
-              )}
-            </g>
-          )
-        })}
-      </svg>
-      {tooltip && (
-        <div
-          style={{
-            position: 'absolute',
-            left: tooltip.x,
-            top: tooltip.y - 8,
-            transform: 'translate(-50%, -100%)',
-            background: 'var(--card)',
-            border: '1px solid var(--border)',
-            borderRadius: 4,
-            padding: '4px 8px',
-            fontSize: 12,
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
-            zIndex: 20,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-          }}
-        >
-          {tooltip.count} — {tooltip.date}
-        </div>
-      )}
-    </div>
+    <ResponsiveContainer width="100%" height={240}>
+      <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+        <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
+        <YAxis tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
+        <Tooltip
+          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+          labelStyle={{ fontWeight: 600, marginBottom: 4 }}
+        />
+        <Bar dataKey="count" fill="var(--accent)" fillOpacity={0.6} radius={[2, 2, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
+const PIE_COLORS = ['var(--color-open)', 'var(--color-progress)', 'var(--color-resolved)', 'var(--color-fulfilled)', 'var(--color-critical)']
+
+function StatusPieChart({ data }: { data?: Record<string, number> }) {
+  const { t } = useTranslation()
+  const safeData = data || {}
+  const entries = Object.entries(safeData)
+  if (!entries.length) return null
+
+  const chartData = entries.map(([key, value]) => ({
+    name: t(`statuses.${key}`) || key,
+    value: typeof value === 'number' ? value : 0,
+  }))
+
+  return (
+    <ResponsiveContainer width="100%" height={200}>
+      <PieChart>
+        <Pie data={chartData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+          {chartData.map((_, i) => (
+            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip
+          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+        />
+        <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+      </PieChart>
+    </ResponsiveContainer>
+  )
+}
+
+function CategoryBarChart({ data, total }: { data?: Record<string, number>; total?: number }) {
+  const { t } = useTranslation()
+  const safeData = data || {}
+  const entries = Object.entries(safeData)
+  if (!entries.length) return null
+
+  const chartData = entries.map(([key, value]) => ({
+    name: t(`categories.${key}`) || key,
+    count: typeof value === 'number' ? value : 0,
+  }))
+
+  return (
+    <ResponsiveContainer width="100%" height={Math.max(140, chartData.length * 32)}>
+      <BarChart data={chartData} layout="vertical" margin={{ top: 4, right: 16, left: 0, bottom: 4 }}>
+        <XAxis type="number" tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
+        <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} width={80} />
+        <Tooltip
+          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+        />
+        <Bar dataKey="count" fill="var(--accent-indigo)" fillOpacity={0.7} radius={[0, 2, 2, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
   )
 }
 
@@ -276,18 +244,26 @@ function StatsPanel({ stats }: StatsPanelProps) {
         </div>
       </section>
 
-      {stats.dailyRequests && stats.dailyRequests.length > 0 && (
-        <motion.div className="mt-xl" variants={itemVariants}>
+      <div className="admin-charts-grid">
+        <motion.div className="admin-chart-card" variants={itemVariants}>
           <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.requestsOverTime')}</div>
-          <MiniBarChart data={stats.dailyRequests} />
+          <DailyRequestsChart data={stats.dailyRequests} />
+        </motion.div>
+        <motion.div className="admin-chart-card" variants={itemVariants}>
+          <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byStatus')}</div>
+          <StatusPieChart data={stats.byStatus} />
+        </motion.div>
+        <motion.div className="admin-chart-card admin-chart-card--wide" variants={itemVariants}>
+          <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byCategory')}</div>
+          <CategoryBarChart data={stats.byCategory} total={stats.totalRequests} />
+        </motion.div>
+      </div>
+
+      {stats.byPriority && Object.keys(stats.byPriority).length > 0 && (
+        <motion.div className="mt-xl" variants={itemVariants}>
+          <BreakdownCard title={t('admin.byPriority')} data={stats.byPriority} total={stats.totalRequests} type="priorities" />
         </motion.div>
       )}
-
-      <div className="admin-breakdown-grid">
-        <BreakdownCard title={t('admin.byStatus')} data={stats.byStatus} total={totalAll} type="statuses" />
-        <BreakdownCard title={t('admin.byCategory')} data={stats.byCategory} total={stats.totalRequests} type="categories" />
-        <BreakdownCard title={t('admin.byPriority')} data={stats.byPriority} total={stats.totalRequests} type="priorities" />
-      </div>
     </motion.div>
   )
 }
