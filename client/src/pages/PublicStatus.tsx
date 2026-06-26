@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Activity, Users, CheckCircle, AlertTriangle, Clock, BarChart3, TrendingUp } from 'lucide-react'
-import { PageHeader, DataCard } from '../components/ui'
+import { PageHeader, DataCard, PageTransition } from '../components/ui'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
 
@@ -63,12 +63,13 @@ export default function PublicStatus() {
   if (error) return <div className="text-center p-lg"><div className="muted">{t('public.error')}</div><div className="small muted">{error}</div></div>
 
   return (
-    <motion.div
-      className="max-w-lg mx-auto p-xl"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <PageTransition>
+      <motion.div
+        className="max-w-lg mx-auto p-xl"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      >
       <PageHeader title={t('public.title')} subtitle={t('public.subtitle')} />
       {data?.updatedAt ? (
         <div className="muted text-xs mt-xs">{t('public.lastUpdated')}: {new Date(data.updatedAt as string).toLocaleString()}</div>
@@ -117,5 +118,6 @@ export default function PublicStatus() {
         </motion.div>
       )}
     </motion.div>
+    </PageTransition>
   )
 }

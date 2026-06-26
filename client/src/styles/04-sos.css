@@ -1,4 +1,6 @@
-/* === Premium SOS FAB === */
+/* ================================================================
+   ENTERPRISE SOS FAB — Fixed floating action button
+   ================================================================ */
 
 .sos-fab {
   position: fixed;
@@ -25,10 +27,7 @@
   transition: all var(--duration-normal) var(--ease-out);
   position: relative;
 }
-.sos-fab-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 30px rgba(239, 68, 68, 0.5);
-}
+.sos-fab-btn:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(239, 68, 68, 0.5); }
 .sos-fab-btn:active { transform: scale(0.95); }
 .sos-fab-btn:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 
@@ -38,14 +37,14 @@
   background: var(--bg-elevated);
   color: var(--text);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   padding: 6px 14px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
   white-space: nowrap;
   pointer-events: none;
-  animation: fadeIn 0.2s var(--ease-out);
+  animation: fadeIn var(--duration-normal) var(--ease-out);
 }
 
 .sos-cooldown {
@@ -55,5 +54,5 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: var(--font-weight-extrabold);
 }

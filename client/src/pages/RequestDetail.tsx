@@ -7,7 +7,7 @@ import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
-import { Modal, ErrorState, PageHeader } from '../components/ui'
+import { Modal, ErrorState, PageHeader, RippleBtn, PageTransition } from '../components/ui'
 import Badge from '../components/Badge'
 import { SkeletonList, SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
@@ -318,18 +318,25 @@ export default function RequestDetail() {
     }
   }
 
-  if (loading) return <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
+  if (loading) return (
+    <PageTransition>
+      <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
+    </PageTransition>
+  )
 
   if (error) return (
-    <div className="container">
-      <ErrorState message={error} onRetry={load} />
-    </div>
+    <PageTransition>
+      <div className="container">
+        <ErrorState message={error} onRetry={load} />
+      </div>
+    </PageTransition>
   )
 
   if (!item) return null
 
   return (
-    <article className="container max-w-md" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
+    <PageTransition>
+      <article className="container max-w-md" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
       <PageHeader
         title={item.title || ''}
         actions={
@@ -385,9 +392,9 @@ export default function RequestDetail() {
 
             <div className="flex flex-gap-sm mt">
               {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
-                <button className="btnPrimary" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
+                <RippleBtn className="" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
                   {claiming ? '...' : t('dashboard.claim')}
-                </button>
+                </RippleBtn>
               )}
               {item.claimedBy?._id === currentUser?.id && (
                 <button className="btnDanger" onClick={handleUnclaim} disabled={claiming} aria-label={t('dashboard.unclaim')}>
@@ -439,9 +446,9 @@ export default function RequestDetail() {
             )}
             <div className="mt">
               <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" className="hidden" onChange={handleFileUpload} id="file-upload" aria-label={t('requestDetail.uploadFiles')} />
-              <label htmlFor="file-upload" className="btnPrimary inline-block cursor-pointer text-12 p-sm">
+              <RippleBtn onClick={() => document.getElementById('file-upload')?.click()} className="inline-block cursor-pointer text-12 p-sm">
                 {uploading ? t('editRequest.saving') : t('requestDetail.uploadFiles')}
-              </label>
+              </RippleBtn>
             </div>
           </motion.div>
 
@@ -460,9 +467,9 @@ export default function RequestDetail() {
               </select>
               <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
               <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
-              <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btnPrimary text-sm p-sm">
+              <RippleBtn type="submit" disabled={allocating || !allocResource || !allocQty} className="text-sm p-sm">
                 {allocating ? '...' : t('requestDetail.allocate')}
-              </button>
+              </RippleBtn>
             </form>
             {resources.length === 0 && (
               <div className="muted small mt-sm">{t('requestDetail.noAvailableResources')}</div>
@@ -490,9 +497,9 @@ export default function RequestDetail() {
                       {m.categoryMatch && <span className="govt-badge govt-badge-green ml-sm text-10 flex-center gap-xs"><CheckCircle size={10} /> {t('matching.exactMatch')}</span>}
                     </div>
                   </div>
-                  <button onClick={() => quickAllocate(m)} className="btnPrimary text-xs flex-shrink-0 p-xs">
+                  <RippleBtn onClick={() => quickAllocate(m)} className="text-xs flex-shrink-0 p-xs">
                     Quick Allocate
-                  </button>
+                  </RippleBtn>
                 </div>
               ))}
             </div>
@@ -522,9 +529,9 @@ export default function RequestDetail() {
                 </label>
               </div>
             </div>
-            <button type="submit" className="btnPrimary text-sm p-sm" style={{ height: 44, alignSelf: 'flex-end' }} disabled={posting}>
+            <RippleBtn type="submit" className="text-sm p-sm" style={{ height: 44, alignSelf: 'flex-end' }} disabled={posting}>
               {posting ? '...' : t('requestDetail.post')}
-            </button>
+            </RippleBtn>
           </form>
 
           {item.comments && item.comments.length > 0 ? (
@@ -594,9 +601,9 @@ export default function RequestDetail() {
               {t('requestDetail.feedback')} ({feedbackList.length})
             </h3>
             {!showFeedbackForm && (
-              <button onClick={() => setShowFeedbackForm(true)} className="btnPrimary text-sm p-xs">
+              <RippleBtn onClick={() => setShowFeedbackForm(true)} className="text-sm p-xs">
                 {t('requestDetail.giveFeedback')}
-              </button>
+              </RippleBtn>
             )}
           </div>
 
@@ -628,9 +635,9 @@ export default function RequestDetail() {
                 </div>
               </div>
               <div className="flex flex-gap-sm mt-sm">
-                <button type="submit" disabled={feedbackLoading} className="btnPrimary text-sm p-sm">
+                <RippleBtn type="submit" disabled={feedbackLoading} className="text-sm p-sm">
                   {feedbackLoading ? '...' : t('requestDetail.submit')}
-                </button>
+                </RippleBtn>
                 <button type="button" onClick={() => setShowFeedbackForm(false)} className="text-sm">{t('editRequest.cancel')}</button>
               </div>
             </form>
@@ -673,15 +680,16 @@ export default function RequestDetail() {
               <Paperclip size={48} />
             </div>
             <div className="text-base mb-lg">{previewFile?.filename}</div>
-            <a href={`${API_BASE}${previewFile?.url}`} target="_blank" rel="noopener noreferrer" className="btnPrimary text-sm p-sm inline-flex-center gap-xs" aria-label={`${t('common.download')} ${previewFile?.filename}`}>
+            <RippleBtn onClick={() => window.open(`${API_BASE}${previewFile?.url}`, '_blank', 'noopener,noreferrer')} className="text-sm p-sm inline-flex-center gap-xs" aria-label={`${t('common.download')} ${previewFile?.filename}`}>
               <Download size={14} />
               {t('common.download')}
-            </a>
+            </RippleBtn>
           </div>
         )}
       </Modal>
 
       {ConfirmDialog}
     </article>
+    </PageTransition>
   )
 }

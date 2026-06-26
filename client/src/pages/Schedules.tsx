@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Calendar, Plus, Edit, Trash2, Search, Filter, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, Pagination, ModernSelect } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, Pagination, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import EmptyState from '../components/EmptyState'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
@@ -299,15 +299,16 @@ export default function Schedules() {
   }, [weekSchedules, weekDays])
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <PageHeader
         title={t('nav.schedules') || 'Volunteer Scheduling'}
         subtitle={`${items.length} ${t('schedules.schedulesCount')}`}
         actions={
-          <button className="btnPrimary" onClick={openCreate} aria-label={t('schedules.createSchedule')}>
+          <RippleBtn className="" onClick={openCreate} aria-label={t('schedules.createSchedule')}>
             <Plus size={16} />
             <span className="ml-xs">{t('schedules.createSchedule')}</span>
-          </button>
+          </RippleBtn>
         }
       />
 
@@ -654,10 +655,10 @@ export default function Schedules() {
           </div>
 
           <div className="flex flex-gap-sm mt">
-            <button type="submit" className="btnPrimary flex items-center gap-xs" aria-label={t('common.submit')}>
+            <RippleBtn type="submit" className="flex items-center gap-xs" aria-label={t('common.submit')}>
               <CheckCircle size={16} />
               <span>{editItem ? t('schedules.update') : t('schedules.create')}</span>
-            </button>
+            </RippleBtn>
             <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('schedules.cancel')}</button>
           </div>
         </form>
@@ -665,5 +666,6 @@ export default function Schedules() {
 
       {ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

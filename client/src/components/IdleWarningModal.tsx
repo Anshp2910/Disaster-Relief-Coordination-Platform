@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { RippleBtn } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import useFocusTrap from '../hooks/useFocusTrap'
 
@@ -35,9 +36,9 @@ export default function IdleWarningModal() {
           </span>
         </div>
         <div className="modal-actions mt">
-          <button onClick={resetIdleTimer} className="btnPrimary">
+          <RippleBtn onClick={resetIdleTimer} className="">
             Stay Logged In
-          </button>
+          </RippleBtn>
         </div>
       </div>
     </div>,

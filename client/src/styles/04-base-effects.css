@@ -1,28 +1,42 @@
-/* === Premium Base Effects === */
+/* ================================================================
+   ENTERPRISE AMBIENT EFFECTS — Background glows & atmosphere
+   ================================================================ */
 
 .ambient-glow {
   position: fixed;
   pointer-events: none;
-  z-index: -1;
+  z-index: var(--z-below);
+  will-change: transform, opacity;
 }
+
 .ambient-glow--blue {
   width: 600px;
   height: 600px;
   background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%);
   top: -200px;
   right: -200px;
+  animation: ambientFloat 8s var(--ease-in-out) infinite alternate;
 }
+
 .ambient-glow--green {
   width: 500px;
   height: 500px;
   background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%);
   bottom: -150px;
   left: -150px;
+  animation: ambientFloat 10s var(--ease-in-out) infinite alternate-reverse;
 }
+
 .ambient-glow--purple {
   width: 400px;
   height: 400px;
   background: radial-gradient(circle, rgba(129,140,248,0.06) 0%, transparent 70%);
   bottom: -100px;
   right: -100px;
+  animation: ambientFloat 12s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes ambientFloat {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(30px, -20px); }
 }

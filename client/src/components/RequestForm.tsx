@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback, useReducer } from 'react'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { MapPin, Navigation, CheckCircle } from 'lucide-react'
-import { StepForm, type Step } from '../components/ui'
+import { StepForm, type Step, RippleBtn } from '../components/ui'
 import { ModernSelect } from '../components/ui'
 import { useAutoSave, AutoSaveIndicator } from '../hooks/useAutoSave'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
@@ -42,7 +42,7 @@ interface RequestFormProps {
 }
 
 export const PIN_ICON = L.divIcon({
-  className: '',
+  className: 'marker-pulse',
   iconSize: [30, 42],
   iconAnchor: [15, 42],
   html: `<svg width="30" height="42" viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg">
@@ -348,7 +348,7 @@ export default function RequestForm({
           <div className="flex-between items-center gap-sm mt-md p-sm rounded-sm" style={{ background: 'var(--accent-soft)', border: '1px solid var(--border)' }}>
             <span className="text-sm">{t('createRequest.draftFound') || 'You have an unsaved draft'}</span>
             <div className="flex flex-gap-xs">
-              <button type="button" onClick={restoreDraft} className="btnPrimary text-xs p-xs">{t('createRequest.restore') || 'Restore'}</button>
+              <RippleBtn type="button" onClick={restoreDraft} className="text-xs p-xs">{t('createRequest.restore') || 'Restore'}</RippleBtn>
               <button type="button" onClick={dismissRestore} className="text-xs p-xs">{t('createRequest.dismiss') || 'Dismiss'}</button>
             </div>
           </div>

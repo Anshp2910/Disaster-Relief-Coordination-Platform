@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Map, Filter, MapPin, Layers } from 'lucide-react'
-import { PageHeader, ErrorState } from '../components/ui'
+import { PageHeader, ErrorState, PageTransition } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { useTranslation } from 'react-i18next'
@@ -154,12 +154,13 @@ export default function MapOverview() {
   })), [t])
 
   return (
-    <motion.div
-      className="container"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <PageTransition>
+      <motion.div
+        className="container"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      >
       <div className="card mb-lg">
         <PageHeader
           title={t('dashboard.mapView')}
@@ -236,5 +237,6 @@ export default function MapOverview() {
         ))}
       </div>
     </motion.div>
+    </PageTransition>
   )
 }

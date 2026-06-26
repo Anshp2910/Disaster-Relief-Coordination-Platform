@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Package, Plus, Edit, Trash2, Search, CheckCircle, XCircle, Filter, Download, Box, AlertTriangle, CheckSquare } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, Pagination, ModernSelect } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, Pagination, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import { SkeletonList } from '../components/Skeleton'
@@ -283,29 +283,30 @@ export default function Resources() {
   }
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <PageHeader
         title={t('nav.resources') || 'Resource Inventory'}
         subtitle={`${total} ${t('resources.resourcesTracked')}`}
         actions={
           <>
-            <button
+            <RippleBtn
               onClick={toggleSelectMode}
-              className={`text-sm p-xs ${selectMode ? 'btnPrimary' : ''}`}
+              className={`text-sm p-xs ${selectMode ? '' : ''}`}
               aria-label={t('resources.selectMode') || 'Select Mode'}
               aria-pressed={selectMode}
             >
               <CheckSquare size={16} />
               <span className="ml-xs">{selectMode ? (t('resources.exitSelectMode') || 'Exit Select') : (t('resources.selectMode') || 'Select Mode')}</span>
-            </button>
+            </RippleBtn>
             <button onClick={exportCSV} className="text-sm p-xs" aria-label={t('common.exportCSV')}>
               <Download size={16} />
               <span className="ml-xs">{t('resources.exportCSV')}</span>
             </button>
-            <button className="btnPrimary" onClick={openCreate} aria-label={t('resources.addResource')}>
+            <RippleBtn className="" onClick={openCreate} aria-label={t('resources.addResource')}>
               <Plus size={16} />
               <span className="ml-xs">{t('resources.addResource')}</span>
-            </button>
+            </RippleBtn>
           </>
         }
       />
@@ -455,10 +456,10 @@ export default function Resources() {
           </div>
 
           <div className="flex flex-gap-sm mt">
-            <button type="submit" className="btnPrimary" aria-label={editItem ? t('resources.update') : t('resources.create')}>
+            <RippleBtn type="submit" className="" aria-label={editItem ? t('resources.update') : t('resources.create')}>
               <CheckCircle size={16} />
               <span className="ml-xs">{editItem ? t('resources.update') : t('resources.create')}</span>
-            </button>
+            </RippleBtn>
             <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
           </div>
         </form>
@@ -587,10 +588,10 @@ export default function Resources() {
             />
           </div>
           <div className="flex flex-gap-sm">
-            <button type="submit" disabled={bulkUpdating} className="btnPrimary" aria-label={t('resources.apply') || 'Apply'}>
+            <RippleBtn type="submit" disabled={bulkUpdating} className="" aria-label={t('resources.apply') || 'Apply'}>
               <CheckCircle size={16} />
               <span className="ml-xs">{t('resources.apply') || 'Apply'}</span>
-            </button>
+            </RippleBtn>
             <button type="button" onClick={() => setBulkEditOpen(false)} className="text-muted" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
             {bulkUpdating && (
               <span className="text-sm text-muted" role="progressbar" aria-valuenow={bulkProgress.current} aria-valuemax={bulkProgress.total}>
@@ -647,11 +648,11 @@ export default function Resources() {
                 </div>
               </div>
               <div className="flex flex-gap-sm">
-                <button type="submit" disabled={allocating} className="btnPrimary text-base" aria-label={t('resources.allocate')}>
+                <RippleBtn type="submit" disabled={allocating} className="text-base" aria-label={t('resources.allocate')}>
                   {allocating ? '...' : (
                     <><CheckCircle size={16} /><span className="ml-xs">{t('resources.allocate')}</span></>
                   )}
-                </button>
+                </RippleBtn>
                 <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} className="text-base" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
               </div>
             </form>
@@ -661,10 +662,10 @@ export default function Resources() {
 
       {selectMode && selectedIds.size > 0 && (
         <div className="sticky-bar z-50" role="toolbar" aria-label={t('resources.bulkActions') || 'Bulk actions'}>
-          <button onClick={openBulkEdit} className="btnPrimary text-sm" disabled={bulkUpdating} aria-label={t('resources.editSelected') || 'Edit Selected'}>
+          <RippleBtn onClick={openBulkEdit} className="text-sm" disabled={bulkUpdating} aria-label={t('resources.editSelected') || 'Edit Selected'}>
             <Edit size={16} />
             <span className="ml-xs">{t('resources.editSelected') || 'Edit Selected'} ({selectedIds.size})</span>
-          </button>
+          </RippleBtn>
           <button onClick={exportSelectedCSV} className="text-sm p-xs" aria-label={t('resources.exportSelected') || 'Export Selected'}>
             <Download size={16} />
             <span className="ml-xs">{t('resources.exportSelected') || 'Export Selected'}</span>
@@ -674,5 +675,6 @@ export default function Resources() {
 
       {ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

@@ -5,7 +5,7 @@ import { MapPin, Thermometer, Plus, Edit, Trash2, Search, Filter, Users, Activit
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
@@ -325,17 +325,18 @@ export default function ZoneHeatMap() {
   const updateForm = (field: keyof ZoneForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   return (
-    <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+    <PageTransition>
+      <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
       <PageHeader
         title={t('zones.title')}
         subtitle={`${zones.length} zones \u00B7 ${totalOpen} open requests \u00B7 ${totalGap} coverage gaps \u00B7 ${totalAffected.toLocaleString()} affected`}
         actions={
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <button className="btnPrimary" onClick={openCreate} aria-label="Add zone">
+              <RippleBtn className="" onClick={openCreate} aria-label="Add zone">
                 <Plus size={16} />
                 <span className="ml-xs">{t('zones.addZone')}</span>
-              </button>
+              </RippleBtn>
             )}
             <button className="btnSecondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
               <Thermometer size={16} />
@@ -663,14 +664,15 @@ export default function ZoneHeatMap() {
           </div>
 
           <div className="flex flex-gap-sm mt">
-            <button type="submit" className="btnPrimary" disabled={saving} aria-label={t('common.submit')}>
+            <RippleBtn type="submit" className="" disabled={saving} aria-label={t('common.submit')}>
               {saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}
-            </button>
+            </RippleBtn>
             <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
           </div>
         </form>
       </Modal>
       {ConfirmDialog}
     </motion.div>
+    </PageTransition>
   )
 }

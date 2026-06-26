@@ -1,118 +1,41 @@
-﻿/* === Premium Animations === */
+﻿/* ================================================================
+   ENTERPRISE ANIMATIONS — Keyframes, hover effects, ripple, markers
+   ================================================================ */
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* ── Entry Animations ── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes badge-pop { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+@keyframes toastSlideIn { from { opacity: 0; transform: translateX(100%) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes toastSlideOut { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(100%) scale(0.9); } }
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes pageSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes shimmer-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes badge-pop {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-@keyframes toastSlideIn {
-  from { opacity: 0; transform: translateX(100%) scale(0.9); }
-  to { opacity: 1; transform: translateX(0) scale(1); }
-}
-
-@keyframes toastSlideOut {
-  from { opacity: 1; transform: translateX(0) scale(1); }
-  to { opacity: 0; transform: translateX(100%) scale(0.9); }
-}
-
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-@keyframes pageSlideIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-@keyframes shimmer-slide {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-[data-animate] {
-  animation: fadeInUp 0.4s var(--ease-out) both;
-}
+/* ── Data Animate Attribute ── */
+[data-animate] { animation: fadeInUp var(--duration-slow) var(--ease-out) both; }
 [data-animate="fade"] { animation-name: fadeIn; }
 [data-animate="scale"] { animation-name: scaleIn; }
 [data-animate="slide-down"] { animation-name: slideDown; }
 
 /* ── Card Hover ── */
 .bento-card {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
 }
-.bento-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-}
-@media (prefers-color-scheme: dark) {
-  .bento-card:hover {
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-  }
-}
+.bento-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
 
 .listCard {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
 }
-.listCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-}
-@media (prefers-color-scheme: dark) {
-  .listCard:hover {
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-  }
-}
+.listCard:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
 /* ── Map Marker Pulse ── */
 .marker-pulse {
@@ -123,7 +46,6 @@
   animation: marker-pulse 2s infinite;
   --r: rgba(14,165,233,0.5);
 }
-
 .marker-pulse-danger { --r: rgba(239,68,68,0.5); }
 .marker-pulse-warning { --r: rgba(249,115,22,0.5); }
 
@@ -133,16 +55,15 @@
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 
-/* ── Ripple Base ── */
+/* ── Ripple Button ── */
 .rp-btn {
   position: relative;
   overflow: hidden;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.15s var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 .rp-btn:active { transform: scale(0.97); }
-
 .rp-ripple {
   position: absolute;
   border-radius: 50%;
@@ -151,7 +72,7 @@
   transform: scale(0);
 }
 
-/* ── Skeleton shimmer enhancement ── */
+/* ── Skeleton shimmer ── */
 .sk-line, .sk-circle, .sk-map, .sk-card .sk-line {
-  animation: shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: shimmer 1.5s var(--ease-in-out) infinite;
 }

@@ -2,13 +2,15 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
+import { PageTransition } from '../components/ui'
 
 export default function CreateRequest() {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   return (
-    <RequestForm
+    <PageTransition>
+      <RequestForm
       title={t('createRequest.title')}
       subtitle={t('createRequest.subtitle')}
       submitLabel={t('createRequest.creating')}
@@ -16,5 +18,6 @@ export default function CreateRequest() {
       onSubmit={async (data) => { await clientApi.createRequest(data); navigate('/dashboard') }}
       onCancel={() => navigate('/dashboard')}
     />
+    </PageTransition>
   )
 }

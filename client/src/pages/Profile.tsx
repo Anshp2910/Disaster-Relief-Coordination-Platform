@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { User, Camera, Save, Shield, Bell, Key, Award, Mail, Phone, MapPin } from 'lucide-react'
-import { PageHeader, ErrorState } from '../components/ui'
+import { PageHeader, ErrorState, RippleBtn, PageTransition } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../components/Toast'
 import { clientApi } from '../api/client'
@@ -106,12 +106,13 @@ export default function Profile() {
   }
 
   return (
-    <motion.div
-      className="container max-w-sm mt-lg mb-lg"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <PageTransition>
+      <motion.div
+        className="container max-w-sm mt-lg mb-lg"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      >
       <div className="card mb-lg">
         <PageHeader
           title={t('profile.title')}
@@ -174,9 +175,9 @@ export default function Profile() {
             style={{ display: 'none' }}
           />
           <div className="flex flex-gap-sm mt-sm">
-            <button type="button" className="btnPrimary text-xs" onClick={handleUploadAvatar} disabled={!selectedFile} aria-label="Upload photo">
+            <RippleBtn type="button" className="text-xs" onClick={handleUploadAvatar} disabled={!selectedFile} aria-label="Upload photo">
               Upload Photo
-            </button>
+            </RippleBtn>
             <button type="button" className="text-xs" onClick={handleRemoveAvatar} disabled={!avatarUrl} aria-label="Remove photo">
               Remove Photo
             </button>
@@ -286,10 +287,10 @@ export default function Profile() {
             </div>
           </div>
 
-          <button type="submit" className="btnPrimary text-13 flex items-center gap-xs" disabled={loading}>
+          <RippleBtn type="submit" className="text-13 flex items-center gap-xs" disabled={loading}>
             <Save size={16} />
             {loading ? '...' : t('profile.updateProfile')}
-          </button>
+          </RippleBtn>
         </form>
       </motion.div>
 
@@ -355,11 +356,12 @@ export default function Profile() {
             </div>
           </div>
 
-          <button type="submit" className="btnPrimary text-13" disabled={loading}>
+          <RippleBtn type="submit" className="text-13" disabled={loading}>
             {loading ? '...' : t('profile.updatePassword')}
-          </button>
+          </RippleBtn>
         </form>
       </motion.div>
     </motion.div>
+    </PageTransition>
   )
 }

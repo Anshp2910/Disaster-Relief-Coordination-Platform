@@ -1,8 +1,8 @@
-/* === Premium Forms === */
+/* ================================================================
+   ENTERPRISE FORM ELEMENTS — Inputs, selects, textareas, validation
+   ================================================================ */
 
-input, textarea, select {
-  font-family: var(--font);
-}
+input, textarea, select { font-family: var(--font); }
 
 input[type="text"],
 input[type="email"],
@@ -25,22 +25,17 @@ select:not(.lang-select):not(.tab) {
   transition: all var(--duration-fast) var(--ease-out);
   outline: none;
   line-height: 1.5;
+  box-shadow: var(--shadow-inset);
 }
-input:hover, textarea:hover, select:not(.lang-select):not(.tab):hover {
-  border-color: var(--text-muted);
-}
+input:hover, textarea:hover, select:not(.lang-select):not(.tab):hover { border-color: var(--border-hover); }
 input:focus, textarea:focus, select:not(.lang-select):not(.tab):focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-input::placeholder, textarea::placeholder {
-  color: var(--text-muted);
+  box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-inset);
 }
 
-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
+input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+textarea { resize: vertical; min-height: 80px; }
 
 select:not(.lang-select):not(.tab) {
   appearance: none;
@@ -53,13 +48,13 @@ select:not(.lang-select):not(.tab) {
 
 label {
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--text-secondary);
   display: block;
   margin-bottom: var(--space-xs);
 }
 
-/* Validation States */
+/* ── Validation ── */
 .input-error {
   border-color: var(--danger) !important;
   box-shadow: 0 0 0 3px var(--danger-soft) !important;
@@ -67,13 +62,13 @@ label {
 .errorText {
   color: var(--danger);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-/* Checkbox / Radio */
+/* ── Checkbox / Radio ── */
 input[type="checkbox"],
 input[type="radio"] {
   accent-color: var(--accent);
@@ -82,9 +77,4 @@ input[type="radio"] {
   cursor: pointer;
 }
 
-/* Range slider */
-input[type="range"] {
-  accent-color: var(--accent);
-}
-
-
+input[type="range"] { accent-color: var(--accent); }

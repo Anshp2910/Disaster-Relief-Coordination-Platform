@@ -1,5 +1,8 @@
-﻿/* === Premium Layout === */
+﻿/* ================================================================
+   ENTERPRISE LAYOUT — Container, grids, page structure
+   ================================================================ */
 
+/* ── Container ── */
 .container {
   width: 100%;
   max-width: 1280px;
@@ -7,6 +10,19 @@
   padding: 0 var(--space-lg);
 }
 
+.container-sm {
+  max-width: 768px;
+}
+
+.container-lg {
+  max-width: 1440px;
+}
+
+.container-xl {
+  max-width: 1600px;
+}
+
+/* ── Page Shell ── */
 .gov-layout {
   display: flex;
   flex-direction: column;
@@ -19,25 +35,106 @@
   padding-bottom: var(--space-2xl);
 }
 
-/* Page container default padding */
 .gov-main > .container,
 .gov-main > div > .container {
   padding-top: var(--space-lg);
 }
 
-/* Grid responsive (from layout) */
+/* ── Page Section ── */
+.section {
+  padding: var(--space-xl) 0;
+}
+
+.section-sm {
+  padding: var(--space-md) 0;
+}
+
+/* ── Responsive Grids ── */
 .grid-2-responsive {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-md);
 }
+
 .grid-3-responsive {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: var(--space-md);
 }
 
+.grid-4-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-md);
+}
+
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+/* ── Fixed Column Grids ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.grid-sidebar {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-lg);
+}
+
+.grid-sidebar-wide {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-lg);
+}
+
+/* ── Flex Helpers ── */
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-1 { flex: 1; }
+.gap-xs { gap: var(--space-xs); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+
+/* ── Animation ── */
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }

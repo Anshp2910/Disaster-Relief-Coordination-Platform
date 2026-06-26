@@ -9,7 +9,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useConfirm } from '../hooks/useConfirm'
-import { PageHeader, DataCard, ErrorState, DataTable, type ColumnDef } from '../components/ui'
+import { PageHeader, DataCard, ErrorState, DataTable, type ColumnDef, PageTransition } from '../components/ui'
 import Badge from '../components/Badge'
 import { SkeletonList } from '../components/Skeleton'
 
@@ -595,7 +595,8 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <PageHeader
         title={t('admin.title')}
         subtitle={t('admin.subtitle')}
@@ -674,5 +675,6 @@ export default function AdminDashboard() {
       )}
       {delConfirm.ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

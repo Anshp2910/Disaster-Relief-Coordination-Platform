@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { TrendingUp, Search, AlertTriangle, ArrowUp, ArrowDown, Filter } from 'lucide-react'
-import { PageHeader, ErrorState, DataList, FilterBar } from '../components/ui'
+import { PageHeader, ErrorState, DataList, FilterBar, PageTransition } from '../components/ui'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
@@ -131,7 +131,8 @@ export default function Escalation() {
   }
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <motion.div
         className="card"
         initial={{ opacity: 0, y: 12 }}
@@ -274,5 +275,6 @@ export default function Escalation() {
 
       {ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

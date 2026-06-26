@@ -1,11 +1,13 @@
-/* === Premium Skeleton Loaders === */
+/* ================================================================
+   ENTERPRISE SKELETON LOADERS — Premium shimmer placeholders
+   ================================================================ */
 
 .sk-line {
   height: 14px;
   border-radius: var(--radius-sm);
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.5s var(--ease-in-out) infinite;
   margin-bottom: 8px;
 }
 .sk-line:last-child { width: 60%; }
@@ -22,7 +24,7 @@
 .sk-card .sk-line {
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.5s var(--ease-in-out) infinite;
 }
 
 .sk-circle {
@@ -31,7 +33,7 @@
   border-radius: var(--radius-full);
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.5s var(--ease-in-out) infinite;
 }
 
 .sk-map {
@@ -40,5 +42,5 @@
   border-radius: var(--radius-md);
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer 1.5s var(--ease-in-out) infinite;
 }

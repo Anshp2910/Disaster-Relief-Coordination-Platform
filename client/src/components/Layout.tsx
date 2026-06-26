@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { RippleBtn } from '../components/ui'
 import Header from './Header'
 import Footer from './Footer'
 import CommandPalette from './CommandPalette'
@@ -51,7 +52,7 @@ export default function Layout({ children }: LayoutProps) {
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="pwa-install-text">{t('common.installApp')}</span>
-          <button onClick={install} className="btnPrimary pwa-install-btn">{t('common.install')}</button>
+          <RippleBtn onClick={install} className="pwa-install-btn">{t('common.install')}</RippleBtn>
           <button onClick={() => setDismissed(true)} className="pwa-dismiss-btn" aria-label="Dismiss install banner">&times;</button>
         </motion.div>
       )}

@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Search, MapPin, Crosshair, Target, Users, Package, Activity } from 'lucide-react'
-import { PageHeader, ErrorState, DataTable, type ColumnDef } from '../components/ui'
+import { PageHeader, ErrorState, DataTable, type ColumnDef, RippleBtn, PageTransition } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
@@ -61,7 +61,7 @@ const MAX_HISTORY = 20
 
 function createMapIcon(color: string) {
   return L.divIcon({
-    className: '',
+    className: 'marker-pulse',
     html: `<div style="width:22px;height:22px;background:${color};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>`,
     iconSize: [22, 22],
     iconAnchor: [11, 11],
@@ -249,7 +249,8 @@ export default function Geofencing() {
   }
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <motion.div
         className="card"
         initial="hidden"
@@ -297,15 +298,15 @@ export default function Geofencing() {
           >
             <Crosshair size={16} />
           </button>
-          <button
+          <RippleBtn
             onClick={checkArea}
             disabled={loading || !position}
-            className="btnPrimary text-sm p-sm flex items-center gap-xs"
+            className="text-sm p-sm flex items-center gap-xs"
             aria-label={t('geofencing.checkArea')}
           >
             <Target size={16} />
             {loading ? t('geofencing.checking') : t('geofencing.checkArea')}
-          </button>
+          </RippleBtn>
           <button
             onClick={toggleMonitoring}
             disabled={!position}
@@ -408,5 +409,6 @@ export default function Geofencing() {
         </motion.div>
       )}
     </div>
+    </PageTransition>
   )
 }

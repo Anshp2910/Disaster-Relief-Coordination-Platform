@@ -1,4 +1,7 @@
-/* === Header === */
+/* ================================================================
+   ENTERPRISE HEADER & FOOTER — Glass navigation, premium chrome
+   ================================================================ */
+
 header[role="banner"] {
   position: fixed;
   top: 0;
@@ -7,19 +10,21 @@ header[role="banner"] {
   z-index: var(--z-sticky);
 }
 
+/* ── Offline Banner ── */
 .offline-banner {
   background: linear-gradient(135deg, var(--red-500), var(--red-600));
   color: var(--text-on-accent);
   text-align: center;
   padding: 8px var(--space-md);
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-wide);
   position: relative;
   z-index: 200;
   animation: slideDown 0.3s var(--ease-out);
 }
 
+/* ── Top Strip ── */
 .gov-top-strip {
   display: flex;
   align-items: center;
@@ -40,11 +45,13 @@ header[role="banner"] {
   text-overflow: ellipsis;
   min-width: 0;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
+
+/* ── Language Select ── */
 .lang-select {
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   background: var(--glass-bg);
   color: var(--text-secondary);
   border: 1px solid var(--glass-border);
@@ -64,7 +71,7 @@ header[role="banner"] {
 .lang-select:hover { border-color: var(--accent); color: var(--text); background: var(--accent-soft); }
 .lang-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* === Header Main === */
+/* ── Header Main (Glass) ── */
 .gov-header-main {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
@@ -82,7 +89,7 @@ header[role="banner"] {
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--accent), var(--accent-indigo), transparent);
-  opacity: 0.3;
+  opacity: 0.25;
 }
 .gov-header-inner {
   display: flex;
@@ -92,10 +99,10 @@ header[role="banner"] {
   padding: 12px 0;
 }
 .gov-logo { height: 40px; width: auto; flex-shrink: 0; }
-.gov-title-group { min-width: 0; line-height: 1.2; }
+.gov-title-group { min-width: 0; line-height: var(--leading-tight); }
 .gov-app-title {
   font-size: var(--text-lg);
-  font-weight: 800;
+  font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--tracking-tight);
   background: linear-gradient(135deg, var(--pri-500), var(--accent-indigo));
   -webkit-background-clip: text;
@@ -105,21 +112,19 @@ header[role="banner"] {
 .gov-app-subtitle {
   font-size: var(--text-xs);
   color: var(--text-muted);
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
+.gov-nav-link-user { font-weight: var(--font-weight-semibold); color: var(--accent); }
 
-.gov-nav-link-user { font-weight: 600; color: var(--accent); }
-
-/* === Header Actions === */
+/* ── Header Actions ── */
 .gov-header-actions {
   display: flex;
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
 }
-
 .header-icon-btn {
   background: none;
   border: none;
@@ -132,15 +137,8 @@ header[role="banner"] {
   justify-content: center;
   transition: all var(--duration-fast) var(--ease-out);
 }
-.header-icon-btn:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.header-icon-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
+.header-icon-btn:hover { background: var(--accent-soft); color: var(--accent); }
+.header-icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .header-user-btn {
   display: flex;
   align-items: center;
@@ -149,16 +147,13 @@ header[role="banner"] {
   border: none;
   color: var(--text-secondary);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   transition: all var(--duration-fast) var(--ease-out);
 }
-.header-user-btn:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
+.header-user-btn:hover { background: var(--accent-soft); color: var(--accent); }
 .header-user-name {
   max-width: 120px;
   overflow: hidden;
@@ -166,7 +161,7 @@ header[role="banner"] {
   white-space: nowrap;
 }
 
-/* === Cmd Hint === */
+/* ── CMD Palette Hint ── */
 .cmd-hint {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -179,7 +174,7 @@ header[role="banner"] {
   align-items: center;
   gap: 6px;
   font-size: var(--text-xs);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   transition: all var(--duration-fast) var(--ease-out);
   flex-shrink: 0;
   font-family: var(--font);
@@ -191,21 +186,14 @@ header[role="banner"] {
   padding: 1px 5px;
   font-family: var(--font);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   line-height: 1.4;
   color: var(--text-muted);
 }
-.cmd-hint:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  color: var(--text);
-}
-.cmd-hint:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+.cmd-hint:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--text); }
+.cmd-hint:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* === Theme Toggle === */
+/* ── Theme Toggle ── */
 .theme-toggle {
   background: none;
   border: 1px solid var(--glass-border);
@@ -221,18 +209,10 @@ header[role="banner"] {
   width: 32px;
   height: 32px;
 }
-.theme-toggle:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
-  transform: rotate(15deg);
-}
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+.theme-toggle:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); transform: rotate(15deg); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* === Notification Bell === */
+/* ── Notification Bell ── */
 .notification-bell {
   position: relative;
   display: inline-block;
@@ -252,14 +232,8 @@ header[role="banner"] {
   transition: all var(--duration-fast) var(--ease-out);
   position: relative;
 }
-.notification-bell-btn:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.notification-bell-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+.notification-bell-btn:hover { background: var(--accent-soft); color: var(--accent); }
+.notification-bell-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .notif-bell-urgent { color: var(--danger) !important; }
 .notification-badge {
   position: absolute;
@@ -269,7 +243,7 @@ header[role="banner"] {
   color: var(--text-on-accent);
   border-radius: var(--radius-full);
   font-size: 9px;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   min-width: 16px;
   height: 16px;
   display: flex;
@@ -282,7 +256,7 @@ header[role="banner"] {
 }
 .notification-badge.notification-badge-urgent { background: var(--danger); }
 
-/* === Header SOS Button === */
+/* ── SOS Button ── */
 .sos-btn {
   background: var(--danger);
   color: var(--text-on-accent);
@@ -290,7 +264,7 @@ header[role="banner"] {
   padding: 6px 16px;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   letter-spacing: 0.04em;
   flex-shrink: 0;
@@ -309,7 +283,7 @@ header[role="banner"] {
 .sos-btn:active { transform: translateY(0) scale(0.97); }
 .sos-btn:disabled { opacity: 0.6; animation: none; }
 
-/* === Route Loading Bar === */
+/* ── Route Loading Bar ── */
 .route-loading-bar {
   position: fixed;
   top: 0;
@@ -319,7 +293,7 @@ header[role="banner"] {
   z-index: 999999;
   background: linear-gradient(90deg, var(--accent), var(--accent-indigo), var(--accent));
   background-size: 200% 100%;
-  animation: loadingBarSlide 1s ease-in-out infinite;
+  animation: loadingBarSlide 1s var(--ease-in-out) infinite;
   pointer-events: none;
 }
 @keyframes loadingBarSlide {
@@ -327,7 +301,7 @@ header[role="banner"] {
   100% { background-position: -200% 0; }
 }
 
-/* === Skip Link === */
+/* ── Skip Link (WCAA) ── */
 .skip-link {
   position: absolute;
   top: -100%;
@@ -336,14 +310,14 @@ header[role="banner"] {
   padding: 8px 16px;
   background: var(--accent);
   color: var(--text-on-accent);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-decoration: none;
   border-radius: 0 0 var(--radius-sm) 0;
   transition: top var(--duration-fast) var(--ease-out);
 }
 .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
 
-/* === Footer === */
+/* ── Footer ── */
 .gov-footer {
   background: var(--bg-card);
   color: var(--text-secondary);
@@ -364,7 +338,7 @@ header[role="banner"] {
 .gov-footer h4 {
   margin: 0 0 var(--space-md);
   font-size: var(--text-sm);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-secondary);
@@ -389,10 +363,10 @@ header[role="banner"] {
   border-top: 1px solid var(--border);
   margin-top: var(--space-2xl);
   padding: var(--space-lg) 0;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
 }
 .gov-footer-bottom > .container {
   display: flex;
   justify-content: space-between;
-  font-size: var(--text-xs);
-  color: var(--text-muted);
 }

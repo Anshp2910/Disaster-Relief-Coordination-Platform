@@ -1,16 +1,18 @@
-/* === Premium Modal === */
+/* ================================================================
+   ENTERPRISE MODAL — Overlay, card, confirm dialog
+   ================================================================ */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
   z-index: var(--z-modal-backdrop);
   background: var(--overlay-bg);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-md);
-  animation: fadeIn 0.15s var(--ease-out);
+  animation: fadeIn var(--duration-fast) var(--ease-out);
 }
 
 .modal-card {
@@ -23,15 +25,13 @@
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  animation: scaleIn 0.2s var(--ease-out);
+  animation: scaleIn var(--duration-normal) var(--ease-out);
 }
-
 .modal-card h3 {
   font-size: var(--text-xl);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-sm);
 }
-
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -41,17 +41,6 @@
   border-top: 1px solid var(--border);
 }
 
-/* Confirm dialog */
-.confirm-dialog .modal-card {
-  max-width: 400px;
-}
-
-.confirm-dialog p {
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
-  line-height: 1.6;
-}
-
-.confirm-dialog .modal-actions {
-  margin-top: var(--space-lg);
-}
+.confirm-dialog .modal-card { max-width: 400px; }
+.confirm-dialog p { color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; }
+.confirm-dialog .modal-actions { margin-top: var(--space-lg); }

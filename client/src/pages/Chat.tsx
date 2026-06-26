@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Send, Paperclip, Image, Smile, User, ChevronLeft, MoreVertical, Phone, Video } from 'lucide-react'
-import { ErrorState } from '../components/ui'
+import { ErrorState, RippleBtn, PageTransition } from '../components/ui'
 import { useSocket } from '../hooks/useSocket'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
@@ -235,7 +235,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   const hasTyping = typingNames.length > 0
 
   return (
-    <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
+    <PageTransition>
+      <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
       <div className="flex flex-between flex-center p-sm border-bottom">
         <h3 className="m-0 text-sm text-accent-blue">{t('chat.title')}</h3>
         <div className="flex items-center gap-xs">
@@ -375,10 +376,11 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           </div>
         </div>
         <span className="text-xs text-muted self-center">{text.length}/2000</span>
-        <button type="submit" className="btnPrimary text-xs p-sm flex items-center gap-xs" style={{ height: 36, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
+        <RippleBtn type="submit" className="text-xs p-sm flex items-center gap-xs" style={{ height: 36, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
           {sending ? '...' : <><Send size={14} /> {t('chat.send')}</>}
-        </button>
+        </RippleBtn>
       </form>
     </div>
+    </PageTransition>
   )
 }

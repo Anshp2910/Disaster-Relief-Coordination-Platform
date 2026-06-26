@@ -5,7 +5,7 @@ import { AlertTriangle, Plus, Edit, Trash2, Search, Filter, MapPin, Clock, User,
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useSocket, registerRefreshListener } from '../hooks/useSocket'
@@ -84,8 +84,9 @@ function buildIncidentPopup(inc: Incident) {
 
 function buildIncidentIcon(inc: Incident) {
   const color = SEVERITY_COLORS[inc.severity || ''] || '#999'
+  const pulseClass = 'marker-pulse' + (inc.severity === 'Critical' ? ' marker-pulse-danger' : inc.severity === 'High' ? ' marker-pulse-warning' : '')
   return L.divIcon({
-    className: '',
+    className: pulseClass,
     html: `<div style="width:28px;height:28px;background:${color};border:2px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
     iconSize: [28, 28],
     iconAnchor: [14, 14],
@@ -270,16 +271,17 @@ export default function Incidents() {
   const updateForm = (field: keyof IncidentForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   return (
-    <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+    <PageTransition>
+      <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
       <PageHeader
         title={t('nav.incidents') || 'Incident Grouping'}
         subtitle={`${incidents.length} ${t('incidents.incidentsTracked')}`}
         actions={
           currentUser?.role === 'admin' ? (
-            <button className="btnPrimary" onClick={openCreate}>
+            <RippleBtn className="" onClick={openCreate}>
               <Plus size={16} />
               <span className="ml-xs">{t('incidents.createIncident')}</span>
-            </button>
+            </RippleBtn>
           ) : undefined
         }
       />
@@ -523,7 +525,7 @@ export default function Incidents() {
           </div>
 
           <div className="flex flex-gap-sm mt">
-            <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
+            <RippleBtn type="submit" className="">{editIncident ? t('incidents.update') : t('incidents.create')}</RippleBtn>
             <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
           </div>
         </form>
@@ -538,5 +540,6 @@ export default function Incidents() {
       )}
       {ConfirmDialog}
     </motion.div>
+    </PageTransition>
   )
 }

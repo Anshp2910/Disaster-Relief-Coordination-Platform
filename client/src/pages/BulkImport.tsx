@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Upload, FileText, CheckCircle, AlertTriangle, Download, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
-import { Modal, PageHeader, ErrorState } from '../components/ui'
+import { Modal, PageHeader, ErrorState, RippleBtn, PageTransition } from '../components/ui'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 
@@ -292,7 +292,8 @@ export default function BulkImport() {
   const unmatchedCount = columnMaps.filter((m) => m.systemCol === '').length
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <div className="card">
         <PageHeader title={t('bulkImport.title')} />
 
@@ -315,10 +316,10 @@ export default function BulkImport() {
                   <Download size={16} />
                   {t('bulkImport.downloadTemplate')}
                 </button>
-                <button onClick={exportData} className="btnPrimary text-13 p-sm flex items-center gap-xs" aria-label={t('bulkImport.exportCSV')}>
+                <RippleBtn onClick={exportData} className="text-13 p-sm flex items-center gap-xs" aria-label={t('bulkImport.exportCSV')}>
                   <Download size={16} />
                   {t('bulkImport.exportCSV')}
-                </button>
+                </RippleBtn>
               </div>
 
               <div className="p-2xl text-center border-dashed-2 rounded">
@@ -328,9 +329,9 @@ export default function BulkImport() {
                 <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
                 <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
                 <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label="Upload CSV file" />
-                <label htmlFor="csv-upload" className="btnPrimary cursor-pointer inline-block text-13 p-sm">
+                <RippleBtn onClick={() => document.getElementById('csv-upload')?.click()} className="cursor-pointer inline-block text-13 p-sm">
                   {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
-                </label>
+                </RippleBtn>
               </div>
             </motion.div>
           )}
@@ -390,9 +391,9 @@ export default function BulkImport() {
 
               <div className="flex flex-gap-sm">
                 <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
-                <button onClick={confirmMapping} className="btnPrimary text-sm p-sm flex items-center gap-xs">
+                <RippleBtn onClick={confirmMapping} className="text-sm p-sm flex items-center gap-xs">
                   Confirm Mapping <ArrowRight size={14} />
-                </button>
+                </RippleBtn>
               </div>
             </motion.div>
           )}
@@ -403,13 +404,13 @@ export default function BulkImport() {
                 <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
                 <div className="flex flex-gap-sm">
                   <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
-                  <button
+                  <RippleBtn
                     onClick={handleSubmitImport}
                     disabled={importing || selected.size === 0}
-                    className="btnPrimary text-sm p-xs flex items-center gap-xs"
+                    className="text-sm p-xs flex items-center gap-xs"
                   >
                     {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
-                  </button>
+                  </RippleBtn>
                 </div>
               </div>
 
@@ -527,5 +528,6 @@ export default function BulkImport() {
         </motion.div>
       </div>
     </div>
+    </PageTransition>
   )
 }

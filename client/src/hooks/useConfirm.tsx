@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { RippleBtn } from '../components/ui'
 import useFocusTrap from './useFocusTrap'
 
 interface ConfirmOptions {
@@ -61,7 +62,7 @@ export function useConfirm() {
             <p id="confirm-message" className="modal-desc">{state.message}</p>
             <div className="modal-actions mt">
               <button onClick={handleCancel} className="btnSecondary" autoFocus>{state.cancelText}</button>
-              <button onClick={handleConfirm} className={state.danger ? 'btnDanger' : 'btnPrimary'}>{state.confirmText}</button>
+              <RippleBtn onClick={handleConfirm} className={state.danger ? 'btnDanger' : ''}>{state.confirmText}</RippleBtn>
             </div>
           </div>
         </div>,

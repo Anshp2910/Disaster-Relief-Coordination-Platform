@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { AnimatedCounter, RippleBtn } from '../components/ui'
+import { AnimatedCounter, RippleBtn, PageTransition } from '../components/ui'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import {
   BarChart3, Activity, ShieldCheck, AlertTriangle, MapPin, Box, FilePlus,
@@ -276,7 +276,8 @@ export default function Dashboard() {
   ], [t])
 
   return (
-    <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+    <PageTransition>
+      <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
       {/* ── HERO SECTION: Greeting + Weather + Risk ── */}
       <motion.div className="grid-3 mb-lg" variants={fadeUp}>
         {/* Greeting Card */}
@@ -597,7 +598,8 @@ export default function Dashboard() {
           )}
         </section>
       </motion.div>
-    </motion.div>
+          </motion.div>
+    </PageTransition>
   )
 }
 
@@ -623,7 +625,7 @@ const OwnerActions = memo(function OwnerActions({ id, item, onChanged }: OwnerAc
 
   return (
     <div className="flex flex-col flex-gap-sm items-end">
-      <button disabled={!canEdit} onClick={edit} className="btnPrimary text-sm p-xs" aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</button>
+      <RippleBtn disabled={!canEdit} onClick={edit} className="text-sm p-xs" aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</RippleBtn>
       <button disabled={!canEdit || deleting} onClick={del} className="btnDanger text-sm p-xs" aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
       {ConfirmDialog}
     </div>

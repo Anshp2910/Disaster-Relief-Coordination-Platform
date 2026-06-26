@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Edit } from 'lucide-react'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
+import { PageTransition } from '../components/ui'
 
 export default function EditRequest() {
   const { id } = useParams<{ id: string }>()
@@ -45,51 +46,56 @@ export default function EditRequest() {
 
   if (fetching) {
     return (
-      <motion.div
-        className="container max-w-sm"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="card">
-          <div className="small muted flex items-center gap-xs">
-            <Edit size={14} /> {t('editRequest.loadingRequest')}
+      <PageTransition>
+        <motion.div
+          className="container max-w-sm"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="card">
+            <div className="small muted flex items-center gap-xs">
+              <Edit size={14} /> {t('editRequest.loadingRequest')}
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </PageTransition>
     )
   }
 
   if (error) {
     return (
+      <PageTransition>
+        <motion.div
+          className="container max-w-sm"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="card">
+            <div className="errorText">{error}</div>
+          </div>
+        </motion.div>
+      </PageTransition>
+    )
+  }
+
+  return (
+    <PageTransition>
       <motion.div
         className="container max-w-sm"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="card">
-          <div className="errorText">{error}</div>
-        </div>
-      </motion.div>
-    )
-  }
-
-  return (
-    <motion.div
-      className="container max-w-sm"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <button
-        onClick={() => navigate('/dashboard')}
-        className="mb btn-ghost btn-sm flex items-center gap-xs"
-        aria-label="Go back to dashboard"
-      >
-        <ArrowLeft size={16} /> Back
-      </button>
-      <RequestForm
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="mb btn-ghost btn-sm flex items-center gap-xs"
+          aria-label="Go back to dashboard"
+        >
+          <ArrowLeft size={16} /> Back
+        </button>
+        <RequestForm
         initialData={loadedRequest as Record<string, unknown> | undefined}
         title={t('editRequest.title')}
         subtitle={t('editRequest.subtitle')}
@@ -100,5 +106,6 @@ export default function EditRequest() {
         showStatus
       />
     </motion.div>
+    </PageTransition>
   )
 }

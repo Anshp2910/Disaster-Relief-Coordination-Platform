@@ -1,8 +1,9 @@
-/* === Premium Buttons === */
+/* ================================================================
+   ENTERPRISE BUTTONS — Primary, secondary, ghost, pill, filter
+   Inspired by Stripe, Vercel, Linear button systems
+   ================================================================ */
 
-button, .btn {
-  font-family: var(--font);
-}
+button, .btn { font-family: var(--font); }
 
 .btnRow {
   display: flex;
@@ -11,7 +12,7 @@ button, .btn {
   align-items: center;
 }
 
-/* Primary Button */
+/* ── Primary Button ── */
 .btnPrimary {
   display: inline-flex;
   align-items: center;
@@ -20,36 +21,28 @@ button, .btn {
   background: linear-gradient(135deg, var(--pri-500), var(--pri-600));
   color: var(--text-on-accent);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   padding: 10px 20px;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
-  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.2);
+  box-shadow: var(--shadow-accent);
   text-decoration: none;
   line-height: 1.4;
   min-height: 40px;
+  position: relative;
+  overflow: hidden;
 }
 .btnPrimary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+  box-shadow: var(--shadow-accent-lg);
 }
-.btnPrimary:active {
-  transform: translateY(0) scale(0.98);
-}
-.btnPrimary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-.btnPrimary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+.btnPrimary:active { transform: translateY(0) scale(0.98); }
+.btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btnPrimary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* Secondary Button */
+/* ── Secondary Button ── */
 .btnSecondary {
   display: inline-flex;
   align-items: center;
@@ -58,7 +51,7 @@ button, .btn {
   background: var(--bg-card);
   color: var(--text);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   padding: 10px 20px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -68,17 +61,10 @@ button, .btn {
   line-height: 1.4;
   min-height: 40px;
 }
-.btnSecondary:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-.btnSecondary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+.btnSecondary:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.btnSecondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* Danger Button */
+/* ── Danger Button ── */
 .btnDanger {
   display: inline-flex;
   align-items: center;
@@ -87,26 +73,23 @@ button, .btn {
   background: linear-gradient(135deg, var(--red-500), var(--red-600));
   color: var(--text-on-accent);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   padding: 10px 20px;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
-  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.2);
+  box-shadow: var(--shadow-danger);
   text-decoration: none;
   line-height: 1.4;
   min-height: 40px;
 }
-.btnDanger:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
-}
+.btnDanger:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
 .btnDanger:active { transform: translateY(0) scale(0.98); }
 .btnDanger:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 .btnDanger:focus-visible { outline: 2px solid var(--danger); outline-offset: 2px; }
 
-/* Pill Buttons */
+/* ── Pill Buttons ── */
 .btn-pill {
   display: inline-flex;
   align-items: center;
@@ -115,7 +98,7 @@ button, .btn {
   background: var(--bg-subtle);
   color: var(--text-secondary);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
@@ -124,14 +107,10 @@ button, .btn {
   text-decoration: none;
   line-height: 1.4;
 }
-.btn-pill:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
-}
+.btn-pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 .btn-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* Ghost / Icon Button */
+/* ── Ghost / Icon ── */
 .btn-ghost {
   display: inline-flex;
   align-items: center;
@@ -140,20 +119,17 @@ button, .btn {
   background: none;
   color: var(--text-secondary);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   padding: 8px;
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
 }
-.btn-ghost:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
+.btn-ghost:hover { background: var(--accent-soft); color: var(--accent); }
 .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* Loading button state */
+/* ── Loading State ── */
 .btn-loading {
   position: relative;
   pointer-events: none;
@@ -169,11 +145,9 @@ button, .btn {
   animation: btn-spin 0.6s linear infinite;
 }
 .btn-loading span { visibility: hidden; }
-@keyframes btn-spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
 
-/* De-escalate button */
+/* ── De-escalate ── */
 .deescalate-btn {
   background: var(--warning-soft);
   color: var(--warning);
@@ -181,17 +155,14 @@ button, .btn {
   padding: 8px 16px;
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
   white-space: nowrap;
 }
-.deescalate-btn:hover {
-  background: var(--warning);
-  color: var(--text-on-accent);
-}
+.deescalate-btn:hover { background: var(--warning); color: var(--text-on-accent); }
 
-/* Filter pill variant */
+/* ── Filter Pill ── */
 .filter-pill {
   display: inline-flex;
   align-items: center;
@@ -199,7 +170,7 @@ button, .btn {
   padding: 6px 14px;
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--text-secondary);
   background: var(--bg-subtle);
   border: 1px solid var(--border);

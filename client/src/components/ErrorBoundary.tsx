@@ -1,3 +1,4 @@
+import { RippleBtn } from '../components/ui'
 import { Component, type ReactNode, type ErrorInfo, type PropsWithChildren } from 'react'
 import { withTranslation, type WithTranslation } from 'react-i18next'
 
@@ -64,16 +65,16 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             <p className="text-sm text-muted m-0 mb-lg">
               {t('common.unexpectedError')}
             </p>
-            <button
+            <RippleBtn
               onClick={() => {
                 this.setState({ hasError: false, error: null })
                 window.location.href = '/dashboard'
               }}
-              className="btnPrimary"
+              className=""
               aria-label={t('common.goToDashboard')}
             >
               {t('common.goToDashboard')}
-            </button>
+            </RippleBtn>
           </div>
         </div>
       )
