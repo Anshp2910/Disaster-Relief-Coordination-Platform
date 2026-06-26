@@ -1,8 +1,10 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 
 interface ThemeContextType {
-  theme: 'light' | 'dark'
+  theme: 'light' | 'dark' | 'neon'
   toggleTheme: () => void
+  isPremium: boolean
+  togglePremiumTheme: () => void
   isEmergency: boolean
   setIsEmergency: (value: boolean) => void
   toggleEmergency: () => void
@@ -56,6 +58,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const toggleHighContrast = useCallback(() => {
+    // existing code stays
     setIsHighContrast(prev => {
       const newValue = !prev
       try { localStorage.setItem('highContrastMode', newValue.toString()) } catch (e) { console.warn('Failed to save high contrast mode:', (e as Error).message) }
