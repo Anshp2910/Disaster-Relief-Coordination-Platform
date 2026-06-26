@@ -105,6 +105,22 @@
   --gradient-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
 
   /* ── Enterprise Shadows (multi-layer, like Stripe/Apple) ── */
+
+/* Neon Dark theme overrides */
+[data-theme='neon'] {
+  --bg: #0a0a0a;
+  --bg-elevated: #111111;
+  --bg-card: #111111;
+  --bg-subtle: #0f0f0f;
+  --text: #e0f8ff;
+  --text-muted: #a0c8ff;
+  --accent: #00ffea;
+  --accent-hover: #00e5d1;
+  --accent-soft: rgba(0,255,234,0.08);
+  --shadow-accent: 0 0 8px #00ffea, 0 0 20px #00e5d1;
+  --gradient-bg: radial-gradient(ellipse at top left, #001f3f, transparent), radial-gradient(ellipse at bottom right, #001f3f, transparent), linear-gradient(180deg, #0a0a0a, #111111);
+}
+
   --shadow-xs: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 1px rgba(0, 0, 0, 0.02);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.04);
