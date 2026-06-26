@@ -48,7 +48,8 @@ const FALLBACKS: Record<string, string> = {
   'nav.profile': 'Profile',
 }
 
-export default memo(function CommandPalette({ isAdmin }: CommandPaletteProps) {
+export const CommandPalette = memo(function CommandPalette({ isAdmin }: CommandPaletteProps) {
+
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
