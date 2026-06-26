@@ -1,57 +1,43 @@
-﻿/* === Layout === */
+﻿/* === Premium Layout === */
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
 .gov-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  position: relative;
-  z-index: 1;
 }
 
 .gov-main {
   flex: 1;
-  width: 100%;
-  animation: pageSlideIn 0.35s var(--ease-out);
+  padding-top: 100px;
+  padding-bottom: var(--space-2xl);
 }
 
-.gov-container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 var(--space-xl);
+/* Page container default padding */
+.gov-main > .container,
+.gov-main > div > .container {
+  padding-top: var(--space-lg);
 }
-/* === Container === */
-.container {
-  width: 100%;
-  max-width: 1400px;
-  margin-top: var(--space-xl);
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 var(--space-xl);
-  animation: pageSlideIn 0.35s var(--ease-out);
-}
-.container-exit {
-  animation: pageSlideOut 0.2s var(--ease-in);
-}
-@media (max-width: 600px) {
-  .container { padding: 0 var(--space-md); animation-duration: 0.25s; }
-}
-/* === Grid Layouts === */
-.gridGap { display: grid; gap: var(--space-md); }
-.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
-.grid-2-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: var(--space-md); }
-.grid-3-responsive { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: var(--space-md); }
 
-/* === Content Section === */
-.content-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--duration-normal) var(--ease-out);
+/* Grid responsive (from layout) */
+.grid-2-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
 }
-.content-section:hover {
-  box-shadow: var(--shadow-md);
+.grid-3-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-md);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Bell, BellRing, AlertTriangle, TrendingUp, Info, ArrowUp } from 'lucide-react'
 import { useSocket } from '../hooks/useSocket'
 
 interface NotificationItem {
@@ -16,7 +17,7 @@ interface NotificationItem {
 interface GroupConfig {
   label: string
   order: number
-  icon: string
+  icon: React.ReactNode
   className: string
 }
 
@@ -26,9 +27,9 @@ interface GroupData extends GroupConfig {
 }
 
 const NOTIF_TIERS: Record<string, GroupConfig> = {
-  sos: { label: 'Alerts', order: 0, icon: '\u{1F6A8}', className: 'notif-tier-alert' },
-  escalation: { label: 'Escalations', order: 1, icon: '\u{1F53A}', className: 'notif-tier-escalation' },
-  update: { label: 'Updates', order: 2, icon: '\u{1F4E2}', className: 'notif-tier-update' },
+  sos: { label: 'Alerts', order: 0, icon: <AlertTriangle size={12} />, className: 'notif-tier-alert' },
+  escalation: { label: 'Escalations', order: 1, icon: <ArrowUp size={12} />, className: 'notif-tier-escalation' },
+  update: { label: 'Updates', order: 2, icon: <Bell size={12} />, className: 'notif-tier-update' },
 }
 
 function getTier(type: string): string {
@@ -37,23 +38,16 @@ function getTier(type: string): string {
   return 'update'
 }
 
-const iconMap: Record<string, string> = {
-  'request:created': '\u{1F4E2}',
-  'request:updated': '\u{270F}\u{FE0F}',
-  'request:commented': '\u{1F4AC}',
-  'request:escalated': '\u{1F53A}',
-  'request:deleted': '\u{1F5D1}\u{FE0F}',
-  'resource:allocated': '\u{1F4E6}',
-  'resource:created': '\u{2795}',
-  'sos:alert': '\u{1F6A8}',
+const iconMap: Record<string, React.ReactNode> = {
+  'request:created': <Info size={14} />,
+  'request:updated': <Info size={14} />,
+  'request:commented': <Info size={14} />,
+  'request:escalated': <TrendingUp size={14} />,
+  'request:deleted': <Info size={14} />,
+  'resource:allocated': <Info size={14} />,
+  'resource:created': <Info size={14} />,
+  'sos:alert': <AlertTriangle size={14} />,
 }
-
-const BellIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-  </svg>
-)
 
 export default function NotificationBell() {
   const { notifications, unreadCount, markAsRead, markAllRead, clearAll } = useSocket()
@@ -104,7 +98,7 @@ export default function NotificationBell() {
         aria-label={t('notifications.title')}
         title={t('notifications.title')}
       >
-        <BellIcon />
+        {hasUnreadUrgent ? <BellRing size={18} /> : <Bell size={18} />}
         {unreadCount > 0 && (
           <span className={`notification-badge${hasUnreadUrgent ? ' notification-badge-urgent' : ''}`}>
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -156,7 +150,7 @@ export default function NotificationBell() {
                     >
                       <div className="notification-item-content">
                         <span className="notification-icon">
-                          {iconMap[n.type] || '\u{1F514}'}
+                          {iconMap[n.type] || <Bell size={14} />}
                         </span>
                         <div className="notification-text">
                           <div className="notification-title">{n.title}</div>

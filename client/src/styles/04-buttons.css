@@ -1,208 +1,212 @@
-/* === Buttons === */
-/* Button base, btnPrimary, btnSecondary, btnDanger, btnLoading, filter pills, etc. */
+/* === Premium Buttons === */
 
-.headerRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-}
-.btnRow { display: flex; gap: var(--space-sm); align-items: center; }
-.btnRow button {
-  font-weight: 500;
-}
-
-/* === Buttons === */
-button {
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg-elevated);
-  color: var(--text);
-  padding: 8px 14px;
-  font-weight: 500;
-  font-size: var(--text-base);
+button, .btn {
   font-family: var(--font);
-  transition: all var(--duration-fast) var(--ease-out);
-  line-height: 1.4;
+}
+
+.btnRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+/* Primary Button */
+.btnPrimary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-}
-button:hover {
-  background: var(--accent-soft);
-  border-color: var(--pri-400);
-}
-button:active { transform: scale(0.97); }
-button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-.btnLoading {
-  position: relative;
-  pointer-events: none;
-}
-.btnPrimary.btnLoading,
-.btnDanger.btnLoading {
-  color: transparent;
-}
-.btnLoading::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-.btnSecondary.btnLoading::after {
-  border-color: var(--border);
-  border-top-color: var(--accent);
-}
-.btnLoading .btn-text {
-  visibility: hidden;
-}
-
-.btnPrimary {
-  background: var(--gradient-accent);
+  gap: 8px;
+  background: linear-gradient(135deg, var(--pri-500), var(--pri-600));
   color: var(--text-on-accent);
-  border: none;
+  font-size: var(--text-sm);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 0.01em;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
-}
-.btnPrimary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-  transition: left 0.6s var(--ease-out);
-}
-.btnPrimary:hover::before {
-  left: 100%;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.2);
+  text-decoration: none;
+  line-height: 1.4;
+  min-height: 40px;
 }
 .btnPrimary:hover {
-  background: linear-gradient(135deg, var(--pri-400), var(--pri-500));
-  box-shadow: 0 8px 24px rgba(59,130,246,0.25);
-  border-color: transparent;
   transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
 }
 .btnPrimary:active {
   transform: translateY(0) scale(0.98);
+}
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 .btnPrimary:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.btnPrimary--premium {
-  background: linear-gradient(135deg, var(--pri-500), #6366f1, var(--pri-600));
-  background-size: 200% 100%;
-  animation: shimmerSlide 3s ease-in-out infinite;
-  box-shadow: 0 2px 8px rgba(59,130,246,0.2);
-}
 
-.btnDanger {
-  background: linear-gradient(135deg, var(--red-500), var(--red-600));
-  color: var(--text-on-accent);
-  border: none;
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.3);
-  position: relative;
-  overflow: hidden;
-  transition: all var(--duration-normal) var(--ease-out);
-}
-.btnDanger:hover {
-  background: linear-gradient(135deg, var(--red-400), var(--red-500));
-  box-shadow: 0 8px 24px rgba(239,68,68,0.25);
-  border-color: transparent;
-  transform: translateY(-1px);
-}
-.btnDanger:active {
-  transform: translateY(0) scale(0.98);
-}
-
+/* Secondary Button */
 .btnSecondary {
-  background: var(--bg-elevated);
-  color: var(--text);
-  border: 1px solid var(--border);
-  font-weight: 500;
-  transition: all var(--duration-fast) var(--ease-out);
-}
-.btnSecondary:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-}
-
-/* === Filter Pills === */
-.filter-pill {
-  padding: 5px 14px;
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
-  position: relative;
-}
-.filter-pill:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
-  transform: translateY(-1px);
-}
-.filter-pill.active {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  color: var(--accent);
-  font-weight: 600;
-  box-shadow: 0 0 16px rgba(59,130,246,0.1);
-}
-
-/* Admin action buttons */
-.admin-action-btn {
-  padding: 5px 12px;
-  font-size: var(--text-xs);
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
-}
-.admin-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-/* Navigation chips for dashboard quick nav */
-.nav-chip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  text-decoration: none;
+  line-height: 1.4;
+  min-height: 40px;
+}
+.btnSecondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.btnSecondary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Danger Button */
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--red-500), var(--red-600));
+  color: var(--text-on-accent);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.2);
+  text-decoration: none;
+  line-height: 1.4;
+  min-height: 40px;
+}
+.btnDanger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+}
+.btnDanger:active { transform: translateY(0) scale(0.98); }
+.btnDanger:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btnDanger:focus-visible { outline: 2px solid var(--danger); outline-offset: 2px; }
+
+/* Pill Buttons */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 10px 16px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
-  font-family: inherit;
-  line-height: 1.2;
-  min-width: 0;
+  text-decoration: none;
+  line-height: 1.4;
 }
-.nav-chip:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+.btn-pill:hover {
   border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.btn-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Ghost / Icon Button */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.btn-ghost:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Loading button state */
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+}
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: var(--radius-full);
+  animation: btn-spin 0.6s linear infinite;
+}
+.btn-loading span { visibility: hidden; }
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
 }
 
-/* === Universal Overflow Fixes === */
-
-.btnRow > button,
-.btnRow > a {
-  flex-shrink: 1;
-  min-width: 0;
+/* De-escalate button */
+.deescalate-btn {
+  background: var(--warning-soft);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
 }
+.deescalate-btn:hover {
+  background: var(--warning);
+  color: var(--text-on-accent);
+}
+
+/* Filter pill variant */
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.filter-pill.active { background: var(--accent); color: var(--text-on-accent); border-color: var(--accent); box-shadow: var(--glow-blue); }
+.filter-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

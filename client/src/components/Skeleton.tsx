@@ -29,7 +29,7 @@ export function SkeletonCard({ lines = 3, style = {} }: SkeletonCardProps) {
   return (
     <div className="sk-card" style={style} aria-hidden="true">
       {Array.from({ length: lines }).map((_, i) => (
-        <SkeletonLine key={i} height={i === 0 ? 16 : 12} width={i === lines - 1 ? '60%' : '100%'} className="mb-sm" />
+        <SkeletonLine key={i} height={i === 0 ? 16 : 12} width={i === lines - 1 ? '60%' : '100%'} />
       ))}
     </div>
   )
@@ -46,7 +46,5 @@ export function SkeletonList({ count = 4, lines = 3 }: SkeletonListProps) {
 }
 
 export function SkeletonMap({ height = '70vh' }: SkeletonMapProps) {
-  return (
-    <div className="sk-map" style={{ height }} aria-hidden="true" />
-  )
+  return <div className="sk-map" style={{ height }} aria-hidden="true" />
 }

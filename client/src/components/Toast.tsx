@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react'
 
 interface ToastItem {
   id: number
@@ -58,20 +60,26 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={toast}>
       {children}
       <div className="toast-container" role="status" aria-live="polite">
-        {toasts.map((t) => (
-          <div
-            key={t.id}
-            onClick={() => removeToast(t.id)}
-            className={`flex flex-gap-sm p rounded shadow-sm cursor-pointer ${t.type === 'success' ? 'badge-green' : t.type === 'error' ? 'badge-red' : t.type === 'warning' ? 'badge-orange' : 'badge-blue'}`}
-            role="alert"
-          >
-            <span className="text-lg">
-              {t.type === 'success' ? '\u2714' : t.type === 'error' ? '\u2718' : t.type === 'warning' ? '\u26A0' : '\u2139'}
-            </span>
-            <span className="flex-1">{t.message}</span>
-            <span className="text-xs opacity-50">{'\u00D7'}</span>
-          </div>
-        ))}
+        <AnimatePresence>
+          {toasts.map((t) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, x: 80, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 80, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              onClick={() => removeToast(t.id)}
+              className={`toast-item toast-${t.type}`}
+              role="alert"
+            >
+              <span className={`toast-icon ${t.type}`}>
+                {t.type === 'success' ? <CheckCircle size={16} /> : t.type === 'error' ? <XCircle size={16} /> : t.type === 'warning' ? <AlertTriangle size={16} /> : <Info size={16} />}
+              </span>
+              <span className="toast-message">{t.message}</span>
+              <button className="toast-close"><X size={14} /></button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   )

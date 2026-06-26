@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
+import { Sun, Moon, Search, User, LogOut } from 'lucide-react'
 import NotificationBell from './NotificationBell'
-import Icon from './Icon'
 
 interface Language {
   code: string
@@ -56,7 +56,7 @@ export default function Header() {
               ))}
             </select>
             <button onClick={toggleTheme} className="theme-toggle" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} title={theme === 'light' ? 'Dark mode' : 'Light mode'}>
-              {theme === 'light' ? <Icon name="moon" size={14} /> : <Icon name="sun" size={14} />}
+              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
             </button>
           </div>
         </div>
@@ -78,12 +78,12 @@ export default function Header() {
                 aria-label="Open command palette"
                 title="Open command palette"
               >
-                <Icon name="search" size={12} />
+                <Search size={12} />
                 <kbd>Ctrl+K</kbd>
               </button>
               <NotificationBell />
               <button onClick={() => navigate('/profile')} className="gov-nav-link-user header-user-btn">
-                <Icon name="user" size={16} />
+                <User size={16} />
                 <span className="header-user-name">{currentUser?.displayName || t('nav.profile')}</span>
               </button>
               <button onClick={() => {
@@ -91,7 +91,7 @@ export default function Header() {
                 authLogout()
                 navigate('/login')
               }} className="header-icon-btn" aria-label={t('nav.logout')} title={t('nav.logout')}>
-                <Icon name="logout" size={16} />
+                <LogOut size={16} />
               </button>
             </div>
           )}

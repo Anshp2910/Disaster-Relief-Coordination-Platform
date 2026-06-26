@@ -1,37 +1,44 @@
-/* === Skeleton Loading === */
-/* Skeleton loaders for cards, text, circles, maps */
+/* === Premium Skeleton Loaders === */
 
-/* === Skeleton Loading === */
-.sk-line, .sk-card {
+.sk-line {
+  height: 14px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: sk-shimmer 1.5s linear infinite;
-}
-.sk-card {
-  padding: var(--space-lg);
-  margin-bottom: 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-}
-.sk-list { margin-top: var(--space-lg); }
-.sk-map {
-  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
-  background-size: 200% 100%;
-  animation: sk-shimmer 1.5s linear infinite;
-}
-.sk-circle {
-  border-radius: 50%;
-  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
-  background-size: 200% 100%;
-  animation: sk-shimmer 1.5s linear infinite;
-}
-.sk-text {
-  height: 12px;
+  animation: shimmer 1.5s ease-in-out infinite;
   margin-bottom: 8px;
-  border-radius: 4px;
-  background: linear-gradient(110deg, var(--border-light) 8%, var(--border) 18%, var(--border-light) 33%);
-  background-size: 200% 100%;
-  animation: sk-shimmer 1.5s linear infinite;
 }
-.sk-text:last-child { width: 60%; }
+.sk-line:last-child { width: 60%; }
+
+.sk-text { height: 12px; }
+.sk-title { height: 20px; width: 70%; margin-bottom: 12px; border-radius: var(--radius-sm); }
+
+.sk-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  border: 1px solid var(--border);
+}
+.sk-card .sk-line {
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.sk-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.sk-map {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}

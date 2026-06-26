@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef, useCallback, memo } from 'react'
+import { useState, useEffect, useRef, useCallback, memo, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion, AnimatePresence } from 'framer-motion'
+import { LayoutDashboard, Map, MapPin, Package, AlertTriangle, Calendar, Crosshair, PlusSquare, Settings, Upload, TrendingUp, User, Search } from 'lucide-react'
 
 interface Command {
   id: string
   labelKey: string
   path: string
-  icon: string
+  icon: ReactNode
   admin?: boolean
 }
 
@@ -15,18 +17,18 @@ interface CommandPaletteProps {
 }
 
 const COMMANDS: Command[] = [
-  { id: 'dashboard', labelKey: 'nav.dashboard', path: '/dashboard', icon: '\u{1F4CA}' },
-  { id: 'map', labelKey: 'nav.mapView', path: '/map', icon: '\u{1F5FA}' },
-  { id: 'zones', labelKey: 'nav.zones', path: '/zones', icon: '\u{1F3E0}' },
-  { id: 'resources', labelKey: 'nav.resources', path: '/resources', icon: '\u{1F4E6}' },
-  { id: 'incidents', labelKey: 'nav.incidents', path: '/incidents', icon: '\u26A0' },
-  { id: 'schedules', labelKey: 'nav.schedules', path: '/schedules', icon: '\u{1F4C5}' },
-  { id: 'geofencing', labelKey: 'nav.geofencing', path: '/geofencing', icon: '\u{1F9ED}' },
-  { id: 'new-request', labelKey: 'nav.newRequest', path: '/requests/new', icon: '\u{1F4CB}' },
-  { id: 'admin', labelKey: 'nav.admin', path: '/admin', icon: '\u2699', admin: true },
-  { id: 'bulk', labelKey: 'nav.bulkImport', path: '/bulk', icon: '\u{1F4C2}', admin: true },
-  { id: 'escalation', labelKey: 'nav.escalation', path: '/escalation', icon: '\u{1F4C8}', admin: true },
-  { id: 'profile', labelKey: 'nav.profile', path: '/profile', icon: '\u{1F464}' },
+  { id: 'dashboard', labelKey: 'nav.dashboard', path: '/dashboard', icon: <LayoutDashboard size={16} /> },
+  { id: 'map', labelKey: 'nav.mapView', path: '/map', icon: <Map size={16} /> },
+  { id: 'zones', labelKey: 'nav.zones', path: '/zones', icon: <MapPin size={16} /> },
+  { id: 'resources', labelKey: 'nav.resources', path: '/resources', icon: <Package size={16} /> },
+  { id: 'incidents', labelKey: 'nav.incidents', path: '/incidents', icon: <AlertTriangle size={16} /> },
+  { id: 'schedules', labelKey: 'nav.schedules', path: '/schedules', icon: <Calendar size={16} /> },
+  { id: 'geofencing', labelKey: 'nav.geofencing', path: '/geofencing', icon: <Crosshair size={16} /> },
+  { id: 'new-request', labelKey: 'nav.newRequest', path: '/requests/new', icon: <PlusSquare size={16} /> },
+  { id: 'admin', labelKey: 'nav.admin', path: '/admin', icon: <Settings size={16} />, admin: true },
+  { id: 'bulk', labelKey: 'nav.bulkImport', path: '/bulk', icon: <Upload size={16} />, admin: true },
+  { id: 'escalation', labelKey: 'nav.escalation', path: '/escalation', icon: <TrendingUp size={16} />, admin: true },
+  { id: 'profile', labelKey: 'nav.profile', path: '/profile', icon: <User size={16} /> },
 ]
 
 const FALLBACKS: Record<string, string> = {
@@ -111,51 +113,64 @@ export default memo(function CommandPalette({ isAdmin }: CommandPaletteProps) {
     }
   }
 
-  if (!open) return null
-
   return (
-    <div
-      className="cmd-palette-overlay"
-      onClick={() => { setOpen(false); setQuery('') }}
-      onKeyDown={handleKeyDown}
-      role="dialog"
-      aria-modal="true"
-      aria-label={t('common.commandPalette')}
-    >
-      <div className="cmd-palette" onClick={e => e.stopPropagation()}>
-        <div className="cmd-input-wrapper">
-          <span className="cmd-input-icon" aria-hidden="true">{'\u{1F50D}'}</span>
-          <input
-            ref={inputRef}
-            className="cmd-input"
-            placeholder={t('common.typeCommand')}
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            aria-label={t('common.searchCommands')}
-          />
-          <span className="cmd-shortcut-hint">ESC</span>
-        </div>
-        <div className="cmd-list" role="listbox">
-          {filtered.length === 0 && (
-            <div className="cmd-empty">{t('common.noResultsFor', { query })}</div>
-          )}
-          {filtered.map((cmd, i) => (
-            <button
-              key={cmd.id}
-              role="option"
-              aria-selected={i === highlightIndex}
-              className={`cmd-item ${i === highlightIndex ? 'highlighted' : ''}`}
-              onClick={() => execute(cmd)}
-              onMouseEnter={() => setHighlightIndex(i)}
-            >
-              <span className="cmd-item-icon" aria-hidden="true">{cmd.icon}</span>
-              <span className="cmd-item-label">{t(cmd.labelKey, FALLBACKS[cmd.labelKey])}</span>
-              {cmd.admin && <span className="cmd-item-badge">{t('common.adminBadge')}</span>}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="cmd-palette-overlay"
+          onClick={() => { setOpen(false); setQuery('') }}
+          onKeyDown={handleKeyDown}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('common.commandPalette')}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+        >
+          <motion.div
+            className="cmd-palette"
+            onClick={e => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.96, y: -12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: -12 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="cmd-input-wrapper">
+              <Search size={16} className="cmd-input-icon" />
+              <input
+                ref={inputRef}
+                className="cmd-input"
+                placeholder={t('common.typeCommand')}
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                aria-label={t('common.searchCommands')}
+              />
+              <span className="cmd-shortcut-hint">ESC</span>
+            </div>
+            <div className="cmd-list" role="listbox">
+              {filtered.length === 0 && (
+                <div className="cmd-empty">{t('common.noResultsFor', { query })}</div>
+              )}
+              {filtered.map((cmd, i) => (
+                <button
+                  key={cmd.id}
+                  role="option"
+                  aria-selected={i === highlightIndex}
+                  className={`cmd-item ${i === highlightIndex ? 'highlighted' : ''}`}
+                  onClick={() => execute(cmd)}
+                  onMouseEnter={() => setHighlightIndex(i)}
+                >
+                  <span className="cmd-item-icon" aria-hidden="true">{cmd.icon}</span>
+                  <span className="cmd-item-label">{t(cmd.labelKey, FALLBACKS[cmd.labelKey])}</span>
+                  {cmd.admin && <span className="cmd-item-badge">{t('common.adminBadge')}</span>}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 })

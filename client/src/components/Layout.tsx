@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion, AnimatePresence } from 'framer-motion'
 import Header from './Header'
 import Footer from './Footer'
 import CommandPalette from './CommandPalette'
@@ -25,16 +26,31 @@ export default function Layout({ children }: LayoutProps) {
       <Header />
       <CommandPalette isAdmin={isAdmin} />
       {isAuthenticated && <SosFab />}
-      <main className="gov-main" id="main-content">
-        {children}
-      </main>
+      <motion.main
+        className="gov-main"
+        id="main-content"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <AnimatePresence mode="wait">
+          {children}
+        </AnimatePresence>
+      </motion.main>
       <Footer />
       {canInstall && !dismissed && (
-        <div className="pwa-install-banner">
+        <motion.div
+          className="pwa-install-banner"
+          initial={{ y: 80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 80, opacity: 0 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
           <span className="pwa-install-text">{t('common.installApp')}</span>
           <button onClick={install} className="btnPrimary pwa-install-btn">{t('common.install')}</button>
           <button onClick={() => setDismissed(true)} className="pwa-dismiss-btn" aria-label="Dismiss install banner">&times;</button>
-        </div>
+        </motion.div>
       )}
     </div>
   )

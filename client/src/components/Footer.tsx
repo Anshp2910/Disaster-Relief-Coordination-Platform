@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { LayoutDashboard, Map, Package, PlusSquare, Shield, Phone, Mail, Building2, Heart, Globe } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 export default function Footer() {
@@ -13,30 +14,30 @@ export default function Footer() {
           <div>
             <h4>{t('footer.quickLinks')}</h4>
             <ul>
-              <li><Link to="/dashboard">{t('footer.dashboardLink')}</Link></li>
-              <li><Link to="/zones">{t('nav.zones') || 'Zones'}</Link></li>
-              <li><Link to="/resources">{t('nav.resources') || 'Resources'}</Link></li>
-              <li><Link to="/requests/new">{t('footer.newRequestLink')}</Link></li>
+              <li><Link to="/dashboard"><LayoutDashboard size={14} /> {t('footer.dashboardLink')}</Link></li>
+              <li><Link to="/zones"><Map size={14} /> {t('nav.zones') || 'Zones'}</Link></li>
+              <li><Link to="/resources"><Package size={14} /> {t('nav.resources') || 'Resources'}</Link></li>
+              <li><Link to="/requests/new"><PlusSquare size={14} /> {t('footer.newRequestLink')}</Link></li>
               {currentUser?.role === 'admin' && (
-                <li><Link to="/admin">{t('footer.adminPanel')}</Link></li>
+                <li><Link to="/admin"><Shield size={14} /> {t('footer.adminPanel')}</Link></li>
               )}
             </ul>
           </div>
           <div>
             <h4>{t('footer.contact')}</h4>
             <ul>
-              <li>{t('footer.emergencyHelpline')}</li>
-              <li>{t('footer.disasterHelpline')}</li>
-              <li>{t('footer.email')}</li>
-              <li>{t('footer.ndma')}</li>
+              <li><Phone size={14} /> {t('footer.emergencyHelpline')}</li>
+              <li><Phone size={14} /> {t('footer.disasterHelpline')}</li>
+              <li><Mail size={14} /> {t('footer.email')}</li>
+              <li><Building2 size={14} /> {t('footer.ndma')}</li>
             </ul>
           </div>
           <div>
             <h4>{t('footer.about')}</h4>
             <ul>
-              <li>{t('footer.aboutText')}</li>
-              <li>{t('footer.connectingVolunteers')}</li>
-              <li>{t('footer.builtFor')}</li>
+              <li><Heart size={14} /> {t('footer.aboutText')}</li>
+              <li><Globe size={14} /> {t('footer.connectingVolunteers')}</li>
+              <li><Building2 size={14} /> {t('footer.builtFor')}</li>
             </ul>
           </div>
         </div>

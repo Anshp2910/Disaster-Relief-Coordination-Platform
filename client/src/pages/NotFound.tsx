@@ -1,29 +1,43 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { ArrowLeft, LayoutDashboard } from 'lucide-react'
 
 export default function NotFound() {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   return (
-    <main className="flex-center flex-col text-center p-2xl">
-      <h1 className="text-3xl text-bold text-gradient m-0 mb-sm">
+    <motion.main
+      className="flex-center flex-col text-center px-lg"
+      style={{ minHeight: '60vh' }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <motion.h1
+        className="text-5xl font-extrabold m-0 mb-sm"
+        style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary, #8b5cf6))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+        initial={{ scale: 0.8 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+      >
         404
-      </h1>
-      <p className="text-lg text-semi m-0 mb-sm">
+      </motion.h1>
+      <p className="text-lg font-semibold m-0 mb-sm" style={{ color: 'var(--text)' }}>
         {t('notFound.title') || 'Page Not Found'}
       </p>
-      <p className="text-sm text-muted m-0 mb-lg">
+      <p className="text-sm m-0 mb-lg" style={{ color: 'var(--text-muted)', maxWidth: 400 }}>
         {t('notFound.description') || 'The page you are looking for doesn\'t exist or has been moved.'}
       </p>
-      <div className="flex-center flex-gap">
-        <button className="btnPrimary" onClick={() => navigate('/dashboard')}>
-          {t('notFound.goHome') || 'Go to Dashboard'}
-        </button>
-        <button className="btnSecondary" onClick={() => navigate(-1)}>
-          {t('notFound.goBack') || 'Go Back'}
-        </button>
+      <div className="flex-center gap-sm">
+        <motion.button className="btnPrimary" onClick={() => navigate('/dashboard')} whileTap={{ scale: 0.97 }}>
+          <LayoutDashboard size={16} /> {t('notFound.goHome') || 'Go to Dashboard'}
+        </motion.button>
+        <motion.button className="btnGhost" onClick={() => navigate(-1)} whileTap={{ scale: 0.97 }}>
+          <ArrowLeft size={16} /> {t('notFound.goBack') || 'Go Back'}
+        </motion.button>
       </div>
-    </main>
+    </motion.main>
   )
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { BarChart3, Activity, ShieldCheck, AlertTriangle, MapPin, Box, FilePlus, LayoutDashboard, ArrowUpRight } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
@@ -218,9 +220,18 @@ export default function Dashboard() {
     { key: '-title', label: t('dashboard.sortTitleDesc') },
   ], [t])
 
+  const stagger = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.06 } }
+  }
+  const fadeUp = {
+    hidden: { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } }
+  }
+
   return (
-    <div className="container">
-      <div className="flex-between mb-lg">
+    <motion.div className="container" variants={stagger} initial="hidden" animate="show">
+      <motion.div className="flex-between mb-lg" variants={fadeUp}>
         <div>
           <h1 className="pageTitle text-2xl">{t('dashboard.title')}</h1>
           <div className="small mt-xs flex items-center gap-sm">
@@ -234,51 +245,51 @@ export default function Dashboard() {
           )}
           <button className="btnPrimary" onClick={() => navigate('/requests/new')}>{t('dashboard.newRequest')}</button>
         </div>
-      </div>
+      </motion.div>
 
       {/* KPI Row */}
-      <div className="bento-grid mb-lg">
-        <div className="bento-card">
+      <motion.div className="bento-grid mb-lg" variants={fadeUp}>
+        <motion.div className="bento-card" variants={fadeUp}>
           <div className="bento-header">
             <span className="bento-title">{t('dashboard.allRequests') || 'Total'}</span>
-            <div className="bento-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>📊</div>
+            <div className="bento-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}><BarChart3 size={18} /></div>
           </div>
           <div className="bento-kpi-value">{total}</div>
           <div className="mt-sm" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>{kpis.open} open · {kpis.inProgress} in progress</div>
-        </div>
-        <div className="bento-card">
+        </motion.div>
+        <motion.div className="bento-card" variants={fadeUp}>
           <div className="bento-header">
             <span className="bento-title">{t('statuses.Open')}</span>
-            <div className="bento-icon" style={{ background: STATUS_COLORS.Open.bg, color: STATUS_COLORS.Open.text }}>🟦</div>
+            <div className="bento-icon" style={{ background: STATUS_COLORS.Open.bg, color: STATUS_COLORS.Open.text }}><Activity size={18} /></div>
           </div>
           <div className="bento-kpi-value" style={{ color: 'var(--color-open)' }}>{kpis.open}</div>
-        </div>
-        <div className="bento-card">
+        </motion.div>
+        <motion.div className="bento-card" variants={fadeUp}>
           <div className="bento-header">
             <span className="bento-title">{t('statuses.In Progress')}</span>
-            <div className="bento-icon" style={{ background: STATUS_COLORS['In Progress'].bg, color: STATUS_COLORS['In Progress'].text }}>🟧</div>
+            <div className="bento-icon" style={{ background: STATUS_COLORS['In Progress'].bg, color: STATUS_COLORS['In Progress'].text }}><ArrowUpRight size={18} /></div>
           </div>
           <div className="bento-kpi-value" style={{ color: 'var(--color-progress)' }}>{kpis.inProgress}</div>
-        </div>
-        <div className="bento-card">
+        </motion.div>
+        <motion.div className="bento-card" variants={fadeUp}>
           <div className="bento-header">
             <span className="bento-title">{t('statuses.Resolved')}</span>
-            <div className="bento-icon" style={{ background: STATUS_COLORS.Resolved.bg, color: STATUS_COLORS.Resolved.text }}>🟩</div>
+            <div className="bento-icon" style={{ background: STATUS_COLORS.Resolved.bg, color: STATUS_COLORS.Resolved.text }}><ShieldCheck size={18} /></div>
           </div>
           <div className="bento-kpi-value" style={{ color: 'var(--color-resolved)' }}>{kpis.resolved}</div>
-        </div>
-        <div className="bento-card">
+        </motion.div>
+        <motion.div className="bento-card" variants={fadeUp}>
           <div className="bento-header">
             <span className="bento-title">{t('priorities.Critical')}</span>
-            <div className="bento-icon" style={{ background: PRIORITY_COLORS.Critical.bg, color: PRIORITY_COLORS.Critical.text }}>🔴</div>
+            <div className="bento-icon" style={{ background: PRIORITY_COLORS.Critical.bg, color: PRIORITY_COLORS.Critical.text }}><AlertTriangle size={18} /></div>
           </div>
           <div className="bento-kpi-value" style={{ color: 'var(--color-critical)' }}>{kpis.critical}</div>
-        </div>
+        </motion.div>
         {resourceSummary.length > 0 && (
-          <div className="bento-card">
+          <motion.div className="bento-card" variants={fadeUp}>
             <div className="bento-header">
               <span className="bento-title">{t('dashboard.resourceInventory')}</span>
-              <div className="bento-icon" style={{ background: 'rgba(139,92,246,0.1)', color: 'var(--cat-supplies)' }}>📦</div>
+              <div className="bento-icon" style={{ background: 'rgba(139,92,246,0.1)', color: 'var(--cat-supplies)' }}><Box size={18} /></div>
             </div>
             <div className="bento-kpi-list">
               {resourceSummary.slice(0, 5).map((s) => (
@@ -291,46 +302,48 @@ export default function Dashboard() {
             {resourceSummary.length > 5 && (
               <button onClick={() => navigate('/resources')} className="text-xs mt-sm" style={{ color: 'var(--accent)' }}>{t('dashboard.viewAll')}</button>
             )}
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
       {/* Quick Navigation */}
-      <div className="bento-grid mb-lg">
+      <motion.div className="bento-grid mb-lg" variants={fadeUp}>
         <div className="bento-card bento--full">
           <div className="bento-header">
             <span className="bento-title">{t('dashboard.quickNav') || 'Quick Navigation'}</span>
           </div>
           <div className="flex flex-wrap flex-gap-sm mt-sm" style={{ gap: 'var(--space-sm)' }}>
             {[
-              { path: '/map', label: t('nav.map') || 'Map', icon: '🗺️', color: 'var(--accent-soft)' },
-              { path: '/resources', label: t('nav.resources') || 'Resources', icon: '📦', color: 'rgba(139,92,246,0.1)' },
-              { path: '/incidents', label: t('nav.incidents') || 'Incidents', icon: '🚨', color: 'rgba(248,81,73,0.1)' },
-              { path: '/zones', label: t('nav.zones') || 'Zones', icon: '🔥', color: 'rgba(245,158,11,0.1)' },
-              { path: '/schedules', label: t('nav.schedules') || 'Schedules', icon: '📅', color: 'rgba(74,128,192,0.1)' },
-              { path: '/geofencing', label: t('nav.geofencing') || 'Geofencing', icon: '📍', color: 'rgba(6,182,212,0.1)' },
+              { path: '/map', label: t('nav.map') || 'Map', icon: <MapPin size={18} />, color: 'var(--accent-soft)' },
+              { path: '/resources', label: t('nav.resources') || 'Resources', icon: <Box size={18} />, color: 'rgba(139,92,246,0.1)' },
+              { path: '/incidents', label: t('nav.incidents') || 'Incidents', icon: <AlertTriangle size={18} />, color: 'rgba(248,81,73,0.1)' },
+              { path: '/zones', label: t('nav.zones') || 'Zones', icon: <MapPin size={18} />, color: 'rgba(245,158,11,0.1)' },
+              { path: '/schedules', label: t('nav.schedules') || 'Schedules', icon: <BarChart3 size={18} />, color: 'rgba(74,128,192,0.1)' },
+              { path: '/geofencing', label: t('nav.geofencing') || 'Geofencing', icon: <MapPin size={18} />, color: 'rgba(6,182,212,0.1)' },
               ...(currentUser?.role === 'admin' ? [
-                { path: '/bulk', label: t('nav.bulkImport') || 'Bulk Import', icon: '📥', color: 'rgba(234,179,8,0.1)' },
-                { path: '/escalation', label: t('nav.escalation') || 'Escalation', icon: '⚠️', color: 'rgba(248,81,73,0.1)' },
+                { path: '/bulk', label: t('nav.bulkImport') || 'Bulk Import', icon: <FilePlus size={18} />, color: 'rgba(234,179,8,0.1)' },
+                { path: '/escalation', label: t('nav.escalation') || 'Escalation', icon: <AlertTriangle size={18} />, color: 'rgba(248,81,73,0.1)' },
               ] : []),
-              { path: '/requests/new', label: t('dashboard.newRequest'), icon: '➕', color: 'rgba(34,197,94,0.1)' },
+              { path: '/requests/new', label: t('dashboard.newRequest'), icon: <FilePlus size={18} />, color: 'rgba(34,197,94,0.1)' },
             ].map(({ path, label, icon, color }) => (
-              <button
+              <motion.button
                 key={path}
                 onClick={() => navigate(path)}
                 className="nav-chip"
                 style={{ background: color }}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <span style={{ fontSize: 'var(--text-lg)', lineHeight: 1 }}>{icon}</span>
+                <span style={{ display: 'flex', alignItems: 'center', lineHeight: 1 }}>{icon}</span>
                 <span style={{ fontSize: 'var(--text-xs)', fontWeight: 500, color: 'var(--text)' }}>{label}</span>
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Main bento: Map + Activity + SteppedProgress + List */}
-      <div className="bento-grid">
+      <motion.div className="bento-grid" variants={fadeUp}>
         {/* Mini Map */}
         <div className="bento-card bento--wide">
           <div className="bento-header">
@@ -359,25 +372,25 @@ export default function Dashboard() {
         </div>
 
         {/* Activity Feed */}
-        <div className="bento-card bento--tall" style={{ padding: 0 }}>
+        <motion.div className="bento-card bento--tall" style={{ padding: 0 }} variants={fadeUp}>
           <div className="bento-header" style={{ padding: 'var(--space-lg) var(--space-lg) 0' }}>
             <span className="bento-title">{t('dashboard.recentActivity') || 'Activity'}</span>
           </div>
-          <ActivityFeed compact />
-        </div>
-
+            <ActivityFeed compact />
+          </motion.div>
+ 
         {/* Stepped Progress (current request) */}
         {firstItem && (
-          <div className="bento-card bento--full">
+          <motion.div className="bento-card bento--full" variants={fadeUp}>
             <div className="bento-header">
               <span className="bento-title">{t('dashboard.latestRequest') || 'Latest Request Status'}</span>
               <button onClick={() => navigate(`/requests/${firstItem._id}`)} className="text-xs" style={{ color: 'var(--accent)' }}>{t('common.viewDetails')}</button>
             </div>
             <h3 className="text-base mb-sm" style={{ fontWeight: 600, color: 'var(--text)' }}>{firstItem.title}</h3>
             <SteppedProgress currentStatus={firstItem.status || 'Open'} />
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
       {/* Filters & List */}
       <div className="card mt-lg">
@@ -394,16 +407,16 @@ export default function Dashboard() {
           </div>
         </div>
         {error ? <div className="errorText">{error}</div> : null}
-        <nav aria-label="Filters"><div className="flex flex-gap-sm mt-md flex-wrap">
+        <nav aria-label="Filters"><motion.div className="flex flex-gap-sm mt-md flex-wrap" variants={fadeUp}>
           {filterOptions.map((f) => (
-            <button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`} aria-label={f.label}>{f.label}</button>
+            <motion.button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`} aria-label={f.label} whileTap={{ scale: 0.95 }}>{f.label}</motion.button>
           ))}
-        </div>
-        <div className="flex flex-gap-sm mt-sm flex-wrap">
+        </motion.div>
+        <motion.div className="flex flex-gap-sm mt-sm flex-wrap" variants={fadeUp}>
           {priorityOptions.map((p) => (
-            <button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''} text-xs`} aria-label={p.label}>{p.label}</button>
+            <motion.button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''} text-xs`} aria-label={p.label} whileTap={{ scale: 0.95 }}>{p.label}</motion.button>
           ))}
-        </div>
+        </motion.div>
           <div className="flex flex-wrap flex-gap-sm mt-sm items-center">
           <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov p-xs">
             {categoryOptions.map((c) => (
@@ -421,12 +434,12 @@ export default function Dashboard() {
             <SkeletonList count={4} lines={3} />
           ) : (
             <>
-              <div className="gridGap mt-lg">
+              <motion.div className="gridGap mt-lg" variants={fadeUp}>
                 {items.length === 0 ? (
                   <EmptyState icon='📋' title={t('dashboard.noRequests')} description={t('dashboard.noRequestsDesc') || 'No requests match your filters'} />
                 ) : (
                   items.map((it) => (
-                    <div key={it._id} className="listCard cursor-pointer" role="button" tabIndex={0} onClick={() => navigate(`/requests/${it._id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${it._id}`) } }}>
+                    <motion.div key={it._id} className="listCard cursor-pointer" role="button" tabIndex={0} onClick={() => navigate(`/requests/${it._id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${it._id}`) } }} whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
                       <div className="flex-between flex-gap-sm">
                         <div className="flex-1 min-w-0">
                           <div className="text-bold text-accent-blue text-15">{it.title}</div>
@@ -447,10 +460,10 @@ export default function Dashboard() {
                         </div>
                         <OwnerActions id={it._id} item={it} onChanged={load} />
                       </div>
-                    </div>
+                    </motion.div>
                   ))
                 )}
-              </div>
+              </motion.div>
               {totalPages > 1 && (
                 <div className="flex flex-center flex-gap-sm mt-lg">
                   <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm p-xs" aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
@@ -462,7 +475,7 @@ export default function Dashboard() {
           )}
         </section>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

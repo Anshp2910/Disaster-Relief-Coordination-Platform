@@ -1,8 +1,4 @@
-﻿/* ============================================================
-   DESIGN SYSTEM — Premium | Light + Dark | v4.0
-   ============================================================ */
-
-:root {
+﻿:root {
   /* === Core Palette === */
   --pri-50: #eff6ff;  --pri-100: #dbeafe;  --pri-200: #bfdbfe;
   --pri-300: #93c5fd; --pri-400: #60a5fa;  --pri-500: #3b82f6;
@@ -25,11 +21,11 @@
   --slate-600: #475569; --slate-700: #334155;  --slate-800: #1e293b; --slate-900: #0f172a;
 
   /* === Theme Tokens (Light) === */
-  --bg: #f1f4f9;
+  --bg: #f8fafc;
   --bg-elevated: #ffffff;
-  --bg-subtle: #f6f8fc;
+  --bg-subtle: #f1f4f9;
   --bg-card: #ffffff;
-  --text: #0f172a;
+  --text: #0b0f1a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   --border: #e2e8f0;
@@ -37,56 +33,58 @@
 
   --accent: var(--pri-600);
   --accent-hover: var(--pri-700);
-  --accent-soft: rgba(37, 99, 235, 0.06);
-  --accent-soft-hover: rgba(37, 99, 235, 0.1);
+  --accent-soft: rgba(37, 99, 235, 0.08);
+  --accent-soft-hover: rgba(37, 99, 235, 0.14);
 
-  --danger: var(--red-600);
-  --danger-hover: var(--red-500);
-  --danger-soft: rgba(220, 38, 38, 0.06);
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --danger-soft: rgba(239, 68, 68, 0.08);
 
-  --success: var(--green-600);
-  --success-soft: rgba(22, 163, 74, 0.06);
+  --success: #10b981;
+  --success-soft: rgba(16, 185, 129, 0.08);
 
-  --warning: var(--amber-600);
-  --warning-soft: rgba(217, 119, 6, 0.06);
+  --warning: #f59e0b;
+  --warning-soft: rgba(245, 158, 11, 0.08);
 
-  /* === Gradients === */
-  --gradient-bg: linear-gradient(160deg, #eef2f7 0%, #f4f7fb 50%, #eef2f7 100%);
-  --gradient-card: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
-  --gradient-accent: linear-gradient(135deg, var(--pri-500), var(--pri-600));
+  /* === Premium Gradients === */
+  --gradient-bg: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(37, 99, 235, 0.06) 0%, transparent 60%),
+                 radial-gradient(ellipse 60% 50% at 80% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
+                 linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  --gradient-card: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-accent: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
 
-  /* === Shadows — layered with color === */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.02);
-  --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.03);
-  --shadow-2xl: 0 24px 60px rgba(0, 0, 0, 0.1), 0 12px 24px rgba(0, 0, 0, 0.04);
-  --shadow-accent: 0 0 20px rgba(37, 99, 235, 0.08);
+  /* === Premium Shadows === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 32px 80px rgba(0, 0, 0, 0.1), 0 12px 24px rgba(0, 0, 0, 0.05);
+  --shadow-accent: 0 4px 24px rgba(37, 99, 235, 0.15);
 
   /* === Typography === */
-  --font: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font: 'Inter', 'Satoshi', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
 
-  --text-2xs: 10px;  --text-xs: 11px;  --text-sm: 12px;  --text-base: 14px;
-  --text-lg: 16px;  --text-xl: 18px;  --text-2xl: 22px;  --text-3xl: 28px;  --text-4xl: 32px;
+  --text-2xs: 10px;  --text-xs: 12px;  --text-sm: 13px;  --text-base: 15px;
+  --text-lg: 17px;  --text-xl: 20px;  --text-2xl: 24px;  --text-3xl: 30px;  --text-4xl: 36px;
 
   --leading-tight: 1.25;  --leading-normal: 1.5;  --leading-relaxed: 1.625;
-  --tracking-tight: -0.02em;  --tracking-wide: 0.05em;  --tracking-wider: 0.08em;
+  --tracking-tight: -0.025em;  --tracking-wide: 0.05em;  --tracking-wider: 0.08em;
 
-  /* === Spacing & Radius === */
-  --radius-sm: 6px;  --radius-md: 10px;  --radius-lg: 14px;  --radius-xl: 20px;  --radius-full: 999px;
-  --space-xs: 4px;  --space-sm: 8px;  --space-md: 12px;
-  --space-lg: 16px; --space-xl: 24px; --space-2xl: 32px; --space-3xl: 48px;
+  /* === 8px Spacing & Premium Radius === */
+  --radius-sm: 8px;  --radius-md: 12px;  --radius-lg: 18px;  --radius-xl: 24px;  --radius-full: 999px;
+  --space-xs: 8px;  --space-sm: 16px;  --space-md: 24px;
+  --space-lg: 32px; --space-xl: 48px; --space-2xl: 64px; --space-3xl: 96px;
 
-  /* === Transitions === */
+  /* === Premium Transitions === */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast: 150ms;  --duration-normal: 250ms;  --duration-slow: 400ms;
+  --duration-fast: 150ms;  --duration-normal: 300ms;  --duration-slow: 500ms;
 
   /* === Legacy Vars === */
   --gov-blue: var(--pri-600);
-  --gov-saffron: var(--amber-600);  --gov-green: var(--green-600);
+  --gov-saffron: var(--amber-500);  --gov-green: var(--success);
   --gov-white: #ffffff;             --gov-bg: var(--bg);
   --gov-text: var(--text);          --gov-muted: var(--text-secondary);
   --gov-border: var(--border);      --gov-card-bg: var(--bg-card);
@@ -94,25 +92,25 @@
 
   --accent-blue: var(--pri-600);
   --accent-indigo: #818cf8;             --accent-purple: #a78bfa;
-  --accent-green: var(--green-600);     --accent-orange: var(--amber-600);
+  --accent-green: var(--success);     --accent-orange: var(--amber-500);
   --accent-red: var(--danger);
 
   --color-open: var(--pri-600);     --color-pending: #7c3aed;
-  --color-progress: var(--amber-600); --color-resolved: var(--green-600);
-  --color-fulfilled: var(--green-700);
+  --color-progress: var(--amber-500); --color-resolved: var(--success);
+  --color-fulfilled: #059669;
 
-  --color-critical: var(--red-600); --color-high: var(--amber-600);
-  --color-medium: #ca8a04;          --color-low: var(--green-600);
+  --color-critical: var(--danger); --color-high: var(--amber-500);
+  --color-medium: #ca8a04;          --color-low: var(--success);
 
-  --severity-critical: var(--red-600);          --severity-high: var(--amber-600);
-  --severity-medium: #ca8a04;                   --severity-low: var(--green-600);
+  --severity-critical: var(--danger);          --severity-high: var(--amber-500);
+  --severity-medium: #ca8a04;                   --severity-low: var(--success);
   --severity-critical-stroke: #991b1b;          --severity-high-stroke: #92400e;
   --severity-medium-stroke: #713f12;            --severity-low-stroke: #166534;
 
-  --coverage-covered: var(--green-600); --coverage-partial: #ca8a04;
-  --coverage-gap: var(--red-600);
+  --coverage-covered: var(--success); --coverage-partial: #ca8a04;
+  --coverage-gap: var(--danger);
 
-  --cat-medical: var(--red-500);        --cat-food: var(--amber-500);
+  --cat-medical: #ef4444;        --cat-food: var(--amber-500);
   --cat-shelter: var(--pri-500);        --cat-water: #06b6d4;
   --cat-rescue: #ea580c;                --cat-supplies: #818cf8;
   --cat-healthcare: #a78bfa;            --cat-sanitation: #14b8a6;
@@ -120,26 +118,26 @@
   --cat-communication: var(--pri-500);  --cat-power: #eab308;
   --cat-infrastructure: #64748b;        --cat-other: var(--text-muted);
 
-  /* === Glass === */
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-bg-strong: #ffffff;
-  --glass-border: #e2e8f0;
+  /* === Premium Glass === */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(226, 232, 240, 0.6);
   --glass-inset-bg: rgba(226, 232, 240, 0.15);
-  --glass-blur: 16px;
-  --glass-shadow: var(--shadow-md);
+  --glass-blur: 20px;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
 
-  --glow-blue: 0 0 20px rgba(37, 99, 235, 0.08);
-  --glow-purple: 0 0 20px rgba(129, 140, 248, 0.08);
-  --glow-green: 0 0 20px rgba(22, 163, 74, 0.08);
-  --glow-red: 0 0 20px rgba(220, 38, 38, 0.08);
-  --glow-orange: 0 0 20px rgba(217, 119, 6, 0.08);
+  --glow-blue: 0 0 24px rgba(37, 99, 235, 0.1);
+  --glow-purple: 0 0 24px rgba(129, 140, 248, 0.1);
+  --glow-green: 0 0 24px rgba(16, 185, 129, 0.1);
+  --glow-red: 0 0 24px rgba(239, 68, 68, 0.1);
+  --glow-orange: 0 0 24px rgba(245, 158, 11, 0.1);
 
   --gradient-main: var(--gradient-bg);
   --gradient-header: linear-gradient(90deg, var(--pri-500), #818cf8, #a78bfa, var(--pri-500));
-  --gradient-saffron: linear-gradient(135deg, var(--amber-500), #ea580c);
-  --gradient-login-hero: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #7c3aed 100%);
+  --gradient-saffron: linear-gradient(135deg, var(--amber-400), #ea580c);
+  --gradient-login-hero: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #312e81 100%);
 
-  --overlay-bg: rgba(0, 0, 0, 0.4);
+  --overlay-bg: rgba(0, 0, 0, 0.5);
   --text-on-accent: #ffffff;
 
   --ecc-glow: 0 0 15px rgba(37, 99, 235, 0.05);
@@ -157,57 +155,59 @@
 }
 
 /* ============================================================
-   DARK MODE — Sophisticated deep palette
+   DARK MODE — Premium deep palette
    ============================================================ */
 [data-theme="dark"] {
-  --bg: #080c18;
-  --bg-elevated: #0f1525;
+  --bg: #060b18;
+  --bg-elevated: #0c1322;
   --bg-subtle: #0a1020;
-  --bg-card: #111827;
-  --text: #edf2f7;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border: #1e293b;
-  --border-light: #1a2332;
+  --bg-card: #0f172a;
+  --text: #e8edf5;
+  --text-secondary: #8892a8;
+  --text-muted: #55607a;
+  --border: #1a2337;
+  --border-light: #151d30;
 
   --accent: var(--pri-400);
   --accent-hover: var(--pri-300);
-  --accent-soft: rgba(96, 165, 250, 0.07);
-  --accent-soft-hover: rgba(96, 165, 250, 0.12);
+  --accent-soft: rgba(96, 165, 250, 0.08);
+  --accent-soft-hover: rgba(96, 165, 250, 0.14);
 
-  --danger-soft: rgba(248, 113, 113, 0.07);
-  --success-soft: rgba(74, 222, 128, 0.07);
-  --warning-soft: rgba(251, 191, 36, 0.07);
+  --danger-soft: rgba(248, 113, 113, 0.08);
+  --success-soft: rgba(52, 211, 153, 0.08);
+  --warning-soft: rgba(251, 191, 36, 0.08);
 
-  --gradient-bg: linear-gradient(160deg, #080c18 0%, #0d1428 50%, #080c18 100%);
-  --gradient-card: linear-gradient(180deg, #111827 0%, #0f172a 100%);
-  --gradient-accent: linear-gradient(135deg, var(--pri-400), var(--pri-500));
+  --gradient-bg: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
+                 radial-gradient(ellipse 60% 50% at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
+                 linear-gradient(180deg, #060b18 0%, #0a1020 100%);
+  --gradient-card: linear-gradient(180deg, #0f172a 0%, #0c1322 100%);
+  --gradient-accent: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.55), 0 8px 16px rgba(0, 0, 0, 0.3);
-  --shadow-2xl: 0 24px 60px rgba(0, 0, 0, 0.6), 0 12px 24px rgba(0, 0, 0, 0.35);
-  --shadow-accent: 0 0 20px rgba(96, 165, 250, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.55), 0 4px 8px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.35);
+  --shadow-2xl: 0 32px 80px rgba(0, 0, 0, 0.65), 0 12px 24px rgba(0, 0, 0, 0.4);
+  --shadow-accent: 0 4px 24px rgba(96, 165, 250, 0.15);
 
-  --glass-bg: rgba(15, 21, 37, 0.85);
-  --glass-bg-strong: #111827;
-  --glass-border: #1e293b;
+  --glass-bg: rgba(12, 19, 34, 0.78);
+  --glass-bg-strong: rgba(15, 23, 42, 0.92);
+  --glass-border: rgba(30, 41, 59, 0.5);
   --glass-inset-bg: rgba(30, 41, 59, 0.2);
 
-  --glow-blue: 0 0 20px rgba(96, 165, 250, 0.12);
-  --glow-purple: 0 0 20px rgba(129, 140, 248, 0.12);
-  --glow-green: 0 0 20px rgba(74, 222, 128, 0.12);
-  --glow-red: 0 0 20px rgba(248, 113, 113, 0.12);
-  --glow-orange: 0 0 20px rgba(251, 191, 36, 0.12);
+  --glow-blue: 0 0 24px rgba(96, 165, 250, 0.12);
+  --glow-purple: 0 0 24px rgba(129, 140, 248, 0.12);
+  --glow-green: 0 0 24px rgba(52, 211, 153, 0.12);
+  --glow-red: 0 0 24px rgba(248, 113, 113, 0.12);
+  --glow-orange: 0 0 24px rgba(251, 191, 36, 0.12);
 
   --ecc-glow: 0 0 15px rgba(96, 165, 250, 0.08);
   --ecc-border-focus: rgba(96, 165, 250, 0.25);
 
-  --overlay-bg: rgba(0, 0, 0, 0.6);
+  --overlay-bg: rgba(0, 0, 0, 0.7);
   --text-on-accent: #ffffff;
 
-  --gradient-login-hero: linear-gradient(135deg, #0c1a30 0%, #1d4ed8 50%, #6d28d9 100%);
+  --gradient-login-hero: linear-gradient(135deg, #060b18 0%, #0c1a30 50%, #1e1b4b 100%);
 
   --gov-white: #e2e8f0;
   --gov-card-bg: var(--bg-card);
@@ -219,26 +219,26 @@
 
   --color-open: var(--pri-400);
   --color-pending: #a78bfa;
-  --color-progress: var(--amber-400);
-  --color-resolved: var(--green-400);
-  --color-fulfilled: var(--green-400);
+  --color-progress: #fbbf24;
+  --color-resolved: #34d399;
+  --color-fulfilled: #34d399;
 
-  --color-critical: var(--red-400);
-  --color-high: var(--amber-400);
-  --color-low: var(--green-400);
+  --color-critical: #f87171;
+  --color-high: #fbbf24;
+  --color-low: #34d399;
 
-  --severity-critical: var(--red-400);
-  --severity-high: var(--amber-400);
-  --severity-low: var(--green-400);
+  --severity-critical: #f87171;
+  --severity-high: #fbbf24;
+  --severity-low: #34d399;
   --severity-critical-stroke: #7f1d1d;
   --severity-high-stroke: #78350f;
   --severity-low-stroke: #14532d;
 
-  --coverage-covered: var(--green-400);
-  --coverage-gap: var(--red-400);
+  --coverage-covered: #34d399;
+  --coverage-gap: #f87171;
 
-  --gradient-header: linear-gradient(90deg, var(--pri-400), #a5b4fc, #c4b5fd, var(--pri-400));
-  --gradient-saffron: linear-gradient(135deg, var(--amber-400), #f97316);
+  --gradient-header: linear-gradient(90deg, #60a5fa, #a5b4fc, #c4b5fd, #60a5fa);
+  --gradient-saffron: linear-gradient(135deg, #fbbf24, #f97316);
 
   --cat-water: #22d3ee;
   --cat-rescue: #f97316;
