@@ -16,6 +16,7 @@ export default defineConfig({
           leaflet: ['leaflet'],
         },
       },
+      preserveEntrySignatures: 'allow-extension',
     },
     chunkSizeWarningLimit: 1000,
   },
