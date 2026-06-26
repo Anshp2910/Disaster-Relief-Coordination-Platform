@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
-import { Sun, Moon, Search, User, LogOut, AlertTriangle } from 'lucide-react'
+import { Sun, Moon, Search, User, LogOut, AlertTriangle, Info } from 'lucide-react'
 import NotificationBell from './NotificationBell'
 
 interface Language {
@@ -29,7 +29,7 @@ export default function Header() {
   const location = useLocation()
   const { t, i18n } = useTranslation()
   const { user: currentUser, isAuthenticated, isAdmin, logout: authLogout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, isEmergency, toggleEmergency } = useTheme()
   const { socket } = useSocket()
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
@@ -38,20 +38,33 @@ export default function Header() {
     try { localStorage.setItem('language', langCode) } catch {}
   }
 
-  function toggleEmergencyMode() {
-    const html = document.documentElement
-    html.classList.toggle('emergency-mode')
-    const isEmergency = html.classList.contains('emergency-mode')
-    try { localStorage.setItem('emergencyMode', isEmergency ? 'true' : 'false') } catch {}
+  function openKeyboardHints() {
+    const hints = document.getElementById('keyboard-hints-emergency')
+    if (hints) {
+      hints.classList.add('active')
+      setTimeout(() => hints.classList.remove('active'), 4000)
+    }
   }
 
-  const isEmergencyMode = document.documentElement?.classList?.contains('emergency-mode') || 
-    (typeof window !== 'undefined' && localStorage.getItem('emergencyMode') === 'true')
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+        e.preventDefault()
+        openKeyboardHints()
+      }
+      if (e.altKey && e.key === 'E') {
+        e.preventDefault()
+        toggleEmergency()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [toggleEmergency])
 
   return (
     <header role="banner">
 
-          <div className="gov-top-strip">
+      <div className="gov-top-strip">
         <div className="container flex-between">
           <span className="gov-top-strip-text">{t('topStrip')}</span>
           <div className="flex flex-gap-sm items-center">
@@ -83,17 +96,25 @@ export default function Header() {
               </div>
             </div>
             <button 
-              onClick={toggleEmergencyMode}
-              className={`theme-toggle relative ${isEmergencyMode ? 'border-[--danger] bg-[--danger-50]' : ''}`}
-              aria-label={isEmergencyMode ? 'Disable emergency mode' : 'Activate emergency mode'}
-              title={isEmergencyMode ? 'Emergency Mode Active' : 'Activate Emergency Mode'}
+              onClick={toggleEmergency}
+              className={`theme-toggle relative ${isEmergency ? 'border-[--danger] bg-[--danger-50]' : ''}`}
+              aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'}
+              title={isEmergency ? 'Emergency Mode Active (Alt+E to disable)' : 'Emergency Mode (Alt+E to activate)'}
             >
               <AlertTriangle size={14} 
-                className={isEmergencyMode ? 'text-[--danger]' : 'text-[--warning]'} 
+                className={isEmergency ? 'text-[--danger]' : 'text-[--warning]'} 
                 aria-hidden="true" />
-              {isEmergencyMode && (
+              {isEmergency && (
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-[--danger] rounded-full animate-pulse" />
               )}
+            </button>
+            <button 
+              onClick={openKeyboardHints}
+              className="theme-toggle"
+              aria-label="Show keyboard shortcuts"
+              title="Keyboard shortcuts (Ctrl+Shift+H)"
+            >
+              <Info size={14} className="text-[--text-muted]" aria-hidden="true" />
             </button>
             <button onClick={toggleTheme} className="theme-toggle" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} title={theme === 'light' ? 'Dark mode' : 'Light mode'}>
               {theme === 'light' ? <Moon size={14} aria-hidden="true" /> : <Sun size={14} aria-hidden="true" />}
@@ -146,3 +167,4 @@ export default function Header() {
     </header>
   )
 }
+export default Header

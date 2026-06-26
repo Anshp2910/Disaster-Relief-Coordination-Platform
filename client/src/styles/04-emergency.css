@@ -159,11 +159,101 @@ dashboard.emergency .request-card.critical {
   box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
 }
 
+/* ── Emergency Mode Accessibility ── */
+html.emergency-mode {
+  filter: hue-rotate(180deg) contrast(1.2) saturate(0.8);
+  animation: emergency-flicker 0.5s infinite;
+  --text: #ffffff;
+  --text-secondary: #ffeb3b;
+  --text-muted: #ff9800;
+  --bg: #b71c1c;
+  --bg-elevated: #d32f2f;
+  --bg-card: rgba(255, 255, 255, 0.15);
+  --bg-subtle: rgba(255, 255, 255, 0.08);
+}
+
+html.emergency-mode body {
+  background: linear-gradient(135deg, #b71c1c, #d32f2f);
+}
+
+@keyframes emergency-flicker {
+  0%, 100% { filter: hue-rotate(180deg) contrast(1.2) saturate(0.8); }
+  50% { filter: hue-rotate(180deg) contrast(1.8) saturate(1.2); }
+}
+
+/* ── High Contrast Mode Toggle ── */
+html.high-contrast {
+  filter: contrast(2.5) brightness(1.2) !important;
+}
+
+html.high-contrast .text-muted {
+  color: #ffff00 !important;
+}
+
+html.high-contrast .bg-card {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border: 2px solid #ff0000 !important;
+}
+
+/* ── Emergency Skip Link (Enhanced for emergency) ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 6px;
+  background: var(--danger);
+  color: var(--text-on-accent);
+  padding: 12px 24px;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: var(--radius-sm);
+  z-index: var(--z-modal);
+  transition: all var(--duration-fast) var(--ease-out);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.skip-link:focus {
+  top: 12px;
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.skip-link-emergency {
+  background: var(--warning);
+  color: var(--text-on-accent);
+  font-size: var(--text-xs);
+  padding: 6px 12px;
+  top: -80px;
+}
+
+.skip-link-emergency:focus {
+  top: 8px;
+}
+
+/* ── Emergency Visual Indicators */
+.emergency-pulse {
+  animation: emergency-pulse 1s infinite;
+}
+
+@keyframes emergency-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.emergency-glow {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
 /* ── Emergency Mode Toggle Switch ── */
 switch.emergency-toggle {
   --track-color: var(--bg-card);
   --thumb-color: var(--text-muted);
   position: relative;
+  width: 60px;
+  height: 28px;
 }
 
 switch.emergency-toggle:checked {
@@ -174,7 +264,7 @@ switch.emergency-toggle:checked {
 switch.emergency-toggle::after {
   content: 'NORMAL';
   position: absolute;
-  right: 8px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   font-size: var(--text-xs);
@@ -191,10 +281,275 @@ switch.emergency-toggle:checked::after {
 switch.emergency-toggle::before {
   content: 'EMERGENCY';
   position: absolute;
-  left: 8px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   color: var(--danger);
+}
+
+/* ── Emergency Navigation Rail */
+.emergency-nav-rail {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-card);
+  border-left: 3px solid var(--danger);
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  padding: var(--space-sm);
+  z-index: var(--z-emergency);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  box-shadow: -4px 0 20px rgba(239, 68, 68, 0.3);
+  transition: all var(--duration-normal) var(--ease-out);
+  min-height: 200px;
+}
+
+.emergency-nav-rail:hover {
+  padding-right: var(--space-md);
+  box-shadow: -6px 0 30px rgba(239, 68, 68, 0.5);
+}
+
+.rail-item {
+  width: 44px;
+  height: 44px;
+  background: var(--bg-subtle);
+  border: 2px solid var(--danger);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  position: relative;
+  color: var(--danger);
+}
+
+.rail-item:hover {
+  background: var(--danger-soft);
+  transform: translateX(-2px);
+}
+
+.rail-item.active {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--text-on-accent);
+}
+
+.rail-item.active::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 32px;
+  background: var(--warning);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── Emergency Toast Notifications */
+.toast-emergency {
+  border-left: 5px solid var(--danger);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.2));
+  backdrop-filter: blur(12px);
+  font-weight: var(--font-weight-semibold);
+}
+
+.toast-emergency .toast-title {
+  color: var(--danger);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-sm);
+}
+
+.toast-emergency .toast-message {
+  color: var(--text);
+}
+
+/* ── Emergency Dashboard Layout ── */
+dashboard.emergency {
+  --sidebar-width: 320px;
+  --critical-height: 120px;
+}
+
+dashboard.emergency .critical-alerts {
+  background: linear-gradient(135deg, var(--danger), var(--warning));
+  height: var(--critical-height);
+  margin-bottom: var(--space-xl);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+dashboard.emergency .critical-alerts::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: emergency-shine 3s infinite;
+}
+
+@keyframes emergency-shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+dashboard.emergency .critical-count {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--text-on-accent);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+dashboard.emergency .request-list {
+  grid-template-columns: 2fr 1fr 1fr 120px;
+}
+
+dashboard.emergency .request-card.critical {
+  border: 3px solid var(--danger);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.15));
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  position: relative;
+}
+
+dashboard.emergency .request-card.critical::after {
+  content: 'CRITICAL';
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  background: var(--danger);
+  color: var(--text-on-accent);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+}
+
+/* ── Emergency Button States ── */
+.btn-emergency {
+  background: linear-gradient(135deg, var(--danger), var(--red-600));
+  color: var(--text-on-accent);
+  border: 3px solid var(--danger);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+}
+
+.btn-emergency::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: emergency-shine 2s infinite;
+}
+
+.btn-emergency:hover {
+  background: linear-gradient(135deg, var(--red-500), var(--red-600));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(239, 68, 68, 0.6);
+}
+
+/* ── Emergency Status Badges */
+.badge-emergency {
+  background: var(--danger);
+  color: var(--text-on-accent);
+  font-weight: var(--font-weight-bold);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  animation: badge-blink 1.5s infinite;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+}
+
+.badge-critical {
+  background: linear-gradient(135deg, var(--danger), #dc2626);
+}
+
+.badge-high {
+  background: linear-gradient(135deg, var(--warning), var(--amber-600));
+}
+
+.badge-life {
+  background: linear-gradient(135deg, var(--red-600), #991b1b);
+  animation: badge-blink 0.8s infinite;
+}
+
+@keyframes badge-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+/* ── Emergency Keyboard Hints */
+.keyboard-hints-emergency {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bg-card);
+  border: 2px solid var(--danger);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  font-size: var(--text-xs);
+  z-index: var(--z-overlay);
+  box-shadow: var(--shadow-lg);
+  max-width: 280px;
+  display: none;
+  opacity: 0;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.keyboard-hints-emergency.active {
+  display: block;
+  opacity: 1;
+  animation: slideUp 0.3s var(--ease-out);
+}
+
+.keyboard-hints-emergency h4 {
+  color: var(--danger);
+  margin: 0 0 var(--space-sm) 0;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.keyboard-hints-emergency ul {
+  margin: 0;
+  padding-left: var(--space-md);
+  list-style: none;
+}
+
+.keyboard-hints-emergency li {
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.keyboard-hints-emergency kbd {
+  background: var(--bg-subtle);
+  border: 1px solid var(--danger);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--danger);
+  margin-left: 8px;
 }
