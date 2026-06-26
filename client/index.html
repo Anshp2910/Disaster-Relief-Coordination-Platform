@@ -2,9 +2,8 @@
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <script>try{let t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0a0e1a" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)" />
     <meta name="description" content="Disaster Relief Coordination Platform - A Government of India Initiative for coordinating disaster relief efforts across India. Real-time resource tracking, zone mapping, and incident management." />
     <meta name="keywords" content="disaster relief, India, government, emergency management, resource coordination, NDMA, disaster response" />
@@ -42,27 +41,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
-    <link rel="dns-prefetch" href="https://disaster-relief-coordination-platform-l6mk.onrender.com" />
 
-    <!-- Preload critical chunks (Vite transforms this in dev, ignored in prod) -->
-    <link rel="modulepreload" href="/src/main.tsx" />
-
-    <!-- Preload critical assets -->
-    <link rel="preload" href="/icon-192.svg" as="image" type="image/svg+xml" />
+    <!-- Preload critical fonts -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap" />
-    
-    <!-- Preconnect to critical origins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://{s}.tile.openstreetmap.org" />
-    
+
     <!-- DNS prefetch for API -->
     <link rel="dns-prefetch" href="https://disaster-relief-coordination-platform-l6mk.onrender.com" />
-    
-    <!-- Prefetch likely pages -->
-    <link rel="prefetch" href="/#/dashboard" as="document" />
-    <link rel="prefetch" href="/#/resources" as="document" />
+
+    <title>Disaster Relief Coordination Platform</title>
+
+    <!-- Primary CSS (external file) -->
+    <link rel="stylesheet" href="/src/styles/index.css" />
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -98,61 +88,12 @@
       ]
     }
     </script>
-    <title>Disaster Relief Coordination Platform</title>
-    <style>
-      body { margin: 0; background: #0a0e1a; font-family: 'Inter', system-ui, sans-serif; }
-      #root { min-height: 100vh; }
-      .app-shell { display: flex; flex-direction: column; min-height: 100vh; }
-      .shell-header { height: 56px; background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 20px; gap: 12px; }
-      .shell-logo { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #00d4ff, #7c3aed); animation: pulse 2s ease-in-out infinite; }
-      .shell-title { width: 200px; height: 14px; border-radius: 4px; background: rgba(255,255,255,0.08); animation: pulse 2s ease-in-out infinite; }
-      .shell-nav { display: flex; gap: 8px; margin-left: auto; }
-      .shell-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.1); }
-      .shell-body { flex: 1; padding: 24px 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
-      .shell-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; margin-bottom: 16px; animation: pulse 2s ease-in-out infinite; }
-      .shell-line { height: 12px; border-radius: 4px; background: rgba(255,255,255,0.06); margin-bottom: 10px; }
-      .shell-line.short { width: 60%; }
-      .shell-line.medium { width: 80%; }
-      .shell-stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
-      .shell-stat { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 16px; animation: pulse 2s ease-in-out infinite; }
-      .shell-stat-num { width: 48px; height: 20px; border-radius: 4px; background: rgba(0,212,255,0.15); margin-bottom: 8px; }
-      .shell-stat-label { width: 72px; height: 10px; border-radius: 3px; background: rgba(255,255,255,0.06); }
-      @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-      @media (max-width: 640px) { .shell-stat-row { grid-template-columns: repeat(2, 1fr); } }
-    </style>
   </head>
   <body>
     <div id="root">
-      <div class="app-shell">
-        <div class="shell-header">
-          <div class="shell-logo"></div>
-          <div class="shell-title"></div>
-          <div class="shell-nav">
-            <div class="shell-nav-dot"></div>
-            <div class="shell-nav-dot"></div>
-            <div class="shell-nav-dot"></div>
-          </div>
-        </div>
-        <div class="shell-body">
-          <div class="shell-stat-row">
-            <div class="shell-stat"><div class="shell-stat-num"></div><div class="shell-stat-label"></div></div>
-            <div class="shell-stat"><div class="shell-stat-num"></div><div class="shell-stat-label"></div></div>
-            <div class="shell-stat"><div class="shell-stat-num"></div><div class="shell-stat-label"></div></div>
-            <div class="shell-stat"><div class="shell-stat-num"></div><div class="shell-stat-label"></div></div>
-          </div>
-          <div class="shell-card">
-            <div class="shell-line medium"></div>
-            <div class="shell-line short"></div>
-            <div class="shell-line"></div>
-          </div>
-          <div class="shell-card">
-            <div class="shell-line"></div>
-            <div class="shell-line short"></div>
-            <div class="shell-line medium"></div>
-          </div>
-        </div>
-      </div>
+      <div style="display: none;">Loading...</div>
     </div>
+
     <noscript>
       <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0e1a;color:#e8edf5;font-family:system-ui,sans-serif;padding:20px;text-align:center;z-index:999999">
         <div>
@@ -161,6 +102,7 @@
         </div>
       </div>
     </noscript>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

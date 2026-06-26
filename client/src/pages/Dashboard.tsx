@@ -226,12 +226,12 @@ export default function Dashboard() {
         {/* Greeting Card */}
         <motion.div className="bento-card" variants={itemVariants}>
           <div className="flex items-center gap-sm mb-sm">
-            <div className="bento-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
+            <div className="bento-icon bento-icon-accent">
               <Sun size={20} />
             </div>
             <div>
-              <div className="text-base" style={{ fontWeight: 700, color: 'var(--text)' }}>{greeting}, {displayName.split(' ')[0]}</div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{currentDate}</div>
+              <div className="text-base greeting-text">{greeting}, {displayName.split(' ')[0]}</div>
+              <div className="text-xs text-muted">{currentDate}</div>
             </div>
           </div>
           <div className="flex items-center gap-sm">
@@ -239,7 +239,7 @@ export default function Dashboard() {
               {connected ? t('dashboard.live') : t('dashboard.offline')}
             </span>
             {total > 0 && (
-              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{total} {t('dashboard.totalRequests')}</span>
+              <span className="text-xs text-muted">{total} {t('dashboard.totalRequests')}</span>
             )}
           </div>
         </motion.div>
@@ -267,7 +267,7 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           {/* Charts */}
           <motion.div className="bento-card mb-md" variants={itemVariants}>
-            <Suspense fallback={<div className="sk-card" style={{ height: 200 }} />}>
+            <Suspense fallback={<div className="sk-card chart-container-sm" />}>
               <RequestsChart data={chartData} />
             </Suspense>
           </motion.div>
@@ -291,16 +291,16 @@ export default function Dashboard() {
             <div className="bento-header">
               <span className="bento-title"><Zap size={14} /> Quick Actions</span>
             </div>
-            <div className="flex flex-wrap gap-sm" style={{ gap: 'var(--space-sm)' }}>
+            <div className="flex flex-wrap gap-sm">
               {[
-                { path: '/requests/new', label: t('dashboard.newRequest'), icon: FilePlus, color: 'var(--success)' },
-                { path: '/map', label: t('dashboard.mapView'), icon: MapIcon, color: 'var(--accent)' },
-                { path: '/resources', label: t('nav.resources') || 'Resources', icon: Box, color: 'var(--blue-500)' },
-                { path: '/incidents', label: t('nav.incidents') || 'Incidents', icon: AlertTriangle, color: 'var(--danger)' },
-                { path: '/command-center', label: t('nav.commandCenter') || 'Command Center', icon: Radio, color: 'var(--accent)' },
-                { path: '/zones', label: t('nav.zones') || 'Zones', icon: MapPin, color: 'var(--warning)' },
+                { path: '/requests/new', label: t('dashboard.newRequest'), icon: FilePlus, iconClass: 'nav-chip-icon-success' },
+                { path: '/map', label: t('dashboard.mapView'), icon: MapIcon, iconClass: 'nav-chip-icon-accent' },
+                { path: '/resources', label: t('nav.resources') || 'Resources', icon: Box, iconClass: 'nav-chip-icon-blue' },
+                { path: '/incidents', label: t('nav.incidents') || 'Incidents', icon: AlertTriangle, iconClass: 'nav-chip-icon-danger' },
+                { path: '/command-center', label: t('nav.commandCenter') || 'Command Center', icon: Radio, iconClass: 'nav-chip-icon-accent' },
+                { path: '/zones', label: t('nav.zones') || 'Zones', icon: MapPin, iconClass: 'nav-chip-icon-warning' },
                 ...(currentUser?.role === 'admin' ? [
-                  { path: '/admin', label: t('nav.admin') || 'Admin', icon: ShieldCheck, color: 'var(--amber-500)' },
+                  { path: '/admin', label: t('nav.admin') || 'Admin', icon: ShieldCheck, iconClass: 'nav-chip-icon-amber' },
                 ] : []),
               ].map((action) => {
                 const Icon = action.icon
@@ -312,7 +312,7 @@ export default function Dashboard() {
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
                   >
-                    <Icon size={14} style={{ color: action.color }} />
+                    <Icon size={14} className={action.iconClass} />
                     <span className="text-xs text-medium">{action.label}</span>
                   </motion.button>
                 )
@@ -327,7 +327,7 @@ export default function Dashboard() {
         <div className="flex-between mb-md">
           <h2 className="text-lg text-bold m-0">{t('dashboard.allRequests')}</h2>
           <div className="flex flex-gap-sm">
-            <RippleBtn onClick={load} className="text-sm p-xs" style={{ color: 'var(--gov-blue)', border: '1px solid var(--border)', borderRadius: 6, background: 'transparent' }}>
+            <RippleBtn onClick={load} className="text-sm p-xs refresh-btn">
               {t('dashboard.refresh') || 'Refresh'}
             </RippleBtn>
           </div>

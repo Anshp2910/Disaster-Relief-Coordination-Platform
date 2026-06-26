@@ -49,9 +49,9 @@
 .text-2xl { font-size: var(--text-2xl); }
 .text-3xl { font-size: var(--text-3xl); }
 .text-4xl { font-size: var(--text-4xl); }
-.text-13 { font-size: 13px; }
-.text-15 { font-size: 15px; }
-.text-20 { font-size: 20px; }
+.text-13 { font-size: var(--text-sm); }
+.text-15 { font-size: var(--text-base); }
+.text-20 { font-size: var(--text-xl); }
 .small { font-size: var(--text-xs); color: var(--text-muted); }
 .muted { color: var(--text-secondary); font-size: var(--text-sm); }
 
@@ -316,7 +316,20 @@
 
 .field-error { font-size: var(--text-xs); color: var(--danger); margin: 4px 0 0; }
 
-.gap-xs { gap: var(--space-xs); }
+.bento-icon-accent { background: var(--accent-soft); color: var(--accent); }
+.bento-icon-success { background: var(--success-soft); color: var(--success); }
+.bento-icon-warning { background: var(--warning-soft); color: var(--warning); }
+.bento-icon-danger { background: var(--danger-soft); color: var(--danger); }
+
+.greeting-text { font-weight: 700; color: var(--text); }
+.refresh-btn { color: var(--gov-blue); border: 1px solid var(--border); border-radius: 6px; background: transparent; }
+.nav-chip-icon-success { color: var(--success); }
+.nav-chip-icon-accent { color: var(--accent); }
+.nav-chip-icon-blue { color: var(--blue-500); }
+.nav-chip-icon-danger { color: var(--danger); }
+.nav-chip-icon-warning { color: var(--warning); }
+.nav-chip-icon-amber { color: var(--amber-500); }
+
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }
 .gap-lg { gap: var(--space-lg); }
