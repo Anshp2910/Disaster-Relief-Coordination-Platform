@@ -73,7 +73,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 export function useTheme(): ThemeContextType {
   const ctx = useContext(ThemeContext)
   if (!ctx) {
-    return { theme: 'dark', toggleTheme: () => {}, isEmergency: false, setIsEmergency: () => {}, toggleEmergency: () => {}, isHighContrast: false, setIsHighContrast: () => {}, isSocketConnected: true, setIsSocketConnected: () => {} }
+    return { 
+      theme: 'dark', 
+      toggleTheme: () => {}, 
+      isEmergency: false, 
+      setIsEmergency: () => {}, 
+      toggleEmergency: () => {}, 
+      isHighContrast: false, 
+      setIsHighContrast: () => {}, 
+      isSocketConnected: true, 
+      setIsSocketConnected: () => {} 
+    }
   }
   return ctx
 }
