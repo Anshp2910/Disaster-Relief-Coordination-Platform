@@ -360,37 +360,33 @@ export default function BulkImport() {
               )}
 
               <div className="overflow-x-auto rounded-sm border-gov mb">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-elevated">
-                      <th className="text-left p-sm border-bottom">CSV Column</th>
-                      <th className="text-left p-sm border-bottom text-center"><ArrowRight size={14} aria-hidden="true" /></th>
-                      <th className="text-left p-sm border-bottom">System Field</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {columnMaps.map((m) => (
-                      <tr key={m.csvCol}>
-                        <td className="p-sm border-bottom text-nowrap">{m.csvCol}</td>
-                        <td className="p-sm border-bottom text-center"><ArrowRight size={14} className="text-muted" aria-hidden="true" /></td>
-                        <td className="p-sm border-bottom">
-                          <select
-                            value={m.systemCol}
-                            onChange={(e) => updateColumnMap(m.csvCol, e.target.value)}
-                            className="rounded-sm border-gov text-sm w-100"
-                            style={{ padding: '4px 8px' }}
-                            aria-label={`Map column "${m.csvCol}" to system field`}
-                          >
-                            <option value="">— Ignore —</option>
-                            {systemFields.map((f) => (
-                              <option key={f} value={f}>{f}</option>
-                            ))}
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="w-full text-sm dt-inline-table" role="grid" aria-label="Column mapping">
+                  <div className="dt-inline-row dt-inline-header" role="row">
+                    <div className="dt-inline-cell text-left" role="columnheader">CSV Column</div>
+                    <div className="dt-inline-cell text-center" role="columnheader"><ArrowRight size={14} aria-hidden="true" /></div>
+                    <div className="dt-inline-cell text-left" role="columnheader">System Field</div>
+                  </div>
+                  {columnMaps.map((m) => (
+                    <div key={m.csvCol} className="dt-inline-row" role="row">
+                      <div className="dt-inline-cell text-nowrap" role="gridcell">{m.csvCol}</div>
+                      <div className="dt-inline-cell text-center" role="gridcell"><ArrowRight size={14} className="text-muted" aria-hidden="true" /></div>
+                      <div className="dt-inline-cell" role="gridcell">
+                        <select
+                          value={m.systemCol}
+                          onChange={(e) => updateColumnMap(m.csvCol, e.target.value)}
+                          className="rounded-sm border-gov text-sm w-100"
+                          style={{ padding: '4px 8px' }}
+                          aria-label={`Map column "${m.csvCol}" to system field`}
+                        >
+                          <option value="">— Ignore —</option>
+                          {systemFields.map((f) => (
+                            <option key={f} value={f}>{f}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="flex flex-gap-sm">
@@ -419,68 +415,64 @@ export default function BulkImport() {
               </div>
 
               <div className="overflow-x-auto rounded-sm border-gov">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-elevated">
-                      <th className="text-center p-sm border-bottom w-40">
-                        <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
-                        <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" aria-label="Select all rows" />
-                      </th>
-                      <th className="text-center p-sm border-bottom w-40">#</th>
+                <div className="w-full text-sm dt-inline-table" role="grid" aria-label="Data preview">
+                  <div className="dt-inline-row dt-inline-header" role="row">
+                    <div className="dt-inline-cell text-center dt-inline-shrink" role="columnheader">
+                      <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
+                      <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" aria-label="Select all rows" />
+                    </div>
+                    <div className="dt-inline-cell text-center dt-inline-shrink" role="columnheader">#</div>
+                    {headers.map((h) => (
+                      <div key={h} className="dt-inline-cell text-nowrap" role="columnheader">{h}</div>
+                    ))}
+                    <div className="dt-inline-cell dt-inline-shrink" role="columnheader">{t('bulkImport.edit')}</div>
+                  </div>
+                  {(() => {
+                    const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
+                    const rowOffset = (previewPage - 1) * PREVIEW_PAGE_SIZE
+                    const paginatedPreview = preview.slice(rowOffset, rowOffset + PREVIEW_PAGE_SIZE)
+                    return paginatedPreview.map((row, idx) => {
+                    const rowId = row._rowId as string | number
+                    const isEditing = editingRow === rowId
+                    const isSelected = selected.has(rowId)
+                    return (
+                    <div
+                      key={rowId}
+                      className={`dt-inline-row ${isEditing ? 'dt-inline-editing' : ''} ${isSelected ? 'dt-inline-selected' : ''}`}
+                      role="row"
+                    >
+                      <div className="dt-inline-cell text-center dt-inline-shrink" role="gridcell">
+                        <input type="checkbox" checked={isSelected} onChange={() => toggleRow(rowId)} aria-label={`Select row ${rowOffset + idx + 1}`} />
+                      </div>
+                      <div className="dt-inline-cell text-center dt-inline-shrink text-muted" role="gridcell">{rowOffset + idx + 1}</div>
                       {headers.map((h) => (
-                        <th key={h} className="text-nowrap p-sm border-bottom">{h}</th>
+                        <div key={h} className="dt-inline-cell text-ellipsis" role="gridcell" style={{ maxWidth: 200 }}>
+                          {isEditing ? (
+                            <input
+                              value={row[h] as string || ''}
+                              onChange={(e) => updateCell(rowId, h, e.target.value)}
+                              className="w-full text-sm border-gov rounded-sm p-xs"
+                              aria-label={`Edit ${h}`}
+                            />
+                          ) : (
+                            (row[h] as string) || <span className="text-muted">-</span>
+                          )}
+                        </div>
                       ))}
-                      <th className="p-sm border-bottom w-60">{t('bulkImport.edit')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(() => {
-                      const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
-                      const rowOffset = (previewPage - 1) * PREVIEW_PAGE_SIZE
-                      const paginatedPreview = preview.slice(rowOffset, rowOffset + PREVIEW_PAGE_SIZE)
-                      return paginatedPreview.map((row, idx) => {
-                      const rowId = row._rowId as string | number
-                      return (
-                      <tr
-                        key={rowId}
-                        style={{
-                          background: editingRow === rowId ? 'var(--accent-soft)' : selected.has(rowId) ? 'var(--success-soft)' : 'var(--gov-bg)',
-                          opacity: selected.has(rowId) ? 1 : 0.5,
-                        }}
-                      >
-                        <td className="text-center border-bottom p-xs">
-                          <input type="checkbox" checked={selected.has(rowId)} onChange={() => toggleRow(rowId)} aria-label={`Select row ${rowOffset + idx + 1}`} />
-                        </td>
-                        <td className="text-center text-muted border-bottom p-xs">{rowOffset + idx + 1}</td>
-                        {headers.map((h) => (
-                          <td key={h} className="text-ellipsis border-bottom max-w-200 p-xs" style={{ padding: '4px 10px' }}>
-                            {editingRow === rowId ? (
-                              <input
-                                value={row[h] as string || ''}
-                                onChange={(e) => updateCell(rowId, h, e.target.value)}
-                                className="w-full text-sm border-gov rounded-sm p-xs"
-                                aria-label={`Edit ${h}`}
-                              />
-                            ) : (
-                              (row[h] as string) || <span className="text-muted">-</span>
-                            )}
-                          </td>
-                        ))}
-                        <td className="text-center border-bottom p-xs">
-                          <button
-                            onClick={() => setEditingRow(editingRow === rowId ? null : rowId)}
-                            className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
-                            aria-label={editingRow === rowId ? 'Done editing' : `Edit row ${rowOffset + idx + 1}`}
-                          >
-                            {editingRow === rowId ? t('bulkImport.done') : t('bulkImport.edit')}
-                          </button>
-                        </td>
-                      </tr>
-                      )
-                      })
-                    })()}
-                  </tbody>
-                </table>
+                      <div className="dt-inline-cell text-center dt-inline-shrink" role="gridcell">
+                        <button
+                          onClick={() => setEditingRow(isEditing ? null : rowId)}
+                          className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
+                          aria-label={isEditing ? 'Done editing' : `Edit row ${rowOffset + idx + 1}`}
+                        >
+                          {isEditing ? t('bulkImport.done') : t('bulkImport.edit')}
+                        </button>
+                      </div>
+                    </div>
+                    )
+                    })
+                  })()}
+                </div>
               </div>
               {(() => {
                 const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)

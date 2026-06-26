@@ -2,16 +2,15 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Users, Shield, Activity, BarChart3, AlertTriangle, Plus, Edit, Trash2, Search, X, CheckCircle, XCircle, Filter, ArrowLeft, Download } from 'lucide-react'
+import { Users, Shield, Activity, BarChart3, AlertTriangle, Trash2, CheckCircle } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useConfirm } from '../hooks/useConfirm'
-import { Modal, PageHeader, DataCard, ErrorState, FilterBar, DataList, Pagination } from '../components/ui'
+import { PageHeader, DataCard, ErrorState, DataTable, type ColumnDef } from '../components/ui'
 import Badge from '../components/Badge'
-import EmptyState from '../components/EmptyState'
 import { SkeletonList } from '../components/Skeleton'
 
 interface User {
@@ -275,21 +274,9 @@ interface UsersPanelProps {
 }
 
 function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
-  const [search, setSearch] = useState('')
   const { t } = useTranslation()
 
   const safeUsers = Array.isArray(users) ? users : []
-
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim()
-    if (!q) return safeUsers
-    return safeUsers.filter(
-      (u) =>
-        (u.displayName || '').toLowerCase().includes(q) ||
-        (u.email || '').toLowerCase().includes(q) ||
-        (u.role || '').toLowerCase().includes(q)
-    )
-  }, [safeUsers, search])
 
   const roleCounts = useMemo(() => {
     const counts: Record<string, number> = { volunteer: 0, ngo: 0, admin: 0 }
@@ -299,86 +286,93 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
     return counts
   }, [safeUsers])
 
+  const renderTop = (
+    <motion.div className="flex flex-gap-sm text-sm text-muted mb-md" variants={itemVariants} style={{ padding: '0 16px' }}>
+      <span className="govt-badge govt-badge-blue">
+        <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer')}{roleCounts.volunteer !== 1 ? 's' : ''}
+      </span>
+      <span className="govt-badge govt-badge-saffron">
+        <Shield size={12} /> {roleCounts.ngo} {t('auth.ngo')}{roleCounts.ngo !== 1 ? 's' : ''}
+      </span>
+      <span className="govt-badge govt-badge-green">
+        <Shield size={12} /> {roleCounts.admin} {t('nav.admin')}{roleCounts.admin !== 1 ? 's' : ''}
+      </span>
+    </motion.div>
+  )
+
+  const columns: ColumnDef<User>[] = [
+    {
+      id: 'user',
+      header: t('admin.userHeader'),
+      accessor: 'displayName',
+      sortable: true,
+      render: (_, u) => (
+        <div>
+          <div className="admin-user-name">{u.displayName || '\u2014'}</div>
+          <div className="admin-user-email">{u.email || ''}</div>
+        </div>
+      ),
+    },
+    {
+      id: 'role',
+      header: t('admin.roleHeader'),
+      accessor: 'role',
+      sortable: true,
+      filterable: true,
+      render: (_, u) => (
+        <select
+          value={u.role}
+          onChange={(e) => onChangeRole(u._id, e.target.value)}
+          className="admin-role-select"
+          aria-label={`${t('admin.roleHeader')} for ${u.displayName || u.email || u._id}`}
+        >
+          <option value="volunteer">{t('auth.volunteer')}</option>
+          <option value="ngo">{t('auth.ngo')}</option>
+          <option value="admin">{t('nav.admin')}</option>
+        </select>
+      ),
+    },
+    {
+      id: 'joined',
+      header: t('admin.joinedHeader'),
+      accessor: (u) => u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '\u2014',
+      sortable: true,
+    },
+    {
+      id: 'actions',
+      header: t('admin.actionsHeader'),
+      accessor: '',
+      width: '100px',
+      render: (_, u) => (
+        <button
+          onClick={() => onDelete(u._id)}
+          className="admin-action-btn btnDanger"
+          aria-label={`${t('admin.delete')} ${u.displayName || u.email || u._id}`}
+        >
+          <Trash2 size={14} /> {t('admin.delete')}
+        </button>
+      ),
+    },
+  ]
+
   return (
     <section aria-label="User Management">
       <motion.div className="card" variants={containerVariants} initial="hidden" animate="show">
-        <FilterBar
-          search={search}
-          onSearchChange={setSearch}
+        <DataTable
+          columns={columns}
+          data={safeUsers}
+          keyExtractor={(u) => u._id}
+          searchable
           searchPlaceholder={t('admin.searchUsers')}
-          filters={[]}
+          sortable
+          filterable
+          exportable
+          columnVisibility
+          stickyHeader
+          emptyTitle={t('admin.noUsers')}
+          emptyDescription={t('admin.noUsersDesc') || 'No users registered yet'}
+          renderTop={renderTop}
         />
-
-        <motion.div className="flex flex-gap-sm text-sm text-muted mb-md" variants={itemVariants}>
-          <span className="govt-badge govt-badge-blue">
-            <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer')}{roleCounts.volunteer !== 1 ? 's' : ''}
-          </span>
-          <span className="govt-badge govt-badge-saffron">
-            <Shield size={12} /> {roleCounts.ngo} {t('auth.ngo')}{roleCounts.ngo !== 1 ? 's' : ''}
-          </span>
-          <span className="govt-badge govt-badge-green">
-            <Shield size={12} /> {roleCounts.admin} {t('nav.admin')}{roleCounts.admin !== 1 ? 's' : ''}
-          </span>
-        </motion.div>
-
-        {filtered.length === 0 ? (
-          <motion.div variants={itemVariants}>
-            <EmptyState icon="👥" title={search ? t('admin.noUsersMatch') : t('admin.noUsers')} description={search ? t('admin.tryDifferentSearch') || 'Try a different search' : t('admin.noUsersDesc') || 'No users registered yet'} />
-          </motion.div>
-        ) : (
-          <motion.div className="admin-table-wrapper border-none mt-md" variants={itemVariants}>
-            <table className="data-table admin-table" aria-label={t('admin.tabUsers')}>
-              <thead>
-                <tr>
-                  <th scope="col">{t('admin.userHeader')}</th>
-                  <th scope="col">{t('admin.roleHeader')}</th>
-                  <th scope="col">{t('admin.joinedHeader')}</th>
-                  <th scope="col" className="text-right">{t('admin.actionsHeader')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((u, i) => (
-                  <motion.tr
-                    key={u._id}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate="show"
-                    transition={{ delay: i * 0.03 }}
-                  >
-                    <td>
-                      <div className="admin-user-name">{u.displayName}</div>
-                      <div className="admin-user-email">{u.email}</div>
-                    </td>
-                    <td>
-                      <select
-                        value={u.role}
-                        onChange={(e) => onChangeRole(u._id, e.target.value)}
-                        className="admin-role-select"
-                        aria-label={`${t('admin.roleHeader')} for ${u.displayName || u.email || u._id}`}
-                      >
-                        <option value="volunteer">{t('auth.volunteer')}</option>
-                        <option value="ngo">{t('auth.ngo')}</option>
-                        <option value="admin">{t('nav.admin')}</option>
-                      </select>
-                    </td>
-                    <td>
-                      <span className="small">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '\u2014'}</span>
-                    </td>
-                    <td className="text-right">
-                      <button
-                        onClick={() => onDelete(u._id)}
-                        className="admin-action-btn btnDanger"
-                        aria-label={`${t('admin.delete')} ${u.displayName || u.email || u._id}`}
-                      >
-                        <Trash2 size={14} /> {t('admin.delete')}
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
-        )}
       </motion.div>
     </section>
   )
@@ -390,138 +384,105 @@ interface RequestsPanelProps {
 }
 
 function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
-  const [search, setSearch] = useState('')
-  const [filterStatus, setFilterStatus] = useState('All')
   const { t } = useTranslation()
   const navigate = useNavigate()
 
   const safeRequests = Array.isArray(requests) ? requests : []
 
-  const filtered = useMemo(() => {
-    let items = safeRequests
-    if (filterStatus !== 'All') items = items.filter((r) => r.status === filterStatus)
-    const q = search.toLowerCase().trim()
-    if (q) {
-      items = items.filter(
-        (r) =>
-          (r.title || '').toLowerCase().includes(q) ||
-          (r.category || '').toLowerCase().includes(q) ||
-          (r.locationName || '').toLowerCase().includes(q) ||
-          (r.createdBy?.displayName || '').toLowerCase().includes(q)
-      )
-    }
-    return items
-  }, [safeRequests, search, filterStatus])
-
-  const statusCounts = useMemo(() => {
-    const counts: Record<string, number> = { All: safeRequests.length }
-    safeRequests.forEach((r) => {
-      const s = r.status || 'Open'
-      counts[s] = (counts[s] || 0) + 1
-    })
-    return counts
-  }, [safeRequests])
-
-  const filterOptions = [
-    { key: 'All', label: `${t('dashboard.filterAll')} (${statusCounts.All || 0})` },
-    { key: 'Open', label: `${t('statuses.Open')} (${statusCounts.Open || 0})` },
-    { key: 'Pending', label: `${t('statuses.Pending')} (${statusCounts.Pending || 0})` },
-    { key: 'In Progress', label: `${t('statuses.In Progress')} (${statusCounts['In Progress'] || 0})` },
-    { key: 'Resolved', label: `${t('statuses.Resolved')} (${statusCounts.Resolved || 0})` },
-    { key: 'Fulfilled', label: `${t('statuses.Fulfilled')} (${statusCounts.Fulfilled || 0})` },
+  const columns: ColumnDef<Request>[] = [
+    {
+      id: 'request',
+      header: t('admin.requestHeader'),
+      accessor: 'title',
+      sortable: true,
+      render: (_, r) => (
+        <div>
+          <div className="admin-request-title">{r.title}</div>
+          <div className="admin-request-location">{r.locationName || t('admin.noLocation')}</div>
+        </div>
+      ),
+    },
+    {
+      id: 'status',
+      header: t('admin.statusHeader'),
+      accessor: 'status',
+      sortable: true,
+      filterable: true,
+      render: (_, r) => (
+        <Badge
+          label={t(`statuses.${r.status || 'Open'}`)}
+          colors={STATUS_COLORS}
+          colorKey={r.status || 'Open'}
+        />
+      ),
+    },
+    {
+      id: 'priority',
+      header: t('admin.priorityHeader'),
+      accessor: 'priority',
+      sortable: true,
+      filterable: true,
+      render: (_, r) => (
+        <Badge
+          label={t(`priorities.${r.priority || 'Medium'}`)}
+          colors={PRIORITY_COLORS}
+          colorKey={r.priority || 'Medium'}
+        />
+      ),
+    },
+    {
+      id: 'category',
+      header: t('admin.categoryHeader'),
+      accessor: 'category',
+      sortable: true,
+      filterable: true,
+      render: (_, r) => (
+        <span className="govt-badge govt-badge-blue">{t(`categories.${r.category || 'Other'}`)}</span>
+      ),
+    },
+    {
+      id: 'postedBy',
+      header: t('admin.postedByHeader'),
+      accessor: (r) => r.createdBy?.displayName || r.createdBy?.email || '',
+      sortable: true,
+      render: (_, r) => (
+        <span className="small">{r.createdBy?.displayName || r.createdBy?.email || t('dashboard.unknown')}</span>
+      ),
+    },
+    {
+      id: 'actions',
+      header: t('admin.actionsHeader'),
+      accessor: '',
+      width: '100px',
+      render: (_, r) => (
+        <button
+          onClick={() => onDelete(r._id)}
+          className="admin-action-btn btnDanger"
+          aria-label={`${t('admin.delete')} ${r.title || r._id}`}
+        >
+          <Trash2 size={14} /> {t('admin.delete')}
+        </button>
+      ),
+    },
   ]
 
   return (
     <section aria-label="Request Management">
       <motion.div className="card" variants={containerVariants} initial="hidden" animate="show">
-        <FilterBar
-          search={search}
-          onSearchChange={setSearch}
+        <DataTable
+          columns={columns}
+          data={safeRequests}
+          keyExtractor={(r) => r._id}
+          searchable
           searchPlaceholder={t('admin.searchRequests')}
-          filters={[
-            {
-              key: 'status',
-              label: t('admin.statusHeader'),
-              options: filterOptions,
-              value: filterStatus,
-              onChange: setFilterStatus,
-            },
-          ]}
+          sortable
+          filterable
+          exportable
+          columnVisibility
+          stickyHeader
+          emptyTitle={t('admin.noRequests')}
+          onRowClick={(r) => navigate(`/requests/${r._id}`)}
         />
-
-        {filtered.length === 0 ? (
-          <motion.div variants={itemVariants}>
-            <EmptyState icon="📋" title={search || filterStatus !== 'All' ? t('admin.noRequestsMatch') : t('admin.noRequests')} description={t('admin.noRequestsDesc') || 'No requests created yet'} />
-          </motion.div>
-        ) : (
-          <motion.div className="admin-table-wrapper border-none mt-md" variants={itemVariants}>
-            <table className="data-table admin-table" aria-label={t('admin.tabRequests')}>
-              <thead>
-                <tr>
-                  <th scope="col">{t('admin.requestHeader')}</th>
-                  <th scope="col">{t('admin.statusHeader')}</th>
-                  <th scope="col">{t('admin.priorityHeader')}</th>
-                  <th scope="col">{t('admin.categoryHeader')}</th>
-                  <th scope="col">{t('admin.postedByHeader')}</th>
-                  <th scope="col" className="text-right">{t('admin.actionsHeader')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((r, i) => (
-                  <motion.tr
-                    key={r._id}
-                    className="cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigate(`/requests/${r._id}`)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${r._id}`) } }}
-                    variants={itemVariants}
-                    initial="hidden"
-                    animate="show"
-                    transition={{ delay: i * 0.03 }}
-                  >
-                    <td className="max-w-280">
-                      <div className="admin-request-title">{r.title}</div>
-                      <div className="admin-request-location">{r.locationName || t('admin.noLocation')}</div>
-                    </td>
-                    <td>
-                      <Badge
-                        label={t(`statuses.${r.status || 'Open'}`)}
-                        colors={STATUS_COLORS}
-                        colorKey={r.status || 'Open'}
-                      />
-                    </td>
-                    <td>
-                      <Badge
-                        label={t(`priorities.${r.priority || 'Medium'}`)}
-                        colors={PRIORITY_COLORS}
-                        colorKey={r.priority || 'Medium'}
-                      />
-                    </td>
-                    <td>
-                      <span className="govt-badge govt-badge-blue">{t(`categories.${r.category || 'Other'}`)}</span>
-                    </td>
-                    <td>
-                      <span className="small">{r.createdBy?.displayName || r.createdBy?.email || t('dashboard.unknown')}</span>
-                    </td>
-                    <td className="text-right">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onDelete(r._id)
-                        }}
-                        className="admin-action-btn btnDanger"
-                        aria-label={`${t('admin.delete')} ${r.title || r._id}`}
-                      >
-                        <Trash2 size={14} /> {t('admin.delete')}
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
-        )}
       </motion.div>
     </section>
   )

@@ -251,36 +251,6 @@
 .step-label.step-active { color: var(--accent); font-weight: 600; }
 .step-label.step-completed { color: var(--success); font-weight: 600; }
 
-/* === Data Tables === */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--text-sm);
-}
-.data-table th {
-  text-align: left;
-  padding: var(--space-sm) var(--space-md);
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: var(--text-xs);
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-subtle);
-}
-.data-table td {
-  padding: var(--space-sm) var(--space-md);
-  border-bottom: 1px solid var(--border-light);
-  color: var(--text);
-  vertical-align: middle;
-}
-.data-table tr {
-  transition: background var(--duration-fast) var(--ease-out);
-}
-.data-table tbody tr:hover {
-  background: var(--accent-soft);
-}
-
 /* === Live indicator === */
 .live-dot {
   display: inline-flex;

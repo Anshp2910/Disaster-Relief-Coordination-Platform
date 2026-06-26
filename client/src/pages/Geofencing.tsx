@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Search, MapPin, Crosshair, Target, Users, Package, Activity } from 'lucide-react'
-import { PageHeader, ErrorState } from '../components/ui'
+import { PageHeader, ErrorState, DataTable, type ColumnDef } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
@@ -390,30 +390,22 @@ export default function Geofencing() {
           transition={{ delay: 0.2, duration: 0.3 }}
         >
           <div className="text-base text-semi mb-sm">Check History</div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-elevated">
-                  <th className="text-left p-xs border-bottom">Time</th>
-                  <th className="text-right p-xs border-bottom">Radius (km)</th>
-                  <th className="text-right p-xs border-bottom">Zones</th>
-                  <th className="text-right p-xs border-bottom">Requests</th>
-                  <th className="text-right p-xs border-bottom">Resources</th>
-                </tr>
-              </thead>
-              <tbody>
-                {checkHistory.map((entry, idx) => (
-                  <tr key={idx}>
-                    <td className="p-xs border-bottom text-nowrap">{formatTime(entry.timestamp)}</td>
-                    <td className="p-xs border-bottom text-right">{entry.radius}</td>
-                    <td className="p-xs border-bottom text-right">{entry.zonesCount}</td>
-                    <td className="p-xs border-bottom text-right">{entry.requestsCount}</td>
-                    <td className="p-xs border-bottom text-right">{entry.resourcesCount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            columns={[
+              { id: 'time', header: 'Time', accessor: (e) => formatTime(e.timestamp), sortable: true },
+              { id: 'radius', header: 'Radius (km)', accessor: 'radius', sortable: true },
+              { id: 'zones', header: 'Zones', accessor: 'zonesCount', sortable: true },
+              { id: 'requests', header: 'Requests', accessor: 'requestsCount', sortable: true },
+              { id: 'resources', header: 'Resources', accessor: 'resourcesCount', sortable: true },
+            ]}
+            data={[...checkHistory].reverse()}
+            keyExtractor={(_, i) => i}
+            searchable={false}
+            sortable
+            exportable={false}
+            columnVisibility={false}
+            pageSize={10}
+          />
         </motion.div>
       )}
     </div>
