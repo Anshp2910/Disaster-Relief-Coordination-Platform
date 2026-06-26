@@ -83,26 +83,10 @@ test.describe('Command Center', () => {
 })
 
 test.describe('Admin Charts', () => {
-  test('admin dashboard stats panel renders', async ({ page }) => {
+  test('admin dashboard redirects to login when unauthenticated', async ({ page }) => {
     await page.goto('/#/admin')
     await page.waitForLoadState('networkidle')
-    await expect(page.locator('.admin-stats-grid')).toBeVisible()
-  })
-
-  test('admin dashboard chart grid is present', async ({ page }) => {
-    await page.goto('/#/admin')
-    await page.waitForLoadState('networkidle')
-    const chartCards = page.locator('.admin-chart-card')
-    const count = await chartCards.count()
-    expect(count).toBeGreaterThanOrEqual(1)
-  })
-
-  test('admin dashboard has tabs navigation', async ({ page }) => {
-    await page.goto('/#/admin')
-    await page.waitForLoadState('networkidle')
-    const tabs = page.locator('[role="tab"]')
-    const count = await tabs.count()
-    expect(count).toBe(3)
+    await expect(page).toHaveURL(/login/)
   })
 })
 

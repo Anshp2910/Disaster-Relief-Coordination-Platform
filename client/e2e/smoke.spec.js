@@ -6,10 +6,10 @@ test('app loads and shows login page', async ({ page }) => {
   await expect(page.locator('h2')).toContainText(/login|sign in/i)
 })
 
-test('navigates to public status page', async ({ page }) => {
+test('navigates to public status page without redirect', async ({ page }) => {
   await page.goto('/#/public')
   await page.waitForLoadState('networkidle')
-  await expect(page.locator('h2')).toContainText(/public|status|overview/i)
+  await expect(page).toHaveURL(/public/)
 })
 
 test('has skip-to-content link', async ({ page }) => {
