@@ -14,7 +14,7 @@ interface LayoutProps {
   children: ReactNode
 }
 
-export default function Layout({ children }: LayoutProps) {
+function Layout({ children }: LayoutProps) {
   const { t } = useTranslation()
   const location = useLocation()
   const { canInstall, install } = usePwaInstall()

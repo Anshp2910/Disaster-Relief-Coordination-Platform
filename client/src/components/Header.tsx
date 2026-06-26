@@ -24,7 +24,7 @@ const LANGUAGES: Language[] = [
   { code: 'ur', label: 'اردو' },
 ]
 
-export default function Header() {
+function Header() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t, i18n } = useTranslation()
@@ -167,4 +167,4 @@ export default function Header() {
     </header>
   )
 }
-export default Header
+export { Header }

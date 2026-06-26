@@ -1,6 +1,6 @@
 import { Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Layout from './components/Layout'
+import { Layout } from './components/Layout'
 import { useAuth } from './context/AuthContext'
 import { retryLazy } from './utils/retryLazy'
 
@@ -48,7 +48,7 @@ function RequireAdmin({ children }: { children: ReactNode }) {
   return children
 }
 
-export default function App() {
+function App() {
   return (
     <Routes>
       {/* Standalone routes (no Layout wrapper) */}
@@ -86,3 +86,5 @@ export default function App() {
     </Routes>
   )
 }
+
+export { App }
