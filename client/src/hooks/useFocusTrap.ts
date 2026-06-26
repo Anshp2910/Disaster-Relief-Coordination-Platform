@@ -13,7 +13,6 @@ export default function useFocusTrap(active: boolean): RefObject<HTMLDivElement>
 
     const focusable = () => el.querySelectorAll<HTMLElement>(FOCUSABLE)
     const first = () => focusable()[0]
-    const last = () => focusable()[focusable().length - 1]
 
     first()?.focus()
 

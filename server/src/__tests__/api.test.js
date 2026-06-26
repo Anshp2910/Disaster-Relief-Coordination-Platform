@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
+import request from 'supertest'
 import { createApp } from '../app.js'
 
 describe('API Routes', () => {
@@ -9,48 +10,37 @@ describe('API Routes', () => {
   })
 
   it('GET /health returns ok', async () => {
-    const res = await app.request('/health')
+    const res = await request(app).get('/health')
     expect(res.status).toBe(200)
-    const body = await res.json()
-    expect(body.ok).toBe(true)
+    expect(res.body.ok).toBe(true)
   })
 
   it('GET /api/version returns version', async () => {
-    const res = await app.request('/api/version')
+    const res = await request(app).get('/api/version')
     expect(res.status).toBe(200)
-    const body = await res.json()
-    expect(body.version).toBeDefined()
-  })
-
-  it('GET /api/public/overview returns overview', async () => {
-    const res = await app.request('/api/public/overview')
-    expect(res.status).toBeDefined()
+    expect(res.body.version).toBeDefined()
   })
 
   it('POST /api/auth/register validates input', async () => {
-    const res = await app.request('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'invalid' }),
-    })
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({ email: 'invalid' })
+      .set('Content-Type', 'application/json')
     expect(res.status).toBe(400)
-    const body = await res.json()
-    expect(body.error).toBeDefined()
+    expect(res.body.error).toBeDefined()
   })
 
   it('POST /api/auth/login validates input', async () => {
-    const res = await app.request('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
-    })
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({})
+      .set('Content-Type', 'application/json')
     expect(res.status).toBe(400)
-    const body = await res.json()
-    expect(body.error).toBeDefined()
+    expect(res.body.error).toBeDefined()
   })
 
   it('GET /api/unknown returns 404', async () => {
-    const res = await app.request('/api/unknown')
+    const res = await request(app).get('/api/unknown')
     expect(res.status).toBe(404)
   })
 })

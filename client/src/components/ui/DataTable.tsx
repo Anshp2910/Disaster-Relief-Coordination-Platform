@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, ChevronUp, ChevronDown, ChevronsUpDown, X, Download, Columns3, Check, Trash2, Edit3, MoreHorizontal, EyeOff, CheckSquare, Square, ArrowUpDown } from 'lucide-react'
+import { Search, ChevronUp, ChevronDown, ChevronsUpDown, X, Download, Columns3, Check, Trash2, CheckSquare, Square } from 'lucide-react'
 
 export interface ColumnDef<T> {
   id: string
@@ -83,11 +83,10 @@ export default function DataTable<T>({
   const colMenuRef = useRef<HTMLDivElement>(null)
   const ctxMenuRef = useRef<HTMLDivElement>(null)
 
-  const columns = useMemo(() => {
+  useEffect(() => {
     const vis: Record<string, boolean> = {}
     rawColumns.forEach(c => { vis[c.id] = c.visible ?? true })
     setVisibleColumns(prev => Object.keys(prev).length ? prev : vis)
-    return rawColumns
   }, [rawColumns])
 
   const filtered = useMemo(() => {

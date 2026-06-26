@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect, useCallback, useReducer } from 'react'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
-import { MapPin, Navigation, CheckCircle } from 'lucide-react'
+import { MapPin, Navigation } from 'lucide-react'
 import { StepForm, type Step, RippleBtn } from '../components/ui'
 import { ModernSelect } from '../components/ui'
 import { useAutoSave, AutoSaveIndicator } from '../hooks/useAutoSave'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
-import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
+import { safeGetItem, safeRemoveItem } from '../utils/storage'
 import { CATEGORY_OPTIONS, PRIORITY_OPTIONS, STATUS_OPTIONS } from '../utils/constants'
 
 interface Suggestion {
@@ -137,7 +137,7 @@ export default function RequestForm({
   subtitle,
   showStatus = false,
   loading = false,
-  onCancel,
+  onCancel: _onCancel,
 }: RequestFormProps) {
   const { t } = useTranslation()
   const mapRef = useRef<HTMLDivElement | null>(null)
@@ -160,10 +160,6 @@ export default function RequestForm({
     delay: 1500,
     enabled: true,
   })
-
-  function getFormState(): FormState {
-    return { ...form, peopleCount: form.peopleCount }
-  }
 
   function setFormField(field: keyof FormState, value: string | number) {
     dispatch({ type: 'SET_FIELD', field, value })
@@ -321,8 +317,6 @@ export default function RequestForm({
   }
 
   const canNextStep = currentStep === 0 ? !!form.title && !!form.description : true
-  const canSubmit = !!form.title && !!form.description && !!form.lat && !!form.lng
-
   if (loading) {
     return (
       <div className="container max-w-sm">

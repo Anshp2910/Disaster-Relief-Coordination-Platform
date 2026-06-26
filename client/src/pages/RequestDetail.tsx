@@ -209,6 +209,18 @@ export default function RequestDetail() {
     }
   }
 
+  async function handleDelete() {
+    const ok = await confirm({ message: t('dashboard.deleteConfirm') || 'Are you sure you want to delete this request?', confirmText: t('dashboard.delete'), danger: true })
+    if (!ok) return
+    try {
+      await clientApi.deleteRequest(id!)
+      toast.success(t('requestDetail.deleted') || 'Request deleted')
+      navigate('/')
+    } catch (err) {
+      toast.error((err as Error).message)
+    }
+  }
+
   async function handleClaim() {
     setClaiming(true)
     try {
@@ -395,6 +407,12 @@ export default function RequestDetail() {
                 <button onClick={() => navigate(`/requests/${id}/edit`)} className="flex-center gap-xs" aria-label={t('dashboard.edit')}>
                   <Edit size={14} />
                   {t('dashboard.edit')}
+                </button>
+              )}
+              {(currentUser?.role === 'admin' || currentUser?.id === item.createdBy?._id) && (
+                <button className="btnDanger flex-center gap-xs" onClick={handleDelete} aria-label={t('dashboard.delete')}>
+                  <Trash2 size={14} />
+                  {t('dashboard.delete')}
                 </button>
               )}
             </div>

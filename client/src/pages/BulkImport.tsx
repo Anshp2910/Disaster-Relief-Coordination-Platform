@@ -252,7 +252,7 @@ export default function BulkImport() {
 
   async function handleSubmitImport() {
     if (!preview) return
-    const rowsToImport = preview.filter((_, i) => selected.has(i))
+    const rowsToImport = preview.filter((r) => selected.has((r as Record<string, unknown>)._rowId as string | number))
     if (rowsToImport.length === 0) {
       setError(t('bulkImport.noRowsSelected'))
       return

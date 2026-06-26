@@ -28,7 +28,7 @@ export default function Header() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t, i18n } = useTranslation()
-  const { user: currentUser, isAuthenticated, logout: authLogout } = useAuth()
+  const { user: currentUser, isAuthenticated, isAdmin, logout: authLogout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const { socket } = useSocket()
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
@@ -82,6 +82,11 @@ export default function Header() {
                 <kbd>Ctrl+K</kbd>
               </button>
               <NotificationBell />
+              {isAdmin && (
+                <button onClick={() => navigate('/admin')} className="gov-nav-link-user header-user-btn" aria-current={location.pathname.startsWith('/admin') ? 'page' : undefined} title={t('nav.adminDashboard')}>
+                  <span className="header-user-name" style={{ color: 'var(--accent)' }}>Admin</span>
+                </button>
+              )}
               <button onClick={() => navigate('/profile')} className="gov-nav-link-user header-user-btn" aria-current={location.pathname === '/profile' ? 'page' : undefined}>
                 <User size={16} aria-hidden="true" />
                 <span className="header-user-name">{currentUser?.displayName || t('nav.profile')}</span>

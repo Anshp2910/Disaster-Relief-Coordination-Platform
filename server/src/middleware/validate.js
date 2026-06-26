@@ -189,11 +189,12 @@ const schemas = {
     newPassword: Joi.string().min(8).max(128).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/).messages({ 'string.pattern.base': 'Password must be at least 8 characters with uppercase, lowercase, digit, and special character' }),
     phone: Joi.string().max(20).trim(),
     skills: Joi.array().items(Joi.string().valid('Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other')),
+    avatar: Joi.string().allow(''),
     notifications: Joi.object({
       email: Joi.boolean(),
       sms: Joi.boolean(),
     }),
-  }).or('displayName', 'newPassword', 'phone', 'skills', 'notifications'),
+  }).or('displayName', 'newPassword', 'phone', 'skills', 'notifications', 'avatar'),
 
   escalateRequest: Joi.object({
     reason: Joi.string().min(1).max(2000).required().trim(),

@@ -1,6 +1,6 @@
-import { useState, type ReactNode, type InputHTMLAttributes, type TextareaHTMLAttributes, type SelectHTMLAttributes } from 'react'
+import { useState, type ReactNode, type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle, AlertCircle, Eye, EyeOff, X } from 'lucide-react'
+import { CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 interface FormFieldBase {
   label: string
@@ -27,16 +27,16 @@ export default function FormField(props: FormFieldProps) {
   const isFloating = focused || hasValue
   const showError = touched && error
   const showSuccess = touched && !error && success
-  const isPassword = props.as !== 'textarea' && props.type === 'password'
+  const isPassword = props.as !== 'textarea' && props.as !== 'custom' && props.type === 'password'
 
   function handleFocus(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setFocused(true)
-    props.onFocus?.(e as never)
+    if (props.as !== 'custom') props.onFocus?.(e as never)
   }
 
   function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setFocused(false)
-    props.onBlur?.(e as never)
+    if (props.as !== 'custom') props.onBlur?.(e as never)
   }
 
   const inputProps = props.as === 'custom' ? {} : props

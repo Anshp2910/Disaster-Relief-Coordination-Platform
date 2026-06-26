@@ -74,7 +74,7 @@ describe('validate body middleware', () => {
   })
 
   it('passes a valid register payload', () => {
-    const req = { body: { email: 'x@y.com', password: '123456', role: 'volunteer', displayName: 'Alice' } }
+    const req = { body: { email: 'x@y.com', password: 'Test@1234', role: 'volunteer', displayName: 'Alice' } }
     const res = makeRes()
     const next = vi.fn()
 

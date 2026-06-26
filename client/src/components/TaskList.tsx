@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ListChecks } from 'lucide-react'
 import Badge from './Badge'
-import { PRIORITY_COLORS, STATUS_COLORS } from '../utils/constants'
+import { PRIORITY_COLORS } from '../utils/constants'
 
 interface TaskItem {
   _id: string

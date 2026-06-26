@@ -98,6 +98,7 @@ export default function Dashboard() {
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [adminStatsLoading, setAdminStatsLoading] = useState(true)
   const [adminStatsError, setAdminStatsError] = useState('')
+  const [weatherLoading, setWeatherLoading] = useState(true)
 
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -142,11 +143,14 @@ export default function Dashboard() {
   }, [])
 
   const loadWeather = useCallback(async () => {
+    setWeatherLoading(true)
     try {
       const data = await clientApi.getWeatherCurrent(20.5937, 78.9629) as unknown as WeatherData
       setWeather(data)
     } catch {
       // weather is non-critical
+    } finally {
+      setWeatherLoading(false)
     }
   }, [])
 
@@ -241,7 +245,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Weather Card */}
-        <WeatherWidget weather={weather} loading={adminStatsLoading} />
+        <WeatherWidget weather={weather} loading={weatherLoading} />
 
         {/* Disaster Risk Card */}
         <RiskWidget stats={stats} loading={adminStatsLoading} />

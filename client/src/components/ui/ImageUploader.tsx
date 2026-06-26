@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, type DragEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, X, File, Image, AlertCircle } from 'lucide-react'
+import { Upload, X, Image, AlertCircle } from 'lucide-react'
 
 interface ImageUploaderProps {
   value: File | null

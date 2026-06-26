@@ -43,11 +43,23 @@ export default function Profile() {
     }
   }
 
-  function handleUploadAvatar() {
-    if (avatarUrl) {
-      localStorage.setItem('avatarUrl', avatarUrl)
+  async function handleUploadAvatar() {
+    if (!selectedFile) return
+    setLoading(true)
+    try {
+      const b64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result as string)
+        reader.readAsDataURL(selectedFile)
+      })
+      const data = await clientApi.updateProfile({ avatar: b64 }) as { user: Record<string, unknown> }
+      updateUser(data.user)
       toast.success('Avatar updated')
       setSelectedFile(null)
+    } catch (err) {
+      toast.error((err as Error).message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -81,7 +93,7 @@ export default function Profile() {
     try {
       const payload: Record<string, unknown> = { displayName, notifications }
       if (phone) payload.phone = phone
-      if (skills.length > 0) payload.skills = skills
+      payload.skills = skills
       const data = (await clientApi.updateProfile(payload)) as { user: Record<string, unknown> }
       updateUser(data.user)
       toast.success(t('profile.profileUpdated'))

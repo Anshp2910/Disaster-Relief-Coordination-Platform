@@ -33,7 +33,7 @@ export default function NotFound() {
         {t('notFound.description') || 'The page you are looking for doesn\'t exist or has been moved.'}
       </p>
       <div className="flex-center gap-sm">
-        <RippleBtn className="" onClick={() => navigate('/dashboard')} whileTap={{ scale: 0.97 }}>
+        <RippleBtn className="" onClick={() => navigate('/dashboard')}>
           <LayoutDashboard size={16} /> {t('notFound.goHome') || 'Go to Dashboard'}
         </RippleBtn>
         <motion.button className="btnGhost" onClick={() => navigate(-1)} whileTap={{ scale: 0.97 }}>

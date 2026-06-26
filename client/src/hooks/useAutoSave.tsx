@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Cloud, CloudOff, CheckCircle, Loader2 } from 'lucide-react'
+import { CloudOff, CheckCircle, Loader2 } from 'lucide-react'
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 
@@ -45,7 +45,7 @@ export function useAutoSave({ key, data, delay = 1500, onSave, enabled = true }:
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [data, key, delay, onSave, enabled])
 
-  const restore = useCallback((): T | null => {
+  const restore = useCallback(<T,>(): T | null => {
     try {
       const stored = localStorage.getItem(key)
       return stored ? (JSON.parse(stored) as T) : null

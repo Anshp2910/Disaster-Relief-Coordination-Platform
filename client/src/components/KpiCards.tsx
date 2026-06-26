@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { AnimatedCounter } from './ui'
-import { TrendingUp, TrendingDown, Box, AlertTriangle, UserCheck, Handshake, ListChecks } from 'lucide-react'
+import { TrendingUp, Box, AlertTriangle, UserCheck, Handshake, ListChecks } from 'lucide-react'
 
 interface AdminStats {
   totalUsers: number
@@ -30,7 +30,7 @@ const cardVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
 }
 
-function KpiCard({ id, label, icon: Icon, color, value, loading }: { id: string; label: string; icon: React.ElementType; color: string; value: number; loading: boolean }) {
+function KpiCard({ label, icon: Icon, color, value, loading }: { label: string; icon: React.ElementType; color: string; value: number; loading: boolean }) {
   return (
     <motion.div className="kpi-card" variants={cardVariants}>
       <div className="kpi-header">
@@ -63,7 +63,7 @@ function KpiCardsInner({ stats, loading = false }: KpiCardsProps) {
   return (
     <div className="kpi-grid mb-lg">
       {KPI_CONFIG.map((kpi) => (
-        <KpiCard key={kpi.id} id={kpi.id} label={kpi.label} icon={kpi.icon} color={kpi.color} value={values[kpi.id] ?? 0} loading={loading} />
+        <KpiCard key={kpi.id} label={kpi.label} icon={kpi.icon} color={kpi.color} value={values[kpi.id] ?? 0} loading={loading} />
       ))}
     </div>
   )
