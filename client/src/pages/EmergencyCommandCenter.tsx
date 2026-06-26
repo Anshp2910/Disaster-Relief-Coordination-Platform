@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import { AnimatedCounter } from '../components/ui'
 import {
   Activity, AlertTriangle, Bell, Clock, Cloud, CloudRain, CloudSnow, Compass,
   Droplets, Eye, Flame, MapPin, MessageSquare, Mic, Radio, Shield, ShieldAlert,
@@ -203,7 +204,7 @@ export default function EmergencyCommandCenter() {
                 {COUNTERS.map((c, i) => (
                   <motion.div key={c.id} className={`cc-counter cc-counter--${c.color}`} custom={i} variants={counterVariants}>
                     <div className="cc-counter-value">
-                      {c.value.toLocaleString()}
+                      <AnimatedCounter to={c.value} duration={1.8} />
                       {c.trend === 'up'
                         ? <ChevronUp size={12} className="trend-up" />
                         : <ChevronDown size={12} className="trend-down" />
@@ -236,7 +237,11 @@ export default function EmergencyCommandCenter() {
             </div>
 
             {/* Weather */}
-            <div className="cc-widget">
+            <motion.div className="cc-widget"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+            >
               <div className="cc-widget-header">
                 <span><Cloud size={12} className="icon" /> {t('commandCenter.weather')}</span>
                 <Compass size={12} className="icon" />
@@ -253,7 +258,7 @@ export default function EmergencyCommandCenter() {
                 <div className="cc-weather-detail"><Wind size={10} /> {WEATHER.wind}</div>
                 <div className="cc-weather-detail"><Eye size={10} /> {WEATHER.visibility}</div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Quick Actions */}
             <div className="cc-widget">
@@ -389,16 +394,20 @@ export default function EmergencyCommandCenter() {
             </div>
 
             {/* Incidents */}
-            <div className="cc-widget">
+            <motion.div className="cc-widget"
+              initial="hidden"
+              animate="show"
+            >
               <div className="cc-widget-header">
                 <span><Flame size={12} className="icon" /> {t('commandCenter.activeIncidents')}</span>
                 <span style={{ fontSize: 9, color: '#ef4444' }}>{INCIDENTS.filter(i => i.severity === 'Critical').length} {t('commandCenter.critical')}</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <motion.div style={{ display: 'flex', flexDirection: 'column', gap: 6 }} variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}>
                 {INCIDENTS.map(inc => (
                   <motion.div
                     key={inc.id}
                     className="cc-incident-card"
+                    variants={{ hidden: { opacity: 0, x: -20 }, show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } } }}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                   >
@@ -417,8 +426,8 @@ export default function EmergencyCommandCenter() {
                     </div>
                   </motion.div>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
 

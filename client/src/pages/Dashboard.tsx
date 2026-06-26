@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import { AnimatedCounter, RippleBtn } from '../components/ui'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import {
   BarChart3, Activity, ShieldCheck, AlertTriangle, MapPin, Box, FilePlus,
@@ -348,7 +349,9 @@ export default function Dashboard() {
                 <span className="kpi-label">{kpi.label}</span>
                 <Icon size={18} style={{ color: kpi.color }} />
               </div>
-              <div className="kpi-value" style={{ color: kpi.color }}>{kpi.value.toLocaleString()}</div>
+              <div className="kpi-value" style={{ color: kpi.color }}>
+                <AnimatedCounter to={kpi.value} duration={1.8} />
+              </div>
               <div className="kpi-change" style={{ color: kpi.trend >= 0 ? '#22c55e' : '#ef4444' }}>
                 {kpi.trend >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                 <span style={{ marginLeft: 4 }}>{Math.abs(kpi.trend)}% vs last week</span>
@@ -399,14 +402,20 @@ export default function Dashboard() {
               <span className="bento-title"><BarChart3 size={14} /> Requests Over Time</span>
             </div>
             {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={180}>
-                <BarChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
-                  <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 11, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }} />
-                  <Bar dataKey="count" fill="var(--accent)" fillOpacity={0.6} radius={[2, 2, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
+                    <YAxis tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 11, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }} />
+                    <Bar dataKey="count" fill="var(--accent)" fillOpacity={0.6} radius={[2, 2, 0, 0]} animationBegin={200} animationDuration={800} animationEasing="ease-out" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </motion.div>
             ) : (
               <div className="text-sm" style={{ color: 'var(--text-muted)', padding: 24, textAlign: 'center' }}>No request data available</div>
             )}
@@ -514,9 +523,9 @@ export default function Dashboard() {
         <div className="flex-between mb-md">
           <h2 className="text-lg text-bold m-0">{t('dashboard.allRequests')}</h2>
           <div className="flex flex-gap-sm">
-            <button onClick={loadMapItems} className="text-sm p-xs border-gov rounded-sm" style={{ color: 'var(--gov-blue)', borderColor: 'var(--gov-border)' }}>
+            <RippleBtn onClick={loadMapItems} className="text-sm p-xs" style={{ color: 'var(--gov-blue)', border: '1px solid var(--border)', borderRadius: 6, background: 'transparent' }}>
               {t('dashboard.refresh') || 'Refresh'}
-            </button>
+            </RippleBtn>
           </div>
         </div>
         {error ? <div className="errorText">{error}</div> : null}

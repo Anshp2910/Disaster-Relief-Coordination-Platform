@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Header from './Header'
 import Footer from './Footer'
@@ -14,6 +15,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const { t } = useTranslation()
+  const location = useLocation()
   const { canInstall, install } = usePwaInstall()
   const [dismissed, setDismissed] = useState(false)
   const { isAdmin, isAuthenticated } = useAuth()
@@ -26,16 +28,17 @@ export default function Layout({ children }: LayoutProps) {
       <Header />
       <CommandPalette isAdmin={isAdmin} />
       {isAuthenticated && <SosFab />}
-      <motion.main
-        className="gov-main"
-        id="main-content"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -12 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      >
+      <motion.main className="gov-main" id="main-content">
         <AnimatePresence mode="wait">
-          {children}
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {children}
+          </motion.div>
         </AnimatePresence>
       </motion.main>
       <Footer />
