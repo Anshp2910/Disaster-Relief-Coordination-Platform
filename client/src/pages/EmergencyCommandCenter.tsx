@@ -163,19 +163,19 @@ export default function EmergencyCommandCenter() {
             <div className="cc-topbar-time">
               {time.hm}<span className="seconds">:{time.s}</span>
             </div>
-            <div className="flex items-center gap-xs" style={{ fontSize: 10, color: '#64748b' }}>
+            <div className="flex items-center gap-xs cc-status-text">
               <span className="cc-status-dot cc-status-dot--online" />
               {t('commandCenter.statusSatcom')}
             </div>
-            <div className="flex items-center gap-xs" style={{ fontSize: 10, color: '#64748b' }}>
+            <div className="flex items-center gap-xs cc-status-text">
               <span className="cc-status-dot cc-status-dot--online" />
               {t('commandCenter.statusDrone')}
             </div>
-            <div className="flex items-center gap-xs" style={{ fontSize: 10, color: '#64748b' }}>
+            <div className="flex items-center gap-xs cc-status-text">
               <span className="cc-status-dot cc-status-dot--online" />
               {t('commandCenter.statusComms')}
             </div>
-            <div className="flex items-center gap-xs" style={{ fontSize: 10, color: '#64748b' }}>
+            <div className="flex items-center gap-xs cc-status-text">
               <span className="cc-status-dot cc-status-dot--warning" />
               {t('commandCenter.statusRadar')}
             </div>
@@ -219,8 +219,8 @@ export default function EmergencyCommandCenter() {
             {/* SOS Alerts */}
             <div className="cc-widget">
               <div className="cc-widget-header">
-                <span><Siren size={12} style={{ color: '#ef4444' }} /> {t('commandCenter.sosAlerts')}</span>
-                <span style={{ color: '#ef4444', fontSize: 10 }}>{SOS_ALERTS.length} {t('commandCenter.sosActive')}</span>
+                <span className="cc-sos-header-icon"><Siren size={12} /> {t('commandCenter.sosAlerts')}</span>
+                <span className="cc-sos-count">{SOS_ALERTS.length} {t('commandCenter.sosActive')}</span>
               </div>
               <div className="cc-sos-list">
                 {SOS_ALERTS.map(a => (
@@ -360,16 +360,16 @@ export default function EmergencyCommandCenter() {
               {/* Map Legend */}
               <div className="cc-map-legend">
                 <div className="cc-map-legend-item">
-                  <span className="cc-map-legend-dot" style={{ background: '#ef4444' }} /> {t('commandCenter.mapLegendCritical')}
+                  <span className="cc-map-legend-dot cc-legend-critical" /> {t('commandCenter.mapLegendCritical')}
                 </div>
                 <div className="cc-map-legend-item">
-                  <span className="cc-map-legend-dot" style={{ background: '#f97316' }} /> {t('commandCenter.mapLegendHigh')}
+                  <span className="cc-map-legend-dot cc-legend-high" /> {t('commandCenter.mapLegendHigh')}
                 </div>
                 <div className="cc-map-legend-item">
-                  <span className="cc-map-legend-dot" style={{ background: '#0ea5e9' }} /> {t('commandCenter.mapLegendActive')}
+                  <span className="cc-map-legend-dot cc-legend-active" /> {t('commandCenter.mapLegendActive')}
                 </div>
                 <div className="cc-map-legend-item">
-                  <span className="cc-map-legend-dot" style={{ background: '#22c55e' }} /> {t('commandCenter.mapLegendResolved')}
+                  <span className="cc-map-legend-dot cc-legend-resolved" /> {t('commandCenter.mapLegendResolved')}
                 </div>
               </div>
 
@@ -386,7 +386,7 @@ export default function EmergencyCommandCenter() {
             <div className="cc-widget" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               <div className="cc-widget-header">
                 <span><Bell size={12} className="icon" /> {t('commandCenter.realTimeFeed')}</span>
-                <span style={{ fontSize: 9, color: '#0ea5e9' }}>{t('commandCenter.live')}</span>
+                <span className="cc-live-badge">{t('commandCenter.live')}</span>
               </div>
               <div className="cc-feed" style={{ flex: 1, overflow: 'auto' }}>
                 <AnimatedFeed items={NOTIFICATIONS} activeIndex={activeFeed} variants={feedVariants} />
@@ -400,7 +400,7 @@ export default function EmergencyCommandCenter() {
             >
               <div className="cc-widget-header">
                 <span><Flame size={12} className="icon" /> {t('commandCenter.activeIncidents')}</span>
-                <span style={{ fontSize: 9, color: '#ef4444' }}>{INCIDENTS.filter(i => i.severity === 'Critical').length} {t('commandCenter.critical')}</span>
+                <span className="cc-critical-badge">{INCIDENTS.filter(i => i.severity === 'Critical').length} {t('commandCenter.critical')}</span>
               </div>
               <motion.div style={{ display: 'flex', flexDirection: 'column', gap: 6 }} variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}>
                 {INCIDENTS.map(inc => (
@@ -415,7 +415,7 @@ export default function EmergencyCommandCenter() {
                       <span className={`cc-incident-severity cc-incident-severity--${inc.severity.toLowerCase()}`}>
                         {inc.severity === 'Critical' ? t('commandCenter.incidentSeverityCritical') : t('commandCenter.incidentSeverityHigh')}
                       </span>
-                      <span style={{ fontSize: 9, color: '#475569', fontFamily: "'JetBrains Mono', monospace" }}>
+                      <span className="cc-incident-time">
                         {inc.time}
                       </span>
                     </div>
@@ -433,27 +433,27 @@ export default function EmergencyCommandCenter() {
 
         {/* ── Bottom Bar ── */}
         <div className="cc-bottombar">
-          <Mic size={12} style={{ color: '#22c55e' }} />
+          <Mic size={12} className="cc-bottombar-mic" />
           <div className="cc-ticker">
             <div className="cc-ticker-track">
               {TICKER_ITEMS.map((item, i) => (
                 <span key={i}>
-                  <Triangle size={6} style={{ fill: '#0ea5e9', color: '#0ea5e9' }} />
+                  <Triangle size={6} className="cc-ticker-icon" />
                   {item}
                 </span>
               ))}
               {TICKER_ITEMS.map((item, i) => (
                 <span key={`dup-${i}`}>
-                  <Triangle size={6} style={{ fill: '#0ea5e9', color: '#0ea5e9' }} />
+                  <Triangle size={6} className="cc-ticker-icon" />
                   {item}
                 </span>
               ))}
             </div>
           </div>
           <div className="cc-bottom-status">
-            <span><Circle size={6} style={{ fill: '#22c55e', color: '#22c55e' }} /> {t('commandCenter.sysOk')}</span>
-            <span><Square size={6} style={{ fill: '#0ea5e9', color: '#0ea5e9' }} /> {t('commandCenter.uptime')}</span>
-            <span><Activity size={10} style={{ color: '#0ea5e9' }} /> {t('commandCenter.events', { count: COUNTERS.reduce((s, c) => s + c.value, 0) })}</span>
+            <span className="cc-status-ok"><Circle size={6} /> {t('commandCenter.sysOk')}</span>
+            <span className="cc-status-accent"><Square size={6} /> {t('commandCenter.uptime')}</span>
+            <span className="cc-status-accent"><Activity size={10} /> {t('commandCenter.events', { count: COUNTERS.reduce((s, c) => s + c.value, 0) })}</span>
           </div>
         </div>
       </div>
@@ -486,10 +486,10 @@ function AnimatedFeed({ items, activeIndex, variants }: {
             }}
           >
             <span className="cc-feed-icon">
-              {n.type === 'alert' ? <AlertTriangle size={10} style={{ color: '#ef4444' }} /> :
-               n.type === 'warning' ? <AlertTriangle size={10} style={{ color: '#f97316' }} /> :
-               n.type === 'success' ? <Activity size={10} style={{ color: '#22c55e' }} /> :
-               <Bell size={10} style={{ color: '#0ea5e9' }} />}
+              {n.type === 'alert' ? <AlertTriangle size={10} className="cc-feed-icon-alert" /> :
+               n.type === 'warning' ? <AlertTriangle size={10} className="cc-feed-icon-warning" /> :
+               n.type === 'success' ? <Activity size={10} className="cc-feed-icon-success" /> :
+               <Bell size={10} className="cc-feed-icon-info" />}
             </span>
             <span className="cc-feed-text">{n.text}</span>
             <span className="cc-feed-time">{n.time}</span>

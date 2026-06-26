@@ -31,13 +31,13 @@ export default function DataCard({ title, value, icon, color, subtitle, trend, o
         )}
       </div>
       <div className="bento-kpi-value">{value}</div>
-      {subtitle && <div className="mt-sm" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>{subtitle}</div>}
+      {subtitle && <div className="mt-sm text-xs text-muted">{subtitle}</div>}
       {trend && (
         <div className="flex items-center gap-xs mt-sm">
-          <span style={{ color: trend.positive ? 'var(--success)' : 'var(--danger)', fontSize: 'var(--text-sm)', fontWeight: 600 }}>
+          <span className="text-sm text-semi" style={{ color: trend.positive ? 'var(--success)' : 'var(--danger)' }}>
             {trend.positive ? '+' : ''}{trend.value}%
           </span>
-          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>{trend.label}</span>
+          <span className="text-xs text-muted">{trend.label}</span>
         </div>
       )}
     </motion.div>

@@ -572,7 +572,7 @@ export default function RequestDetail() {
         )}
 
         <motion.div variants={itemVariants} className="card mt-lg">
-          <div className="flex-between" style={{ marginBottom: showChat ? 12 : 0 }}>
+          <div className={`flex-between ${showChat ? 'mb-sm' : 'mb-0'}`}>
             <h3 className="m-0 text-base text-accent-blue flex flex-gap-xs">
               <MessageSquare size={16} aria-hidden="true" />
               {t('requestDetail.realTimeChat')}

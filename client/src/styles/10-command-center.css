@@ -675,3 +675,23 @@
   animation: cc-orbit 20s linear infinite;
   pointer-events: none;
 }
+
+/* ── Inline Style Replacements ── */
+.cc-status-text { font-size: 10px; color: var(--text-muted); }
+.cc-sos-header-icon { color: #ef4444; }
+.cc-sos-count { color: #ef4444; font-size: 10px; }
+.cc-legend-critical { background: #ef4444; }
+.cc-legend-high { background: #f97316; }
+.cc-legend-active { background: #0ea5e9; }
+.cc-legend-resolved { background: #22c55e; }
+.cc-live-badge { font-size: 9px; color: #0ea5e9; }
+.cc-critical-badge { font-size: 9px; color: #ef4444; }
+.cc-incident-time { font-size: 9px; color: #475569; font-family: 'JetBrains Mono', monospace; }
+.cc-bottombar-mic { color: #22c55e; }
+.cc-ticker-icon { fill: #0ea5e9; color: #0ea5e9; }
+.cc-status-ok { color: #22c55e; font-size: var(--text-xs); }
+.cc-status-accent { color: #0ea5e9; font-size: var(--text-xs); }
+.cc-feed-icon-alert { color: #ef4444; }
+.cc-feed-icon-warning { color: #f97316; }
+.cc-feed-icon-success { color: #22c55e; }
+.cc-feed-icon-info { color: #0ea5e9; }

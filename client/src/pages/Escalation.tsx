@@ -184,11 +184,11 @@ export default function Escalation() {
                 />
               </div>
               {showReqDropdown && (
-                <div className="ms-dropdown" style={{ left: 0, right: 0, top: '100%', marginTop: 4, maxHeight: 280 }}>
+                <div className="ms-dropdown mt-xs" style={{ left: 0, right: 0, top: '100%', maxHeight: 280 }}>
                   {filteredRequests.length === 0 ? (
                     <div className="ms-no-options">{t('common.noResults') || 'No matching requests'}</div>
                   ) : (
-                    <div style={{ maxHeight: 240, overflowY: 'auto', padding: 4 }}>
+                    <div className="overflow-y-auto p-xs" style={{ maxHeight: 240 }}>
                       {filteredRequests.map((r, idx) => (
                         <div
                           key={r._id}

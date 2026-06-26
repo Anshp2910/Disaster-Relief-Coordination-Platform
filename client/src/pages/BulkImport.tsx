@@ -346,12 +346,12 @@ export default function BulkImport() {
               </div>
 
               {unmatchedCount > 0 && (
-                <div className="mb p-sm rounded-sm" style={{ background: 'var(--warning-soft, #fff3cd)', border: '1px solid rgba(255,193,7,.3)' }}>
-                  <span className="text-13 text-semi flex items-center gap-xs" style={{ color: 'var(--warning, #856404)' }}>
+                <div className="mb p-sm rounded-sm bg-warning-soft">
+                  <span className="text-13 text-semi flex items-center gap-xs text-warning">
                     <AlertTriangle size={14} />
                     {unmatchedCount} column{unmatchedCount > 1 ? 's' : ''} will be ignored. Assign a system field or they will be skipped.
                   </span>
-                  <ul className="mt-xs mb-0 text-sm" style={{ color: 'var(--warning, #856404)' }}>
+                  <ul className="mt-xs mb-0 text-sm text-warning">
                     {columnMaps.filter((m) => m.systemCol === '').map((m) => (
                       <li key={m.csvCol}>"{m.csvCol}"</li>
                     ))}
@@ -374,8 +374,7 @@ export default function BulkImport() {
                         <select
                           value={m.systemCol}
                           onChange={(e) => updateColumnMap(m.csvCol, e.target.value)}
-                          className="rounded-sm border-gov text-sm w-100"
-                          style={{ padding: '4px 8px' }}
+                          className="rounded-sm border-gov text-sm w-100 p-xs"
                           aria-label={`Map column "${m.csvCol}" to system field`}
                         >
                           <option value="">— Ignore —</option>

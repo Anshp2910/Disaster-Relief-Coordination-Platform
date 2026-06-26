@@ -16,8 +16,7 @@ export default function NotFound() {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
       <motion.h1
-        className="text-5xl font-extrabold m-0 mb-sm"
-        style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary, #8b5cf6))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+        className="text-5xl font-extrabold m-0 mb-sm text-gradient"
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}

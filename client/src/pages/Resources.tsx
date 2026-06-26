@@ -467,8 +467,7 @@ export default function Resources() {
       <section aria-label={t('nav.resources')}>
         {selectMode && items.length > 0 && (
           <label
-            className="listCard flex flex-gap-sm items-center cursor-pointer"
-            style={{ padding: '0.5rem 0.75rem', userSelect: 'none', borderBottom: '1px solid var(--border)' }}
+            className="listCard flex flex-gap-sm items-center cursor-pointer p-sm border-bottom"
           >
             <input
               type="checkbox"
@@ -493,7 +492,7 @@ export default function Resources() {
             <div className="listCard" style={selectMode ? { paddingLeft: '0.5rem' } : undefined}>
               <div className="flex flex-between flex-gap-sm">
                 {selectMode && (
-                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', paddingRight: '0.5rem' }}>
+                  <label className="flex items-center cursor-pointer pr-sm">
                     <input
                       type="checkbox"
                       checked={selectedIds.has(r._id)}

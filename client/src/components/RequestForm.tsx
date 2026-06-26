@@ -335,7 +335,7 @@ export default function RequestForm({
 
   return (
     <div className="container max-w-sm">
-      <div className="card" style={{ border: '1px solid var(--border)', borderRadius: 16, padding: '1rem 1.5rem' }}>
+      <div className="card border-gov rounded-lg px-lg py-md">
         <div className="flex-between items-center">
           <div>
             <h1 className="pageTitle text-2xl">{title}</h1>
@@ -535,7 +535,7 @@ export default function RequestForm({
 
           {currentStep === 2 && (
             <div>
-              <div className="flex-col flex-gap-md" style={{ padding: '8px 0' }}>
+              <div className="flex-col flex-gap-md py-sm">
                 <div className="ff-label-text">Review your request</div>
                 <div className="card p-sm" style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border)', borderRadius: 10 }}>
                   <div className="text-sm" style={{ display: 'grid', gap: 10 }}>

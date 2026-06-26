@@ -125,10 +125,10 @@ export function FormField({ name, label, error, touched, children }: FormFieldPr
     : children
   return (
     <div>
-      {label && <label className="small" htmlFor={fieldId} style={{ display: 'block', marginBottom: 4 }}>{label}</label>}
+      {label && <label className="small block mb-xs" htmlFor={fieldId}>{label}</label>}
       {cloned}
       {showError && (
-        <div id={errorId} role="alert" style={{ color: 'var(--gov-danger)', fontSize: 11, marginTop: 2 }}>{error}</div>
+        <div id={errorId} role="alert" className="field-error">{error}</div>
       )}
     </div>
   )

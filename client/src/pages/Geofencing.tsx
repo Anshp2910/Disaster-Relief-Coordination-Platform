@@ -269,8 +269,7 @@ export default function Geofencing() {
             onChange={(e) => setRadius(Number(e.target.value))}
             min="1"
             max="500"
-            className="rounded-sm w-80 text-13 border-gov"
-            style={{ padding: '6px 10px' }}
+            className="rounded-sm w-80 text-13 border-gov p-xs"
             aria-label={t('geofencing.radiusLabel')}
           />
           <input

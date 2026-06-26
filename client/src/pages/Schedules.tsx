@@ -406,7 +406,7 @@ export default function Schedules() {
               const key = day.toDateString()
               const daySchedules = schedulesByDay[key] || []
               return (
-                <motion.div key={key} variants={itemVariants} className="card" style={{ padding: 8, minHeight: 120 }}>
+                <motion.div key={key} variants={itemVariants} className="card p-xs" style={{ minHeight: 120 }}>
                   <div className="text-xs text-bold" style={{ textAlign: 'center' }}>
                     {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][idx]}
                   </div>
@@ -421,7 +421,7 @@ export default function Schedules() {
                   {daySchedules.map((s) => {
                     const shiftC = SHIFT_COLORS[s.shift || 'Full Day'] || SHIFT_COLORS['Full Day']
                     return (
-                      <div key={s._id} style={{ marginBottom: 2 }}>
+                      <div key={s._id} className="mb-xs">
                         <div
                           onClick={() => setSelectedDaySchedule(selectedDaySchedule?._id === s._id ? null : s)}
                           className="text-xs"
@@ -440,7 +440,7 @@ export default function Schedules() {
                           {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : 'Volunteer'}
                         </div>
                         {selectedDaySchedule?._id === s._id && (
-                          <div className="mt-xs" style={{ fontSize: 10, padding: '4px 6px', background: 'var(--bg-soft)', borderRadius: 4, border: '1px solid var(--border-color)' }}>
+                          <div className="mt-xs text-xs p-xs bg-subtle rounded-sm border-gov">
                             <div><strong>{(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : 'Volunteer'}</strong> — {s.shift}</div>
                             <div className="muted">{s.startDate ? formatDate(s.startDate) : ''}</div>
                             {s.zoneId && <div>Zone: {(typeof s.zoneId === 'object' && s.zoneId) ? s.zoneId.name : 'Unknown'}</div>}

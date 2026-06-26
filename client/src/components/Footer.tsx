@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <footer className="gov-footer">
-      <div className="gov-container">
+      <div className="container">
         <div className="gov-footer-grid">
           <div>
             <h4>{t('footer.quickLinks')}</h4>
@@ -44,7 +44,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="gov-footer-bottom">
-        <div className="gov-container">
+        <div className="container">
           <span>{t('footer.copyright')}</span>
           <span>{t('footer.lastUpdated')}</span>
         </div>

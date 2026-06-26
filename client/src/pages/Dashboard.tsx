@@ -304,15 +304,15 @@ export default function Dashboard() {
         <motion.div className="bento-card" variants={itemVariants}>
           <div className="flex-between mb-sm">
             <span className="bento-title">{t('commandCenter.weather') || 'Weather'}</span>
-            {MOCK_WEATHER.condition.includes('Cloud') ? <Cloud size={18} style={{ color: '#0ea5e9' }} /> :
-             MOCK_WEATHER.condition.includes('Sun') ? <Sun size={18} style={{ color: '#f97316' }} /> :
-             <Cloud size={18} style={{ color: '#0ea5e9' }} />}
+            {MOCK_WEATHER.condition.includes('Cloud') ? <Cloud size={18} className="text-accent" /> :
+             MOCK_WEATHER.condition.includes('Sun') ? <Sun size={18} className="text-accent-orange" /> :
+             <Cloud size={18} className="text-accent" />}
           </div>
           <div className="flex items-end gap-sm">
             <span className="text-3xl font-extrabold" style={{ letterSpacing: 'var(--tracking-tight)' }}>{MOCK_WEATHER.temp}°C</span>
             <span className="text-sm mb-xs" style={{ color: 'var(--text-muted)' }}>{MOCK_WEATHER.condition}</span>
           </div>
-          <div className="flex gap-md mt-sm" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+          <div className="flex gap-md mt-sm text-xs text-muted">
             <span className="flex items-center gap-xs"><Droplets size={12} /> {MOCK_WEATHER.humidity}%</span>
             <span className="flex items-center gap-xs"><Wind size={12} /> {MOCK_WEATHER.wind}</span>
           </div>
@@ -352,9 +352,9 @@ export default function Dashboard() {
               <div className="kpi-value" style={{ color: kpi.color }}>
                 <AnimatedCounter to={kpi.value} duration={1.8} />
               </div>
-              <div className="kpi-change" style={{ color: kpi.trend >= 0 ? '#22c55e' : '#ef4444' }}>
+              <div className="kpi-change" style={{ color: kpi.trend >= 0 ? 'var(--success)' : 'var(--danger)' }}>
                 {kpi.trend >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                <span style={{ marginLeft: 4 }}>{Math.abs(kpi.trend)}% vs last week</span>
+                <span className="ml-xs">{Math.abs(kpi.trend)}% vs last week</span>
               </div>
             </motion.div>
           )
@@ -417,7 +417,7 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </motion.div>
             ) : (
-              <div className="text-sm" style={{ color: 'var(--text-muted)', padding: 24, textAlign: 'center' }}>No request data available</div>
+              <div className="text-sm text-muted p-lg text-center">No request data available</div>
             )}
           </motion.div>
 
@@ -441,9 +441,8 @@ export default function Dashboard() {
               {MOCK_TASKS.map((task) => (
                 <motion.div
                   key={task.id}
-                  className="listCard"
+                  className="listCard px-md py-sm cursor-default"
                   whileHover={{ scale: 1.01 }}
-                  style={{ padding: 'var(--space-sm) var(--space-md)', cursor: 'default' }}
                 >
                   <div className="flex-between gap-sm">
                     <div className="flex-1 min-w-0">
@@ -470,8 +469,7 @@ export default function Dashboard() {
               {MOCK_VOLUNTEER_STATUS.map((v) => (
                 <motion.div
                   key={v.status}
-                  className="flex-1 text-center"
-                  style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', padding: 'var(--space-md)' }}
+                  className="flex-1 text-center bg-subtle rounded p-md"
                   whileHover={{ scale: 1.03 }}
                 >
                   <div className="text-xl font-extrabold" style={{ color: v.color }}>{v.count}</div>
@@ -509,7 +507,7 @@ export default function Dashboard() {
                     whileTap={{ scale: 0.97 }}
                   >
                     <Icon size={14} style={{ color: action.color }} />
-                    <span style={{ fontSize: 'var(--text-xs)', fontWeight: 500, color: 'var(--text)' }}>{action.label}</span>
+                    <span className="text-xs text-medium">{action.label}</span>
                   </motion.button>
                 )
               })}

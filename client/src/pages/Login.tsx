@@ -90,19 +90,19 @@ export default function Login() {
 
           {/* Animated Map Markers */}
           <motion.div className="auth-marker" style={{ left: '22%', top: '30%' }} variants={markerPulse} animate="animate">
-            <div className="auth-marker-dot" style={{ background: '#ef4444' }} />
+            <div className="auth-marker-dot auth-dot-danger" />
           </motion.div>
           <motion.div className="auth-marker" style={{ left: '55%', top: '42%' }} variants={markerPulse} animate="animate">
-            <div className="auth-marker-dot" style={{ background: '#f97316' }} />
+            <div className="auth-marker-dot auth-dot-warning" />
           </motion.div>
           <motion.div className="auth-marker" style={{ left: '70%', top: '25%' }} variants={markerPulse} animate="animate">
-            <div className="auth-marker-dot" style={{ background: '#0ea5e9' }} />
+            <div className="auth-marker-dot auth-dot-accent" />
           </motion.div>
           <motion.div className="auth-marker" style={{ left: '38%', top: '60%' }} variants={markerPulse} animate="animate">
-            <div className="auth-marker-dot" style={{ background: '#22c55e' }} />
+            <div className="auth-marker-dot auth-dot-success" />
           </motion.div>
           <motion.div className="auth-marker" style={{ left: '78%', top: '55%' }} variants={markerPulse} animate="animate">
-            <div className="auth-marker-dot" style={{ background: '#8b5cf6' }} />
+            <div className="auth-marker-dot auth-dot-purple" />
           </motion.div>
 
           {/* Connecting lines */}

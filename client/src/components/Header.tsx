@@ -42,7 +42,7 @@ export default function Header() {
     <header role="banner">
 
       <div className="gov-top-strip">
-        <div className="gov-container flex-between">
+        <div className="container flex-between">
           <span className="gov-top-strip-text">{t('topStrip')}</span>
           <div className="flex flex-gap-sm items-center">
             <select
@@ -63,7 +63,7 @@ export default function Header() {
       </div>
 
       <div className="gov-header-main">
-        <div className="gov-container flex flex-gap-lg">
+        <div className="container flex flex-gap-lg">
           <img src="/images/logo.svg" alt="" className="gov-logo" />
           <div className="gov-title-group">
             <div className="gov-app-title">{t('appTitle')}</div>

@@ -72,6 +72,11 @@
   border-radius: 50%;
   box-shadow: 0 0 12px currentColor;
 }
+.auth-dot-danger { background: #ef4444; color: #ef4444; }
+.auth-dot-warning { background: #f97316; color: #f97316; }
+.auth-dot-accent { background: #0ea5e9; color: #0ea5e9; }
+.auth-dot-success { background: #22c55e; color: #22c55e; }
+.auth-dot-purple { background: #8b5cf6; color: #8b5cf6; }
 
 .auth-lines {
   position: absolute;

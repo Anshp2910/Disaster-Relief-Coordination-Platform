@@ -365,9 +365,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
               value={text}
               onChange={handleInputChange}
               maxLength={2000}
-              className={`ff-input ${text ? 'ff-input-filled' : ''}`}
+              className={`ff-input p-sm ${text ? 'ff-input-filled' : ''}`}
               placeholder={t('chat.typeMessage')}
-              style={{ padding: '10px 14px 6px' }}
               aria-label={t('chat.typeMessage') || 'Type a message'}
             />
             <label htmlFor="chat-input" className={`ff-label ${text ? 'ff-label-float' : ''}`} style={{ top: 14 }}>

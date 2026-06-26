@@ -37,6 +37,7 @@
 .text-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .text-muted { color: var(--text-muted); }
 .text-accent { color: var(--accent); }
+.text-accent-orange { color: var(--accent-orange, #f97316); }
 .text-accent-blue { color: var(--accent); }
 .text-accent-green { color: var(--success); }
 .text-accent-orange { color: var(--warning); }
@@ -424,3 +425,19 @@
 .py-md { padding-top: var(--space-md); padding-bottom: var(--space-md); }
 .py-lg { padding-top: var(--space-lg); padding-bottom: var(--space-lg); }
 .py-2xl { padding-top: var(--space-2xl); padding-bottom: var(--space-2xl); }
+.pr-sm { padding-right: var(--space-sm); }
+
+/* Display */
+.block { display: block; }
+
+/* Cursor */
+.cursor-default { cursor: default; }
+
+/* Margins */
+.ml-xs { margin-left: var(--space-xs); }
+
+/* Backgrounds */
+.bg-warning-soft { background: var(--warning-soft); }
+
+/* Text colors */
+.text-warning { color: var(--warning); }

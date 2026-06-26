@@ -287,7 +287,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   }, [safeUsers])
 
   const renderTop = (
-    <motion.div className="flex flex-gap-sm text-sm text-muted mb-md" variants={itemVariants} style={{ padding: '0 16px' }}>
+    <motion.div className="flex flex-gap-sm text-sm text-muted mb-md px-md" variants={itemVariants}>
       <span className="govt-badge govt-badge-blue">
         <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer')}{roleCounts.volunteer !== 1 ? 's' : ''}
       </span>
