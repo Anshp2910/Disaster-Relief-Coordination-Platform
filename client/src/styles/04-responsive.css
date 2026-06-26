@@ -30,7 +30,6 @@
   .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); }
   .admin-charts-grid { grid-template-columns: 1fr; }
   .notification-dropdown { width: 300px; right: -60px; }
-  .auth-card { padding: var(--space-lg); }
   .toast-container { left: var(--space-md); right: var(--space-md); max-width: none; }
   .gov-footer-bottom > .container { flex-direction: column; gap: var(--space-sm); text-align: center; }
 }
@@ -44,7 +43,6 @@
   .kpi-card { padding: var(--space-md); }
   .bento-kpi-value { font-size: var(--text-2xl); }
   .notification-dropdown { width: calc(100vw - 32px); right: -16px; }
-  .auth-card { padding: var(--space-md); border-radius: var(--radius-lg); }
   .bento-card { padding: var(--space-md); }
   .listCard { padding: var(--space-md); }
   .card { padding: var(--space-md); }
