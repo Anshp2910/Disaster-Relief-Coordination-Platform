@@ -52,6 +52,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   const [typingUsers, setTypingUsers] = useState<Record<string, TypingInfo>>({})
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [showScrollBtn, setShowScrollBtn] = useState(false)
+  const [messageError, setMessageError] = useState('')
 
   const loadMessages = useCallback(async (p: number) => {
     try {
@@ -68,8 +69,10 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       }
       setHasMore((data.page || 1) < (data.pages || 1))
       setPage(p)
+      setMessageError('')
     } catch {
-      setMessages([])
+      if (p === 1) setMessages([])
+      setMessageError('Failed to load messages')
     } finally {
       setLoading(false)
     }
@@ -261,7 +264,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           </button>
         )}
         {loading && <SkeletonList count={4} lines={1} />}
-        {!loading && messages.length === 0 && <div className="small muted text-center">{t('chat.noMessages')}</div>}
+        {!loading && messages.length === 0 && !messageError && <div className="small muted text-center">{t('chat.noMessages')}</div>}
+        {messageError && <div className="small text-center" style={{ color: 'var(--danger)' }}>{messageError}</div>}
 
         {messages.map((m) => {
           const isMe = m.sender?.id === currentUser?.id || m.sender?._id === currentUser?.id
