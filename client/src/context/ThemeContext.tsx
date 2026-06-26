@@ -17,8 +17,8 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    try { return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark' } catch (e) { console.warn('Failed to read theme:', (e as Error).message); return 'dark' }
+  const [theme, setTheme] = useState<'light' | 'dark' | 'neon'>(() => {
+    try { return (localStorage.getItem('theme') as 'light' | 'dark' | 'neon') || 'dark' } catch (e) { console.warn('Failed to read theme:', (e as Error).message); return 'dark' }
   })
 
   const [isEmergency, setIsEmergency] = useState<boolean>(() => {
@@ -49,6 +49,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }, [])
 
+  // Toggle premium neon theme: switches between 'dark' and 'neon'
+  const togglePremiumTheme = useCallback(() => {
+    setTheme(prev => prev === 'neon' ? 'dark' : 'neon')
+  }, [])
+
   const toggleEmergency = useCallback(() => {
     setIsEmergency(prev => {
       const newValue = !prev
@@ -66,8 +71,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isEmergency, setIsEmergency, toggleEmergency, isHighContrast, setIsHighContrast, isSocketConnected, setIsSocketConnected }}>
+  const isPremium = theme === 'neon';
+    return (
+    <ThemeContext.Provider value={{ theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, setIsEmergency, toggleEmergency, isHighContrast, setIsHighContrast, isSocketConnected, setIsSocketConnected }}>
       {children}
     </ThemeContext.Provider>
   )
@@ -76,16 +82,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 export function useTheme(): ThemeContextType {
   const ctx = useContext(ThemeContext)
   if (!ctx) {
-    return { 
-      theme: 'dark', 
-      toggleTheme: () => {}, 
-      isEmergency: false, 
-      setIsEmergency: () => {}, 
-      toggleEmergency: () => {}, 
-      isHighContrast: false, 
-      setIsHighContrast: () => {}, 
-      isSocketConnected: true, 
-      setIsSocketConnected: () => {} 
+    return {
+      theme: 'dark',
+      toggleTheme: () => {},
+      togglePremiumTheme: () => {},
+      isPremium: false,
+      isEmergency: false,
+      setIsEmergency: () => {},
+      toggleEmergency: () => {},
+      isHighContrast: false,
+      setIsHighContrast: () => {},
+      isSocketConnected: true,
+      setIsSocketConnected: () => {}
     }
   }
   return ctx

@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
-import { Sun, Moon, Search, User, LogOut, AlertTriangle, Info } from 'lucide-react'
+import { useEffect } from 'react'
+import { Sun, Moon, Search, User, LogOut, AlertTriangle, Info, Zap } from 'lucide-react'
 import NotificationBell from './NotificationBell'
 
 interface Language {
@@ -29,7 +30,7 @@ function Header() {
   const location = useLocation()
   const { t, i18n } = useTranslation()
   const { user: currentUser, isAuthenticated, isAdmin, logout: authLogout } = useAuth()
-  const { theme, toggleTheme, isEmergency, toggleEmergency } = useTheme()
+  const { theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, toggleEmergency } = useTheme()
   const { socket } = useSocket()
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
@@ -56,10 +57,14 @@ function Header() {
         e.preventDefault()
         toggleEmergency()
       }
+      if (e.altKey && e.key === 'N') {
+        e.preventDefault()
+        togglePremiumTheme()
+      }
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [toggleEmergency])
+  }, [toggleEmergency, togglePremiumTheme])
 
   return (
     <header role="banner">
@@ -118,6 +123,10 @@ function Header() {
             </button>
             <button onClick={toggleTheme} className="theme-toggle" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} title={theme === 'light' ? 'Dark mode' : 'Light mode'}>
               {theme === 'light' ? <Moon size={14} aria-hidden="true" /> : <Sun size={14} aria-hidden="true" />}
+            </button>
+            {/* Premium Neon Theme Toggle */}
+            <button onClick={togglePremiumTheme} className={`theme-toggle ${isPremium ? 'neon-active' : ''}`} aria-label={isPremium ? 'Disable premium neon theme' : 'Enable premium neon theme'} title={isPremium ? 'Premium Neon Theme (Alt+N to disable)' : 'Premium Neon Theme (Alt+N to enable)'}>
+              <Zap size={14} className="text-[--accent]" aria-hidden="true" />
             </button>
           </div>
         </div>
