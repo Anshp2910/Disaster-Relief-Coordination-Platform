@@ -62,15 +62,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const toggleHighContrast = useCallback(() => {
-    // existing code stays
-    setIsHighContrast(prev => {
-      const newValue = !prev
-      try { localStorage.setItem('highContrastMode', newValue.toString()) } catch (e) { console.warn('Failed to save high contrast mode:', (e as Error).message) }
-      return newValue
-    })
-  }, [])
-
   const isPremium = theme === 'neon';
     return (
     <ThemeContext.Provider value={{ theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, setIsEmergency, toggleEmergency, isHighContrast, setIsHighContrast, isSocketConnected, setIsSocketConnected }}>
