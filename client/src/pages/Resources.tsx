@@ -1,11 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
-import { Package, Plus, Edit, Trash2, Search, CheckCircle, XCircle, Filter, Download, Box, AlertTriangle, CheckSquare } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, Pagination, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
+import { Package, Plus, Edit, Trash2, CheckCircle, XCircle, Download, CheckSquare } from 'lucide-react'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import Badge from '../components/Badge'
-import EmptyState from '../components/EmptyState'
-import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
@@ -69,6 +66,20 @@ export default function Resources() {
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<ResourceItem | null>(null)
   const [form, setForm] = useState<ResourceFormState>(EMPTY_FORM)
+
+  const summaryCards = useMemo(() => summary.map((s) => {
+    const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
+    return (
+      <DataCard
+        key={s._id}
+        title={s._id}
+        value={`${s.totalQty} units`}
+        subtitle={`${s.count} items`}
+        icon={<Package size={18} />}
+        color={catColors.text}
+      />
+    )
+  }), [summary])
 
   const [showAllocModal, setShowAllocModal] = useState<ResourceItem | null>(null)
   const [allocQty, setAllocQty] = useState('')
@@ -313,21 +324,9 @@ export default function Resources() {
 
       {error && <ErrorState message={error} onRetry={load} />}
 
-      {summary.length > 0 && (
+      {summaryCards.length > 0 && (
         <div className="grid-auto-sm gap-md mb-lg">
-          {summary.map((s) => {
-            const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
-            return (
-              <DataCard
-                key={s._id}
-                title={s._id}
-                value={`${s.totalQty} units`}
-                subtitle={`${s.count} items`}
-                icon={<Package size={18} />}
-                color={catColors.text}
-              />
-            )
-          })}
+          {summaryCards}
         </div>
       )}
 

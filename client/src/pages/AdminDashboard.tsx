@@ -2,14 +2,16 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Users, Shield, Activity, BarChart3, AlertTriangle, Trash2, CheckCircle } from 'lucide-react'
+import { createStagger, createListItem } from '../utils/animations'
+import { Users, FileText, Activity, CheckCircle, Shield, Trash2, Download, ArrowLeft } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useConfirm } from '../hooks/useConfirm'
-import { PageHeader, DataCard, ErrorState, DataTable, type ColumnDef, PageTransition } from '../components/ui'
+import { PageHeader, ErrorState, DataTable, PageTransition, AnimatedCounter } from '../components/ui'
+import type { ColumnDef } from '../components/ui/DataTable'
 import Badge from '../components/Badge'
 import { SkeletonList } from '../components/Skeleton'
 
@@ -65,20 +67,13 @@ const PRIORITY_COLORS: Record<string, { bg: string; border: string; text: string
 
 const BREAKDOWN_COLORS = ['var(--color-open)', 'var(--accent-indigo)', 'var(--color-resolved)', 'var(--color-critical)', 'var(--accent-purple)', 'var(--color-high)']
 
-const containerVariants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.05 } },
-}
+const PIE_COLORS_STATUS = ['var(--color-open)', 'var(--color-progress)', 'var(--color-resolved)', 'var(--color-fulfilled)', 'var(--color-critical)']
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const } },
-}
+const PIE_COLORS_PRIORITY = ['var(--color-critical)', 'var(--color-high)', 'var(--color-medium)', 'var(--color-low)']
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 8 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const } },
-}
+const containerVariants = createStagger(0.05)
+const itemVariants = createListItem(12, 0.3)
+const fadeUp = createListItem(16, 0.3)
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr)
@@ -110,8 +105,6 @@ function DailyRequestsChart({ data }: { data?: DailyRequest[] }) {
   )
 }
 
-const PIE_COLORS = ['var(--color-open)', 'var(--color-progress)', 'var(--color-resolved)', 'var(--color-fulfilled)', 'var(--color-critical)']
-
 function StatusPieChart({ data }: { data?: Record<string, number> }) {
   const { t } = useTranslation()
   const safeData = data || {}
@@ -128,7 +121,7 @@ function StatusPieChart({ data }: { data?: Record<string, number> }) {
       <PieChart>
         <Pie data={chartData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
           {chartData.map((_, i) => (
-            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+            <Cell key={i} fill={PIE_COLORS_STATUS[i % PIE_COLORS_STATUS.length]} />
           ))}
         </Pie>
         <Tooltip
@@ -140,7 +133,35 @@ function StatusPieChart({ data }: { data?: Record<string, number> }) {
   )
 }
 
-function CategoryBarChart({ data, total }: { data?: Record<string, number>; total?: number }) {
+function PriorityPieChart({ data }: { data?: Record<string, number> }) {
+  const { t } = useTranslation()
+  const safeData = data || {}
+  const entries = Object.entries(safeData)
+  if (!entries.length) return null
+
+  const chartData = entries.map(([key, value]) => ({
+    name: t(`priorities.${key}`) || key,
+    value: typeof value === 'number' ? value : 0,
+  }))
+
+  return (
+    <ResponsiveContainer width="100%" height={200}>
+      <PieChart>
+        <Pie data={chartData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
+          {chartData.map((_, i) => (
+            <Cell key={i} fill={PIE_COLORS_PRIORITY[i % PIE_COLORS_PRIORITY.length]} />
+          ))}
+        </Pie>
+        <Tooltip
+          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+        />
+        <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
+      </PieChart>
+    </ResponsiveContainer>
+  )
+}
+
+function CategoryBarChart({ data, total: _total }: { data?: Record<string, number>; total?: number }) {
   const { t } = useTranslation()
   const safeData = data || {}
   const entries = Object.entries(safeData)
@@ -213,31 +234,50 @@ function StatsPanel({ stats }: StatsPanelProps) {
   const { t } = useTranslation()
   if (!stats) return null
 
-  const safeStats = stats || {}
-  const byStatus = safeStats.byStatus || {}
-  const totalAll = Object.values(byStatus).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0)
-
+  const byStatus = stats.byStatus || {}
+  const byPriority = stats.byPriority || {}
   const summaryCards = [
-    { label: t('admin.totalUsers'), value: safeStats.totalUsers || 0, icon: <Users size={20} />, color: 'var(--color-open)' },
-    { label: t('admin.totalRequests'), value: safeStats.totalRequests || 0, icon: <BarChart3 size={20} />, color: 'var(--accent-indigo)' },
-    { label: t('admin.openRequests'), value: byStatus.Open || 0, icon: <Activity size={20} />, color: 'var(--color-open)' },
+    {
+      label: t('admin.totalUsers'), value: stats.totalUsers || 0,
+      icon: <Users size={20} />, color: 'var(--color-open)',
+      subtitle: t('admin.registeredUsers') || 'Registered users',
+    },
+    {
+      label: t('admin.totalRequests'), value: stats.totalRequests || 0,
+      icon: <FileText size={20} />, color: 'var(--accent-indigo)',
+      subtitle: t('admin.totalRequestsDesc') || 'All-time requests',
+    },
+    {
+      label: t('admin.openRequests'), value: byStatus.Open || 0,
+      icon: <Activity size={20} />, color: 'var(--color-open)',
+      subtitle: t('admin.needsAttention') || 'Needs attention',
+    },
     {
       label: t('admin.resolved'),
       value: (byStatus.Resolved || 0) + (byStatus.Fulfilled || 0),
-      icon: <CheckCircle size={20} />,
-      color: 'var(--color-resolved)',
+      icon: <CheckCircle size={20} />, color: 'var(--color-resolved)',
+      subtitle: t('admin.completed') || 'Completed',
     },
   ]
 
   return (
-    <motion.div className="card" variants={containerVariants} initial="hidden" animate="show">
+    <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
       <h3 className="m-0 text-bold text-accent-blue text-15">{t('admin.platformOverview')}</h3>
 
       <section aria-label="Statistics">
         <div className="admin-stats-grid">
           {summaryCards.map((c) => (
-            <motion.div key={c.label} variants={itemVariants}>
-              <DataCard title={c.label} value={c.value} icon={c.icon} color={c.color} />
+            <motion.div key={c.label} className="bento-card" variants={itemVariants}>
+              <div className="bento-header">
+                <span className="bento-title">{c.label}</span>
+                <div className="bento-icon" style={{ background: `${c.color}20`, color: c.color }}>
+                  {c.icon}
+                </div>
+              </div>
+              <div className="bento-kpi-value">
+                <AnimatedCounter to={c.value} duration={1.8} />
+              </div>
+              {c.subtitle && <div className="mt-sm text-xs text-muted">{c.subtitle}</div>}
             </motion.div>
           ))}
         </div>
@@ -252,13 +292,17 @@ function StatsPanel({ stats }: StatsPanelProps) {
           <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byStatus')}</div>
           <StatusPieChart data={stats.byStatus} />
         </motion.div>
+        <motion.div className="admin-chart-card" variants={itemVariants}>
+          <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byPriority')}</div>
+          <PriorityPieChart data={stats.byPriority} />
+        </motion.div>
         <motion.div className="admin-chart-card admin-chart-card--wide" variants={itemVariants}>
           <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byCategory')}</div>
           <CategoryBarChart data={stats.byCategory} total={stats.totalRequests} />
         </motion.div>
       </div>
 
-      {stats.byPriority && Object.keys(stats.byPriority).length > 0 && (
+      {byPriority && Object.keys(byPriority).length > 0 && (
         <motion.div className="mt-xl" variants={itemVariants}>
           <BreakdownCard title={t('admin.byPriority')} data={stats.byPriority} total={stats.totalRequests} type="priorities" />
         </motion.div>
@@ -341,7 +385,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
     {
       id: 'actions',
       header: t('admin.actionsHeader'),
-      accessor: '',
+      accessor: () => '',
       width: '100px',
       render: (_, u) => (
         <button
@@ -357,7 +401,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
 
   return (
     <section aria-label="User Management">
-      <motion.div className="card" variants={containerVariants} initial="hidden" animate="show">
+      <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
         <DataTable
           columns={columns}
           data={safeUsers}
@@ -452,7 +496,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
     {
       id: 'actions',
       header: t('admin.actionsHeader'),
-      accessor: '',
+      accessor: () => '',
       width: '100px',
       render: (_, r) => (
         <button
@@ -468,7 +512,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
 
   return (
     <section aria-label="Request Management">
-      <motion.div className="card" variants={containerVariants} initial="hidden" animate="show">
+      <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
         <DataTable
           columns={columns}
           data={safeRequests}
@@ -618,12 +662,12 @@ export default function AdminDashboard() {
       />
 
       {error && (
-        <motion.div className="mb-md" variants={fadeUp} initial="hidden" animate="show">
+        <motion.div className="mb-md" variants={fadeUp} initial="hidden" animate="visible">
           <ErrorState message={error} onRetry={loadData} />
         </motion.div>
       )}
 
-      <motion.div className="card mb-xl" variants={fadeUp} initial="hidden" animate="show">
+      <motion.div className="card mb-xl" variants={fadeUp} initial="hidden" animate="visible">
         <nav aria-label={t('admin.title')}>
           <div className="flex flex-gap-xs overflow-x-auto border-bottom" style={{ WebkitOverflowScrolling: 'touch' }} role="tablist">
             {tabs.map((tab) => {
@@ -659,7 +703,7 @@ export default function AdminDashboard() {
           key={activeTab}
           variants={containerVariants}
           initial="hidden"
-          animate="show"
+          animate="visible"
           role="tabpanel"
           id={`admin-panel-${activeTab}`}
           aria-label={tabs.find((t) => t.id === activeTab)?.label || activeTab}

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { MapPin, ShieldCheck, Activity, Users, Eye, EyeOff, Loader2, GitBranch, Globe } from 'lucide-react'
+import { createStagger, createListItem } from '../utils/animations'
+import { MapPin, ShieldCheck, Activity, Eye, EyeOff, Loader2, GitBranch, Globe } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
@@ -13,21 +14,14 @@ const STATS = [
   { value: '98.2%', label: 'Response Rate' },
 ]
 
-const container = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-}
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-}
+const container = createStagger(0.08, 0.1)
+const item = createListItem(20, 0.5)
 
 const floatShape = {
   animate: {
     y: [0, -12, 0],
     rotate: [0, 3, -3, 0],
-    transition: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
+    transition: { duration: 6, repeat: Infinity, ease: 'easeInOut' as const },
   },
 }
 
@@ -35,7 +29,7 @@ const floatShape2 = {
   animate: {
     y: [0, 10, 0],
     rotate: [0, -2, 2, 0],
-    transition: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+    transition: { duration: 8, repeat: Infinity, ease: 'easeInOut' as const },
   },
 }
 
@@ -43,12 +37,8 @@ const markerPulse = {
   animate: {
     scale: [1, 1.3, 1],
     opacity: [0.8, 1, 0.8],
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' as const },
   },
-}
-
-const inputVariants = {
-  focus: { scale: 1.01, borderColor: 'var(--accent)' },
 }
 
 export default function Login() {
@@ -79,7 +69,7 @@ export default function Login() {
   }
 
   return (
-    <motion.div className="auth-split" variants={container} initial="hidden" animate="show">
+    <motion.div className="auth-split" variants={container} initial="hidden" animate="visible">
       {/* ── LEFT: Hero Panel ── */}
       <motion.div className="auth-hero" variants={item}>
         <div className="auth-hero-bg">
@@ -106,7 +96,7 @@ export default function Login() {
           </motion.div>
 
           {/* Connecting lines */}
-          <svg className="auth-lines" viewBox="0 0 400 300" preserveAspectRatio="none">
+          <svg className="auth-lines" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
             <line x1="22%" y1="30%" x2="55%" y2="42%" stroke="rgba(14,165,233,0.15)" strokeWidth="1" />
             <line x1="55%" y1="42%" x2="70%" y2="25%" stroke="rgba(14,165,233,0.15)" strokeWidth="1" />
             <line x1="55%" y1="42%" x2="38%" y2="60%" stroke="rgba(14,165,233,0.15)" strokeWidth="1" />
@@ -115,7 +105,7 @@ export default function Login() {
         </div>
 
         <div className="auth-hero-content">
-          <motion.div className="auth-emblem" variants={item}>
+          <motion.div className="auth-emblem" variants={item} aria-hidden="true">
             <ShieldCheck size={28} />
           </motion.div>
           <motion.h1 className="auth-hero-title" variants={item}>
@@ -136,7 +126,7 @@ export default function Login() {
           </motion.div>
 
           <motion.div className="auth-mission" variants={item}>
-            <Activity size={14} />
+            <Activity size={14} aria-hidden="true" />
             <span>Government of India &middot; National Disaster Management Authority</span>
           </motion.div>
         </div>
@@ -152,7 +142,7 @@ export default function Login() {
           <div className="auth-glass-inner">
             {/* Logo */}
             <motion.div className="auth-logo-wrap" variants={item}>
-              <div className="auth-logo">
+              <div className="auth-logo" aria-hidden="true">
                 <MapPin size={22} />
               </div>
               <div>
@@ -166,10 +156,10 @@ export default function Login() {
             {/* Social Login */}
             <motion.div className="auth-social" variants={item}>
               <button className="auth-social-btn" aria-label="Sign in with Google">
-                <Globe size={18} /> Google
+                <Globe size={18} aria-hidden="true" /> Google
               </button>
               <button className="auth-social-btn" aria-label="Sign in with GitHub">
-                <GitBranch size={18} /> GitHub
+                <GitBranch size={18} aria-hidden="true" /> GitHub
               </button>
             </motion.div>
 
@@ -215,7 +205,7 @@ export default function Login() {
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     tabIndex={-1}
                   >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                   </button>
                 </div>
               </motion.div>
@@ -238,7 +228,7 @@ export default function Login() {
               >
                 {loading ? (
                   <span className="flex items-center gap-sm justify-center">
-                    <Loader2 size={18} className="spinner" />
+                    <Loader2 size={18} className="spinner" aria-hidden="true" />
                     {t('auth.loggingIn')}
                   </span>
                 ) : t('auth.loginButton')}

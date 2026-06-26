@@ -323,3 +323,12 @@
 
 .font-semibold { font-weight: var(--font-weight-semibold); }
 .font-extrabold { font-weight: var(--font-weight-extrabold); }
+
+/* ── Password Strength ── */
+.password-strength { display: flex; gap: 4px; margin-top: 4px; }
+.password-strength-bar { height: 4px; flex: 1; border-radius: 2px; background: var(--border); transition: background var(--duration-normal) var(--ease-out); }
+.password-strength-bar.weak { background: var(--danger); }
+.password-strength-bar.medium { background: var(--warning); }
+.password-strength-bar.strong { background: var(--success); }
+.password-strength-bar.very-strong { background: var(--green-600); }
+.password-strength-label { font-size: var(--text-xs); color: var(--text-muted); }

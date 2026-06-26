@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 interface AnimatedCounterProps {
@@ -11,7 +11,7 @@ interface AnimatedCounterProps {
   formatter?: (value: number) => string
 }
 
-export default function AnimatedCounter({
+const AnimatedCounter = memo(function AnimatedCounter({
   from = 0, to, duration = 1.5, suffix = '', prefix = '', decimals = 0, formatter,
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null)
@@ -48,4 +48,6 @@ export default function AnimatedCounter({
       {prefix}{formatted}{suffix}
     </motion.span>
   )
-}
+})
+
+export default AnimatedCounter

@@ -2,12 +2,13 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
+import compression from 'compression'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 
-import { authRouter } from './routes/auth.js'
+import { authRouter, requireCsrf } from './routes/auth.js'
 import { requestsRouter } from './routes/requests.js'
 import { adminRouter } from './routes/admin.js'
 import { resourcesRouter } from './routes/resources.js'
@@ -25,6 +26,8 @@ import publicRouter from './routes/public.js'
 import { getEnv } from './config/env.js'
 import { sanitizeBody } from './middleware/sanitize.js'
 import { rateLimitUser } from './middleware/rateLimitUser.js'
+import { requestLogger } from './middleware/requestLogger.js'
+import { logger } from './utils/logger.js'
 
 dotenv.config()
 
@@ -49,6 +52,8 @@ const bulkLimiter = rateLimit({
 export function createApp() {
   const app = express()
   app.set('trust proxy', 1)
+  app.use(compression())
+  app.use(requestLogger)
   const clientUrl = getEnv('CLIENT_URL', 'http://localhost:5173')
 
   const baseOrigins = [
@@ -89,7 +94,7 @@ export function createApp() {
         if (isOriginAllowed(origin)) {
           callback(null, true)
         } else {
-          console.warn('[CORS] Rejected origin (not in allowlist)')
+          logger.warn('CORS', { origin, message: 'Rejected origin (not in allowlist)' })
           callback(new Error('Not allowed by CORS'), false)
         }
       },
@@ -106,13 +111,14 @@ export function createApp() {
 
   app.post('/api/log', (req, res) => {
     const { message, stack, componentStack, url, userAgent } = req.body || {}
-    console.error('[client-error]', JSON.stringify({ message, url, userAgent, ts: new Date().toISOString() }))
-    if (stack) console.error('[client-error-stack]', stack)
-    if (componentStack) console.error('[client-error-component]', componentStack)
+    logger.error('client-error', { message, url, userAgent, ts: new Date().toISOString() })
+    if (stack) logger.error('client-error-stack', { stack })
+    if (componentStack) logger.error('client-error-component', { componentStack })
     res.status(204).end()
   })
 
   app.use('/api/auth', authLimiter, authRouter)
+  app.use('/api', requireCsrf)
   const writeLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many write requests, please slow down' })
   const requestsLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 60, message: 'Too many requests, please slow down' })
   const geofencingLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many geofencing requests, please slow down' })
@@ -146,7 +152,7 @@ export function createApp() {
   }
 
   app.use((err, req, res, next) => {
-    console.error('[error]', err.message, JSON.stringify({ method: req.method, url: req.url, ts: new Date().toISOString() }))
+    logger.error('error', { message: err.message, method: req.method, url: req.url, ts: new Date().toISOString() })
     if (err.name === 'ValidationError') {
       return res.status(400).json({ error: err.message })
     }
@@ -157,7 +163,7 @@ export function createApp() {
       return res.status(400).json({ error: err.message })
     }
     if (process.env.NODE_ENV !== 'production') {
-      console.error('[error-detail]', err.stack)
+      logger.error('error-detail', { stack: err.stack })
     }
     return res.status(500).json({ error: 'Internal server error' })
   })

@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { AlertTriangle, Plus, Edit, Trash2, Search, Filter, MapPin, Clock, User, CheckCircle, XCircle, Activity } from 'lucide-react'
+import { createStagger, createListItem } from '../utils/animations'
+import { AlertTriangle, Plus, Edit, Trash2, MapPin, User, Activity } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useSocket, registerRefreshListener } from '../hooks/useSocket'
@@ -55,17 +56,9 @@ const SEVERITY_COLORS: Record<string, string> = {
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
-const DEFAULT_CENTER: [number, number] = [20.5937, 78.9629]
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { transition: { staggerChildren: 0.05 } },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 },
-}
+const containerVariants = createStagger(0.05)
+const itemVariants = createListItem(10, 0.3)
 
 function buildIncidentPopup(inc: Incident) {
   const color = SEVERITY_COLORS[inc.severity || ''] || 'var(--text-muted)'
@@ -270,9 +263,13 @@ export default function Incidents() {
 
   const updateForm = (field: keyof IncidentForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
+  const disasterTypeOptions = useMemo(() => Object.keys(DISASTER_ICONS).map((d) => ({ label: d, value: d })), [])
+  const severityOptions = useMemo(() => Object.keys(SEVERITY_COLORS).map((s) => ({ label: s, value: s })), [])
+  const statusFormOptions = useMemo(() => STATUS_OPTIONS.slice(1).map((s) => ({ label: s, value: s })), [])
+
   return (
     <PageTransition>
-      <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+      <motion.div className="container" variants={containerVariants} initial="hidden" animate="visible">
       <PageHeader
         title={t('nav.incidents') || 'Incident Grouping'}
         subtitle={`${incidents.length} ${t('incidents.incidentsTracked')}`}
@@ -320,7 +317,7 @@ export default function Incidents() {
       <motion.section
         variants={containerVariants}
         initial="hidden"
-        animate="show"
+        animate="visible"
         aria-label={t('nav.incidents')}
       >
         {loading ? (
@@ -432,7 +429,7 @@ export default function Incidents() {
             <div className="ff-group flex-1">
               <ModernSelect
                 label="Disaster type"
-                options={Object.keys(DISASTER_ICONS).map((d) => ({ label: d, value: d }))}
+                options={disasterTypeOptions}
                 value={form.disasterType}
                 onChange={(v) => setForm((prev) => ({ ...prev, disasterType: v }))}
               />
@@ -440,7 +437,7 @@ export default function Incidents() {
             <div className="ff-group flex-1">
               <ModernSelect
                 label="Severity"
-                options={Object.keys(SEVERITY_COLORS).map((s) => ({ label: s, value: s }))}
+                options={severityOptions}
                 value={form.severity}
                 onChange={(v) => setForm((prev) => ({ ...prev, severity: v }))}
               />
@@ -448,7 +445,7 @@ export default function Incidents() {
             <div className="ff-group flex-1">
               <ModernSelect
                 label="Status"
-                options={STATUS_OPTIONS.slice(1).map((s) => ({ label: s, value: s }))}
+                options={statusFormOptions}
                 value={form.status}
                 onChange={(v) => setForm((prev) => ({ ...prev, status: v }))}
               />

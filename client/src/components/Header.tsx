@@ -56,7 +56,7 @@ export default function Header() {
               ))}
             </select>
             <button onClick={toggleTheme} className="theme-toggle" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} title={theme === 'light' ? 'Dark mode' : 'Light mode'}>
-              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+              {theme === 'light' ? <Moon size={14} aria-hidden="true" /> : <Sun size={14} aria-hidden="true" />}
             </button>
           </div>
         </div>
@@ -64,26 +64,26 @@ export default function Header() {
 
       <div className="gov-header-main">
         <div className="container flex flex-gap-lg">
-          <img src="/images/logo.svg" alt="" className="gov-logo" />
+          <img src="/images/logo.svg" alt="" className="gov-logo" loading="lazy" />
           <div className="gov-title-group">
             <div className="gov-app-title">{t('appTitle')}</div>
             <div className="gov-app-subtitle">{t('appSubtitle')}</div>
           </div>
           <div className="flex-1" />
           {isAuthenticated && !isAuthPage && (
-            <div className="gov-header-actions">
+            <nav aria-label="Main navigation" className="gov-header-actions">
               <button
                 className="cmd-hint"
                 onClick={() => window.dispatchEvent(new CustomEvent('toggle-cmd-palette'))}
                 aria-label="Open command palette"
                 title="Open command palette"
               >
-                <Search size={12} />
+                <Search size={12} aria-hidden="true" />
                 <kbd>Ctrl+K</kbd>
               </button>
               <NotificationBell />
-              <button onClick={() => navigate('/profile')} className="gov-nav-link-user header-user-btn">
-                <User size={16} />
+              <button onClick={() => navigate('/profile')} className="gov-nav-link-user header-user-btn" aria-current={location.pathname === '/profile' ? 'page' : undefined}>
+                <User size={16} aria-hidden="true" />
                 <span className="header-user-name">{currentUser?.displayName || t('nav.profile')}</span>
               </button>
               <button onClick={() => {
@@ -91,9 +91,9 @@ export default function Header() {
                 authLogout()
                 navigate('/login')
               }} className="header-icon-btn" aria-label={t('nav.logout')} title={t('nav.logout')}>
-                <LogOut size={16} />
+                <LogOut size={16} aria-hidden="true" />
               </button>
-            </div>
+            </nav>
           )}
         </div>
       </div>

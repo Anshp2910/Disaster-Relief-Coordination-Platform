@@ -49,7 +49,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
             style={{ maxWidth }}
             role="dialog"
             aria-modal="true"
-            aria-label={title}
+            aria-labelledby="modal-title"
             tabIndex={-1}
             initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -59,8 +59,8 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
           >
             {title && (
               <div className="flex-between mb-md">
-                <h3 style={{ margin: 0 }}>{title}</h3>
-                <button onClick={onClose} className="icon-btn" aria-label="Close"><X size={18} /></button>
+                <h3 id="modal-title" style={{ margin: 0 }}>{title}</h3>
+                <button onClick={onClose} className="icon-btn" aria-label="Close"><X size={18} aria-hidden="true" /></button>
               </div>
             )}
             {children}

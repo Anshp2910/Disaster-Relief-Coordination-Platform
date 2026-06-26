@@ -101,7 +101,7 @@ export default function ImageUploader({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
             >
-              <img src={displayPreview} alt="Preview" className="iu-preview-img" />
+              <img src={displayPreview} alt="Preview" className="iu-preview-img" loading="lazy" />
               <button
                 className="iu-remove"
                 onClick={e => { e.stopPropagation(); remove() }}

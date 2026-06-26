@@ -1,9 +1,9 @@
-﻿import { useState, useRef } from 'react'
+﻿import { useState, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { User, Camera, Save, Shield, Bell, Key, Award, Mail, Phone, MapPin } from 'lucide-react'
-import { PageHeader, ErrorState, RippleBtn, PageTransition } from '../components/ui'
+import { User, Camera, Save, Shield, Bell, Key, Award, Mail } from 'lucide-react'
+import { PageHeader, RippleBtn, PageTransition } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../components/Toast'
 import { clientApi } from '../api/client'
@@ -58,6 +58,19 @@ export default function Profile() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
+  const newPasswordStrength = useMemo(() => {
+    if (!newPassword) return null
+    let score = 0
+    if (newPassword.length >= 8) score++
+    if (/[a-z]/.test(newPassword)) score++
+    if (/[A-Z]/.test(newPassword)) score++
+    if (/\d/.test(newPassword)) score++
+    if (/[!@#$%^&*]/.test(newPassword)) score++
+    const classes = ['weak', 'weak', 'weak', 'medium', 'strong', 'very-strong']
+    const labels = ['Weak', 'Weak', 'Weak', 'Medium', 'Strong', 'Very Strong']
+    return { className: classes[score], label: labels[score] }
+  }, [newPassword])
+
   function toggleSkill(skill: string) {
     setSkills((prev) => prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill])
   }
@@ -84,10 +97,6 @@ export default function Profile() {
     e.preventDefault()
     if (newPassword !== confirmPassword) {
       toast.error(t('profile.passwordsDoNotMatch'))
-      return
-    }
-    if (newPassword.length < 6) {
-      toast.error(t('profile.passwordTooShort'))
       return
     }
     setLoading(true)
@@ -164,7 +173,7 @@ export default function Profile() {
                 color: '#fff',
               }}
             >
-              <Camera size={14} />
+              <Camera size={14} aria-hidden="true" />
             </div>
           </div>
           <input
@@ -240,7 +249,7 @@ export default function Profile() {
 
           <div className="ff-group">
             <div className="ff-label-text mb-xs flex items-center gap-xs">
-              <Award size={14} />
+              <Award size={14} aria-hidden="true" />
               {t('profile.skills')}
             </div>
             <div className="flex flex-gap-xs flex-wrap mb">
@@ -260,7 +269,7 @@ export default function Profile() {
 
           <div className="ff-group">
             <div className="ff-label-text mb-xs flex items-center gap-xs">
-              <Bell size={14} />
+              <Bell size={14} aria-hidden="true" />
               {t('profile.notificationPreferences')}
             </div>
             <div className="flex-col flex-gap-sm text-sm">
@@ -288,7 +297,7 @@ export default function Profile() {
           </div>
 
           <RippleBtn type="submit" className="text-13 flex items-center gap-xs" disabled={loading}>
-            <Save size={16} />
+            <Save size={16} aria-hidden="true" />
             {loading ? '...' : t('profile.updateProfile')}
           </RippleBtn>
         </form>
@@ -301,7 +310,7 @@ export default function Profile() {
         transition={{ delay: 0.15 }}
       >
         <h3 className="m-0 mb text-base text-accent-blue flex items-center gap-xs">
-          <Key size={16} />
+          <Key size={16} aria-hidden="true" />
           {t('profile.changePassword')}
         </h3>
         <form onSubmit={handleChangePassword}>
@@ -338,6 +347,17 @@ export default function Profile() {
               </label>
             </div>
           </div>
+
+          {newPasswordStrength && (
+            <div className="mb-sm">
+              <div className="password-strength">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className={`password-strength-bar ${newPasswordStrength.className}`} />
+                ))}
+              </div>
+              <div className="password-strength-label">{newPasswordStrength.label}</div>
+            </div>
+          )}
 
           <div className="ff-group">
             <div className={`ff-wrap ${confirmPassword ? 'ff-focused' : ''}`}>

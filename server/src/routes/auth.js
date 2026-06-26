@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import { getJwtSecret } from '../config/env.js'
@@ -47,6 +48,32 @@ function recordAttempt(email, success) {
   } else {
     record.count++
   }
+}
+
+const csrfTokens = new Map()
+
+function generateCsrfToken(userId) {
+  const token = crypto.randomBytes(32).toString('hex')
+  csrfTokens.set(userId.toString(), token)
+  return token
+}
+
+export function requireCsrf(req, res, next) {
+  if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) return next()
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return next()
+  try {
+    const payload = jwt.verify(authHeader.slice(7), getJwtSecret())
+    const userId = payload.sub
+    const headerToken = req.headers['x-csrf-token']
+    const storedToken = csrfTokens.get(userId)
+    if (!headerToken || !storedToken || headerToken !== storedToken) {
+      return res.status(403).json({ error: 'Invalid CSRF token' })
+    }
+  } catch {
+    return next()
+  }
+  return next()
 }
 
 export function checkAndRecordAttempt(email) {
@@ -115,14 +142,45 @@ authRouter.post('/login', validate('login'), async (req, res) => {
       expiresIn: '24h',
     })
 
+    const csrfToken = generateCsrfToken(user._id)
+
     return res.json({
       token,
+      csrfToken,
       user: { id: user._id, email: user.email, role: user.role, displayName: user.displayName },
     })
   } catch (err) {
     console.error('[auth] login error:', err.message)
     return res.status(500).json({ error: 'Server error' })
   }
+})
+
+authRouter.post('/refresh', async (req, res) => {
+  try {
+    const { token } = req.body || {}
+    if (!token) return res.status(400).json({ error: 'Token required' })
+
+    const decoded = jwt.verify(token, getJwtSecret(), { ignoreExpiration: true })
+    const user = await User.findById(decoded.sub)
+    if (!user) return res.status(401).json({ error: 'User not found' })
+
+    const now = Math.floor(Date.now() / 1000)
+    if (decoded.exp <= now) return res.status(401).json({ error: 'Token expired' })
+
+    const originalDuration = decoded.exp - decoded.iat
+    const newToken = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), {
+      expiresIn: Math.max(originalDuration, 3600),
+    })
+
+    return res.json({ token: newToken })
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid token' })
+  }
+})
+
+authRouter.get('/csrf-token', requireAuth, (req, res) => {
+  const csrfToken = generateCsrfToken(req.user._id)
+  return res.json({ csrfToken })
 })
 
 authRouter.get('/me', requireAuth, async (req, res) => {

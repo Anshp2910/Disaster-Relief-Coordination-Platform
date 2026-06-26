@@ -108,6 +108,25 @@ hr {
   html { scroll-behavior: auto; }
 }
 
+/* ── Skip link (visible on focus) ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  z-index: 10000;
+  padding: 8px 16px;
+  background: var(--accent, #0ea5e9);
+  color: #fff;
+  border-radius: var(--radius-sm, 6px);
+  font-size: var(--text-sm, 14px);
+  font-weight: 600;
+  text-decoration: none;
+  transition: none;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
 /* ── Focus ring (WCAG AA compliant) ── */
 *:focus:not(:focus-visible) {
   outline: none;

@@ -469,8 +469,9 @@ export default function RequestForm({
                   onClick={useMyLocation}
                   disabled={locating}
                   className="sf-btn sf-btn-prev"
+                  aria-label={locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
                 >
-                  <Navigation size={14} />
+                  <Navigation size={14} aria-hidden="true" />
                   {locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
                 </button>
 
@@ -482,6 +483,7 @@ export default function RequestForm({
                     onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
                     placeholder={t('createRequest.searchPlaceholder')}
+                    aria-label={t('createRequest.searchPlaceholder')}
                     style={{
                       width: '100%', padding: '8px 12px', borderRadius: 8,
                       border: '1.5px solid var(--border)', background: 'var(--bg-card)',
@@ -493,6 +495,7 @@ export default function RequestForm({
                     type="button"
                     onClick={onSearch}
                     disabled={searching}
+                    aria-label={searching ? t('createRequest.searching') : t('createRequest.search')}
                     style={{
                       position: 'absolute', right: 4, top: 4,
                       padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)',
@@ -554,7 +557,7 @@ export default function RequestForm({
                 </div>
                 {!form.lat && (
                   <div className="text-sm" style={{ color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <MapPin size={14} /> Please select a location on the map before submitting.
+                    <MapPin size={14} aria-hidden="true" /> Please select a location on the map before submitting.
                   </div>
                 )}
               </div>

@@ -25,7 +25,7 @@ export function validateQuery(schema) {
 const schemas = {
   register: Joi.object({
     email: Joi.string().email().required().trim().lowercase(),
-    password: Joi.string().min(6).max(128).required(),
+    password: Joi.string().min(8).max(128).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/).required().messages({ 'string.pattern.base': 'Password must be at least 8 characters with uppercase, lowercase, digit, and special character' }),
     role: Joi.string().valid('volunteer', 'ngo').required(),
     displayName: Joi.string().min(1).max(100).required().trim(),
   }),
@@ -186,7 +186,7 @@ const schemas = {
   updateProfile: Joi.object({
     displayName: Joi.string().min(1).max(100).trim(),
     currentPassword: Joi.string(),
-    newPassword: Joi.string().min(6).max(128),
+    newPassword: Joi.string().min(8).max(128).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/).messages({ 'string.pattern.base': 'Password must be at least 8 characters with uppercase, lowercase, digit, and special character' }),
     phone: Joi.string().max(20).trim(),
     skills: Joi.array().items(Joi.string().valid('Medical', 'Rescue', 'Logistics', 'Communication', 'Shelter', 'Food', 'Other')),
     notifications: Joi.object({

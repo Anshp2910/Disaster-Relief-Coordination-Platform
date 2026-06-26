@@ -10,7 +10,7 @@ interface BadgeProps {
 const Badge = memo(function Badge({ label, colors, colorKey }: BadgeProps) {
   const c = colors[colorKey || label] || COLORS_FALLBACK
   return (
-    <span className="govt-badge" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
+    <span className="govt-badge" role="status" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
     </span>
   )

@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps) {
       <Header />
       <CommandPalette isAdmin={isAdmin} />
       {isAuthenticated && <SosFab />}
-      <motion.main className="gov-main" id="main-content">
+      <motion.main className="gov-main" id="main-content" role="main" aria-label="Main content">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

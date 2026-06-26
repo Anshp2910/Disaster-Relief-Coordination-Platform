@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Map, Filter, MapPin, Layers } from 'lucide-react'
+import { Filter, MapPin } from 'lucide-react'
 import { PageHeader, ErrorState, PageTransition } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
@@ -37,8 +37,6 @@ const PRIORITY_COLORS: Record<string, string> = {
   Medium: 'var(--color-medium)',
   Low: 'var(--color-low)',
 }
-
-const DEFAULT_CENTER: [number, number] = [20.5937, 78.9629]
 
 const FILTER_OPTIONS_KEYS = ['All', 'Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
 const PRIORITY_FILTER_KEYS = ['All', 'Critical', 'High', 'Medium', 'Low']

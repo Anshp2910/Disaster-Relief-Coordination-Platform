@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '../i18n'
 import { SkeletonLine, SkeletonCard, SkeletonList, SkeletonMap } from '../components/Skeleton'
@@ -85,5 +86,78 @@ describe('formatDate', () => {
   it('handles Date object', () => {
     const result = formatDate(new Date('2025-06-01'))
     expect(typeof result).toBe('string')
+  })
+})
+
+import { RippleBtn } from '../components/ui'
+import { PageTransition } from '../components/ui'
+import { AnimatedCounter } from '../components/ui'
+import Modal from '../components/ui/Modal'
+import ErrorState from '../components/ui/ErrorState'
+
+describe('RippleBtn', () => {
+  it('renders children', () => {
+    render(<RippleBtn>Click me</RippleBtn>)
+    expect(screen.getByText('Click me')).toBeTruthy()
+  })
+  it('applies className', () => {
+    const { container } = render(<RippleBtn className="test-class">Btn</RippleBtn>)
+    expect(container.querySelector('.rp-btn.test-class')).toBeTruthy()
+  })
+  it('supports disabled state', () => {
+    render(<RippleBtn disabled>Btn</RippleBtn>)
+    expect(screen.getByRole('button')).toBeDisabled()
+  })
+  it('sets aria-label', () => {
+    render(<RippleBtn aria-label="Submit form">Btn</RippleBtn>)
+    expect(screen.getByLabelText('Submit form')).toBeTruthy()
+  })
+  it('renders as submit type', () => {
+    render(<RippleBtn type="submit">Btn</RippleBtn>)
+    expect(screen.getByRole('button')).toHaveAttribute('type', 'submit')
+  })
+})
+
+describe('PageTransition', () => {
+  it('renders children inside motion.div', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <PageTransition><div>content</div></PageTransition>
+      </MemoryRouter>
+    )
+    expect(container.textContent).toContain('content')
+  })
+})
+
+describe('AnimatedCounter', () => {
+  it('renders the target value', () => {
+    const { container } = render(<AnimatedCounter to={100} />)
+    expect(container.textContent).toBeTruthy()
+  })
+})
+
+describe('Modal', () => {
+  it('renders when open', () => {
+    render(<Modal open onClose={() => {}} title="Test Modal"><p>content</p></Modal>)
+    expect(screen.getByText('Test Modal')).toBeTruthy()
+  })
+  it('has dialog role', () => {
+    render(<Modal open onClose={() => {}} title="Test"><p>c</p></Modal>)
+    expect(screen.getByRole('dialog')).toBeTruthy()
+  })
+  it('does not render when closed', () => {
+    render(<Modal open={false} onClose={() => {}} title="Test"><p>c</p></Modal>)
+    expect(screen.queryByText('Test')).toBeNull()
+  })
+})
+
+describe('ErrorState', () => {
+  it('renders message', () => {
+    render(<ErrorState message="Something broke" />)
+    expect(screen.getByText('Something broke')).toBeTruthy()
+  })
+  it('renders retry button when onRetry provided', () => {
+    render(<ErrorState message="Broke" onRetry={() => {}} />)
+    expect(screen.getByText(/retry/i)).toBeTruthy()
   })
 })

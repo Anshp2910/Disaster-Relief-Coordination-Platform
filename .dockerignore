@@ -1,0 +1,9 @@
+node_modules
+.git
+.env
+*.md
+client/dist
+server/__tests__
+client/__tests__
+client/e2e
+client/src

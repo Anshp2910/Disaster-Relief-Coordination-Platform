@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: disaster_relief
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/disaster_relief
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production-at-least-32-chars!!}
+      - NODE_ENV=production
+      - PORT=5001
+      - CLIENT_URL=http://localhost:5173
+    volumes:
+      - uploads_data:/app/server/uploads
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5001
+
+volumes:
+  mongo_data:
+  uploads_data:

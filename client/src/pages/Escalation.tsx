@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { TrendingUp, Search, AlertTriangle, ArrowUp, ArrowDown, Filter } from 'lucide-react'
+import { Search, AlertTriangle, ArrowUp, ArrowDown } from 'lucide-react'
 import { PageHeader, ErrorState, DataList, FilterBar, PageTransition } from '../components/ui'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'

@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { memo, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { pageTransition } from '../../utils/animations'
@@ -8,7 +8,7 @@ interface PageTransitionProps {
   className?: string
 }
 
-export default function PageTransition({ children, className }: PageTransitionProps) {
+const PageTransition = memo(function PageTransition({ children, className }: PageTransitionProps) {
   const { pathname } = useLocation()
   return (
     <motion.div
@@ -22,4 +22,6 @@ export default function PageTransition({ children, className }: PageTransitionPr
       {children}
     </motion.div>
   )
-}
+})
+
+export default PageTransition

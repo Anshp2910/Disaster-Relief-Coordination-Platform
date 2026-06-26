@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Upload, FileText, CheckCircle, AlertTriangle, Download, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, RippleBtn, PageTransition } from '../components/ui'
+import { PageHeader, ErrorState, RippleBtn, PageTransition } from '../components/ui'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 
@@ -201,7 +201,6 @@ export default function BulkImport() {
 
   function confirmMapping() {
     const activeMaps = columnMaps.filter((m) => m.systemCol !== '')
-    const usedFields = new Set(activeMaps.map((m) => m.systemCol))
 
     const cleanHeaders = activeMaps.map((m) => m.systemCol)
     const cleanColIndices = activeMaps.map((m) => rawHeaders.indexOf(m.csvCol))
@@ -428,7 +427,6 @@ export default function BulkImport() {
                     <div className="dt-inline-cell dt-inline-shrink" role="columnheader">{t('bulkImport.edit')}</div>
                   </div>
                   {(() => {
-                    const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
                     const rowOffset = (previewPage - 1) * PREVIEW_PAGE_SIZE
                     const paginatedPreview = preview.slice(rowOffset, rowOffset + PREVIEW_PAGE_SIZE)
                     return paginatedPreview.map((row, idx) => {

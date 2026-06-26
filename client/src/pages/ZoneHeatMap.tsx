@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { MapPin, Thermometer, Plus, Edit, Trash2, Search, Filter, Users, Activity, AlertTriangle, Droplets, Wind } from 'lucide-react'
+import { createStagger, createListItem } from '../utils/animations'
+import { MapPin, Thermometer, Plus, Edit, Trash2, Users, Activity, AlertTriangle, Droplets, Wind } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
-import { SkeletonList, SkeletonMap } from '../components/Skeleton'
+import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
+import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
@@ -75,21 +76,13 @@ const COVERAGE_COLORS: Record<string, string> = {
   Gap: 'var(--coverage-gap)',
 }
 
-const DEFAULT_CENTER: [number, number] = [20.5937, 78.9629]
 
 const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
 const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { transition: { staggerChildren: 0.05 } },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 },
-}
+const containerVariants = createStagger(0.05)
+const itemVariants = createListItem(10, 0.3)
 
 function buildPopup(zone: Zone, color: { fill: string }, t: (key: string) => string) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus || ''] || 'var(--text-muted)'
@@ -326,7 +319,7 @@ export default function ZoneHeatMap() {
 
   return (
     <PageTransition>
-      <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+      <motion.div className="container" variants={containerVariants} initial="hidden" animate="visible">
       <PageHeader
         title={t('zones.title')}
         subtitle={`${zones.length} zones \u00B7 ${totalOpen} open requests \u00B7 ${totalGap} coverage gaps \u00B7 ${totalAffected.toLocaleString()} affected`}
@@ -377,7 +370,7 @@ export default function ZoneHeatMap() {
         ]}
       />
 
-      <motion.div variants={containerVariants} initial="hidden" animate="show">
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
         <motion.div className="flex flex-gap mt-md flex-wrap" variants={itemVariants}>
           <div className="flex-1">
             <div className="card p-0 relative">

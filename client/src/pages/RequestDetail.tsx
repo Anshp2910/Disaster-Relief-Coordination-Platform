@@ -1,15 +1,16 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, type Variants } from 'framer-motion'
-import { ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, XCircle, AlertTriangle, Clock, MapPin, User, Package, Activity, Share2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { createStagger, createListItem } from '../utils/animations'
+import { ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2 } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { Modal, ErrorState, PageHeader, RippleBtn, PageTransition } from '../components/ui'
 import Badge from '../components/Badge'
-import { SkeletonList, SkeletonCard } from '../components/Skeleton'
+import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import Chat from './Chat'
@@ -110,15 +111,8 @@ interface RequestDetailItem {
   auditLog?: AuditEntry[]
 }
 
-const containerVariants: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-}
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const } },
-}
+const containerVariants = createStagger(0.08)
+const itemVariants = createListItem(12, 0.35)
 
 export default function RequestDetail() {
   const { id } = useParams<{ id: string }>()
@@ -139,7 +133,6 @@ export default function RequestDetail() {
   const [allocResource, setAllocResource] = useState('')
   const [allocQty, setAllocQty] = useState('')
   const [matches, setMatches] = useState<Match[]>([])
-  const [loadingMatches, setLoadingMatches] = useState(false)
   const [showChat, setShowChat] = useState(false)
   const [feedbackList, setFeedbackList] = useState<Feedback[]>([])
   const [feedbackRating, setFeedbackRating] = useState(5)
@@ -180,14 +173,11 @@ export default function RequestDetail() {
   }, [id])
 
   const loadMatches = useCallback(async () => {
-    setLoadingMatches(true)
     try {
       const data = await clientApi.matchResources(id!) as { matches?: Match[] }
       setMatches(data.matches || [])
     } catch {
       console.warn('[RequestDetail] Failed to load matches')
-    } finally {
-      setLoadingMatches(false)
     }
   }, [id])
 
@@ -347,7 +337,7 @@ export default function RequestDetail() {
         }
       />
 
-      <motion.div variants={containerVariants} initial="hidden" animate="show">
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
         <motion.div variants={itemVariants} className="flex flex-gap-xs mb-lg flex-wrap" role="group" aria-label="Status and priority badges">
           <Badge label={t(`statuses.${item.status}`)} colors={STATUS_COLORS} colorKey={item.status} />
           <Badge label={t(`priorities.${item.priority}`)} colors={PRIORITY_COLORS} colorKey={item.priority} />
@@ -420,7 +410,7 @@ export default function RequestDetail() {
                 {item.files.map((f) => (
                   <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs bg-gov-bg rounded-sm">
                     {f.mimetype?.startsWith('image/') ? (
-                      <img src={`${API_BASE}${f.url}`} alt={f.filename} className="cursor-pointer object-cover rounded-sm w-40 h-40" role="button" tabIndex={0} onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }} />
+                      <img src={`${API_BASE}${f.url}`} alt={f.filename} loading="lazy" className="cursor-pointer object-cover rounded-sm w-40 h-40" role="button" tabIndex={0} onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }} />
                     ) : f.mimetype === 'application/pdf' ? (
                       <span className="text-xl cursor-pointer" role="button" tabIndex={0} onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }} aria-label={f.filename}>
                         <Paperclip size={20} />
@@ -671,7 +661,7 @@ export default function RequestDetail() {
 
       <Modal open={!!previewFile} onClose={() => setPreviewFile(null)} title={previewFile?.filename || ''}>
         {previewFile?.mimetype?.startsWith('image/') ? (
-          <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} className="rounded" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+          <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} loading="lazy" className="rounded" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
         ) : previewFile?.mimetype === 'application/pdf' ? (
           <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile?.filename} className="border-none rounded bg-gov-white" style={{ width: '100%', height: '80vh' }} />
         ) : (

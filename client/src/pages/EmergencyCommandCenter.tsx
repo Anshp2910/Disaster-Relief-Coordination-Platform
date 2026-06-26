@@ -1,88 +1,38 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { AnimatedCounter } from '../components/ui'
+import ErrorState from '../components/ui/ErrorState'
+import { SkeletonCard, SkeletonList } from '../components/Skeleton'
+import { clientApi } from '../api/client'
+import { useSocket } from '../hooks/useSocket'
 import {
-  Activity, AlertTriangle, Bell, Clock, Cloud, CloudRain, CloudSnow, Compass,
-  Droplets, Eye, Flame, MapPin, MessageSquare, Mic, Radio, Shield, ShieldAlert,
-  Siren, Sun, Thermometer, Users, Wind, Zap, Navigation, ChevronUp, ChevronDown,
+  Activity, AlertTriangle, Bell, Cloud, CloudRain, CloudSnow, Compass,
+  Droplets, Eye, Flame, MapPin, Mic, Radio, Shield, ShieldAlert,
+  Siren, Sun, Users, Wind, Zap, Navigation, ChevronUp, ChevronDown,
   Circle, Triangle, Square,
 } from 'lucide-react'
 import '../styles/10-command-center.css'
 
-/* ── Mock Data ── */
+/* ── Types ── */
 
-const COUNTERS = [
-  { id: 1, label: 'Active Incidents', value: 47, color: 'blue', trend: 'up', trendVal: 12 },
-  { id: 2, label: 'Resources Deployed', value: 1283, color: 'cyan', trend: 'up', trendVal: 8 },
-  { id: 3, label: 'Personnel Active', value: 856, color: 'green', trend: 'up', trendVal: 4 },
-  { id: 4, label: 'Affected Zones', value: 23, color: 'orange', trend: 'up', trendVal: 3 },
-  { id: 5, label: 'Evacuated', value: 12450, color: 'purple', trend: 'up', trendVal: 18 },
-  { id: 6, label: 'Fatalities', value: 38, color: 'red', trend: 'up', trendVal: 2 },
-]
-
-const SOS_ALERTS = [
-  { id: 1, title: 'Flash Flood — Zone 7B', meta: 'Mumbai, Maharashtra · Priority 1', time: '2m ago', icon: 'Flood' },
-  { id: 2, title: 'Building Collapse — Sector 12', meta: 'Delhi, NCR · Priority 1', time: '7m ago', icon: 'Collapse' },
-  { id: 3, title: 'Wildfire — Forest Range 4', meta: 'Uttarakhand · Priority 2', time: '14m ago', icon: 'Fire' },
-]
-
-const WEATHER = {
-  temp: 32,
-  condition: 'Partly Cloudy',
-  humidity: 68,
-  wind: '14 km/h',
-  visibility: '6.2 km',
-  icon: 'partly-cloudy',
+interface Counter {
+  id: number; label: string; value: number; color: string; trend: 'up' | 'down'; trendVal: number
 }
-
-const INCIDENTS = [
-  { id: 1, title: 'Severe Flooding — Zone 7B', severity: 'Critical', location: 'Mumbai, MH', time: '12:34', resources: 24 },
-  { id: 2, title: 'Building Collapse — Sector 12', severity: 'Critical', location: 'Delhi, DL', time: '11:50', resources: 18 },
-  { id: 3, title: 'Wildfire — Forest Range 4', severity: 'High', location: 'Nainital, UK', time: '10:15', resources: 32 },
-  { id: 4, title: 'Earthquake Aftershock', severity: 'High', location: 'Guwahati, AS', time: '09:42', resources: 45 },
-]
-
-const NOTIFICATIONS = [
-  { id: 1, text: 'SOS Alert: Flash Flood reported in Zone 7B', type: 'alert', time: '12:34' },
-  { id: 2, text: 'Resources dispatched to Sector 12 collapse site', type: 'info', time: '12:28' },
-  { id: 3, text: 'Weather warning: Heavy rainfall predicted', type: 'warning', time: '12:15' },
-  { id: 4, text: 'Medical team arrived at Zone 4 relief camp', type: 'success', time: '11:58' },
-  { id: 5, text: 'Drone reconnaissance completed for Range 4', type: 'info', time: '11:40' },
-  { id: 6, text: 'Critical: Dam water level rising rapidly', type: 'alert', time: '11:22' },
-  { id: 7, text: 'Evacuation order issued for coastal regions', type: 'warning', time: '11:05' },
-]
-
-const TICKER_ITEMS = [
-  'SYS::ALL SYSTEMS NOMINAL — SATCOM ONLINE — DRONE GRID ACTIVE',
-  'WX::CYCLONE WARNING — Category 3 storm approaching eastern coast',
-  'LOG::12 relief convoys dispatched in last 4 hours',
-  'CMD::Emergency operations center fully activated — all stations reporting',
-]
-
-const MARKERS = [
-  { x: '25%', y: '35%', color: 'red', size: 'lg', pulse: true },
-  { x: '55%', y: '45%', color: 'red', size: 'lg', pulse: true },
-  { x: '72%', y: '28%', color: 'orange', size: 'lg', pulse: true },
-  { x: '40%', y: '65%', color: 'orange', size: 'md' },
-  { x: '60%', y: '55%', color: 'blue', size: 'md' },
-  { x: '80%', y: '60%', color: 'cyan', size: 'md' },
-  { x: '30%', y: '50%', color: 'green', size: 'sm' },
-  { x: '45%', y: '30%', color: 'blue', size: 'sm' },
-  { x: '65%', y: '70%', color: 'cyan', size: 'sm' },
-  { x: '85%', y: '40%', color: 'orange', size: 'sm' },
-  { x: '20%', y: '70%', color: 'red', size: 'md', pulse: true },
-  { x: '50%', y: '80%', color: 'green', size: 'sm' },
-]
-
-const HEATMAP_BLOBS = [
-  { x: '22%', y: '32%', size: 180, color: 'red' },
-  { x: '52%', y: '42%', size: 150, color: 'red' },
-  { x: '38%', y: '62%', size: 120, color: 'orange' },
-  { x: '70%', y: '25%', size: 140, color: 'orange' },
-  { x: '60%', y: '52%', size: 100, color: 'blue' },
-  { x: '80%', y: '58%', size: 80, color: 'blue' },
-]
+interface SosAlert {
+  id: number; title: string; meta: string; time: string; icon: string
+}
+interface WeatherData {
+  temp: number; condition: string; humidity: number; wind: string; visibility: string; icon: string
+}
+interface IncidentData {
+  id: number; title: string; severity: string; location: string; time: string; resources: number
+}
+interface NotificationItem {
+  id: number; text: string; type: string; time: string
+}
+interface Marker { x: string; y: string; color: string; size: 'sm' | 'md' | 'lg'; pulse?: boolean }
+interface HeatmapBlob { x: string; y: string; size: number; color: string }
 
 const ORBIT_RINGS = [
   { size: 100, top: '30%', left: '35%' },
@@ -92,13 +42,6 @@ const ORBIT_RINGS = [
 
 /* ── Helpers ── */
 
-function getAlertLevel() {
-  const critical = SOS_ALERTS.filter(a => a.id <= 2).length
-  if (critical >= 2) return { level: 'CRITICAL', class: 'critical' }
-  if (critical >= 1) return { level: 'ELEVATED', class: 'elevated' }
-  return { level: 'NORMAL', class: 'normal' }
-}
-
 function formatTime() {
   const d = new Date()
   const h = String(d.getHours()).padStart(2, '0')
@@ -107,11 +50,43 @@ function formatTime() {
   return { hm: `${h}:${m}`, s }
 }
 
+function timeAgo(dateStr: string): string {
+  const sec = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
+  if (sec < 60) return `${sec}s ago`
+  const min = Math.floor(sec / 60)
+  if (min < 60) return `${min}m ago`
+  const hr = Math.floor(min / 60)
+  if (hr < 24) return `${hr}h ago`
+  return `${Math.floor(hr / 24)}d ago`
+}
+
+function formatIncidentTime(dateStr: string): string {
+  const d = new Date(dateStr)
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+function severityColor(sev: string): 'red' | 'orange' | 'blue' | 'green' | 'cyan' {
+  const s = (sev || '').toLowerCase()
+  if (s === 'critical' || s === 'emergency') return 'red'
+  if (s === 'high') return 'orange'
+  if (s === 'medium' || s === 'warning') return 'blue'
+  return 'green'
+}
+
+function severityToColorName(sev: string): string {
+  const s = (sev || '').toLowerCase()
+  if (s === 'critical' || s === 'emergency') return 'red'
+  if (s === 'high') return 'orange'
+  if (s === 'medium' || s === 'warning') return 'orange'
+  return 'blue'
+}
+
 function WeatherIcon({ condition }: { condition: string }) {
-  if (condition.includes('Rain')) return <CloudRain size={24} />
-  if (condition.includes('Snow')) return <CloudSnow size={24} />
-  if (condition.includes('Cloud')) return <Cloud size={24} />
-  if (condition.includes('Sun')) return <Sun size={24} />
+  const c = (condition || '').toLowerCase()
+  if (c.includes('rain') || c.includes('drizzle') || c.includes('thunderstorm')) return <CloudRain size={24} />
+  if (c.includes('snow') || c.includes('sleet')) return <CloudSnow size={24} />
+  if (c.includes('cloud') || c.includes('overcast') || c.includes('mist') || c.includes('fog')) return <Cloud size={24} />
+  if (c.includes('sun') || c.includes('clear')) return <Sun size={24} />
   return <Cloud size={24} />
 }
 
@@ -120,15 +95,248 @@ function WeatherIcon({ condition }: { condition: string }) {
 export default function EmergencyCommandCenter() {
   const { t } = useTranslation()
   const [time, setTime] = useState(formatTime())
-  const [activeFeed, setActiveFeed] = useState(0)
 
-  useEffect(() => {
-    const t = setInterval(() => setTime(formatTime()), 1000)
-    const f = setInterval(() => setActiveFeed(i => (i + 1) % NOTIFICATIONS.length), 4000)
-    return () => { clearInterval(t); clearInterval(f) }
+  /* ── Loading / Error state buckets ── */
+  const [loadingCounters, setLoadingCounters] = useState(true)
+  const [loadingSos, setLoadingSos] = useState(true)
+  const [loadingWeather, setLoadingWeather] = useState(true)
+  const [loadingIncidents, setLoadingIncidents] = useState(true)
+  const [errorCounters, setErrorCounters] = useState('')
+  const [errorSos, setErrorSos] = useState('')
+  const [errorWeather, setErrorWeather] = useState('')
+  const [errorIncidents, setErrorIncidents] = useState('')
+
+  /* ── Real data state ── */
+  const [counters, setCounters] = useState<Counter[]>([])
+  const [sosAlerts, setSosAlerts] = useState<SosAlert[]>([])
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [incidents, setIncidents] = useState<IncidentData[]>([])
+  const [notifications, setNotifications] = useState<NotificationItem[]>([])
+  const [markers, setMarkers] = useState<Marker[]>([])
+  const [heatmapBlobs, setHeatmapBlobs] = useState<HeatmapBlob[]>([])
+  const [activeFeed, setActiveFeed] = useState(0)
+  const [lastPing, setLastPing] = useState<number>(Date.now())
+
+  /* ── Socket ── */
+  const { connected: socketConnected } = useSocket()
+
+  /* ── Data loaders ── */
+  const loadCounters = useCallback(async () => {
+    setLoadingCounters(true); setErrorCounters('')
+    try {
+      const [statsRes, resRes, zoneRes] = await Promise.allSettled([
+        clientApi.adminStats(),
+        clientApi.getResources({ limit: '1' }),
+        clientApi.getZones({ limit: '1' }),
+      ])
+
+      const stats = statsRes.status === 'fulfilled' ? (statsRes.value as Record<string, unknown>) : {}
+      const resData = resRes.status === 'fulfilled' ? (resRes.value as { total?: number }) : {}
+      const zoneData = zoneRes.status === 'fulfilled' ? (zoneRes.value as { total?: number }) : {}
+
+      const byStatus = stats.byStatus as Record<string, number> | undefined
+      const openCount = (byStatus?.['Open'] || 0) + (byStatus?.['In Progress'] || 0)
+      const totalUsers = (stats.totalUsers as number) || 0
+      const resources = (resData as { total?: number })?.total || 0
+      const zones = (zoneData as { total?: number })?.total || 0
+
+      setCounters([
+        { id: 1, label: 'Active Incidents', value: openCount || 0, color: 'blue', trend: 'up', trendVal: 0 },
+        { id: 2, label: 'Resources Deployed', value: resources, color: 'cyan', trend: 'up', trendVal: 0 },
+        { id: 3, label: 'Personnel Active', value: totalUsers, color: 'green', trend: 'up', trendVal: 0 },
+        { id: 4, label: 'Affected Zones', value: zones, color: 'orange', trend: 'up', trendVal: 0 },
+        { id: 5, label: 'Evacuated', value: (stats.evacuated as number) || 0, color: 'purple', trend: 'up', trendVal: 0 },
+        { id: 6, label: 'Fatalities', value: (stats.fatalities as number) || 0, color: 'red', trend: 'up', trendVal: 0 },
+      ])
+    } catch (err) {
+      setErrorCounters((err as Error).message)
+    } finally {
+      setLoadingCounters(false)
+    }
   }, [])
 
-  const alert = getAlertLevel()
+  const loadSos = useCallback(async () => {
+    setLoadingSos(true); setErrorSos('')
+    try {
+      const data = await clientApi.getSosAlerts({ status: 'active' }) as { items?: Record<string, unknown>[] }
+      const items = data.items || []
+      setSosAlerts(items.map((a, i) => ({
+        id: i + 1,
+        title: (a.title as string) || (a.location as string) || 'SOS Alert',
+        meta: `${(a.location as string) || 'Unknown'} · Priority ${(a.priority as number) || 1}`,
+        time: timeAgo((a.createdAt as string) || new Date().toISOString()),
+        icon: (a.type as string) || 'Emergency',
+      })))
+    } catch (err) {
+      setErrorSos((err as Error).message)
+    } finally {
+      setLoadingSos(false)
+    }
+  }, [])
+
+  const loadWeather = useCallback(async () => {
+    setLoadingWeather(true); setErrorWeather('')
+    try {
+      const data = await clientApi.getWeatherCurrent(20.5937, 78.9629) as Record<string, unknown>
+      setWeather({
+        temp: Math.round((data.temp as number) || 0),
+        condition: (data.condition as string) || (data.description as string) || 'Unknown',
+        humidity: (data.humidity as number) || 0,
+        wind: (data.windSpeed as string) || `${(data.windSpeed as number) || 0} km/h`,
+        visibility: (data.visibility as string) || `${(data.visibility as number) || 0} km`,
+        icon: (data.icon as string) || 'cloud',
+      })
+    } catch (err) {
+      setErrorWeather((err as Error).message)
+    } finally {
+      setLoadingWeather(false)
+    }
+  }, [])
+
+  const loadIncidents = useCallback(async () => {
+    setLoadingIncidents(true); setErrorIncidents('')
+    try {
+      const data = await clientApi.getIncidents({ limit: 10 }) as { items?: Record<string, unknown>[] }
+      const items = data.items || []
+      setIncidents(items.map((inc, i) => ({
+        id: i + 1,
+        title: (inc.title as string) || (inc.description as string) || 'Incident',
+        severity: (inc.severity as string) || 'Medium',
+        location: (inc.location as string) || (inc.address as string) || 'Unknown',
+        time: formatIncidentTime((inc.createdAt as string) || new Date().toISOString()),
+        resources: (inc.resourcesCount as number) || (inc.personnel as number) || 0,
+      })))
+    } catch (err) {
+      setErrorIncidents((err as Error).message)
+    } finally {
+      setLoadingIncidents(false)
+    }
+  }, [])
+
+  const loadMapData = useCallback(async () => {
+    try {
+      const [incRes, resRes] = await Promise.allSettled([
+        clientApi.getIncidents({ limit: 50 }),
+        clientApi.getResources({ limit: 50 }),
+      ])
+
+      const incItems = incRes.status === 'fulfilled'
+        ? ((incRes.value as { items?: Record<string, unknown>[] }).items || []) : []
+      const resItems = resRes.status === 'fulfilled'
+        ? ((resRes.value as { items?: Record<string, unknown>[] }).items || []) : []
+
+      const pointToPercent = (lat: number, lon: number) => {
+        const top = 10, bottom = 90, left = 10, right = 90
+        const latMin = 8, latMax = 37, lonMin = 68, lonMax = 97
+        const x = left + ((lon - lonMin) / (lonMax - lonMin)) * (right - left)
+        const y = top + ((latMax - lat) / (latMax - latMin)) * (bottom - top)
+        return { x: `${Math.max(5, Math.min(95, x))}%`, y: `${Math.max(5, Math.min(95, y))}%` }
+      }
+
+      const newMarkers: Marker[] = []
+      const newBlobs: HeatmapBlob[] = []
+
+      incItems.forEach((inc) => {
+        const lat = parseFloat(inc.lat as string) || parseFloat(inc.latitude as string) || 0
+        const lon = parseFloat(inc.lng as string) || parseFloat(inc.longitude as string) || 0
+        if (!lat || !lon) return
+        const p = pointToPercent(lat, lon)
+        const sev = (inc.severity as string) || 'medium'
+        const col = severityColor(sev)
+        const sz = sev.toLowerCase() === 'critical' || sev.toLowerCase() === 'emergency' ? 'lg' as const
+               : sev.toLowerCase() === 'high' ? 'md' as const : 'sm' as const
+        newMarkers.push({ x: p.x, y: p.y, color: col, size: sz, pulse: sev.toLowerCase() === 'critical' || sev.toLowerCase() === 'emergency' })
+        newBlobs.push({ x: p.x, y: p.y, size: sev.toLowerCase() === 'critical' ? 180 : sev.toLowerCase() === 'high' ? 140 : 100, color: severityToColorName(sev) })
+      })
+
+      resItems.forEach((res) => {
+        const lat = parseFloat(res.lat as string) || parseFloat(res.latitude as string) || 0
+        const lon = parseFloat(res.lng as string) || parseFloat(res.longitude as string) || 0
+        if (!lat || !lon) return
+        const p = pointToPercent(lat, lon)
+        newMarkers.push({ x: p.x, y: p.y, color: 'cyan', size: 'sm' })
+      })
+
+      setMarkers(newMarkers.slice(0, 30))
+      setHeatmapBlobs(newBlobs.slice(0, 12))
+    } catch {
+      /* map data is non-critical */
+    }
+  }, [])
+
+  const loadAll = useCallback(() => {
+    loadCounters()
+    loadSos()
+    loadWeather()
+    loadIncidents()
+    loadMapData()
+    setLastPing(Date.now())
+  }, [loadCounters, loadSos, loadWeather, loadIncidents, loadMapData])
+
+  useEffect(() => { loadAll() }, [loadAll])
+
+  /* ── Tick timer ── */
+  useEffect(() => {
+    const t = setInterval(() => setTime(formatTime()), 1000)
+    return () => clearInterval(t)
+  }, [])
+
+  /* ── Ticker items from real status ── */
+  const tickerItemsResolved = useMemo(() => {
+    const items = [
+      `SYS::${socketConnected ? 'SATCOM ONLINE' : 'SATCOM RECONNECTING'} — ${socketConnected ? 'DRONE GRID ACTIVE' : 'DRONE GRID STANDBY'}`,
+      lastPing ? `LOG::Last API sync ${timeAgo(new Date(lastPing).toISOString())}` : 'LOG::Awaiting first data sync...',
+    ]
+    if (weather) {
+      const wx = weather.condition
+      if (wx.toLowerCase().includes('rain') || wx.toLowerCase().includes('storm')) {
+        items.push(`WX::${wx.toUpperCase()} — Advisory in effect for operational zones`)
+      } else {
+        items.push(`WX::${wx.toUpperCase()} — ${weather.temp}°C — Conditions nominal`)
+      }
+    }
+    if (incidents.length > 0) {
+      items.push(`CMD::${incidents.length} active incidents — ${incidents.filter(i => i.severity.toLowerCase() === 'critical').length} critical`)
+    }
+    items.push('SYS::All stations reporting — Emergency operations center fully activated')
+    return items
+  }, [socketConnected, lastPing, weather, incidents])
+
+  /* ── Notification feed from socket + polling ── */
+  useEffect(() => {
+    /* poll for recent requests as notifications */
+    const poll = setInterval(async () => {
+      try {
+        const feed = await clientApi.getRequests({ limit: 3, sort: '-createdAt' }) as { items?: Record<string, unknown>[] }
+        const items = feed.items || []
+        items.forEach((r) => {
+          setNotifications(prev => {
+            if (prev.some(n => n.text.includes((r._id as string)?.slice(-6) || ''))) return prev
+            const text = `Request ${(r.status as string)?.toLowerCase() === 'open' ? 'created' : 'updated'}: ${(r.title as string) || 'Request'}`
+            const next: NotificationItem[] = [{ id: Date.now() + Math.random(), text, type: 'info', time: timeAgo((r.createdAt as string) || new Date().toISOString()) }, ...prev].slice(0, 20)
+            return next
+          })
+        })
+      } catch { /* ignore */ }
+    }, 15000)
+
+    return () => clearInterval(poll)
+  }, [])
+
+  /* ── Feed rotation ── */
+  useEffect(() => {
+    if (notifications.length === 0) return
+    const f = setInterval(() => setActiveFeed(i => (i + 1) % notifications.length), 4000)
+    return () => clearInterval(f)
+  }, [notifications.length])
+
+  /* ── Alert level ── */
+  const alert = useMemo(() => {
+    const critical = sosAlerts.length
+    if (critical >= 3) return { level: 'CRITICAL', class: 'critical' as const }
+    if (critical >= 1) return { level: 'ELEVATED', class: 'elevated' as const }
+    return { level: 'NORMAL', class: 'normal' as const }
+  }, [sosAlerts])
 
   const counterVariants = {
     hidden: { opacity: 0, y: 12 },
@@ -139,6 +347,31 @@ export default function EmergencyCommandCenter() {
     hidden: { opacity: 0, x: 20 },
     show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const } },
   }
+
+  const totalEvents = useMemo(() => counters.reduce((s, c) => s + c.value, 0), [counters])
+
+  /* ── Location labels from incidents ── */
+  const locationLabels = useMemo(() => {
+    const locs = incidents.slice(0, 6).map(inc => {
+      const lat = 0, lon = 0
+      const top = 10, bottom = 90, left = 10, right = 90
+      const latMin = 8, latMax = 37, lonMin = 68, lonMax = 97
+      const x = left + ((lon - lonMin) / (lonMax - lonMin)) * (right - left)
+      const y = top + ((latMax - lat) / (latMax - latMin)) * (bottom - top)
+      return { x: `${Math.max(5, Math.min(95, x))}%`, y: `${Math.max(5, Math.min(95, y))}%`, label: inc.location, status: inc.severity }
+    })
+    if (locs.length === 0) return defaultLabels
+    return locs
+  }, [incidents])
+
+  const defaultLabels = [
+    { x: '25%', y: '35%', label: 'Mumbai', status: 'CRITICAL' },
+    { x: '55%', y: '45%', label: 'Delhi', status: 'CRITICAL' },
+    { x: '72%', y: '28%', label: 'Nainital', status: 'HIGH' },
+    { x: '40%', y: '65%', label: 'Chennai', status: 'WARNING' },
+    { x: '60%', y: '55%', label: 'Kolkata', status: 'MONITOR' },
+    { x: '80%', y: '60%', label: 'Guwahati', status: 'HIGH' },
+  ]
 
   return (
     <div className="cc-body">
@@ -200,30 +433,42 @@ export default function EmergencyCommandCenter() {
                 <span>{t('commandCenter.liveStatus')}</span>
                 <Activity size={12} className="icon" />
               </div>
-              <motion.div className="cc-counter-grid" initial="hidden" animate="show">
-                {COUNTERS.map((c, i) => (
-                  <motion.div key={c.id} className={`cc-counter cc-counter--${c.color}`} custom={i} variants={counterVariants}>
-                    <div className="cc-counter-value">
-                      <AnimatedCounter to={c.value} duration={1.8} />
-                      {c.trend === 'up'
-                        ? <ChevronUp size={12} className="trend-up" />
-                        : <ChevronDown size={12} className="trend-down" />
-                      }
-                    </div>
-                    <div className="cc-counter-label">{c.label}</div>
-                  </motion.div>
-                ))}
-              </motion.div>
+              {loadingCounters ? (
+                <SkeletonCard lines={2} />
+              ) : errorCounters ? (
+                <ErrorState message={errorCounters} onRetry={loadCounters} />
+              ) : (
+                <motion.div className="cc-counter-grid" initial="hidden" animate="show">
+                  {counters.map((c, i) => (
+                    <motion.div key={c.id} className={`cc-counter cc-counter--${c.color}`} custom={i} variants={counterVariants}>
+                      <div className="cc-counter-value">
+                        <AnimatedCounter to={c.value} duration={1.8} />
+                        {c.trend === 'up'
+                          ? <ChevronUp size={12} className="trend-up" />
+                          : <ChevronDown size={12} className="trend-down" />
+                        }
+                      </div>
+                      <div className="cc-counter-label">{c.label}</div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
             </div>
 
             {/* SOS Alerts */}
             <div className="cc-widget">
               <div className="cc-widget-header">
                 <span className="cc-sos-header-icon"><Siren size={12} /> {t('commandCenter.sosAlerts')}</span>
-                <span className="cc-sos-count">{SOS_ALERTS.length} {t('commandCenter.sosActive')}</span>
+                <span className="cc-sos-count">{sosAlerts.length} {t('commandCenter.sosActive')}</span>
               </div>
               <div className="cc-sos-list">
-                {SOS_ALERTS.map(a => (
+                {loadingSos ? (
+                  <SkeletonCard lines={2} />
+                ) : errorSos ? (
+                  <ErrorState message={errorSos} onRetry={loadSos} />
+                ) : sosAlerts.length === 0 ? (
+                  <div className="cc-sos-item"><div className="cc-sos-info"><div className="cc-sos-title">No active SOS alerts</div></div></div>
+                ) : sosAlerts.map(a => (
                   <motion.div key={a.id} className="cc-sos-item" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                     <div className="cc-sos-icon"><AlertTriangle size={14} /></div>
                     <div className="cc-sos-info">
@@ -246,18 +491,26 @@ export default function EmergencyCommandCenter() {
                 <span><Cloud size={12} className="icon" /> {t('commandCenter.weather')}</span>
                 <Compass size={12} className="icon" />
               </div>
-              <div className="cc-weather">
-                <div className="cc-weather-icon"><WeatherIcon condition={WEATHER.condition} /></div>
-                <div>
-                  <div className="cc-weather-temp">{WEATHER.temp}°C</div>
-                  <div className="cc-weather-desc">{WEATHER.condition}</div>
-                </div>
-              </div>
-              <div className="cc-weather-details">
-                <div className="cc-weather-detail"><Droplets size={10} /> {WEATHER.humidity}%</div>
-                <div className="cc-weather-detail"><Wind size={10} /> {WEATHER.wind}</div>
-                <div className="cc-weather-detail"><Eye size={10} /> {WEATHER.visibility}</div>
-              </div>
+              {loadingWeather ? (
+                <SkeletonCard lines={2} />
+              ) : errorWeather ? (
+                <ErrorState message={errorWeather} onRetry={loadWeather} />
+              ) : weather ? (
+                <>
+                  <div className="cc-weather">
+                    <div className="cc-weather-icon"><WeatherIcon condition={weather.condition} /></div>
+                    <div>
+                      <div className="cc-weather-temp">{weather.temp}°C</div>
+                      <div className="cc-weather-desc">{weather.condition}</div>
+                    </div>
+                  </div>
+                  <div className="cc-weather-details">
+                    <div className="cc-weather-detail"><Droplets size={10} /> {weather.humidity}%</div>
+                    <div className="cc-weather-detail"><Wind size={10} /> {weather.wind}</div>
+                    <div className="cc-weather-detail"><Eye size={10} /> {weather.visibility}</div>
+                  </div>
+                </>
+              ) : <SkeletonCard lines={2} />}
             </motion.div>
 
             {/* Quick Actions */}
@@ -294,14 +547,7 @@ export default function EmergencyCommandCenter() {
               }} />
 
               {/* Location labels */}
-              {([
-                { x: '25%', y: '35%', labelKey: 'locationMumbai', status: 'CRITICAL' },
-                { x: '55%', y: '45%', labelKey: 'locationDelhi', status: 'CRITICAL' },
-                { x: '72%', y: '28%', labelKey: 'locationNainital', status: 'HIGH' },
-                { x: '40%', y: '65%', labelKey: 'locationChennai', status: 'WARNING' },
-                { x: '60%', y: '55%', labelKey: 'locationKolkata', status: 'MONITOR' },
-                { x: '80%', y: '60%', labelKey: 'locationGuwahati', status: 'HIGH' },
-              ] as const).map((l, i) => (
+              {locationLabels.map((l, i) => (
                 <div key={i} style={{
                   position: 'absolute', left: l.x, top: l.y, zIndex: 8, transform: 'translate(-50%, -70%)',
                   textAlign: 'center', pointerEvents: 'none',
@@ -310,7 +556,7 @@ export default function EmergencyCommandCenter() {
                     fontSize: 9, fontWeight: 700, color: '#e2e8f0',
                     textShadow: '0 0 8px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6)',
                     letterSpacing: '0.04em', marginBottom: 2,
-                  }}>{t(`commandCenter.${l.labelKey}`)}</div>
+                  }}>{l.label}</div>
                   <div style={{
                     fontSize: 7, color: l.status === 'CRITICAL' ? '#ef4444' : l.status === 'HIGH' ? '#f97316' : '#0ea5e9',
                     textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -321,7 +567,7 @@ export default function EmergencyCommandCenter() {
 
               {/* Heatmap blobs */}
               <div className="cc-map-overlay" style={{ zIndex: 3 }}>
-                {HEATMAP_BLOBS.map((b, i) => (
+                {heatmapBlobs.map((b, i) => (
                   <div
                     key={i}
                     className={`cc-heatmap-blob cc-heatmap-blob--${b.color}`}
@@ -347,7 +593,7 @@ export default function EmergencyCommandCenter() {
 
               {/* Glowing markers */}
               <div className="cc-map-overlay" style={{ zIndex: 7 }}>
-                {MARKERS.map((m, i) => (
+                {markers.map((m, i) => (
                   <div
                     key={i}
                     className={`cc-marker cc-marker--${m.color}${m.size === 'lg' ? ' cc-marker--lg' : ''}${m.pulse ? ' cc-marker--pulse' : ''}`}
@@ -389,7 +635,13 @@ export default function EmergencyCommandCenter() {
                 <span className="cc-live-badge">{t('commandCenter.live')}</span>
               </div>
               <div className="cc-feed" style={{ flex: 1, overflow: 'auto' }}>
-                <AnimatedFeed items={NOTIFICATIONS} activeIndex={activeFeed} variants={feedVariants} />
+                {notifications.length === 0 ? (
+                  <div className="cc-feed-item cc-feed-item--info" style={{ opacity: 0.5, justifyContent: 'center' }}>
+                    <span className="cc-feed-text">Listening for real-time events...</span>
+                  </div>
+                ) : (
+                  <AnimatedFeed items={notifications} activeIndex={activeFeed} variants={feedVariants} />
+                )}
               </div>
             </div>
 
@@ -400,10 +652,15 @@ export default function EmergencyCommandCenter() {
             >
               <div className="cc-widget-header">
                 <span><Flame size={12} className="icon" /> {t('commandCenter.activeIncidents')}</span>
-                <span className="cc-critical-badge">{INCIDENTS.filter(i => i.severity === 'Critical').length} {t('commandCenter.critical')}</span>
+                <span className="cc-critical-badge">{incidents.filter(i => i.severity.toLowerCase() === 'critical').length} {t('commandCenter.critical')}</span>
               </div>
+              {loadingIncidents ? (
+                <SkeletonList count={3} lines={2} />
+              ) : errorIncidents ? (
+                <ErrorState message={errorIncidents} onRetry={loadIncidents} />
+              ) : (
               <motion.div style={{ display: 'flex', flexDirection: 'column', gap: 6 }} variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}>
-                {INCIDENTS.map(inc => (
+                {incidents.map(inc => (
                   <motion.div
                     key={inc.id}
                     className="cc-incident-card"
@@ -427,6 +684,7 @@ export default function EmergencyCommandCenter() {
                   </motion.div>
                 ))}
               </motion.div>
+              )}
             </motion.div>
           </div>
         </div>
@@ -436,13 +694,13 @@ export default function EmergencyCommandCenter() {
           <Mic size={12} className="cc-bottombar-mic" />
           <div className="cc-ticker">
             <div className="cc-ticker-track">
-              {TICKER_ITEMS.map((item, i) => (
+              {tickerItemsResolved.map((item, i) => (
                 <span key={i}>
                   <Triangle size={6} className="cc-ticker-icon" />
                   {item}
                 </span>
               ))}
-              {TICKER_ITEMS.map((item, i) => (
+              {tickerItemsResolved.map((item, i) => (
                 <span key={`dup-${i}`}>
                   <Triangle size={6} className="cc-ticker-icon" />
                   {item}
@@ -453,7 +711,7 @@ export default function EmergencyCommandCenter() {
           <div className="cc-bottom-status">
             <span className="cc-status-ok"><Circle size={6} /> {t('commandCenter.sysOk')}</span>
             <span className="cc-status-accent"><Square size={6} /> {t('commandCenter.uptime')}</span>
-            <span className="cc-status-accent"><Activity size={10} /> {t('commandCenter.events', { count: COUNTERS.reduce((s, c) => s + c.value, 0) })}</span>
+            <span className="cc-status-accent"><Activity size={10} /> {t('commandCenter.events', { count: totalEvents })}</span>
           </div>
         </div>
       </div>
@@ -464,7 +722,7 @@ export default function EmergencyCommandCenter() {
 /* ── Animated Feed Sub-component ── */
 
 function AnimatedFeed({ items, activeIndex, variants }: {
-  items: typeof NOTIFICATIONS
+  items: NotificationItem[]
   activeIndex: number
   variants: { hidden: any; show: any }
 }) {

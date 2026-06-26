@@ -1,36 +1,33 @@
-import { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react'
+import { useEffect, useState, useMemo, useCallback, lazy, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { AnimatedCounter, RippleBtn, PageTransition } from '../components/ui'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { createStagger, createListItem } from '../utils/animations'
+import { RippleBtn, PageTransition } from '../components/ui'
+import ErrorState from '../components/ui/ErrorState'
 import {
-  BarChart3, Activity, ShieldCheck, AlertTriangle, MapPin, Box, FilePlus,
-  LayoutDashboard, ArrowUpRight, Radio, Users, Cloud, Sun, Moon, Clock,
-  CalendarDays, Thermometer, Droplets, Wind, Map as MapIcon,
-  ListChecks, Waypoints, Siren, UserCheck, UserPlus, Handshake,
-  TrendingUp, TrendingDown, ChevronRight, Bell, Zap,
+  AlertTriangle, Box, FilePlus,
+  Map as MapIcon, MapPin, Radio, ShieldCheck,
+  Bell, Zap, Sun,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
-import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useConfirm } from '../hooks/useConfirm'
 import { registerRefreshListener } from '../hooks/useSocket'
-import { escapeHtml } from '../utils/escapeHtml'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
-import ActivityFeed from '../components/ActivityFeed'
 import { useSocket } from '../hooks/useSocket'
-import L from 'leaflet'
-import EmptyState from '../components/EmptyState'
-import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
-import { STATUS_COLORS, PRIORITY_COLORS, MAP_MARKER_COLORS } from '../utils/constants'
+import ActivityFeed from '../components/ActivityFeed'
+import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
 import Badge from '../components/Badge'
+import KpiCards from '../components/KpiCards'
+import WeatherWidget from '../components/WeatherWidget'
+import DashboardMap from '../components/DashboardMap'
+import RiskWidget from '../components/RiskWidget'
+import TaskList from '../components/TaskList'
+import EmptyState from '../components/EmptyState'
 
-interface ResourceSummary {
-  _id: string
-  totalQty?: number
-}
+const RequestsChart = lazy(() => import('../components/RequestsChart'))
 
 interface Item {
   _id: string
@@ -54,6 +51,22 @@ interface OwnerActionsProps {
   onChanged: () => void
 }
 
+interface AdminStats {
+  totalUsers: number
+  totalRequests: number
+  byStatus?: Record<string, number>
+  byCategory?: Record<string, number>
+  byPriority?: Record<string, number>
+  dailyRequests?: Array<{ _id: string; count: number }>
+}
+
+interface WeatherData {
+  temp: number
+  condition: string
+  humidity: number
+  wind: string
+}
+
 function getGreeting(): string {
   const h = new Date().getHours()
   if (h < 12) return 'Good Morning'
@@ -65,47 +78,9 @@ function formatDate(): string {
   return new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
 
-const MOCK_KPIS = [
-  { id: 'resources', label: 'Resources', value: 1283, icon: Box, color: '#0ea5e9', trend: 8 },
-  { id: 'incidents', label: 'Incidents', value: 47, icon: AlertTriangle, color: '#ef4444', trend: 12 },
-  { id: 'volunteers', label: 'Volunteers', value: 856, icon: UserCheck, color: '#22c55e', trend: 4 },
-  { id: 'ngos', label: 'NGOs', value: 34, icon: Handshake, color: '#8b5cf6', trend: -2 },
-  { id: 'pending', label: 'Pending Requests', value: 129, icon: ListChecks, color: '#f97316', trend: 6 },
-]
-
-const MOCK_WEATHER = {
-  temp: 32, condition: 'Partly Cloudy', humidity: 68, wind: '14 km/h',
-}
-
-const MOCK_RISK = { level: 'Moderate', score: 62, color: '#f97316' }
-
-const MOCK_TASKS = [
-  { id: 1, title: 'Review pending evacuation requests', due: 'Today', priority: 'High' },
-  { id: 2, title: 'Restock medical supplies at Zone 4', due: 'Tomorrow', priority: 'Medium' },
-  { id: 3, title: 'Coordinate with NDMA for airlift', due: 'Jun 28', priority: 'Critical' },
-  { id: 4, title: 'Update resource inventory database', due: 'Jun 29', priority: 'Low' },
-]
-
-const MOCK_VOLUNTEER_STATUS = [
-  { status: 'Active', count: 412, color: '#22c55e' },
-  { status: 'Standby', count: 178, color: '#f97316' },
-  { status: 'Off-duty', count: 266, color: '#64748b' },
-]
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.05 } },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
-}
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
-}
+const containerVariants = createStagger(0.05)
+const itemVariants = createListItem(16, 0.35)
+const fadeUp = createListItem(16, 0.3)
 
 export default function Dashboard() {
   const [items, setItems] = useState<Item[]>([])
@@ -118,13 +93,14 @@ export default function Dashboard() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
+
+  const [stats, setStats] = useState<AdminStats | null>(null)
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [adminStatsLoading, setAdminStatsLoading] = useState(true)
+  const [adminStatsError, setAdminStatsError] = useState('')
+
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const mapRef = useRef<HTMLDivElement | null>(null)
-  const mapInstanceRef = useRef<L.Map | null>(null)
-  const markersRef = useRef<L.CircleMarker[]>([])
-  const [mapItems, setMapItems] = useState<Item[]>([])
-  const [mapLoading, setMapLoading] = useState(false)
   const [greeting] = useState(getGreeting)
   const [currentDate] = useState(formatDate)
 
@@ -150,75 +126,40 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, filterPriority, filterCategory, sortBy])
+  }, [page, filterStatus, filterPriority, filterCategory, sortBy, t])
 
-  const loadMapItems = useCallback(async () => {
-    setMapLoading(true)
+  const loadAdminStats = useCallback(async () => {
+    setAdminStatsLoading(true)
+    setAdminStatsError('')
     try {
-      const params: Record<string, string | number | undefined> = { limit: 1000 }
-      if (filterStatus !== 'All') params.status = filterStatus
-      if (filterPriority !== 'All') params.priority = filterPriority
-      if (filterCategory !== 'All') params.category = filterCategory
-      const data = await clientApi.getRequests(params) as { items?: Item[] }
-      setMapItems(data.items || [])
-    } catch {
-      setMapItems([])
+      const data = await clientApi.adminStats() as unknown as AdminStats
+      setStats(data)
+    } catch (e) {
+      setAdminStatsError((e as Error).message || 'Failed to load stats')
     } finally {
-      setMapLoading(false)
+      setAdminStatsLoading(false)
     }
-  }, [filterStatus, filterPriority, filterCategory])
+  }, [])
+
+  const loadWeather = useCallback(async () => {
+    try {
+      const data = await clientApi.getWeatherCurrent(20.5937, 78.9629) as unknown as WeatherData
+      setWeather(data)
+    } catch {
+      // weather is non-critical
+    }
+  }, [])
 
   useEffect(() => { load() }, [load])
-  useEffect(() => { loadMapItems() }, [loadMapItems])
-  useAutoRefresh(load, { interval: 20000 })
+  useEffect(() => { loadAdminStats() }, [loadAdminStats])
+  useEffect(() => { loadWeather() }, [loadWeather])
 
   useEffect(() => {
     return registerRefreshListener(
       ['request:created', 'request:updated', 'request:deleted', 'request:commented', 'resource:allocated'],
-      () => { load(); loadMapItems() }
+      () => { load(); loadAdminStats(); loadWeather() }
     )
-  }, [load, loadMapItems])
-
-  useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return
-    const map = initLeafletMap(mapRef.current)
-    mapInstanceRef.current = map
-    const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
-    window.addEventListener('resize', onResize)
-    if (window.visualViewport) (window.visualViewport as EventTarget).addEventListener('resize', onResize)
-    return () => {
-      window.removeEventListener('resize', onResize)
-      if (window.visualViewport) (window.visualViewport as EventTarget).removeEventListener('resize', onResize)
-      cleanupLeafletMap(map); mapInstanceRef.current = null
-    }
-  }, [])
-
-  useEffect(() => {
-    const map = mapInstanceRef.current
-    if (!map) return
-    markersRef.current.forEach((m) => map.removeLayer(m))
-    markersRef.current = []
-    const filtered = filterStatus === 'All' ? mapItems : mapItems.filter((i) => i.status === filterStatus)
-    filtered.forEach((item) => {
-      if (item.lat == null || item.lng == null) return
-      const color = MAP_MARKER_COLORS[item.status || 'Open'] || 'var(--gov-muted)'
-      const marker = L.circleMarker([item.lat, item.lng], { radius: 8, fillColor: color, color: 'var(--gov-white)', weight: 2, fillOpacity: 0.9 }).addTo(map)
-      marker.bindPopup(`<div style="min-width:180px"><div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title || '')}</div><div style="font-size:12px;color:var(--gov-muted);margin-bottom:4px">${escapeHtml(item.status || '')} | ${escapeHtml(item.priority || '')}</div><div style="font-size:12px;color:var(--gov-muted);margin-bottom:8px">${escapeHtml(item.locationName || '')}</div><a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:var(--gov-blue);color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">${t('common.viewDetails')}</a></div>`)
-      markersRef.current.push(marker)
-    })
-    if (filtered.length > 0) {
-      const bounds = L.latLngBounds(filtered.filter((i) => i.lat != null && i.lng != null).map((i) => [i.lat, i.lng] as [number, number]))
-      if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
-    }
-  }, [mapItems, filterStatus])
-
-  const kpis = useMemo(() => {
-    const open = items.filter((i) => i.status === 'Open').length
-    const inProgress = items.filter((i) => i.status === 'In Progress').length
-    const resolved = items.filter((i) => i.status === 'Resolved' || i.status === 'Fulfilled').length
-    const critical = items.filter((i) => i.priority === 'Critical').length
-    return { total: items.length, open, inProgress, resolved, critical }
-  }, [items])
+  }, [load, loadAdminStats, loadWeather])
 
   const chartData = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -228,8 +169,6 @@ export default function Dashboard() {
     })
     return Object.entries(counts).slice(-14).map(([date, count]) => ({ date, count }))
   }, [items])
-
-  const firstItem = items[0]
 
   const filterOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
@@ -277,7 +216,7 @@ export default function Dashboard() {
 
   return (
     <PageTransition>
-      <motion.div className="container" variants={containerVariants} initial="hidden" animate="show">
+      <motion.div className="container" variants={containerVariants} initial="hidden" animate="visible">
       {/* ── HERO SECTION: Greeting + Weather + Risk ── */}
       <motion.div className="grid-3 mb-lg" variants={fadeUp}>
         {/* Greeting Card */}
@@ -302,96 +241,21 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Weather Card */}
-        <motion.div className="bento-card" variants={itemVariants}>
-          <div className="flex-between mb-sm">
-            <span className="bento-title">{t('commandCenter.weather') || 'Weather'}</span>
-            {MOCK_WEATHER.condition.includes('Cloud') ? <Cloud size={18} className="text-accent" /> :
-             MOCK_WEATHER.condition.includes('Sun') ? <Sun size={18} className="text-accent-orange" /> :
-             <Cloud size={18} className="text-accent" />}
-          </div>
-          <div className="flex items-end gap-sm">
-            <span className="text-3xl font-extrabold" style={{ letterSpacing: 'var(--tracking-tight)' }}>{MOCK_WEATHER.temp}°C</span>
-            <span className="text-sm mb-xs" style={{ color: 'var(--text-muted)' }}>{MOCK_WEATHER.condition}</span>
-          </div>
-          <div className="flex gap-md mt-sm text-xs text-muted">
-            <span className="flex items-center gap-xs"><Droplets size={12} /> {MOCK_WEATHER.humidity}%</span>
-            <span className="flex items-center gap-xs"><Wind size={12} /> {MOCK_WEATHER.wind}</span>
-          </div>
-        </motion.div>
+        <WeatherWidget weather={weather} loading={adminStatsLoading} />
 
         {/* Disaster Risk Card */}
-        <motion.div className="bento-card" variants={itemVariants}>
-          <div className="flex-between mb-sm">
-            <span className="bento-title">Disaster Risk</span>
-            <AlertTriangle size={18} style={{ color: MOCK_RISK.color }} />
-          </div>
-          <div className="flex items-center gap-sm">
-            <span className="text-3xl font-extrabold" style={{ color: MOCK_RISK.color, letterSpacing: 'var(--tracking-tight)' }}>{MOCK_RISK.score}%</span>
-            <span className="text-sm" style={{ color: MOCK_RISK.color }}>{MOCK_RISK.level}</span>
-          </div>
-          <div className="mt-sm" style={{ background: 'var(--border)', borderRadius: 4, height: 4, overflow: 'hidden' }}>
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${MOCK_RISK.score}%` }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              style={{ height: '100%', background: MOCK_RISK.color, borderRadius: 4 }}
-            />
-          </div>
-        </motion.div>
+        <RiskWidget stats={stats} loading={adminStatsLoading} />
       </motion.div>
 
       {/* ── KPI CARDS ── */}
-      <motion.div className="kpi-grid mb-lg" variants={fadeUp}>
-        {MOCK_KPIS.map((kpi) => {
-          const Icon = kpi.icon
-          return (
-            <motion.div key={kpi.id} className="kpi-card" variants={itemVariants}>
-              <div className="kpi-header">
-                <span className="kpi-label">{kpi.label}</span>
-                <Icon size={18} style={{ color: kpi.color }} />
-              </div>
-              <div className="kpi-value" style={{ color: kpi.color }}>
-                <AnimatedCounter to={kpi.value} duration={1.8} />
-              </div>
-              <div className="kpi-change" style={{ color: kpi.trend >= 0 ? 'var(--success)' : 'var(--danger)' }}>
-                {kpi.trend >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                <span className="ml-xs">{Math.abs(kpi.trend)}% vs last week</span>
-              </div>
-            </motion.div>
-          )
-        })}
-      </motion.div>
+      {adminStatsError ? (
+        <ErrorState message={adminStatsError} onRetry={loadAdminStats} />
+      ) : (
+        <KpiCards stats={stats} loading={adminStatsLoading} />
+      )}
 
       {/* ── INTERACTIVE INDIA MAP ── */}
-      <motion.div className="bento-grid mb-lg" variants={fadeUp}>
-        <div className="bento-card bento--wide">
-          <div className="bento-header">
-            <span className="bento-title"><MapIcon size={14} /> {t('dashboard.mapView')}</span>
-            <div className="flex gap-sm">
-              <button onClick={() => navigate('/map')} className="text-xs" style={{ color: 'var(--accent)' }}>{t('dashboard.viewAll')}</button>
-            </div>
-          </div>
-          <div className="relative dashboard-map">
-            {mapLoading && (
-              <div className="flex-center inset-0 z-100 bg-elevated" style={{ position: 'absolute' }}>
-                <div className="loading-spinner" />
-              </div>
-            )}
-            <div ref={mapRef} className="w-full h-full" />
-          </div>
-          {!mapLoading && mapItems.length === 0 && (
-            <EmptyState icon="🗺️" title={t('dashboard.noRequests')} />
-          )}
-          <div className="flex flex-gap-sm mt-sm flex-wrap">
-            {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
-              <div key={status} className="gap-row-xs text-xs">
-                <div className="icon-12" style={{ background: color }} />
-                <span>{t(`statuses.${status}`)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+      <DashboardMap />
 
       {/* ── BOTTOM GRID: Charts + Activity + Tasks + Quick Actions ── */}
       <motion.div className="grid-2 mb-lg" variants={fadeUp}>
@@ -399,27 +263,9 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           {/* Charts */}
           <motion.div className="bento-card mb-md" variants={itemVariants}>
-            <div className="bento-header">
-              <span className="bento-title"><BarChart3 size={14} /> Requests Over Time</span>
-            </div>
-            {chartData.length > 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
-                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
-                    <YAxis tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 11, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }} />
-                    <Bar dataKey="count" fill="var(--accent)" fillOpacity={0.6} radius={[2, 2, 0, 0]} animationBegin={200} animationDuration={800} animationEasing="ease-out" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </motion.div>
-            ) : (
-              <div className="text-sm text-muted p-lg text-center">No request data available</div>
-            )}
+            <Suspense fallback={<div className="text-sm text-muted p-lg text-center">Loading chart...</div>}>
+              <RequestsChart data={chartData} />
+            </Suspense>
           </motion.div>
 
           {/* Recent Activities */}
@@ -434,51 +280,7 @@ export default function Dashboard() {
         {/* Right Column */}
         <motion.div variants={itemVariants}>
           {/* Upcoming Tasks */}
-          <motion.div className="bento-card mb-md" variants={itemVariants}>
-            <div className="bento-header">
-              <span className="bento-title"><ListChecks size={14} /> Upcoming Tasks</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {MOCK_TASKS.map((task) => (
-                <motion.div
-                  key={task.id}
-                  className="listCard px-md py-sm cursor-default"
-                  whileHover={{ scale: 1.01 }}
-                >
-                  <div className="flex-between gap-sm">
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm text-bold">{task.title}</div>
-                      <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{task.due}</div>
-                    </div>
-                    <Badge
-                      label={task.priority}
-                      colors={PRIORITY_COLORS as unknown as Record<string, { bg: string; border: string; text: string }>}
-                      colorKey={task.priority}
-                    />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Volunteer Status */}
-          <motion.div className="bento-card mb-md" variants={itemVariants}>
-            <div className="bento-header">
-              <span className="bento-title"><UserCheck size={14} /> Volunteer Status</span>
-            </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              {MOCK_VOLUNTEER_STATUS.map((v) => (
-                <motion.div
-                  key={v.status}
-                  className="flex-1 text-center bg-subtle rounded p-md"
-                  whileHover={{ scale: 1.03 }}
-                >
-                  <div className="text-xl font-extrabold" style={{ color: v.color }}>{v.count}</div>
-                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{v.status}</div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+          <TaskList requests={items} loading={loading} />
 
           {/* Quick Actions */}
           <motion.div className="bento-card" variants={itemVariants}>
@@ -522,7 +324,7 @@ export default function Dashboard() {
         <div className="flex-between mb-md">
           <h2 className="text-lg text-bold m-0">{t('dashboard.allRequests')}</h2>
           <div className="flex flex-gap-sm">
-            <RippleBtn onClick={loadMapItems} className="text-sm p-xs" style={{ color: 'var(--gov-blue)', border: '1px solid var(--border)', borderRadius: 6, background: 'transparent' }}>
+            <RippleBtn onClick={load} className="text-sm p-xs" style={{ color: 'var(--gov-blue)', border: '1px solid var(--border)', borderRadius: 6, background: 'transparent' }}>
               {t('dashboard.refresh') || 'Refresh'}
             </RippleBtn>
           </div>
@@ -603,7 +405,7 @@ export default function Dashboard() {
   )
 }
 
-const OwnerActions = memo(function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
+const OwnerActions = (function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const toast = useToast()

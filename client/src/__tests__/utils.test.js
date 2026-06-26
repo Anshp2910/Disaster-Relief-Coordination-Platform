@@ -109,7 +109,7 @@ describe('formatDate', () => {
 
   it('returns a string for invalid dates without crashing', () => {
     const result = formatDate('not-a-date')
-    expect(result).toBeTruthy()
+    expect(result).toBe('')
   })
 })
 
@@ -190,5 +190,23 @@ describe('cleanupLeafletMap', () => {
     const map = { remove }
     cleanupLeafletMap(map)
     expect(remove).toHaveBeenCalled()
+  })
+})
+
+describe('formatDate', () => {
+  it('formats ISO date string', () => {
+    const result = formatDate('2024-01-15T10:30:00Z')
+    expect(result).toBeTruthy()
+    expect(typeof result).toBe('string')
+  })
+
+  it('handles invalid date', () => {
+    const result = formatDate('not-a-date')
+    expect(result).toBe('')
+  })
+
+  it('handles null/undefined', () => {
+    expect(formatDate(null)).toBe('')
+    expect(formatDate(undefined)).toBe('')
   })
 })

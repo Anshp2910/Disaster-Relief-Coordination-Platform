@@ -382,3 +382,12 @@ describe('useFormValidation', () => {
     })
   })
 })
+
+import useFocusTrap from '../hooks/useFocusTrap'
+
+describe('useFocusTrap', () => {
+  it('returns a ref object', () => {
+    const { result } = renderHook(() => useFocusTrap(true))
+    expect(result.current).toHaveProperty('current')
+  })
+})

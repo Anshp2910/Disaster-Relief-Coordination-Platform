@@ -52,7 +52,7 @@ export default function StepForm({
             >
               <div className="sf-step-indicator">
                 {isDone ? (
-                  <Check size={14} />
+                  <Check size={14} aria-hidden="true" />
                 ) : (
                   <span>{i + 1}</span>
                 )}
@@ -102,7 +102,7 @@ export default function StepForm({
               onClick={onPrev}
               disabled={loading}
             >
-              <ChevronLeft size={16} /> {prevLabel}
+              <ChevronLeft size={16} aria-hidden="true" /> {prevLabel}
             </button>
           )}
           {isLast ? (
@@ -112,7 +112,7 @@ export default function StepForm({
               onClick={onComplete}
               disabled={!canNext || loading}
             >
-              {loading ? 'Processing...' : completeLabel} {!loading && <Check size={16} />}
+              {loading ? 'Processing...' : completeLabel} {!loading && <Check size={16} aria-hidden="true" />}
             </button>
           ) : (
             <button
@@ -121,7 +121,7 @@ export default function StepForm({
               onClick={onNext}
               disabled={!canNext || loading}
             >
-              {nextLabel} <ChevronRight size={16} />
+              {nextLabel} <ChevronRight size={16} aria-hidden="true" />
             </button>
           )}
         </div>

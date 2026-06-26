@@ -1,8 +1,8 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Search, MapPin, Crosshair, Target, Users, Package, Activity } from 'lucide-react'
-import { PageHeader, ErrorState, DataTable, type ColumnDef, RippleBtn, PageTransition } from '../components/ui'
+import { MapPin, Crosshair, Target, Package, Activity } from 'lucide-react'
+import { PageHeader, ErrorState, DataTable, RippleBtn, PageTransition } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
@@ -399,7 +399,7 @@ export default function Geofencing() {
               { id: 'resources', header: 'Resources', accessor: 'resourcesCount', sortable: true },
             ]}
             data={[...checkHistory].reverse()}
-            keyExtractor={(_, i) => i}
+            keyExtractor={(entry: CheckHistoryEntry) => entry.timestamp.getTime()}
             searchable={false}
             sortable
             exportable={false}

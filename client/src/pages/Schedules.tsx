@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Calendar, Plus, Edit, Trash2, Search, Filter, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, Pagination, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
-import EmptyState from '../components/EmptyState'
+import { createStagger, createListItem } from '../utils/animations'
+import { Calendar, Plus, Edit, Trash2, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
@@ -80,15 +80,8 @@ function formatDate(d: string) {
   })
 }
 
-const containerVariants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.05 } },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const } },
-}
+const containerVariants = createStagger(0.05)
+const itemVariants = createListItem(12, 0.3)
 
 const StatusButton = memo(function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color, scheduleId, onStatusChange }: StatusButtonProps) {
   if (currentStatus !== expectedStatus) return null
@@ -144,6 +137,7 @@ export default function Schedules() {
       if (filterZone !== 'All') params.zoneId = filterZone
       if (dateFrom) params.startDate = dateFrom
       if (dateTo) params.endDate = dateTo
+      if (debouncedSearch) params.search = debouncedSearch
       const data = await clientApi.getSchedules(params) as { items?: ScheduleItem[]; pages?: number }
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
@@ -152,7 +146,7 @@ export default function Schedules() {
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, filterShift, filterZone, dateFrom, dateTo])
+  }, [page, filterStatus, filterShift, filterZone, dateFrom, dateTo, debouncedSearch])
 
   async function loadDropdowns() {
     try {
@@ -386,7 +380,7 @@ export default function Schedules() {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate="show"
+          animate="visible"
         >
           <div className="flex flex-between flex-gap-sm mt-md">
             <button onClick={() => setWeekOffset((p) => p - 1)} className="text-sm flex items-center gap-xs" aria-label={t('common.previous')}>
