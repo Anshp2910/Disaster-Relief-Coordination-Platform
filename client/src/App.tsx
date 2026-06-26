@@ -6,6 +6,8 @@ import { retryLazy } from './utils/retryLazy'
 
 const Login = retryLazy(() => import('./pages/Login'))
 const Register = retryLazy(() => import('./pages/Register'))
+const ForgotPassword = retryLazy(() => import('./pages/ForgotPassword'))
+const ResetPassword = retryLazy(() => import('./pages/ResetPassword'))
 const Dashboard = retryLazy(() => import('./pages/Dashboard'))
 const CreateRequest = retryLazy(() => import('./pages/CreateRequest'))
 const EditRequest = retryLazy(() => import('./pages/EditRequest'))
@@ -59,6 +61,8 @@ export default function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/public" element={<PublicStatus />} />
               <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
               <Route path="/map" element={<RequireAuth><MapOverview /></RequireAuth>} />

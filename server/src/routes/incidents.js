@@ -106,6 +106,7 @@ incidentsRouter.post('/', requireAuth, requireAdmin, validate('createIncident'),
   try {
     const { name, description, disasterType, severity, status, zones, startDate, affectedPopulation, centerLat, centerLng } = req.body
     const incident = new Incident({ name, description, disasterType, severity, status, zones, startDate, affectedPopulation, centerLat, centerLng, createdBy: req.user._id })
+    incident.auditLog.push({ action: 'created', by: req.user._id })
     await incident.save()
     return res.status(201).json({ item: incident })
   } catch (err) {
@@ -120,9 +121,14 @@ incidentsRouter.put('/:id', requireAuth, requireAdmin, validateObjectId('id'), v
     if (!incident) return res.status(404).json({ error: 'Incident not found' })
 
     const fields = ['name', 'description', 'disasterType', 'severity', 'status', 'zones', 'endDate', 'affectedPopulation', 'centerLat', 'centerLng']
+    const changes = []
     for (const f of fields) {
-      if (req.body[f] !== undefined) incident[f] = req.body[f]
+      if (req.body[f] !== undefined) {
+        changes.push(`${f}: ${JSON.stringify(incident[f])} → ${JSON.stringify(req.body[f])}`)
+        incident[f] = req.body[f]
+      }
     }
+    incident.auditLog.push({ action: 'updated', by: req.user._id, details: changes.join('; ') || 'updated' })
     await incident.save()
     return res.json({ item: incident })
   } catch (err) {
@@ -135,6 +141,8 @@ incidentsRouter.delete('/:id', requireAuth, requireAdmin, validateObjectId('id')
   try {
     const incident = await Incident.findById(req.params.id)
     if (!incident) return res.status(404).json({ error: 'Incident not found' })
+    incident.auditLog.push({ action: 'deleted', by: req.user._id, details: incident.name })
+    await incident.save()
     await incident.deleteOne()
     return res.json({ ok: true })
   } catch (err) {

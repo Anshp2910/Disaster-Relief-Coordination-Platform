@@ -280,6 +280,18 @@ export default function RequestDetail() {
     }
   }
 
+  async function handleDeleteFile(fileId: string) {
+    const ok = await confirm({ message: 'Delete this file?', danger: true })
+    if (!ok) return
+    try {
+      const data = await clientApi.deleteFile(id!, fileId) as { files: FileItem[] }
+      setItem((prev) => ({ ...prev!, files: data.files }))
+      toast.success('File deleted')
+    } catch (err) {
+      toast.error((err as Error).message)
+    }
+  }
+
   async function handleDeleteComment(commentId: string) {
     const ok = await confirm({ message: t('dashboard.deleteConfirm'), danger: true })
     if (!ok) return
@@ -446,6 +458,9 @@ export default function RequestDetail() {
                     <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm text-accent-blue" aria-label={`${t('requestDetail.open')} ${f.filename}`}>
                       <Download size={14} />
                     </a>
+                    {(currentUser?._id === (f as Record<string, unknown>).uploadedBy || currentUser?.role === 'admin') && (
+                      <button onClick={() => handleDeleteFile(f._id!)} className="text-xs p-xs text-danger" aria-label={`${t('common.delete')} ${f.filename}`}><Trash2 size={14} /></button>
+                    )}
                   </div>
                 ))}
               </div>

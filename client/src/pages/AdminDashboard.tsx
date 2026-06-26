@@ -608,28 +608,23 @@ export default function AdminDashboard() {
     }
   }, [toast, t])
 
-  function handleExport(format: string) {
-    clientApi.adminExportRequests(format)
-      .then((data: unknown) => {
-        if (format === 'csv') {
-          const blob = new Blob([data as BlobPart], { type: 'text/csv' })
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = 'requests-export.csv'
-          a.click()
-          URL.revokeObjectURL(url)
-        } else {
-          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = 'requests-export.json'
-          a.click()
-          URL.revokeObjectURL(url)
-        }
-      })
-      .catch((e: Error) => { toast?.error?.(e.message || 'Export failed') })
+  async function handleExport(format: string) {
+    try {
+      if (format === 'csv') {
+        await clientApi.adminExportRequests('csv')
+      } else {
+        const data = await clientApi.adminExportRequests('json')
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'requests-export.json'
+        a.click()
+        URL.revokeObjectURL(url)
+      }
+    } catch (e) {
+      toast?.error?.((e as Error).message || 'Export failed')
+    }
   }
 
   const tabs = [

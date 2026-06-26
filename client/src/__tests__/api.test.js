@@ -55,6 +55,36 @@ describe('clientApi', () => {
       expect(headers.Authorization).toBeUndefined()
     })
 
+    it('forgotPassword makes POST to /api/auth/forgot-password without auth', async () => {
+      fetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({ ok: true }) })
+      const result = await clientApi.forgotPassword('test@test.com')
+      expect(result).toEqual({ ok: true })
+      expect(fetch).toHaveBeenCalledWith(
+        `${BASE}/api/auth/forgot-password`,
+        expect.objectContaining({ method: 'POST', body: JSON.stringify({ email: 'test@test.com' }) })
+      )
+    })
+
+    it('resetPassword makes POST to /api/auth/reset-password without auth', async () => {
+      fetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({ ok: true }) })
+      const result = await clientApi.resetPassword('token123', 'NewPass123!')
+      expect(result).toEqual({ ok: true })
+      expect(fetch).toHaveBeenCalledWith(
+        `${BASE}/api/auth/reset-password`,
+        expect.objectContaining({ method: 'POST', body: JSON.stringify({ token: 'token123', password: 'NewPass123!' }) })
+      )
+    })
+
+    it('refreshToken makes POST to /api/auth/refresh without auth', async () => {
+      fetch.mockResolvedValue({ ok: true, json: () => Promise.resolve({ token: 'new-token' }) })
+      const result = await clientApi.refreshToken('old-token')
+      expect(result).toEqual({ token: 'new-token' })
+      expect(fetch).toHaveBeenCalledWith(
+        `${BASE}/api/auth/refresh`,
+        expect.objectContaining({ method: 'POST', body: JSON.stringify({ token: 'old-token' }) })
+      )
+    })
+
     it('me includes auth token from localStorage', async () => {
       localStorage.setItem('token', 'my-token')
       fetch.mockResolvedValue({
@@ -230,6 +260,21 @@ describe('clientApi', () => {
       expect(fetch).toHaveBeenCalledWith(
         `${BASE}/api/sos/broadcast`,
         expect.objectContaining({ method: 'POST' })
+      )
+    })
+  })
+
+  describe('file endpoints', () => {
+    it('deleteFile sends DELETE', async () => {
+      fetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ files: [] }),
+      })
+      const result = await clientApi.deleteFile('req123', 'file456')
+      expect(result).toEqual({ files: [] })
+      expect(fetch).toHaveBeenCalledWith(
+        `${BASE}/api/requests/req123/files/file456`,
+        expect.objectContaining({ method: 'DELETE' })
       )
     })
   })

@@ -1,5 +1,12 @@
 import mongoose from 'mongoose'
 
+const AuditEntrySchema = new mongoose.Schema({
+  action: { type: String, required: true },
+  by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  details: { type: String },
+  timestamp: { type: Date, default: Date.now },
+}, { _id: false })
+
 const IncidentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 200 },
@@ -30,6 +37,7 @@ const IncidentSchema = new mongoose.Schema(
       coordinates: { type: [Number], index: '2dsphere' },
     },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    auditLog: [AuditEntrySchema],
   },
   { timestamps: true },
 )

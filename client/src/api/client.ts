@@ -89,6 +89,9 @@ async function exportCSV(path: string, filename: string): Promise<void> {
 export const clientApi = {
   register: (payload: Record<string, unknown>) => apiFetch('/api/auth/register', { method: 'POST', body: payload, auth: false }),
   login: (payload: Record<string, unknown>) => apiFetch('/api/auth/login', { method: 'POST', body: payload, auth: false }),
+  forgotPassword: (email: string) => apiFetch('/api/auth/forgot-password', { method: 'POST', body: { email }, auth: false }),
+  resetPassword: (token: string, password: string) => apiFetch('/api/auth/reset-password', { method: 'POST', body: { token, password }, auth: false }),
+  refreshToken: (token: string) => apiFetch('/api/auth/refresh', { method: 'POST', body: { token }, auth: false }),
   me: () => apiFetch('/api/auth/me'),
   updateProfile: (payload: Record<string, unknown>) => apiFetch('/api/auth/profile', { method: 'PUT', body: payload }),
   getNotifications: () => apiFetch('/api/auth/notifications'),
@@ -105,6 +108,7 @@ export const clientApi = {
   unclaimRequest: (id: string) => apiFetch(`/api/requests/${id}/unclaim`, { method: 'POST' }),
   addComment: (id: string, text: string) => apiFetch(`/api/requests/${id}/comments`, { method: 'POST', body: { text } }),
   deleteComment: (id: string, commentId: string) => apiFetch(`/api/requests/${id}/comments/${commentId}`, { method: 'DELETE' }),
+  deleteFile: (requestId: string, fileId: string) => apiFetch(`/api/requests/${requestId}/files/${fileId}`, { method: 'DELETE' }),
   uploadFiles: async (id: string, files: File[]) => {
     const formData = new FormData()
     for (const file of files) {
@@ -121,7 +125,10 @@ export const clientApi = {
   adminUpdateUserRole: (id: string, role: string) => apiFetch(`/api/admin/users/${id}/role`, { method: 'PUT', body: { role } }),
   adminDeleteUser: (id: string) => apiFetch(`/api/admin/users/${id}`, { method: 'DELETE' }),
   adminDeleteRequest: (id: string) => apiFetch(`/api/admin/requests/${id}`, { method: 'DELETE' }),
-  adminExportRequests: (format: string = 'json') => apiFetch(`/api/admin/export/requests?format=${format}`),
+  adminExportRequests: (format: string = 'json') => {
+    if (format === 'csv') return exportCSV('/api/admin/export/requests?format=csv', 'requests-export.csv')
+    return apiFetch(`/api/admin/export/requests?format=${format}`)
+  },
   adminSeedDemo: () => apiFetch('/api/admin/seed-demo', { method: 'POST', auth: true }),
 
   getResources: (params: Record<string, string | number | boolean | undefined | null> = {}) => {

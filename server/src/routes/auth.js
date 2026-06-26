@@ -155,6 +155,48 @@ authRouter.post('/login', validate('login'), async (req, res) => {
   }
 })
 
+authRouter.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body || {}
+    if (!email) return res.status(400).json({ error: 'Email required' })
+
+    const user = await User.findOne({ email })
+    if (!user) return res.json({ ok: true })
+
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    user.resetPasswordToken = resetToken
+    user.resetPasswordExpires = new Date(Date.now() + 3600000)
+    await user.save()
+
+    console.log(`[auth] Reset token for ${email}: ${resetToken}`)
+
+    return res.json({ ok: true })
+  } catch (err) {
+    console.error('[auth] forgot-password error:', err.message)
+    return res.status(500).json({ error: 'Server error' })
+  }
+})
+
+authRouter.post('/reset-password', async (req, res) => {
+  try {
+    const { token, password } = req.body || {}
+    if (!token || !password) return res.status(400).json({ error: 'Token and password required' })
+
+    const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: new Date() } })
+    if (!user) return res.status(400).json({ error: 'Invalid or expired reset token' })
+
+    await user.setPassword(password)
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpires = undefined
+    await user.save()
+
+    return res.json({ ok: true })
+  } catch (err) {
+    console.error('[auth] reset-password error:', err.message)
+    return res.status(500).json({ error: 'Server error' })
+  }
+})
+
 authRouter.post('/refresh', async (req, res) => {
   try {
     const { token } = req.body || {}

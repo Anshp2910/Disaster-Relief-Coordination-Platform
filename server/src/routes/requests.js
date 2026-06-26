@@ -381,3 +381,32 @@ requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), upload.ar
     return res.status(500).json({ error: 'Server error' })
   }
 })
+
+requestsRouter.delete('/:id/files/:fileId', requireAuth, validateObjectId('id'), validateObjectId('fileId'), async (req, res) => {
+  try {
+    const { id, fileId } = req.params
+    const item = await Request.findById(id)
+    if (!item) return res.status(404).json({ error: 'Not found' })
+
+    const file = item.files.id(fileId)
+    if (!file) return res.status(404).json({ error: 'File not found' })
+
+    if (file.uploadedBy?.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized' })
+    }
+
+    item.files.pull(fileId)
+    item.auditLog.push({ action: 'fileDeleted', by: req.user._id, details: file.filename || 'file' })
+    await item.save()
+
+    const io = req.app.get('io')
+    if (io) {
+      try { io.emit('request:updated', { item: { _id: id, files: item.files } }) } catch {}
+    }
+
+    return res.json({ files: item.files })
+  } catch (err) {
+    console.error('[requests] file delete error:', err.message)
+    return res.status(500).json({ error: 'Server error' })
+  }
+})

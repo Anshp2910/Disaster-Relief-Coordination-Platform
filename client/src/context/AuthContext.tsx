@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react'
 import IdleWarningModal from '../components/IdleWarningModal'
 import { safeGetItem, safeSetItem, safeRemoveItem, parseUser } from '../utils/storage'
+import { clientApi } from '../api/client'
 
 interface User {
   id?: string
@@ -106,18 +107,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(t)
   }, [idleWarning, logout])
 
+  const refreshAuthToken = useCallback(async () => {
+    const currentToken = safeGetItem('token')
+    if (!currentToken) return
+    try {
+      const res = await clientApi.refreshToken(currentToken)
+      const newToken = (res as { token: string }).token
+      if (newToken) {
+        safeSetItem('token', newToken)
+        setToken(newToken)
+      }
+    } catch {
+      logout()
+    }
+  }, [logout])
+
   useEffect(() => {
     const expiry = parseTokenExpiry()
-    if (expiry && Date.now() >= expiry) logout()
-  }, [])
+    if (expiry && Date.now() >= expiry) { logout(); return }
+    const msUntilExpiry = expiry ? expiry - Date.now() : 0
+    if (msUntilExpiry > 0 && msUntilExpiry < 300000) refreshAuthToken()
+  }, [logout, refreshAuthToken])
 
   useEffect(() => {
     const interval = setInterval(() => {
       const expiry = parseTokenExpiry()
-      if (expiry && Date.now() >= expiry) logout()
+      if (!expiry) return
+      const msUntilExpiry = expiry - Date.now()
+      if (msUntilExpiry <= 0) { logout(); return }
+      if (msUntilExpiry < 300000) refreshAuthToken()
     }, 60000)
     return () => clearInterval(interval)
-  }, [logout])
+  }, [logout, refreshAuthToken])
 
   return (
     <AuthContext.Provider value={{ user, token, isAuthenticated, isAdmin, login, logout, updateUser, idleWarning, resetIdleTimer }}>

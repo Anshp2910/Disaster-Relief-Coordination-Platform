@@ -216,7 +216,7 @@ export default function Login() {
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
                   <span>Remember me</span>
                 </label>
-                <button type="button" className="auth-forgot">Forgot password?</button>
+                <Link to="/forgot-password" className="auth-forgot">{t('auth.forgotPassword')}</Link>
               </motion.div>
 
               <motion.button
