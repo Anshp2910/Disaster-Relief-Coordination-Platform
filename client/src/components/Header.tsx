@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
-import { Sun, Moon, Search, User, LogOut } from 'lucide-react'
+import { Sun, Moon, Search, User, LogOut, AlertTriangle } from 'lucide-react'
 import NotificationBell from './NotificationBell'
 
 interface Language {
@@ -38,10 +38,20 @@ export default function Header() {
     try { localStorage.setItem('language', langCode) } catch {}
   }
 
+  function toggleEmergencyMode() {
+    const html = document.documentElement
+    html.classList.toggle('emergency-mode')
+    const isEmergency = html.classList.contains('emergency-mode')
+    try { localStorage.setItem('emergencyMode', isEmergency ? 'true' : 'false') } catch {}
+  }
+
+  const isEmergencyMode = document.documentElement?.classList?.contains('emergency-mode') || 
+    (typeof window !== 'undefined' && localStorage.getItem('emergencyMode') === 'true')
+
   return (
     <header role="banner">
 
-      <div className="gov-top-strip">
+          <div className="gov-top-strip">
         <div className="container flex-between">
           <span className="gov-top-strip-text">{t('topStrip')}</span>
           <div className="flex flex-gap-sm items-center">
@@ -72,6 +82,19 @@ export default function Header() {
                 {i18n.language.toUpperCase()}
               </div>
             </div>
+            <button 
+              onClick={toggleEmergencyMode}
+              className={`theme-toggle relative ${isEmergencyMode ? 'border-[--danger] bg-[--danger-50]' : ''}`}
+              aria-label={isEmergencyMode ? 'Disable emergency mode' : 'Activate emergency mode'}
+              title={isEmergencyMode ? 'Emergency Mode Active' : 'Activate Emergency Mode'}
+            >
+              <AlertTriangle size={14} 
+                className={isEmergencyMode ? 'text-[--danger]' : 'text-[--warning]'} 
+                aria-hidden="true" />
+              {isEmergencyMode && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-[--danger] rounded-full animate-pulse" />
+              )}
+            </button>
             <button onClick={toggleTheme} className="theme-toggle" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} title={theme === 'light' ? 'Dark mode' : 'Light mode'}>
               {theme === 'light' ? <Moon size={14} aria-hidden="true" /> : <Sun size={14} aria-hidden="true" />}
             </button>
@@ -87,16 +110,17 @@ export default function Header() {
             <div className="gov-app-subtitle">{t('appSubtitle')}</div>
           </div>
           <div className="flex-1" />
-          {isAuthenticated && !isAuthPage && (
+              {isAuthenticated && !isAuthPage && (
             <nav aria-label="Main navigation" className="gov-header-actions">
               <button
                 className="cmd-hint"
                 onClick={() => window.dispatchEvent(new CustomEvent('toggle-cmd-palette'))}
                 aria-label="Open command palette"
-                title="Open command palette"
+                title="Open command palette - Press Ctrl+K"
               >
                 <Search size={12} aria-hidden="true" />
                 <kbd>Ctrl+K</kbd>
+                <span className="sr-only">- Command Palette</span>
               </button>
               <NotificationBell />
               {isAdmin && (
