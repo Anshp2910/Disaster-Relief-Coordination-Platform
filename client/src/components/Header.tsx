@@ -45,16 +45,33 @@ export default function Header() {
         <div className="container flex-between">
           <span className="gov-top-strip-text">{t('topStrip')}</span>
           <div className="flex flex-gap-sm items-center">
-            <select
-              value={i18n.language}
-              onChange={(e) => changeLanguage(e.target.value)}
-              className="lang-select"
-              aria-label={t('header.selectLanguage')}
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.code} value={l.code}>{l.label}</option>
-              ))}
-            </select>
+            <div className="relative" style={{ minWidth: '150px' }}>
+              <select
+                value={i18n.language}
+                onChange={(e) => changeLanguage(e.target.value)}
+                className="lang-select w-full appearance-none font-medium"
+                aria-label={t('header.selectLanguage')}
+              >
+                {LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code} className="bg-[--bg-card] text-[--text]">
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                  <path d="M1 1l5 5 5-5" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div className="ml-4 hidden md:block">
+              <div className="text-xs text-[--text-muted] font-medium mb-1">
+                🌐 {LANGUAGES.find(l => l.code === i18n.language)?.label}
+              </div>
+              <div className="text-[--accent] text-xs font-semibold">
+                {i18n.language.toUpperCase()}
+              </div>
+            </div>
             <button onClick={toggleTheme} className="theme-toggle" aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`} title={theme === 'light' ? 'Dark mode' : 'Light mode'}>
               {theme === 'light' ? <Moon size={14} aria-hidden="true" /> : <Sun size={14} aria-hidden="true" />}
             </button>

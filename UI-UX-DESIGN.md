@@ -151,9 +151,10 @@ Light mode shadows are softer (max 0.08 alpha).
 ```
 
 - **Top strip**: Dark in both modes (government banner)
-- **Header**: Sticky, glass-blur, 2px blue accent glow line on top
-- **Nav**: Horizontal scroll, active link has underline + blue highlight
-- **Mobile**: Slide-in drawer with backdrop, focus trap, body scroll lock
+  - **Language Selector**: Glassmorphic dropdown (`.input-pill` style) integrated into top strip with smooth transitions
+  - **Header**: Sticky, glass-blur, 2px blue accent glow line on top
+  - **Nav**: Horizontal scroll, active link has underline + blue highlight
+  - **Mobile**: Slide-in drawer with backdrop, focus trap, body scroll lock
 
 ### Card System
 - `.card`: Glass background, rounded-lg, subtle border, hover elevation
@@ -256,7 +257,7 @@ Key responsive components:
 | pa | Punjabi | No |
 | ur | Urdu | **Yes** |
 
-- Language selector in top strip
+- Language selector in top strip with glassmorphism design
 - All keys exist in all locales (fallback to English where untranslated)
 - RTL CSS: `[dir="rtl"]` selectors for margins, paddings, flex directions
 
