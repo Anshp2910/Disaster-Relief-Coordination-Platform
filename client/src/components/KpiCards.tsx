@@ -27,7 +27,7 @@ const KPI_CONFIG = (t: (key: string) => string) => [
   { id: 'volunteers', label: t('kpi.volunteers'), icon: UserCheck, color: 'var(--blue-500)' },
 ]
 
-function KpiCard({ label, icon: Icon, color, value, loading, reduced }: { label: string; icon: React.ElementType; color: string; value: number; loading: boolean; reduced: boolean }) {
+function KpiCard({ label, icon: Icon, color, value, loading, reduced, liveLabel }: { label: string; icon: React.ElementType; color: string; value: number; loading: boolean; reduced: boolean; liveLabel: string }) {
   return (
     <motion.div className="kpi-card" variants={reduced ? {} : cardVariants}>
       <div className="kpi-header">
@@ -39,7 +39,7 @@ function KpiCard({ label, icon: Icon, color, value, loading, reduced }: { label:
       </div>
       <div className="kpi-change" style={{ color: 'var(--success)' }}>
         <TrendingUp size={12} />
-        <span className="ml-xs">{t('kpi.live')}</span>
+        <span className="ml-xs">{liveLabel}</span>
       </div>
     </motion.div>
   )
@@ -60,7 +60,7 @@ function KpiCardsInner({ stats, loading = false }: KpiCardsProps) {
   return (
     <div className="kpi-grid mb-lg">
       {config.map((kpi) => (
-        <KpiCard key={kpi.id} label={kpi.label} icon={kpi.icon} color={kpi.color} value={values[kpi.id] ?? 0} loading={loading} reduced={reduced} />
+        <KpiCard key={kpi.id} label={kpi.label} icon={kpi.icon} color={kpi.color} value={values[kpi.id] ?? 0} loading={loading} reduced={reduced} liveLabel={t('kpi.live')} />
       ))}
     </div>
   )
