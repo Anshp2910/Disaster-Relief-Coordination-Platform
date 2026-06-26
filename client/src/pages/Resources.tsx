@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Package, Plus, Edit, Trash2, Search, CheckCircle, XCircle, Filter, Download, Box, AlertTriangle, CheckSquare } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, Pagination } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, Pagination, ModernSelect } from '../components/ui'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import { SkeletonList } from '../components/Skeleton'
@@ -357,26 +357,104 @@ export default function Resources() {
         onClose={() => setShowForm(false)}
         title={editItem ? t('resources.editResource') : t('resources.addNewResource')}
       >
-        <form onSubmit={handleSubmit} className="grid-3-responsive">
-          <label htmlFor="res-name" className="sr-only">{t('resources.resourceNamePlaceholder')}</label>
-          <input id="res-name" placeholder={t('resources.resourceNamePlaceholder')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} required maxLength={200} className="w-full col-span-full" />
-          <label htmlFor="res-category" className="sr-only">{t('resources.category')}</label>
-          <select id="res-category" value={form.category} onChange={(e) => updateForm('category', e.target.value)}>
-            {CATEGORIES.filter((c) => c !== 'All').map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-          <div className="flex flex-gap-sm">
-            <label htmlFor="res-qty" className="sr-only">{t('resources.quantity')}</label>
-            <input id="res-qty" type="number" placeholder={t('resources.quantity')} value={form.quantity} onChange={(e) => updateForm('quantity', e.target.value)} required min="0" className="flex-1" />
-            <label htmlFor="res-unit" className="sr-only">{t('resources.unitPlaceholder')}</label>
-            <input id="res-unit" placeholder={t('resources.unitPlaceholder')} value={form.unit} onChange={(e) => updateForm('unit', e.target.value)} required className="flex-1" />
+        <form onSubmit={handleSubmit}>
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.name ? 'ff-focused' : ''}`}>
+              <input
+                id="res-name"
+                type="text"
+                value={form.name}
+                onChange={(e) => updateForm('name', e.target.value)}
+                required
+                maxLength={200}
+                className={`ff-input ${form.name ? 'ff-input-filled' : ''}`}
+                placeholder={t('resources.resourceNamePlaceholder')}
+              />
+              <label htmlFor="res-name" className={`ff-label ${form.name ? 'ff-label-float' : ''}`}>
+                {t('resources.resourceNamePlaceholder')}
+              </label>
+            </div>
           </div>
-          <label htmlFor="res-location" className="sr-only">{t('resources.location')}</label>
-          <input id="res-location" placeholder={t('resources.location')} value={form.locationName} onChange={(e) => updateForm('locationName', e.target.value)} required className="col-span-full" />
-          <label htmlFor="res-notes" className="sr-only">{t('resources.notesOptional')}</label>
-          <textarea id="res-notes" placeholder={t('resources.notesOptional')} value={form.notes} onChange={(e) => updateForm('notes', e.target.value)} rows={2} className="col-span-full" />
-          <div className="col-span-full flex flex-gap-sm">
+
+          <div className="ff-group">
+            <ModernSelect
+              label={t('resources.category')}
+              options={CATEGORIES.filter((c) => c !== 'All').map((c) => ({ label: c, value: c }))}
+              value={form.category}
+              onChange={(v) => updateForm('category', v)}
+            />
+          </div>
+
+          <div className="flex flex-gap-sm">
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.quantity ? 'ff-focused' : ''}`}>
+                <input
+                  id="res-qty"
+                  type="number"
+                  value={form.quantity}
+                  onChange={(e) => updateForm('quantity', e.target.value)}
+                  required
+                  min="0"
+                  className={`ff-input ${form.quantity ? 'ff-input-filled' : ''}`}
+                  placeholder={t('resources.quantity')}
+                />
+                <label htmlFor="res-qty" className={`ff-label ${form.quantity ? 'ff-label-float' : ''}`}>
+                  {t('resources.quantity')}
+                </label>
+              </div>
+            </div>
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.unit ? 'ff-focused' : ''}`}>
+                <input
+                  id="res-unit"
+                  type="text"
+                  value={form.unit}
+                  onChange={(e) => updateForm('unit', e.target.value)}
+                  required
+                  className={`ff-input ${form.unit ? 'ff-input-filled' : ''}`}
+                  placeholder={t('resources.unitPlaceholder')}
+                />
+                <label htmlFor="res-unit" className={`ff-label ${form.unit ? 'ff-label-float' : ''}`}>
+                  {t('resources.unitPlaceholder')}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.locationName ? 'ff-focused' : ''}`}>
+              <input
+                id="res-location"
+                type="text"
+                value={form.locationName}
+                onChange={(e) => updateForm('locationName', e.target.value)}
+                required
+                className={`ff-input ${form.locationName ? 'ff-input-filled' : ''}`}
+                placeholder={t('resources.location')}
+              />
+              <label htmlFor="res-location" className={`ff-label ${form.locationName ? 'ff-label-float' : ''}`}>
+                {t('resources.location')}
+              </label>
+            </div>
+          </div>
+
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.notes ? 'ff-focused' : ''}`}>
+              <textarea
+                id="res-notes"
+                value={form.notes}
+                onChange={(e) => updateForm('notes', e.target.value)}
+                rows={2}
+                className="ff-input ff-textarea"
+                placeholder={t('resources.notesOptional')}
+              />
+              <label htmlFor="res-notes" className={`ff-label ff-label-with-icon ${form.notes ? 'ff-label-float' : ''}`}>
+                {t('resources.notesOptional')}
+              </label>
+            </div>
+          </div>
+
+          <div className="flex flex-gap-sm mt">
             <button type="submit" className="btnPrimary" aria-label={editItem ? t('resources.update') : t('resources.create')}>
               <CheckCircle size={16} />
               <span className="ml-xs">{editItem ? t('resources.update') : t('resources.create')}</span>
@@ -486,35 +564,41 @@ export default function Resources() {
         onClose={() => setBulkEditOpen(false)}
         title={t('resources.bulkEdit') || 'Bulk Edit'}
       >
-        <form onSubmit={handleBulkEdit} className="flex flex-gap-sm flex-wrap items-end">
-          <div>
-            <label className="small label-block" htmlFor="bulk-status">{t('resources.status') || 'Status'}</label>
-            <select id="bulk-status" value={bulkEditStatus} onChange={(e) => setBulkEditStatus(e.target.value)}>
-              <option value="">{t('common.noChange') || '— No change —'}</option>
-              {STATUSES.filter((s) => s !== 'All').map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+        <form onSubmit={handleBulkEdit}>
+          <div className="ff-group">
+            <ModernSelect
+              label={t('resources.status') || 'Status'}
+              options={[
+                { label: t('common.noChange') || '— No change —', value: '' },
+                ...STATUSES.filter((s) => s !== 'All').map((s) => ({ label: s, value: s })),
+              ]}
+              value={bulkEditStatus}
+              onChange={(v) => setBulkEditStatus(v)}
+            />
           </div>
-          <div>
-            <label className="small label-block" htmlFor="bulk-category">{t('resources.category') || 'Category'}</label>
-            <select id="bulk-category" value={bulkEditCategory} onChange={(e) => setBulkEditCategory(e.target.value)}>
-              <option value="">{t('common.noChange') || '— No change —'}</option>
-              {CATEGORIES.filter((c) => c !== 'All').map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
+          <div className="ff-group">
+            <ModernSelect
+              label={t('resources.category') || 'Category'}
+              options={[
+                { label: t('common.noChange') || '— No change —', value: '' },
+                ...CATEGORIES.filter((c) => c !== 'All').map((c) => ({ label: c, value: c })),
+              ]}
+              value={bulkEditCategory}
+              onChange={(v) => setBulkEditCategory(v)}
+            />
           </div>
-          <button type="submit" disabled={bulkUpdating} className="btnPrimary" aria-label={t('resources.apply') || 'Apply'}>
-            <CheckCircle size={16} />
-            <span className="ml-xs">{t('resources.apply') || 'Apply'}</span>
-          </button>
-          <button type="button" onClick={() => setBulkEditOpen(false)} className="text-muted" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
-          {bulkUpdating && (
-            <span className="text-sm text-muted" role="progressbar" aria-valuenow={bulkProgress.current} aria-valuemax={bulkProgress.total}>
-              {bulkProgress.current}/{bulkProgress.total}
-            </span>
-          )}
+          <div className="flex flex-gap-sm">
+            <button type="submit" disabled={bulkUpdating} className="btnPrimary" aria-label={t('resources.apply') || 'Apply'}>
+              <CheckCircle size={16} />
+              <span className="ml-xs">{t('resources.apply') || 'Apply'}</span>
+            </button>
+            <button type="button" onClick={() => setBulkEditOpen(false)} className="text-muted" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
+            {bulkUpdating && (
+              <span className="text-sm text-muted" role="progressbar" aria-valuenow={bulkProgress.current} aria-valuemax={bulkProgress.total}>
+                {bulkProgress.current}/{bulkProgress.total}
+              </span>
+            )}
+          </div>
         </form>
       </Modal>
 
@@ -529,19 +613,44 @@ export default function Resources() {
               <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available
             </div>
             <form onSubmit={handleAllocate}>
-              <label className="small label-block" htmlFor="alloc-reqid">{t('resources.requestId')}</label>
-              <input id="alloc-reqid" value={allocRequestId} onChange={(e) => setAllocRequestId(e.target.value)} placeholder={t('resources.pasteRequestId')} required className="w-full mb-sm text-base" />
-              <label className="small label-block" htmlFor="alloc-qty">{t('resources.quantityToAllocate')}</label>
-              <input id="alloc-qty" type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} min="1" max={showAllocModal.quantity} required className="w-full mb" />
+              <div className="ff-group">
+                <div className={`ff-wrap ${allocRequestId ? 'ff-focused' : ''}`}>
+                  <input
+                    id="alloc-reqid"
+                    type="text"
+                    value={allocRequestId}
+                    onChange={(e) => setAllocRequestId(e.target.value)}
+                    required
+                    className={`ff-input ${allocRequestId ? 'ff-input-filled' : ''}`}
+                    placeholder={t('resources.pasteRequestId')}
+                  />
+                  <label htmlFor="alloc-reqid" className={`ff-label ${allocRequestId ? 'ff-label-float' : ''}`}>
+                    {t('resources.requestId')}
+                  </label>
+                </div>
+              </div>
+              <div className="ff-group">
+                <div className={`ff-wrap ${allocQty ? 'ff-focused' : ''}`}>
+                  <input
+                    id="alloc-qty"
+                    type="number"
+                    value={allocQty}
+                    onChange={(e) => setAllocQty(e.target.value)}
+                    min="1"
+                    max={showAllocModal.quantity}
+                    required
+                    className={`ff-input ${allocQty ? 'ff-input-filled' : ''}`}
+                    placeholder={t('resources.quantityToAllocate')}
+                  />
+                  <label htmlFor="alloc-qty" className={`ff-label ${allocQty ? 'ff-label-float' : ''}`}>
+                    {t('resources.quantityToAllocate')}
+                  </label>
+                </div>
+              </div>
               <div className="flex flex-gap-sm">
                 <button type="submit" disabled={allocating} className="btnPrimary text-base" aria-label={t('resources.allocate')}>
-                  {allocating ? (
-                    '...'
-                  ) : (
-                    <>
-                      <CheckCircle size={16} />
-                      <span className="ml-xs">{t('resources.allocate')}</span>
-                    </>
+                  {allocating ? '...' : (
+                    <><CheckCircle size={16} /><span className="ml-xs">{t('resources.allocate')}</span></>
                   )}
                 </button>
                 <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} className="text-base" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>

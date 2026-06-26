@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Calendar, Plus, Edit, Trash2, Search, Filter, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, Pagination } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, Pagination, ModernSelect } from '../components/ui'
 import EmptyState from '../components/EmptyState'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
@@ -549,49 +549,77 @@ export default function Schedules() {
         onClose={() => setShowForm(false)}
         title={editItem ? t('schedules.editSchedule') : t('schedules.createSchedule')}
       >
-        <form onSubmit={handleSubmit} className="grid flex-gap-sm">
-          <div>
-            <label htmlFor="sch-volunteer" className="small label-block">{t('schedules.volunteer')}</label>
-            <select id="sch-volunteer" value={form.userId} onChange={updateForm('userId')} required className="w-full">
-              <option value="">{t('schedules.selectVolunteer')}</option>
-              {users.map((u) => (
-                <option key={u._id} value={u._id}>{u.displayName} ({u.role})</option>
-              ))}
-            </select>
+        <form onSubmit={handleSubmit}>
+          <div className="ff-group">
+            <ModernSelect
+              label={t('schedules.volunteer')}
+              options={[
+                { label: t('schedules.selectVolunteer'), value: '' },
+                ...users.map((u) => ({ label: `${u.displayName} (${u.role})`, value: u._id })),
+              ]}
+              value={form.userId}
+              onChange={(v) => setForm((prev) => ({ ...prev, userId: v }))}
+            />
           </div>
 
-          <div>
-            <label htmlFor="sch-zone" className="small label-block">{t('schedules.zoneOptional')}</label>
-            <select id="sch-zone" value={form.zoneId} onChange={updateForm('zoneId')} className="w-full">
-              <option value="">{t('schedules.noZone')}</option>
-              {zones.map((z) => (
-                <option key={z._id} value={z._id}>{z.name}</option>
-              ))}
-            </select>
+          <div className="ff-group">
+            <ModernSelect
+              label={t('schedules.zoneOptional')}
+              options={[
+                { label: t('schedules.noZone'), value: '' },
+                ...zones.map((z) => ({ label: z.name || '', value: z._id })),
+              ]}
+              value={form.zoneId}
+              onChange={(v) => setForm((prev) => ({ ...prev, zoneId: v }))}
+            />
           </div>
 
-          <div className="grid-3-responsive">
-            <div>
-              <label htmlFor="sch-start" className="small label-block">{t('schedules.start')}</label>
-              <input id="sch-start" type="datetime-local" value={form.startDate} onChange={updateForm('startDate')} required className="w-full" />
+          <div className="flex flex-gap-sm">
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.startDate ? 'ff-focused' : ''}`}>
+                <input
+                  id="sch-start"
+                  type="datetime-local"
+                  value={form.startDate}
+                  onChange={updateForm('startDate')}
+                  required
+                  className={`ff-input ${form.startDate ? 'ff-input-filled' : ''}`}
+                  placeholder={t('schedules.start')}
+                />
+                <label htmlFor="sch-start" className={`ff-label ${form.startDate ? 'ff-label-float' : ''}`}>
+                  {t('schedules.start')}
+                </label>
+              </div>
             </div>
-            <div>
-              <label htmlFor="sch-end" className="small label-block">{t('schedules.end')}</label>
-              <input id="sch-end" type="datetime-local" value={form.endDate} onChange={updateForm('endDate')} required className="w-full" />
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.endDate ? 'ff-focused' : ''}`}>
+                <input
+                  id="sch-end"
+                  type="datetime-local"
+                  value={form.endDate}
+                  onChange={updateForm('endDate')}
+                  required
+                  className={`ff-input ${form.endDate ? 'ff-input-filled' : ''}`}
+                  placeholder={t('schedules.end')}
+                />
+                <label htmlFor="sch-end" className={`ff-label ${form.endDate ? 'ff-label-float' : ''}`}>
+                  {t('schedules.end')}
+                </label>
+              </div>
             </div>
           </div>
 
-          <div>
-            <label htmlFor="sch-shift" className="small label-block">{t('schedules.shift')}</label>
-            <select id="sch-shift" value={form.shift} onChange={updateForm('shift')} className="w-full">
-              {SHIFT_OPTIONS.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+          <div className="ff-group">
+            <ModernSelect
+              label={t('schedules.shift')}
+              options={SHIFT_OPTIONS.map((s) => ({ label: s, value: s }))}
+              value={form.shift}
+              onChange={(v) => setForm((prev) => ({ ...prev, shift: v }))}
+            />
           </div>
 
-          <div>
-            <label className="small label-block">{t('schedules.skills')}</label>
+          <div className="ff-group">
+            <div className="ff-label-text mb-xs">{t('schedules.skills')}</div>
             <div className="flex flex-gap-xs flex-wrap">
               {SKILL_OPTIONS.map((s) => {
                 const active = form.skills.includes(s)
@@ -600,7 +628,7 @@ export default function Schedules() {
                     key={s}
                     type="button"
                     onClick={() => toggleSkill(s)}
-                    className={`skill-pill ${active ? 'active' : 'inactive'}`}
+                    className={`filter-pill ${active ? 'active' : ''}`}
                   >
                     {s}
                   </button>
@@ -609,10 +637,23 @@ export default function Schedules() {
             </div>
           </div>
 
-          <label htmlFor="sch-notes" className="sr-only">{t('schedules.notesOptional')}</label>
-          <textarea id="sch-notes" placeholder={t('schedules.notesOptional')} value={form.notes} onChange={updateForm('notes')} rows={2} />
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.notes ? 'ff-focused' : ''}`}>
+              <textarea
+                id="sch-notes"
+                value={form.notes}
+                onChange={updateForm('notes')}
+                rows={2}
+                className="ff-input ff-textarea"
+                placeholder={t('schedules.notesOptional')}
+              />
+              <label htmlFor="sch-notes" className={`ff-label ff-label-with-icon ${form.notes ? 'ff-label-float' : ''}`}>
+                {t('schedules.notesOptional')}
+              </label>
+            </div>
+          </div>
 
-          <div className="flex flex-gap-sm mt-xs">
+          <div className="flex flex-gap-sm mt">
             <button type="submit" className="btnPrimary flex items-center gap-xs" aria-label={t('common.submit')}>
               <CheckCircle size={16} />
               <span>{editItem ? t('schedules.update') : t('schedules.create')}</span>

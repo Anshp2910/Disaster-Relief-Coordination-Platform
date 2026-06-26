@@ -506,17 +506,23 @@ export default function RequestDetail() {
           </h3>
 
           <form onSubmit={handleComment} className="flex flex-gap-sm mb-lg">
-            <label htmlFor="rd-comment" className="sr-only">{t('requestDetail.addComment')}</label>
-            <input
-              id="rd-comment"
-              type="text"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder={t('requestDetail.addComment')}
-              maxLength={2000}
-              className="flex-1 text-sm p-sm border-gov rounded-sm"
-            />
-            <button type="submit" className="btnPrimary text-sm p-sm" disabled={posting}>
+            <div className="ff-group flex-1 m-0">
+              <div className={`ff-wrap ${comment ? 'ff-focused' : ''}`}>
+                <input
+                  id="rd-comment"
+                  type="text"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  maxLength={2000}
+                  className={`ff-input ${comment ? 'ff-input-filled' : ''}`}
+                  placeholder={t('requestDetail.addComment')}
+                />
+                <label htmlFor="rd-comment" className={`ff-label ${comment ? 'ff-label-float' : ''}`}>
+                  {t('requestDetail.addComment')}
+                </label>
+              </div>
+            </div>
+            <button type="submit" className="btnPrimary text-sm p-sm" style={{ height: 44, alignSelf: 'flex-end' }} disabled={posting}>
               {posting ? '...' : t('requestDetail.post')}
             </button>
           </form>
@@ -595,20 +601,33 @@ export default function RequestDetail() {
           </div>
 
           {showFeedbackForm && (
-            <form onSubmit={handleFeedbackSubmit} className="p mb bg-gov-bg rounded-sm">
-              <div className="mb-sm">
-                <label className="small label-block">{t('requestDetail.rating')}</label>
+            <form onSubmit={handleFeedbackSubmit} className="card p-sm mb" style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border)', borderRadius: 10 }}>
+              <div className="ff-group">
+                <div className="ff-label-text mb-xs">{t('requestDetail.rating')}</div>
                 <div className="flex flex-gap-xs">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none text-xl cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--gov-border)' }} aria-label={`${star} ${star === 1 ? t('requestDetail.star') || 'star' : t('requestDetail.stars') || 'stars'}`}>
+                    <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none text-xl cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--border)' }} aria-label={`${star} ${star === 1 ? t('requestDetail.star') || 'star' : t('requestDetail.stars') || 'stars'}`}>
                       ★
                     </button>
                   ))}
                 </div>
               </div>
-              <label htmlFor="rd-feedback" className="sr-only">{t('requestDetail.feedbackPlaceholder')}</label>
-              <textarea id="rd-feedback" value={feedbackComment} onChange={(e) => setFeedbackComment(e.target.value)} placeholder={t('requestDetail.feedbackPlaceholder')} rows={2} className="w-full text-sm mb-sm" />
-              <div className="flex flex-gap-sm">
+              <div className="ff-group m-0">
+                <div className={`ff-wrap ${feedbackComment ? 'ff-focused' : ''}`}>
+                  <textarea
+                    id="rd-feedback"
+                    value={feedbackComment}
+                    onChange={(e) => setFeedbackComment(e.target.value)}
+                    rows={2}
+                    className="ff-input ff-textarea"
+                    placeholder={t('requestDetail.feedbackPlaceholder')}
+                  />
+                  <label htmlFor="rd-feedback" className={`ff-label ff-label-with-icon ${feedbackComment ? 'ff-label-float' : ''}`}>
+                    {t('requestDetail.feedbackPlaceholder')}
+                  </label>
+                </div>
+              </div>
+              <div className="flex flex-gap-sm mt-sm">
                 <button type="submit" disabled={feedbackLoading} className="btnPrimary text-sm p-sm">
                   {feedbackLoading ? '...' : t('requestDetail.submit')}
                 </button>

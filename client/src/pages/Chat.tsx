@@ -358,17 +358,25 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         >
           <Paperclip size={18} />
         </button>
-        <input
-          ref={inputRef}
-          value={text}
-          onChange={handleInputChange}
-          placeholder={t('chat.typeMessage')}
-          maxLength={2000}
-          className="flex-1 text-sm rounded-sm p-sm border-gov"
-          aria-label={t('chat.typeMessage') || 'Type a message'}
-        />
+        <div className="ff-group flex-1 m-0">
+          <div className={`ff-wrap ${text ? 'ff-focused' : ''}`} style={{ minHeight: 36 }}>
+            <input
+              ref={inputRef}
+              value={text}
+              onChange={handleInputChange}
+              maxLength={2000}
+              className={`ff-input ${text ? 'ff-input-filled' : ''}`}
+              placeholder={t('chat.typeMessage')}
+              style={{ padding: '10px 14px 6px' }}
+              aria-label={t('chat.typeMessage') || 'Type a message'}
+            />
+            <label htmlFor="chat-input" className={`ff-label ${text ? 'ff-label-float' : ''}`} style={{ top: 14 }}>
+              {t('chat.typeMessage')}
+            </label>
+          </div>
+        </div>
         <span className="text-xs text-muted self-center">{text.length}/2000</span>
-        <button type="submit" className="btnPrimary text-xs p-sm flex items-center gap-xs" disabled={(!text.trim() && !selectedFile) || sending}>
+        <button type="submit" className="btnPrimary text-xs p-sm flex items-center gap-xs" style={{ height: 36, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
           {sending ? '...' : <><Send size={14} /> {t('chat.send')}</>}
         </button>
       </form>

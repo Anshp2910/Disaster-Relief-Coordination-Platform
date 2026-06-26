@@ -145,78 +145,88 @@ export default function Escalation() {
 
         {error && <ErrorState message={error} />}
 
-        <form onSubmit={handleEscalate} className="mb-lg grid gap-8">
-          <div ref={reqSearchRef} className="relative">
-            <div className="flex items-center gap-xs mb-xs">
-              <Search size={16} className="text-muted" aria-hidden="true" />
-              <span className="text-sm text-semi">{t('escalation.searchRequest') || 'Search for a request...'}</span>
+        <form onSubmit={handleEscalate} className="mb-lg">
+          <div className="ff-group">
+            <div className="ff-label-text mb-xs flex items-center gap-xs">
+              <Search size={14} />
+              {t('escalation.searchRequest') || 'Search for a request...'}
             </div>
-            <input
-              type="text"
-              value={reqSearch}
-              onChange={(e) => {
-                setReqSearch(e.target.value)
-                setShowReqDropdown(true)
-                if (requestId) setRequestId('')
-                setReqActiveIndex(-1)
-              }}
-              onFocus={() => setShowReqDropdown(true)}
-              onKeyDown={(e) => {
-                if (e.key === 'ArrowDown') {
-                  e.preventDefault()
-                  setReqActiveIndex((prev) => Math.min(prev + 1, filteredRequests.length - 1))
-                } else if (e.key === 'ArrowUp') {
-                  e.preventDefault()
-                  setReqActiveIndex((prev) => Math.max(prev - 1, 0))
-                } else if (e.key === 'Enter' && reqActiveIndex >= 0 && filteredRequests[reqActiveIndex]) {
-                  e.preventDefault()
-                  selectRequest(filteredRequests[reqActiveIndex])
-                } else if (e.key === 'Escape') {
-                  setShowReqDropdown(false)
-                }
-              }}
-              placeholder={t('escalation.searchRequest') || 'Search for a request...'}
-              required
-              className="rounded-sm text-13 border-gov p-sm w-full"
-              aria-label={t('escalation.searchRequest') || 'Search for a request'}
-            />
-            {showReqDropdown && (
-              <div className="absolute z-1000 bg-white border-gov rounded-sm mt-1 w-full shadow-lg" style={{ maxHeight: 280, overflowY: 'auto' }}>
-                {filteredRequests.length === 0 ? (
-                  <div className="p-sm text-muted text-13">{t('common.noResults') || 'No matching requests'}</div>
-                ) : (
-                  filteredRequests.map((r, idx) => (
-                    <div
-                      key={r._id}
-                      role="option"
-                      aria-selected={idx === reqActiveIndex}
-                      onClick={() => selectRequest(r)}
-                      onMouseEnter={() => setReqActiveIndex(idx)}
-                      className="p-sm cursor-pointer text-13 border-bottom"
-                      style={{
-                        background: idx === reqActiveIndex ? 'var(--accent-soft)' : 'transparent',
-                      }}
-                    >
-                      <span className="text-semi">{r.title}</span>
-                      <span className="text-muted"> ({r.status || 'Open'})</span>
-                      {r.locationName && <span className="text-muted"> — {r.locationName}</span>}
-                    </div>
-                  ))
-                )}
+            <div ref={reqSearchRef} className="relative">
+              <div className="ff-wrap">
+                <input
+                  type="text"
+                  value={reqSearch}
+                  onChange={(e) => {
+                    setReqSearch(e.target.value)
+                    setShowReqDropdown(true)
+                    if (requestId) setRequestId('')
+                    setReqActiveIndex(-1)
+                  }}
+                  onFocus={() => setShowReqDropdown(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault()
+                      setReqActiveIndex((prev) => Math.min(prev + 1, filteredRequests.length - 1))
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault()
+                      setReqActiveIndex((prev) => Math.max(prev - 1, 0))
+                    } else if (e.key === 'Enter' && reqActiveIndex >= 0 && filteredRequests[reqActiveIndex]) {
+                      e.preventDefault()
+                      selectRequest(filteredRequests[reqActiveIndex])
+                    } else if (e.key === 'Escape') {
+                      setShowReqDropdown(false)
+                    }
+                  }}
+                  required
+                  className="ff-input"
+                  placeholder={t('escalation.searchRequest') || 'Search for a request...'}
+                  aria-label={t('escalation.searchRequest') || 'Search for a request'}
+                />
               </div>
-            )}
+              {showReqDropdown && (
+                <div className="ms-dropdown" style={{ left: 0, right: 0, top: '100%', marginTop: 4, maxHeight: 280 }}>
+                  {filteredRequests.length === 0 ? (
+                    <div className="ms-no-options">{t('common.noResults') || 'No matching requests'}</div>
+                  ) : (
+                    <div style={{ maxHeight: 240, overflowY: 'auto', padding: 4 }}>
+                      {filteredRequests.map((r, idx) => (
+                        <div
+                          key={r._id}
+                          role="option"
+                          aria-selected={idx === reqActiveIndex}
+                          onClick={() => selectRequest(r)}
+                          onMouseEnter={() => setReqActiveIndex(idx)}
+                          className={`ms-option ${idx === reqActiveIndex ? 'ms-option-active' : ''}`}
+                        >
+                          <span className="text-semi">{r.title}</span>
+                          <span className="text-muted"> ({r.status || 'Open'})</span>
+                          {r.locationName && <span className="text-muted"> — {r.locationName}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-          <textarea
-            placeholder={t('escalation.reasonForEscalation')}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={2}
-            required
-            maxLength={2000}
-            className="text-13"
-            aria-label={t('escalation.reasonForEscalation')}
-          />
-          <button type="submit" className="btnPrimary text-13 p-sm justify-self-start flex items-center gap-xs" aria-label="Escalate request">
+          <div className="ff-group">
+            <div className={`ff-wrap ${reason ? 'ff-focused' : ''}`}>
+              <textarea
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                rows={2}
+                required
+                maxLength={2000}
+                className="ff-input ff-textarea"
+                placeholder={t('escalation.reasonForEscalation')}
+                aria-label={t('escalation.reasonForEscalation')}
+              />
+              <label className={`ff-label ff-label-with-icon ${reason ? 'ff-label-float' : ''}`}>
+                {t('escalation.reasonForEscalation')}
+              </label>
+            </div>
+          </div>
+          <button type="submit" className="sf-btn sf-btn-next" aria-label="Escalate request">
             <ArrowUp size={16} />
             {t('escalation.escalateRequest')}
           </button>

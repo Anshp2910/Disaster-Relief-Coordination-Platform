@@ -5,7 +5,7 @@ import { MapPin, Thermometer, Plus, Edit, Trash2, Search, Filter, Users, Activit
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect } from '../components/ui'
 import { SkeletonList, SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
@@ -513,51 +513,156 @@ export default function ZoneHeatMap() {
         onClose={() => setShowForm(false)}
         title={editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}
       >
-        <form onSubmit={handleSubmit} className="grid flex-gap-sm">
-          <label htmlFor="zone-name" className="sr-only">{t('zones.zoneNamePlaceholder')}</label>
-          <input id="zone-name" placeholder={t('zones.zoneNamePlaceholder')} value={form.name} onChange={updateForm('name')} required />
-
-          <div className="grid-3-responsive">
-            <label htmlFor="zone-disastertype" className="sr-only">Disaster type</label>
-            <select id="zone-disastertype" value={form.disasterType} onChange={updateForm('disasterType')}>
-              {Object.keys(DISASTER_ICONS).map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
-            <label htmlFor="zone-severity" className="sr-only">Severity</label>
-            <select id="zone-severity" value={form.severity} onChange={updateForm('severity')}>
-              {Object.keys(SEVERITY_COLORS).map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <label htmlFor="zone-status" className="sr-only">Status</label>
-            <select id="zone-status" value={form.status} onChange={updateForm('status')}>
-              {['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+        <form onSubmit={handleSubmit}>
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.name ? 'ff-focused' : ''}`}>
+              <input
+                id="zone-name"
+                type="text"
+                value={form.name}
+                onChange={updateForm('name')}
+                required
+                className={`ff-input ${form.name ? 'ff-input-filled' : ''}`}
+                placeholder={t('zones.zoneNamePlaceholder')}
+              />
+              <label htmlFor="zone-name" className={`ff-label ${form.name ? 'ff-label-float' : ''}`}>
+                {t('zones.zoneNamePlaceholder')}
+              </label>
+            </div>
           </div>
 
-          <div className="grid-3-responsive">
-            <label htmlFor="zone-centerlat" className="sr-only">{t('zones.centerLat')}</label>
-            <input id="zone-centerlat" type="number" step="any" placeholder={t('zones.centerLat')} value={form.centerLat} onChange={updateForm('centerLat')} required />
-            <label htmlFor="zone-centerlng" className="sr-only">{t('zones.centerLng')}</label>
-            <input id="zone-centerlng" type="number" step="any" placeholder={t('zones.centerLng')} value={form.centerLng} onChange={updateForm('centerLng')} required />
+          <div className="flex flex-gap-sm">
+            <div className="ff-group flex-1">
+              <ModernSelect
+                label="Disaster type"
+                options={Object.keys(DISASTER_ICONS).map((d) => ({ label: d, value: d }))}
+                value={form.disasterType}
+                onChange={(v) => setForm((prev) => ({ ...prev, disasterType: v }))}
+              />
+            </div>
+            <div className="ff-group flex-1">
+              <ModernSelect
+                label="Severity"
+                options={Object.keys(SEVERITY_COLORS).map((s) => ({ label: s, value: s }))}
+                value={form.severity}
+                onChange={(v) => setForm((prev) => ({ ...prev, severity: v }))}
+              />
+            </div>
+            <div className="ff-group flex-1">
+              <ModernSelect
+                label="Status"
+                options={['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => ({ label: s, value: s }))}
+                value={form.status}
+                onChange={(v) => setForm((prev) => ({ ...prev, status: v }))}
+              />
+            </div>
           </div>
 
-          <div className="grid-3-responsive">
-            <label htmlFor="zone-radius" className="sr-only">{t('zones.radiusKm')}</label>
-            <input id="zone-radius" type="number" placeholder={t('zones.radiusKm')} value={form.radiusKm} onChange={updateForm('radiusKm')} required min="1" />
-            <label htmlFor="zone-population" className="sr-only">{t('zones.affectedPopulationPlaceholder')}</label>
-            <input id="zone-population" type="number" placeholder={t('zones.affectedPopulationPlaceholder')} value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
+          <div className="flex flex-gap-sm">
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.centerLat ? 'ff-focused' : ''}`}>
+                <input
+                  id="zone-centerlat"
+                  type="number"
+                  step="any"
+                  value={form.centerLat}
+                  onChange={updateForm('centerLat')}
+                  required
+                  className={`ff-input ${form.centerLat ? 'ff-input-filled' : ''}`}
+                  placeholder={t('zones.centerLat')}
+                />
+                <label htmlFor="zone-centerlat" className={`ff-label ${form.centerLat ? 'ff-label-float' : ''}`}>
+                  {t('zones.centerLat')}
+                </label>
+              </div>
+            </div>
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.centerLng ? 'ff-focused' : ''}`}>
+                <input
+                  id="zone-centerlng"
+                  type="number"
+                  step="any"
+                  value={form.centerLng}
+                  onChange={updateForm('centerLng')}
+                  required
+                  className={`ff-input ${form.centerLng ? 'ff-input-filled' : ''}`}
+                  placeholder={t('zones.centerLng')}
+                />
+                <label htmlFor="zone-centerlng" className={`ff-label ${form.centerLng ? 'ff-label-float' : ''}`}>
+                  {t('zones.centerLng')}
+                </label>
+              </div>
+            </div>
           </div>
 
-          <label htmlFor="zone-description" className="sr-only">{t('zones.description')}</label>
-          <textarea id="zone-description" placeholder={t('zones.description')} value={form.description} onChange={updateForm('description')} rows={2} />
-          <label htmlFor="zone-notes" className="sr-only">{t('zones.notes')}</label>
-          <textarea id="zone-notes" placeholder={t('zones.notes')} value={form.notes} onChange={updateForm('notes')} rows={2} />
+          <div className="flex flex-gap-sm">
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.radiusKm ? 'ff-focused' : ''}`}>
+                <input
+                  id="zone-radius"
+                  type="number"
+                  value={form.radiusKm}
+                  onChange={updateForm('radiusKm')}
+                  required
+                  min="1"
+                  className={`ff-input ${form.radiusKm ? 'ff-input-filled' : ''}`}
+                  placeholder={t('zones.radiusKm')}
+                />
+                <label htmlFor="zone-radius" className={`ff-label ${form.radiusKm ? 'ff-label-float' : ''}`}>
+                  {t('zones.radiusKm')}
+                </label>
+              </div>
+            </div>
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.affectedPopulation ? 'ff-focused' : ''}`}>
+                <input
+                  id="zone-population"
+                  type="number"
+                  value={form.affectedPopulation}
+                  onChange={updateForm('affectedPopulation')}
+                  className={`ff-input ${form.affectedPopulation ? 'ff-input-filled' : ''}`}
+                  placeholder={t('zones.affectedPopulationPlaceholder')}
+                />
+                <label htmlFor="zone-population" className={`ff-label ${form.affectedPopulation ? 'ff-label-float' : ''}`}>
+                  {t('zones.affectedPopulationPlaceholder')}
+                </label>
+              </div>
+            </div>
+          </div>
 
-          <div className="flex flex-gap-sm mt-xs">
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
+              <textarea
+                id="zone-description"
+                value={form.description}
+                onChange={updateForm('description')}
+                rows={2}
+                className="ff-input ff-textarea"
+                placeholder={t('zones.description')}
+              />
+              <label htmlFor="zone-description" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
+                {t('zones.description')}
+              </label>
+            </div>
+          </div>
+
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.notes ? 'ff-focused' : ''}`}>
+              <textarea
+                id="zone-notes"
+                value={form.notes}
+                onChange={updateForm('notes')}
+                rows={2}
+                className="ff-input ff-textarea"
+                placeholder={t('zones.notes')}
+              />
+              <label htmlFor="zone-notes" className={`ff-label ff-label-with-icon ${form.notes ? 'ff-label-float' : ''}`}>
+                {t('zones.notes')}
+              </label>
+            </div>
+          </div>
+
+          <div className="flex flex-gap-sm mt">
             <button type="submit" className="btnPrimary" disabled={saving} aria-label={t('common.submit')}>
               {saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}
             </button>

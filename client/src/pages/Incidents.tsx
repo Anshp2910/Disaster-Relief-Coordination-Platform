@@ -5,7 +5,7 @@ import { AlertTriangle, Plus, Edit, Trash2, Search, Filter, MapPin, Clock, User,
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, DataList, DataCard, ModernSelect } from '../components/ui'
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useSocket, registerRefreshListener } from '../hooks/useSocket'
@@ -408,44 +408,121 @@ export default function Incidents() {
         onClose={() => setShowForm(false)}
         title={editIncident ? t('incidents.editIncident') : t('incidents.createIncident')}
       >
-        <form onSubmit={handleSubmit} className="grid grid-gap-sm">
-          <label htmlFor="inc-name" className="sr-only">{t('incidents.incidentName')}</label>
-          <input id="inc-name" placeholder={t('incidents.incidentName')} value={form.name} onChange={updateForm('name')} required />
-
-          <div className="grid-3-responsive">
-            <label htmlFor="inc-disastertype" className="sr-only">Disaster type</label>
-            <select id="inc-disastertype" value={form.disasterType} onChange={updateForm('disasterType')}>
-              {Object.keys(DISASTER_ICONS).map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
-            <label htmlFor="inc-severity" className="sr-only">Severity</label>
-            <select id="inc-severity" value={form.severity} onChange={updateForm('severity')}>
-              {Object.keys(SEVERITY_COLORS).map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <label htmlFor="inc-status" className="sr-only">Status</label>
-            <select id="inc-status" value={form.status} onChange={updateForm('status')}>
-              {STATUS_OPTIONS.slice(1).map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+        <form onSubmit={handleSubmit}>
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.name ? 'ff-focused' : ''}`}>
+              <input
+                id="inc-name"
+                type="text"
+                value={form.name}
+                onChange={updateForm('name')}
+                required
+                className={`ff-input ${form.name ? 'ff-input-filled' : ''}`}
+                placeholder={t('incidents.incidentName')}
+              />
+              <label htmlFor="inc-name" className={`ff-label ${form.name ? 'ff-label-float' : ''}`}>
+                {t('incidents.incidentName')}
+              </label>
+            </div>
           </div>
 
-          <div className="grid-3-responsive">
-            <label htmlFor="inc-centerlat" className="sr-only">Center Latitude</label>
-            <input id="inc-centerlat" type="number" step="any" placeholder="Center Latitude" value={form.centerLat} onChange={updateForm('centerLat')} required />
-            <label htmlFor="inc-centerlng" className="sr-only">Center Longitude</label>
-            <input id="inc-centerlng" type="number" step="any" placeholder="Center Longitude" value={form.centerLng} onChange={updateForm('centerLng')} required />
+          <div className="flex flex-gap-sm">
+            <div className="ff-group flex-1">
+              <ModernSelect
+                label="Disaster type"
+                options={Object.keys(DISASTER_ICONS).map((d) => ({ label: d, value: d }))}
+                value={form.disasterType}
+                onChange={(v) => setForm((prev) => ({ ...prev, disasterType: v }))}
+              />
+            </div>
+            <div className="ff-group flex-1">
+              <ModernSelect
+                label="Severity"
+                options={Object.keys(SEVERITY_COLORS).map((s) => ({ label: s, value: s }))}
+                value={form.severity}
+                onChange={(v) => setForm((prev) => ({ ...prev, severity: v }))}
+              />
+            </div>
+            <div className="ff-group flex-1">
+              <ModernSelect
+                label="Status"
+                options={STATUS_OPTIONS.slice(1).map((s) => ({ label: s, value: s }))}
+                value={form.status}
+                onChange={(v) => setForm((prev) => ({ ...prev, status: v }))}
+              />
+            </div>
           </div>
 
-          <label htmlFor="inc-population" className="sr-only">Affected population</label>
-          <input id="inc-population" type="number" placeholder="Affected population" value={form.affectedPopulation} onChange={updateForm('affectedPopulation')} min="0" />
-          <label htmlFor="inc-description" className="sr-only">Description</label>
-          <textarea id="inc-description" placeholder="Description" value={form.description} onChange={updateForm('description')} rows={3} />
+          <div className="flex flex-gap-sm">
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.centerLat ? 'ff-focused' : ''}`}>
+                <input
+                  id="inc-centerlat"
+                  type="number"
+                  step="any"
+                  value={form.centerLat}
+                  onChange={updateForm('centerLat')}
+                  required
+                  className={`ff-input ${form.centerLat ? 'ff-input-filled' : ''}`}
+                  placeholder="Center Latitude"
+                />
+                <label htmlFor="inc-centerlat" className={`ff-label ${form.centerLat ? 'ff-label-float' : ''}`}>
+                  Center Latitude
+                </label>
+              </div>
+            </div>
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.centerLng ? 'ff-focused' : ''}`}>
+                <input
+                  id="inc-centerlng"
+                  type="number"
+                  step="any"
+                  value={form.centerLng}
+                  onChange={updateForm('centerLng')}
+                  required
+                  className={`ff-input ${form.centerLng ? 'ff-input-filled' : ''}`}
+                  placeholder="Center Longitude"
+                />
+                <label htmlFor="inc-centerlng" className={`ff-label ${form.centerLng ? 'ff-label-float' : ''}`}>
+                  Center Longitude
+                </label>
+              </div>
+            </div>
+            <div className="ff-group flex-1">
+              <div className={`ff-wrap ${form.affectedPopulation ? 'ff-focused' : ''}`}>
+                <input
+                  id="inc-population"
+                  type="number"
+                  step="any"
+                  value={form.affectedPopulation}
+                  onChange={updateForm('affectedPopulation')}
+                  className={`ff-input ${form.affectedPopulation ? 'ff-input-filled' : ''}`}
+                  placeholder="Affected population"
+                />
+                <label htmlFor="inc-population" className={`ff-label ${form.affectedPopulation ? 'ff-label-float' : ''}`}>
+                  Affected population
+                </label>
+              </div>
+            </div>
+          </div>
 
-          <div className="flex flex-gap-sm mt-xs">
+          <div className="ff-group">
+            <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
+              <textarea
+                id="inc-description"
+                value={form.description}
+                onChange={updateForm('description')}
+                rows={3}
+                className="ff-input ff-textarea"
+                placeholder="Description"
+              />
+              <label htmlFor="inc-description" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
+                Description
+              </label>
+            </div>
+          </div>
+
+          <div className="flex flex-gap-sm mt">
             <button type="submit" className="btnPrimary">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
             <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
           </div>

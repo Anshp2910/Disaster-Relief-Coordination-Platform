@@ -204,59 +204,90 @@ export default function Profile() {
         </div>
 
         <form onSubmit={handleUpdateProfile}>
-          <label className="small label-block" htmlFor="prof-name">{t('auth.displayName')}</label>
-          <input id="prof-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required className="w-full mb" />
-
-          <label className="small label-block" htmlFor="prof-phone">{t('profile.phone')}</label>
-          <input id="prof-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={t('profile.phonePlaceholder')} className="w-full mb" />
-
-          <label className="small label-block flex items-center gap-xs">
-            <Award size={14} aria-hidden="true" />
-            {t('profile.skills')}
-          </label>
-          <div className="flex flex-gap-xs flex-wrap mb">
-            {SKILL_OPTIONS.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => toggleSkill(s)}
-                className={`filter-pill ${skills.includes(s) ? 'active' : ''}`}
-                aria-label={`${t('profile.skills')}: ${s}`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-
-          <label className="small label-block flex items-center gap-xs">
-            <Bell size={14} aria-hidden="true" />
-            {t('profile.notificationPreferences')}
-          </label>
-          <div className="flex-col flex-gap-sm mb-lg text-sm">
-            <div className="flex flex-gap-lg">
-              <label className="flex flex-gap-xs cursor-pointer">
-                <input type="checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
-              </label>
-              <label className="flex flex-gap-xs cursor-pointer">
-                <input type="checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
+          <div className="ff-group">
+            <div className={`ff-wrap ${displayName ? 'ff-focused' : ''}`}>
+              <input
+                id="prof-name"
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required
+                className={`ff-input ${displayName ? 'ff-input-filled' : ''}`}
+                placeholder={t('auth.displayName')}
+              />
+              <label htmlFor="prof-name" className={`ff-label ${displayName ? 'ff-label-float' : ''}`}>
+                {t('auth.displayName')}
               </label>
             </div>
-            <div className="text-sm text-muted-extra">{t('profile.eventSubscriptions')}</div>
-            <div className="flex flex-gap-lg flex-wrap">
-              <label className="flex flex-gap-xs cursor-pointer">
-                <input type="checkbox" checked={notifications.newRequest !== false} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
+          </div>
+
+          <div className="ff-group">
+            <div className={`ff-wrap ${phone ? 'ff-focused' : ''}`}>
+              <input
+                id="prof-phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className={`ff-input ${phone ? 'ff-input-filled' : ''}`}
+                placeholder={t('profile.phonePlaceholder')}
+              />
+              <label htmlFor="prof-phone" className={`ff-label ${phone ? 'ff-label-float' : ''}`}>
+                {t('profile.phone')}
               </label>
-              <label className="flex flex-gap-xs cursor-pointer">
-                <input type="checkbox" checked={notifications.statusChange !== false} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
-              </label>
-              <label className="flex flex-gap-xs cursor-pointer">
-                <input type="checkbox" checked={notifications.newComment !== false} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
-              </label>
+            </div>
+          </div>
+
+          <div className="ff-group">
+            <div className="ff-label-text mb-xs flex items-center gap-xs">
+              <Award size={14} />
+              {t('profile.skills')}
+            </div>
+            <div className="flex flex-gap-xs flex-wrap mb">
+              {SKILL_OPTIONS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => toggleSkill(s)}
+                  className={`filter-pill ${skills.includes(s) ? 'active' : ''}`}
+                  aria-label={`${t('profile.skills')}: ${s}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="ff-group">
+            <div className="ff-label-text mb-xs flex items-center gap-xs">
+              <Bell size={14} />
+              {t('profile.notificationPreferences')}
+            </div>
+            <div className="flex-col flex-gap-sm text-sm">
+              <div className="flex flex-gap-lg">
+                <label className="flex flex-gap-xs cursor-pointer">
+                  <input type="checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
+                </label>
+                <label className="flex flex-gap-xs cursor-pointer">
+                  <input type="checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
+                </label>
+              </div>
+              <div className="text-sm text-muted-extra">{t('profile.eventSubscriptions')}</div>
+              <div className="flex flex-gap-lg flex-wrap">
+                <label className="flex flex-gap-xs cursor-pointer">
+                  <input type="checkbox" checked={notifications.newRequest !== false} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
+                </label>
+                <label className="flex flex-gap-xs cursor-pointer">
+                  <input type="checkbox" checked={notifications.statusChange !== false} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
+                </label>
+                <label className="flex flex-gap-xs cursor-pointer">
+                  <input type="checkbox" checked={notifications.newComment !== false} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
+                </label>
+              </div>
             </div>
           </div>
 
           <button type="submit" className="btnPrimary text-13 flex items-center gap-xs" disabled={loading}>
-            <Save size={16} aria-hidden="true" />
+            <Save size={16} />
             {loading ? '...' : t('profile.updateProfile')}
           </button>
         </form>
@@ -269,18 +300,60 @@ export default function Profile() {
         transition={{ delay: 0.15 }}
       >
         <h3 className="m-0 mb text-base text-accent-blue flex items-center gap-xs">
-          <Key size={16} aria-hidden="true" />
+          <Key size={16} />
           {t('profile.changePassword')}
         </h3>
         <form onSubmit={handleChangePassword}>
-          <label className="small label-block" htmlFor="prof-curpwd">{t('profile.currentPassword')}</label>
-          <input id="prof-curpwd" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full mb" />
+          <div className="ff-group">
+            <div className={`ff-wrap ${currentPassword ? 'ff-focused' : ''}`}>
+              <input
+                id="prof-curpwd"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+                className={`ff-input ${currentPassword ? 'ff-input-filled' : ''}`}
+                placeholder={t('profile.currentPassword')}
+              />
+              <label htmlFor="prof-curpwd" className={`ff-label ${currentPassword ? 'ff-label-float' : ''}`}>
+                {t('profile.currentPassword')}
+              </label>
+            </div>
+          </div>
 
-          <label className="small label-block" htmlFor="prof-newpwd">{t('profile.newPassword')}</label>
-          <input id="prof-newpwd" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required className="w-full mb" />
+          <div className="ff-group">
+            <div className={`ff-wrap ${newPassword ? 'ff-focused' : ''}`}>
+              <input
+                id="prof-newpwd"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                className={`ff-input ${newPassword ? 'ff-input-filled' : ''}`}
+                placeholder={t('profile.newPassword')}
+              />
+              <label htmlFor="prof-newpwd" className={`ff-label ${newPassword ? 'ff-label-float' : ''}`}>
+                {t('profile.newPassword')}
+              </label>
+            </div>
+          </div>
 
-          <label className="small label-block" htmlFor="prof-confpwd">{t('profile.confirmPassword')}</label>
-          <input id="prof-confpwd" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full mb" />
+          <div className="ff-group">
+            <div className={`ff-wrap ${confirmPassword ? 'ff-focused' : ''}`}>
+              <input
+                id="prof-confpwd"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className={`ff-input ${confirmPassword ? 'ff-input-filled' : ''}`}
+                placeholder={t('profile.confirmPassword')}
+              />
+              <label htmlFor="prof-confpwd" className={`ff-label ${confirmPassword ? 'ff-label-float' : ''}`}>
+                {t('profile.confirmPassword')}
+              </label>
+            </div>
+          </div>
 
           <button type="submit" className="btnPrimary text-13" disabled={loading}>
             {loading ? '...' : t('profile.updatePassword')}

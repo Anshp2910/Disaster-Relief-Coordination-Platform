@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect, useCallback, useReducer } from 'react'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
+import { MapPin, Navigation, CheckCircle } from 'lucide-react'
+import { StepForm, type Step } from '../components/ui'
+import { ModernSelect } from '../components/ui'
+import { useAutoSave, AutoSaveIndicator } from '../hooks/useAutoSave'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
 import { CATEGORY_OPTIONS, PRIORITY_OPTIONS, STATUS_OPTIONS } from '../utils/constants'
@@ -118,6 +122,12 @@ function formReducer(state: FormState, action: FormAction): FormState {
   }
 }
 
+const STEPS: Step[] = [
+  { title: 'Details', description: 'Basic information' },
+  { title: 'Location', description: 'Set crisis location' },
+  { title: 'Review', description: 'Confirm & submit' },
+]
+
 export default function RequestForm({
   initialData,
   onSubmit,
@@ -134,7 +144,7 @@ export default function RequestForm({
   const mapInstance = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
   const draftKeyRef = useRef(DRAFT_PREFIX + (initialData?._id || 'new'))
-  const dirtyRef = useRef(false)
+  const [currentStep, setCurrentStep] = useState(0)
   const [showRestore, setShowRestore] = useState(false)
   const [form, dispatch] = useReducer(formReducer, INITIAL_FORM)
   const [searchText, setSearchText] = useState('')
@@ -143,7 +153,13 @@ export default function RequestForm({
   const [error, setError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
   const [locating, setLocating] = useState(false)
-  const [savedIndicator, setSavedIndicator] = useState(false)
+
+  const { status: autoSaveStatus } = useAutoSave({
+    key: draftKeyRef.current,
+    data: { ...form, status: form.status },
+    delay: 1500,
+    enabled: true,
+  })
 
   function getFormState(): FormState {
     return { ...form, peopleCount: form.peopleCount }
@@ -151,10 +167,7 @@ export default function RequestForm({
 
   function setFormField(field: keyof FormState, value: string | number) {
     dispatch({ type: 'SET_FIELD', field, value })
-    dirtyRef.current = true
   }
-
-  function markDirty() { dirtyRef.current = true }
 
   useEffect(() => {
     const raw = safeGetItem(draftKeyRef.current)
@@ -162,16 +175,6 @@ export default function RequestForm({
       try { const draft = JSON.parse(raw); if (draft && draft.title) setShowRestore(true) } catch {}
     }
   }, [])
-
-  useEffect(() => {
-    if (!dirtyRef.current) return
-    const timer = setTimeout(() => {
-      safeSetItem(draftKeyRef.current, JSON.stringify(getFormState()))
-      setSavedIndicator(true)
-      setTimeout(() => setSavedIndicator(false), 2000)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [form.title, form.description, form.category, form.priority, form.peopleCount, form.lat, form.lng, form.locationName, form.status])
 
   function restoreDraft() {
     const raw = safeGetItem(draftKeyRef.current)
@@ -181,7 +184,6 @@ export default function RequestForm({
         dispatch({ type: 'LOAD_DRAFT', state: draft })
       } catch {}
       setShowRestore(false)
-      dirtyRef.current = true
     }
   }
 
@@ -192,7 +194,6 @@ export default function RequestForm({
 
   const placeMarker = useCallback((pLat: number, pLng: number) => {
     dispatch({ type: 'SET_LOCATION', lat: String(pLat), lng: String(pLng), locationName: `${pLat.toFixed(5)}, ${pLng.toFixed(5)}` })
-    markDirty()
 
     if (markerRef.current) {
       markerRef.current.setLatLng([pLat, pLng])
@@ -289,8 +290,7 @@ export default function RequestForm({
     setTimeout(() => mapInstance.current?.invalidateSize(), 0)
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleSubmit() {
     setError('')
     if (!form.lat || !form.lng) {
       setError(t('createRequest.locationError'))
@@ -314,12 +314,14 @@ export default function RequestForm({
       await onSubmit(data)
       safeRemoveItem(draftKeyRef.current)
     } catch (err) {
-      const e = err as Error
-      setError(e.message || 'Failed to submit')
+      setError((err as Error).message || 'Failed to submit')
     } finally {
       setFormLoading(false)
     }
   }
+
+  const canNextStep = currentStep === 0 ? !!form.title && !!form.description : true
+  const canSubmit = !!form.title && !!form.description && !!form.lat && !!form.lng
 
   if (loading) {
     return (
@@ -331,17 +333,15 @@ export default function RequestForm({
     )
   }
 
-  const isSubmitting = formLoading
-
   return (
     <div className="container max-w-sm">
-      <div className="card">
+      <div className="card" style={{ border: '1px solid var(--border)', borderRadius: 16, padding: '1rem 1.5rem' }}>
         <div className="flex-between items-center">
           <div>
             <h1 className="pageTitle text-2xl">{title}</h1>
-            <div className="small muted mt-xs">{subtitle}</div>
+            {subtitle && <div className="small muted mt-xs">{subtitle}</div>}
           </div>
-          {savedIndicator && <span className="result-count">Draft saved</span>}
+          <AutoSaveIndicator status={autoSaveStatus} />
         </div>
 
         {showRestore && (
@@ -354,133 +354,213 @@ export default function RequestForm({
           </div>
         )}
 
-        {error && <div className="errorText">{error}</div>}
+        {error && <div className="errorText mt-sm mb-sm">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="inputGrid mt">
-          <label htmlFor="rf-title" className="sr-only">{t('createRequest.titleLabel')}</label>
-          <input id="rf-title" placeholder={t('createRequest.titleLabel')} value={form.title} onChange={(e) => setFormField('title', e.target.value)} required maxLength={200} />
-
-          <label htmlFor="rf-desc" className="sr-only">{t('createRequest.descriptionLabel')}</label>
-          <textarea id="rf-desc"
-            placeholder={t('createRequest.descriptionLabel')}
-            value={form.description}
-            onChange={(e) => setFormField('description', e.target.value)}
-            required
-            rows={4}
-            maxLength={5000}
-            className="resize-v"
-          />
-
-          <div className="grid-3-responsive">
+        <StepForm
+          steps={STEPS}
+          currentStep={currentStep}
+          onStepChange={setCurrentStep}
+          onNext={() => setCurrentStep((s) => Math.min(s + 1, 2))}
+          onPrev={() => setCurrentStep((s) => Math.max(s - 1, 0))}
+          onComplete={handleSubmit}
+          canNext={currentStep === 0 ? canNextStep : true}
+          loading={formLoading}
+          completeLabel={formLoading ? submitLabel : submitButtonLabel}
+        >
+          {currentStep === 0 && (
             <div>
-              <label className="small label-block" htmlFor="rf-category">{t('createRequest.categoryLabel')}</label>
-              <select id="rf-category" value={form.category} onChange={(e) => setFormField('category', e.target.value)} className="w-full">
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{t(`categories.${c}`)}</option>
-                ))}
-              </select>
+              <div className="ff-group">
+                <div className={`ff-wrap ${form.title ? 'ff-focused' : ''}`}>
+                  <input
+                    id="rf-title"
+                    type="text"
+                    value={form.title}
+                    onChange={(e) => setFormField('title', e.target.value)}
+                    required
+                    maxLength={200}
+                    className={`ff-input ${form.title ? 'ff-input-filled' : ''}`}
+                    placeholder={t('createRequest.titleLabel')}
+                  />
+                  <label htmlFor="rf-title" className={`ff-label ${form.title ? 'ff-label-float' : ''}`}>
+                    {t('createRequest.titleLabel')}
+                  </label>
+                </div>
+              </div>
+
+              <div className="ff-group">
+                <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
+                  <textarea
+                    id="rf-desc"
+                    value={form.description}
+                    onChange={(e) => setFormField('description', e.target.value)}
+                    required
+                    rows={4}
+                    maxLength={5000}
+                    className="ff-input ff-textarea"
+                    placeholder={t('createRequest.descriptionLabel')}
+                  />
+                  <label htmlFor="rf-desc" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
+                    {t('createRequest.descriptionLabel')}
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex flex-gap-sm">
+                <div className="ff-group flex-1">
+                  <ModernSelect
+                    label={t('createRequest.categoryLabel')}
+                    options={CATEGORIES.map((c) => ({ label: t(`categories.${c}`), value: c }))}
+                    value={form.category}
+                    onChange={(v) => setFormField('category', v)}
+                  />
+                </div>
+                <div className="ff-group flex-1">
+                  <ModernSelect
+                    label={t('createRequest.priorityLabel')}
+                    options={PRIORITIES.map((p) => ({ label: t(`priorities.${p}`), value: p }))}
+                    value={form.priority}
+                    onChange={(v) => setFormField('priority', v)}
+                  />
+                </div>
+              </div>
+
+              <div className="ff-group">
+                <div className={`ff-wrap ${form.peopleCount > 0 ? 'ff-focused' : ''}`}>
+                  <input
+                    id="rf-people"
+                    type="number"
+                    min="1"
+                    max="10000"
+                    value={form.peopleCount}
+                    onChange={(e) => setFormField('peopleCount', Number(e.target.value))}
+                    className={`ff-input ${form.peopleCount > 0 ? 'ff-input-filled' : ''}`}
+                    placeholder={t('createRequest.peopleCountLabel')}
+                  />
+                  <label htmlFor="rf-people" className={`ff-label ${form.peopleCount > 0 ? 'ff-label-float' : ''}`}>
+                    {t('createRequest.peopleCountLabel')}
+                  </label>
+                </div>
+              </div>
             </div>
+          )}
+
+          {currentStep === 1 && (
             <div>
-              <label className="small label-block" htmlFor="rf-priority">{t('createRequest.priorityLabel')}</label>
-              <select id="rf-priority" value={form.priority} onChange={(e) => setFormField('priority', e.target.value)} className="w-full">
-                {PRIORITIES.map((p) => (
-                  <option key={p} value={p}>{t(`priorities.${p}`)}</option>
-                ))}
-              </select>
-            </div>
-            {showStatus && (
-              <div>
-                <label className="small label-block" htmlFor="rf-status">{t('editRequest.statusLabel')}</label>
-                <select id="rf-status" value={form.status} onChange={(e) => setFormField('status', e.target.value)} className="w-full">
-                  {STATUSES.map((s) => (
-                    <option key={s} value={s}>{t(`statuses.${s}`)}</option>
-                  ))}
-                </select>
+              <div className="flex-between items-baseline gap-12 mb-sm">
+                <div>
+                  <div className="ff-label-text">{t('createRequest.selectLocation')}</div>
+                  <div className="text-sm text-muted-extra">{t('createRequest.locationHint')}</div>
+                </div>
+                <div className="text-sm text-muted-extra">
+                  {form.lat && form.lng ? (
+                    <>
+                      <div><b>{t('createRequest.lat')}</b> {Number(form.lat).toFixed(5)}</div>
+                      <div><b>{t('createRequest.lng')}</b> {Number(form.lng).toFixed(5)}</div>
+                    </>
+                  ) : (
+                    <span>{t('createRequest.notSelected')}</span>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
 
-          <div>
-            <label className="small label-block" htmlFor="rf-people">{t('createRequest.peopleCountLabel')}</label>
-            <input id="rf-people" type="number" min="1" max="10000" value={form.peopleCount} onChange={(e) => setFormField('peopleCount', Number(e.target.value))} className="w-full" />
-          </div>
-
-          <div className="card p-sm bg-elevated">
-            <div className="flex-between items-baseline gap-12">
-              <div>
-                <div className="pageTitle mb-xs text-base">{t('createRequest.selectLocation')}</div>
-                <div className="text-sm text-muted-extra">{t('createRequest.locationHint')}</div>
-              </div>
-              <div className="text-sm text-muted-extra">
-                {form.lat && form.lng ? (
-                  <>
-                    <div><b>{t('createRequest.lat')}</b> {Number(form.lat).toFixed(5)}</div>
-                    <div><b>{t('createRequest.lng')}</b> {Number(form.lng).toFixed(5)}</div>
-                  </>
-                ) : (
-                  <span>{t('createRequest.notSelected')}</span>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-gap-sm mt-sm mb-sm">
-              <button
-                type="button"
-                onClick={useMyLocation}
-                disabled={locating}
-                className={`flex-shrink-0 btn-pill ${locating ? 'cursor-wait' : 'cursor-pointer'}`}
-              >
-                {locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
-              </button>
-
-              <div className="relative flex-1">
-                <label htmlFor="rf-search" className="sr-only">{t('createRequest.searchPlaceholder')}</label>
-                <input
-                  id="rf-search"
-                  type="text"
-                  value={searchText}
-                  onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
-                  placeholder={t('createRequest.searchPlaceholder')}
-                  className="w-full input-pill pr-70"
-                />
+              <div className="flex flex-gap-sm mb-sm">
                 <button
                   type="button"
-                  onClick={onSearch}
-                  disabled={searching}
-                  className="search-btn"
+                  onClick={useMyLocation}
+                  disabled={locating}
+                  className="sf-btn sf-btn-prev"
                 >
-                  {searching ? t('createRequest.searching') : t('createRequest.search')}
+                  <Navigation size={14} />
+                  {locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
                 </button>
 
-                {suggestions.length > 0 && (
-                  <div className="suggestions-dropdown">
-                    {suggestions.map((s, i) => (
-                      <div
-                        key={i}
-                        onClick={() => pickSuggestion(s)}
-                        className={`suggestion-item ${i < suggestions.length - 1 ? 'border-bottom' : ''}`}
-                        onMouseEnter={(e) => e.currentTarget.classList.add('bg-accent-soft')}
-                        onMouseLeave={(e) => e.currentTarget.classList.remove('bg-accent-soft')}
-                      >
-                        {s.display_name}
-                      </div>
-                    ))}
+                <div className="relative flex-1">
+                  <input
+                    id="rf-search"
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
+                    placeholder={t('createRequest.searchPlaceholder')}
+                    style={{
+                      width: '100%', padding: '8px 12px', borderRadius: 8,
+                      border: '1.5px solid var(--border)', background: 'var(--bg-card)',
+                      color: 'var(--text)', fontSize: 13, fontFamily: 'inherit',
+                      outline: 'none', boxSizing: 'border-box',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={onSearch}
+                    disabled={searching}
+                    style={{
+                      position: 'absolute', right: 4, top: 4,
+                      padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)',
+                      background: 'var(--bg-subtle)', cursor: 'pointer', fontSize: 12,
+                      color: 'var(--text-muted)', fontFamily: 'inherit',
+                    }}
+                  >
+                    {searching ? t('createRequest.searching') : t('createRequest.search')}
+                  </button>
+
+                  {suggestions.length > 0 && (
+                    <div style={{
+                      position: 'absolute', left: 0, right: 0, top: '100%', marginTop: 4,
+                      background: 'var(--bg-card)', border: '1px solid var(--border)',
+                      borderRadius: 10, boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+                      zIndex: 100, maxHeight: 200, overflowY: 'auto',
+                    }}>
+                      {suggestions.map((s, i) => (
+                        <div
+                          key={i}
+                          onClick={() => pickSuggestion(s)}
+                          style={{
+                            padding: '8px 12px', cursor: 'pointer', fontSize: 12,
+                            borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-light)' : 'none',
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-subtle)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                        >
+                          {s.display_name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div ref={mapRef} className="mapBox" role="application" aria-label="Map for selecting location" />
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div>
+              <div className="flex-col flex-gap-md" style={{ padding: '8px 0' }}>
+                <div className="ff-label-text">Review your request</div>
+                <div className="card p-sm" style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border)', borderRadius: 10 }}>
+                  <div className="text-sm" style={{ display: 'grid', gap: 10 }}>
+                    <div><span className="text-muted">Title:</span> <strong>{form.title}</strong></div>
+                    <div><span className="text-muted">Description:</span> <strong>{form.description}</strong></div>
+                    <div style={{ display: 'flex', gap: 20 }}>
+                      <div><span className="text-muted">Category:</span> <strong>{t(`categories.${form.category}`)}</strong></div>
+                      <div><span className="text-muted">Priority:</span> <strong>{t(`priorities.${form.priority}`)}</strong></div>
+                    </div>
+                    <div><span className="text-muted">People affected:</span> <strong>{form.peopleCount}</strong></div>
+                    <div><span className="text-muted">Location:</span> <strong>{form.locationName || `${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`}</strong></div>
+                    {form.lat && form.lng && (
+                      <div><span className="text-muted">Coordinates:</span> <strong>{Number(form.lat).toFixed(5)}, {Number(form.lng).toFixed(5)}</strong></div>
+                    )}
+                  </div>
+                </div>
+                {!form.lat && (
+                  <div className="text-sm" style={{ color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <MapPin size={14} /> Please select a location on the map before submitting.
                   </div>
                 )}
               </div>
             </div>
-
-            <div ref={mapRef} className="mapBox" role="application" aria-label="Map for selecting location" />
-          </div>
-
-          <div className="btnRow">
-            <button disabled={isSubmitting || !form.lat} type="submit" className={`btnPrimary${isSubmitting ? ' btnLoading' : ''}`}>
-              {isSubmitting ? submitLabel : !form.lat ? t('createRequest.selectLocationFirst') : submitButtonLabel}
-            </button>
-            <button type="button" onClick={onCancel}>{t('createRequest.cancel')}</button>
-          </div>
-        </form>
+          )}
+        </StepForm>
       </div>
     </div>
   )
