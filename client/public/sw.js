@@ -5,8 +5,8 @@ const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
 const MAX_DYNAMIC_CACHE = 50
 const MAX_API_CACHE = 30
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting()
+self.addEventListener('install', () => {
+  /* SW activates on next visit — no skipWaiting to avoid navigation event */
 })
 
 self.addEventListener('message', (event) => {
@@ -31,7 +31,6 @@ self.addEventListener('activate', (event) => {
       )
     )
   )
-  self.clients.claim()
 })
 
 self.addEventListener('fetch', (event) => {
@@ -74,19 +73,6 @@ function staleWhileRevalidateHtml(request) {
     }).catch(() => cached)
 
     if (cached) {
-      fetched.then((freshResponse) => {
-        if (freshResponse && freshResponse.ok) {
-          caches.match(request).then((latestCached) => {
-            if (!latestCached ||
-                latestCached.headers.get('etag') !== freshResponse.headers.get('etag') ||
-                latestCached.headers.get('last-modified') !== freshResponse.headers.get('last-modified')) {
-              self.clients.matchAll({ type: 'window' }).then((clients) => {
-                clients.forEach((client) => client.postMessage({ type: 'NEW_VERSION' }))
-              })
-            }
-          })
-        }
-      })
       return cached
     }
 

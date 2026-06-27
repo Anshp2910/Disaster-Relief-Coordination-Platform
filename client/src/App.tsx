@@ -1,8 +1,7 @@
-import { Suspense, useEffect, type ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Layout from './components/Layout'
 import { useAuth } from './context/AuthContext'
-import { useToast } from './components/Toast'
 import { retryLazy } from './utils/retryLazy'
 
 const Login = retryLazy(() => import('./pages/Login'))
@@ -51,25 +50,6 @@ function RequireAdmin({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  const toast = useToast()
-
-  useEffect(() => {
-    function onSWMessage(event: MessageEvent) {
-      if (event.data?.type === 'NEW_VERSION') {
-        toast.info('New version available — reloading...')
-        setTimeout(() => window.location.reload(), 3000)
-      }
-    }
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', onSWMessage)
-    }
-    return () => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.removeEventListener('message', onSWMessage)
-      }
-    }
-  }, [toast])
-
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
