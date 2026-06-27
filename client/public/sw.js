@@ -1,13 +1,11 @@
-const CACHE_VERSION = 'v7'
+const CACHE_VERSION = 'v8'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
 const MAX_DYNAMIC_CACHE = 50
 const MAX_API_CACHE = 30
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting()
-})
+self.addEventListener('install', () => {})
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CLEAR_CACHE') {
@@ -29,7 +27,7 @@ self.addEventListener('activate', (event) => {
           .filter((k) => k !== STATIC_CACHE && k !== DYNAMIC_CACHE && k !== API_CACHE)
           .map((k) => caches.delete(k))
       )
-    ).then(() => self.clients.claim())
+    )
   )
 })
 
