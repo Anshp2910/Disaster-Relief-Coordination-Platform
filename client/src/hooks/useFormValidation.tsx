@@ -119,14 +119,10 @@ export function FormField({ name, label, error, touched, children }: FormFieldPr
   const showError = touched && error
   const errorId = `${name}-error`
   const fieldId = `field-${name}`
-  const input = children
-  const cloned = input && typeof input === 'object' && 'type' in input
-    ? <input {...(input as React.ReactElement).props} id={fieldId} aria-invalid={showError || undefined} aria-describedby={showError ? errorId : undefined} />
-    : children
   return (
     <div>
       {label && <label className="small block mb-xs" htmlFor={fieldId}>{label}</label>}
-      {cloned}
+      {children}
       {showError && (
         <div id={errorId} role="alert" className="field-error">{error}</div>
       )}

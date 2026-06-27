@@ -10,7 +10,7 @@ interface ErrorBoundaryState {
 type ErrorBoundaryProps = PropsWithChildren<WithTranslation>
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: WithTranslation) {
+  constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = { hasError: false, error: null }
     this.handleUnhandledRejection = this.handleUnhandledRejection.bind(this)

@@ -4,6 +4,7 @@ import { LayoutDashboard, Map, Package, PlusSquare, Shield, Phone, Mail, Buildin
 import { useAuth } from '../context/AuthContext'
 
 export function Footer() {
+  // Add ARIA live region for dynamic year
   const { t } = useTranslation()
   const { user: currentUser } = useAuth()
 
@@ -83,7 +84,7 @@ export function Footer() {
       </div>
       <div className="gov-footer-bottom">
         <div className="container">
-          <span>&copy; {new Date().getFullYear()} Disaster Relief Coordination Platform. {t('footer.copyright')}</span>
+          <span aria-live="polite">&copy; {new Date().getFullYear()} Disaster Relief Coordination Platform. {t('footer.copyright')}</span>
           <span className="gov-footer-bottom-links">
             <a href="#" onClick={(e) => e.preventDefault()} className="gov-footer-link">Privacy Policy</a>
             <span className="gov-footer-dot">&middot;</span>

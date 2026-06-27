@@ -43,9 +43,10 @@ export default function ImageUploader({
       return
     }
     onChange(file)
+    if (preview) URL.revokeObjectURL(preview)
     const url = URL.createObjectURL(file)
     setPreview(url)
-  }, [maxSize, onChange, t])
+  }, [maxSize, onChange, t, preview])
 
   function handleDrop(e: DragEvent) {
     e.preventDefault()
@@ -64,6 +65,7 @@ export default function ImageUploader({
   }
 
   function remove() {
+    if (preview) URL.revokeObjectURL(preview)
     setPreview(null)
     onChange(null)
   }

@@ -51,18 +51,18 @@ function RequireAdmin({ children }: { children: ReactNode }) {
 function App() {
   return (
     <Routes>
-      {/* Standalone routes (no Layout wrapper) */}
+      {/* Standalone routes (no Layout — full-screen pages) */}
       <Route path="/command-center" element={<EmergencyCommandCenter />} />
-      {/* Standard routes with Layout */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      {/* Standard routes with Layout (header + footer) */}
       <Route path="/*" element={
         <Layout>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/public" element={<PublicStatus />} />
               <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
               <Route path="/map" element={<RequireAuth><MapOverview /></RequireAuth>} />

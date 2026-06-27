@@ -30,7 +30,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   })
 
   const [isSocketConnected, setIsSocketConnected] = useState<boolean>(() => {
-    try { return localStorage.getItem('socketConnected') === 'true' } catch (e) { console.warn('Failed to read socket connected:', (e as Error).message); return true }
+    try { return localStorage.getItem('socketConnected') === 'true' } catch (e) { console.warn('Failed to read socket connected:', (e as Error).message); return false }
   })
 
   useEffect(() => {

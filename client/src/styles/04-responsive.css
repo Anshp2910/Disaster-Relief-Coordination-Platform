@@ -28,6 +28,7 @@
 @media (max-width: 768px) {
   .container { padding: 0 var(--space-md); }
   .gov-main { padding-top: 90px; }
+  html { scroll-padding-top: 90px; }
   .gov-top-strip-text { display: none; }
   .gov-app-subtitle { display: none; }
   .cmd-hint { display: none; }
@@ -53,6 +54,7 @@
 @media (max-width: 480px) {
   .container { padding: 0 var(--space-sm); }
   .gov-main { padding-top: 80px; }
+  html { scroll-padding-top: 80px; }
   .gov-header-inner { gap: 4px; }
   .sos-btn span { display: none; }
   .kpi-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xs); }

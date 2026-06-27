@@ -46,6 +46,8 @@ export const SHIFT_COLORS: Record<string, string> = {
 
 export const RESOURCE_STATUS_COLORS: Record<string, { bg: string; border: string; text: string }> = {
   Available: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
+  Deployed: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--color-open)' },
+  Maintenance: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-high)' },
   Low: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-high)' },
   Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
   Reserved: { bg: 'rgba(129,140,248,.1)', border: 'rgba(129,140,248,.25)', text: 'var(--accent-indigo)' },

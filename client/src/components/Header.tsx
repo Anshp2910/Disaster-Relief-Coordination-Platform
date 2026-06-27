@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
 import { useEffect } from 'react'
-import { Sun, Moon, Search, User, LogOut, AlertTriangle, Info, Zap } from 'lucide-react'
+import { Sun, Moon, Search, User, LogOut, Info } from 'lucide-react'
+import { IconLazy } from './ui/IconLazy'
 import NotificationBell from './NotificationBell'
 
 interface Language {
@@ -124,9 +125,7 @@ function Header() {
               aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'}
               title={isEmergency ? 'Emergency Mode Active (Alt+E to disable)' : 'Emergency Mode (Alt+E to activate)'}
             >
-              <AlertTriangle size={14} 
-                className={isEmergency ? 'text-[--danger]' : 'text-[--warning]'} 
-                aria-hidden="true" />
+              <IconLazy importPath='lucide-react' name='AlertTriangle' size={14} className={isEmergency ? 'text-[--danger]' : 'text-[--warning]'} aria-hidden='true' />
               {isEmergency && (
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-[--danger] rounded-full animate-pulse" />
               )}
@@ -151,7 +150,7 @@ function Header() {
       </div>
 
       <div className="gov-header-main">
-        <div className="container gov-header-inner">
+        <div className={`container gov-header-inner ${menuOpen ? 'block' : 'hidden'} md:flex`}>
           <div className="gov-logo-wrapper">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="gov-logo" aria-hidden="true">
               <rect width="40" height="40" rx="10" fill="var(--accent)" />
