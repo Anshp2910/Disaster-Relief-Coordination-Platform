@@ -257,22 +257,22 @@ export default function Profile() {
             <div className="flex-col flex-gap-sm text-sm">
               <div className="flex flex-gap-lg">
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
+                  <input type="checkbox" className="input-checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
                 </label>
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
+                  <input type="checkbox" className="input-checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
                 </label>
               </div>
               <div className="text-sm text-muted-extra">{t('profile.eventSubscriptions')}</div>
               <div className="flex flex-gap-lg flex-wrap">
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={notifications.newRequest === true} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
+                  <input type="checkbox" className="input-checkbox" checked={notifications.newRequest === true} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
                 </label>
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={notifications.statusChange === true} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
+                  <input type="checkbox" className="input-checkbox" checked={notifications.statusChange === true} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
                 </label>
                 <label className="flex flex-gap-xs cursor-pointer">
-                  <input type="checkbox" checked={notifications.newComment === true} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
+                  <input type="checkbox" className="input-checkbox" checked={notifications.newComment === true} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
                 </label>
               </div>
             </div>

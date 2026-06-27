@@ -127,6 +127,9 @@
 .bg-gov-white { background: var(--gov-white); }
 .bg-warning-soft { background: var(--warning-soft); }
 
+/* ── Max Width ── */
+.max-w-sm { max-width: 500px; }
+
 /* ── Display ── */
 .hidden { display: none; }
 .block { display: block; }

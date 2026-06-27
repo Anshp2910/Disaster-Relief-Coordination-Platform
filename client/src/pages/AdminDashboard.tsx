@@ -13,6 +13,7 @@ import { useConfirm } from '../hooks/useConfirm'
 import { PageHeader, ErrorState, DataTable, PageTransition, AnimatedCounter } from '../components/ui'
 import type { ColumnDef } from '../components/ui/DataTable'
 import Badge from '../components/Badge'
+import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
 import { SkeletonList } from '../components/Skeleton'
 
 
@@ -51,20 +52,6 @@ interface Stats {
   byCategory?: Record<string, number>
   byPriority?: Record<string, number>
   dailyRequests?: DailyRequest[]
-}
-
-const STATUS_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  Open: { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--color-open)' },
-  'In Progress': { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-progress)' },
-  Resolved: { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--color-resolved)' },
-  Fulfilled: { bg: 'rgba(52,211,153,.1)', border: 'rgba(52,211,153,.25)', text: 'var(--color-fulfilled)' },
-}
-
-const PRIORITY_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  Critical: { bg: 'var(--danger-soft)', border: 'rgba(239,68,68,0.25)', text: 'var(--color-critical)' },
-  High: { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-high)' },
-  Medium: { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--color-medium)' },
-  Low: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
 }
 
 const BREAKDOWN_COLORS = ['var(--color-open)', 'var(--accent-indigo)', 'var(--color-resolved)', 'var(--color-critical)', 'var(--accent-purple)', 'var(--color-high)']

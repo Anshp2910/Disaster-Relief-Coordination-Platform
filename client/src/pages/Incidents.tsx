@@ -516,7 +516,7 @@ export default function Incidents() {
 
           <div className="flex flex-gap-sm mt">
             <RippleBtn type="submit" className="">{editIncident ? t('incidents.update') : t('incidents.create')}</RippleBtn>
-            <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
+            <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
           </div>
         </form>
       </Modal>

@@ -14,23 +14,9 @@ import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import Chat from './Chat'
+import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
-
-const STATUS_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  'Open': { bg: 'var(--accent-soft)', border: 'rgba(59,130,246,0.25)', text: 'var(--color-open)' },
-  'Pending': { bg: 'rgba(167,139,250,0.1)', border: 'rgba(167,139,250,0.25)', text: 'var(--color-pending)' },
-  'In Progress': { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-progress)' },
-  'Resolved': { bg: 'var(--success-soft)', border: 'rgba(34,197,94,0.25)', text: 'var(--color-resolved)' },
-  'Fulfilled': { bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.25)', text: 'var(--color-fulfilled)' },
-}
-
-const PRIORITY_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  'Critical': { bg: 'var(--danger-soft)', border: 'rgba(239,68,68,0.25)', text: 'var(--color-critical)' },
-  'High': { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)', text: 'var(--color-high)' },
-  'Medium': { bg: 'rgba(234,179,8,0.1)', border: 'rgba(234,179,8,0.25)', text: 'var(--color-medium)' },
-  'Low': { bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.25)', text: 'var(--color-low)' },
-}
 
 interface FileItem {
   _id?: string
@@ -416,7 +402,7 @@ export default function RequestDetail() {
                 </button>
               )}
               {(currentUser?.id === item.createdBy?._id || currentUser?.role === 'admin') && (
-                <button onClick={() => navigate(`/requests/${id}/edit`)} className="flex-center gap-xs" aria-label={t('dashboard.edit')}>
+                <button onClick={() => navigate(`/requests/${id}/edit`)} className="btn-ghost btn-sm flex-center gap-xs" aria-label={t('dashboard.edit')}>
                   <Edit size={14} />
                   {t('dashboard.edit')}
                 </button>

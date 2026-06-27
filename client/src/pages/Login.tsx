@@ -234,7 +234,7 @@ export default function Login() {
                     className="auth-pw-toggle"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
-                    tabIndex={-1}
+                    tabIndex={0}
                   >
                     {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                   </button>

@@ -185,7 +185,7 @@ export default function Dashboard() {
               </RippleBtn>
             </div>
           </div>
-          {error ? <div className="error-text">{error}</div> : null}
+          {error ? <div className="error-text mb-md">{error}</div> : null}
           <nav aria-label="Filters">
             <motion.div className="flex flex-gap-sm mt-md flex-wrap" variants={fadeUp}>
               {filterOptions.map((f) => (
@@ -247,9 +247,9 @@ export default function Dashboard() {
                 </motion.div>
                 {totalPages > 1 && (
                   <div className="flex flex-center flex-gap-sm mt-lg">
-                    <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm p-xs" aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
-                    <span className="text-sm p-xs">{page} / {totalPages}</span>
-                    <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
+                    <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-ghost btn-sm" aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
+                    <span className="text-sm text-muted">{page} / {totalPages}</span>
+                    <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="btn-ghost btn-sm" aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
                   </div>
                 )}
               </>

@@ -459,7 +459,7 @@ export default function Resources() {
               <CheckCircle size={16} />
               <span className="ml-xs">{editItem ? t('resources.update') : t('resources.create')}</span>
             </RippleBtn>
-            <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
+            <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
           </div>
         </form>
       </Modal>
@@ -591,7 +591,7 @@ export default function Resources() {
               <CheckCircle size={16} />
               <span className="ml-xs">{t('resources.apply') || 'Apply'}</span>
             </RippleBtn>
-            <button type="button" onClick={() => setBulkEditOpen(false)} className="text-muted" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
+            <button type="button" onClick={() => setBulkEditOpen(false)} className="btn-ghost btn-sm" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
             {bulkUpdating && (
               <span className="text-sm text-muted" role="progressbar" aria-valuenow={bulkProgress.current} aria-valuemax={bulkProgress.total}>
                 {bulkProgress.current}/{bulkProgress.total}
@@ -652,7 +652,7 @@ export default function Resources() {
                     <><CheckCircle size={16} /><span className="ml-xs">{t('resources.allocate')}</span></>
                   )}
                 </RippleBtn>
-                <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} className="text-base" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
+                <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} className="btn-ghost btn-sm" aria-label={t('resources.cancel')}>{t('resources.cancel')}</button>
               </div>
             </form>
           </>

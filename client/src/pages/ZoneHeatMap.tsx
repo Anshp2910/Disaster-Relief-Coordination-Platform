@@ -461,7 +461,7 @@ export default function ZoneHeatMap() {
 
               {currentUser?.role === 'admin' && (
                 <div className="flex flex-gap-sm mt-md">
-                  <button onClick={() => openEdit(selectedZone)} className="text-sm p-xs flex items-center gap-xs" aria-label={t('common.edit')}>
+                  <button onClick={() => openEdit(selectedZone)} className="btn-ghost btn-sm" aria-label={t('common.edit')}>
                     <Edit size={14} />
                     {t('common.edit')}
                   </button>
@@ -528,7 +528,7 @@ export default function ZoneHeatMap() {
           <div className="flex flex-gap-sm">
             <div className="ff-group flex-1">
               <ModernSelect
-                label="Disaster type"
+                label={t('zones.disasterType') || 'Disaster type'}
                 options={Object.keys(DISASTER_ICONS).map((d) => ({ label: d, value: d }))}
                 value={form.disasterType}
                 onChange={(v) => setForm((prev) => ({ ...prev, disasterType: v }))}
@@ -536,7 +536,7 @@ export default function ZoneHeatMap() {
             </div>
             <div className="ff-group flex-1">
               <ModernSelect
-                label="Severity"
+                label={t('zones.severity') || 'Severity'}
                 options={Object.keys(SEVERITY_COLORS).map((s) => ({ label: s, value: s }))}
                 value={form.severity}
                 onChange={(v) => setForm((prev) => ({ ...prev, severity: v }))}
@@ -544,7 +544,7 @@ export default function ZoneHeatMap() {
             </div>
             <div className="ff-group flex-1">
               <ModernSelect
-                label="Status"
+                label={t('zones.status') || 'Status'}
                 options={['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => ({ label: s, value: s }))}
                 value={form.status}
                 onChange={(v) => setForm((prev) => ({ ...prev, status: v }))}
@@ -660,7 +660,7 @@ export default function ZoneHeatMap() {
             <RippleBtn type="submit" className="" disabled={saving} aria-label={t('common.submit')}>
               {saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}
             </RippleBtn>
-            <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
+            <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
           </div>
         </form>
       </Modal>

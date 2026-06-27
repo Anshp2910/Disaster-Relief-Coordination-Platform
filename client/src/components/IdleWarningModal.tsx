@@ -38,7 +38,7 @@ export default function IdleWarningModal() {
           </span>
         </div>
         <div className="modal-actions mt">
-          <RippleBtn onClick={resetIdleTimer} className="">
+          <RippleBtn onClick={resetIdleTimer} className="btn-primary btn-md">
             {t('idleWarning.stayLoggedIn')}
           </RippleBtn>
         </div>

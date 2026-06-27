@@ -38,10 +38,18 @@
   animation: shimmer 1.5s var(--ease-in-out) infinite;
 }
 
+.sk-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s var(--ease-in-out) infinite;
+}
+
 .sk-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
-
 

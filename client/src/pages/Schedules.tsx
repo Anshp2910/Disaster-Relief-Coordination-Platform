@@ -521,7 +521,7 @@ export default function Schedules() {
                         scheduleId={item._id}
                         onStatusChange={handleStatusChange}
                       />
-                      <button onClick={() => openEdit(item)} className="text-xs p-xs flex items-center gap-xs" aria-label={t('common.edit')}>
+                      <button onClick={() => openEdit(item)} className="btn-ghost btn-sm" aria-label={t('common.edit')}>
                         <Edit size={14} /> {t('common.edit')}
                       </button>
                       <button onClick={() => handleDelete(item._id)} className="btnDanger text-xs p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
@@ -653,7 +653,7 @@ export default function Schedules() {
               <CheckCircle size={16} />
               <span>{editItem ? t('schedules.update') : t('schedules.create')}</span>
             </RippleBtn>
-            <button type="button" onClick={() => setShowForm(false)} className="text-muted" aria-label={t('common.cancel')}>{t('schedules.cancel')}</button>
+            <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm" aria-label={t('common.cancel')}>{t('schedules.cancel')}</button>
           </div>
         </form>
       </Modal>

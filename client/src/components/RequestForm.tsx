@@ -122,12 +122,6 @@ function formReducer(state: FormState, action: FormAction): FormState {
   }
 }
 
-const STEPS: Step[] = [
-  { title: 'Details', description: 'Basic information' },
-  { title: 'Location', description: 'Set crisis location' },
-  { title: 'Review', description: 'Confirm & submit' },
-]
-
 export default function RequestForm({
   initialData,
   onSubmit,
@@ -140,6 +134,11 @@ export default function RequestForm({
   onCancel: _onCancel,
 }: RequestFormProps) {
   const { t } = useTranslation()
+  const STEPS: Step[] = [
+    { title: t('stepForm.stepDetails'), description: t('stepForm.stepDetailsDesc') },
+    { title: t('stepForm.stepLocation'), description: t('stepForm.stepLocationDesc') },
+    { title: t('stepForm.stepReview'), description: t('stepForm.stepReviewDesc') },
+  ]
   const mapRef = useRef<HTMLDivElement | null>(null)
   const mapInstance = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
@@ -343,11 +342,11 @@ export default function RequestForm({
         </div>
 
         {showRestore && (
-          <div className="flex-between items-center gap-sm mt-md p-sm rounded-sm" style={{ background: 'var(--accent-soft)', border: '1px solid var(--border)' }}>
+          <div className="draft-banner">
             <span className="text-sm">{t('createRequest.draftFound') || 'You have an unsaved draft'}</span>
             <div className="flex flex-gap-xs">
-              <RippleBtn type="button" onClick={restoreDraft} className="text-xs p-xs">{t('createRequest.restore') || 'Restore'}</RippleBtn>
-              <button type="button" onClick={dismissRestore} className="text-xs p-xs">{t('createRequest.dismiss') || 'Dismiss'}</button>
+              <RippleBtn type="button" onClick={restoreDraft} className="btn-secondary btn-sm">{t('createRequest.restore') || 'Restore'}</RippleBtn>
+              <button type="button" onClick={dismissRestore} className="btn-ghost btn-sm">{t('createRequest.dismiss') || 'Dismiss'}</button>
             </div>
           </div>
         )}
@@ -482,35 +481,21 @@ export default function RequestForm({
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
                     placeholder={t('createRequest.searchPlaceholder')}
                     aria-label={t('createRequest.searchPlaceholder')}
-                    style={{
-                      width: '100%', padding: '8px 12px', borderRadius: 8,
-                      border: '1.5px solid var(--border)', background: 'var(--bg-card)',
-                      color: 'var(--text)', fontSize: 13, fontFamily: 'inherit',
-                      outline: 'none', boxSizing: 'border-box',
-                    }}
+                    className="location-search-input"
                   />
                   <button
                     type="button"
                     onClick={onSearch}
                     disabled={searching}
                     aria-label={searching ? t('createRequest.searching') : t('createRequest.search')}
-                    style={{
-                      position: 'absolute', right: 4, top: 4,
-                      padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)',
-                      background: 'var(--bg-subtle)', cursor: 'pointer', fontSize: 12,
-                      color: 'var(--text-muted)', fontFamily: 'inherit',
-                    }}
+                    className="btn-ghost btn-sm"
+                    style={{ position: 'absolute', right: 4, top: 4 }}
                   >
                     {searching ? t('createRequest.searching') : t('createRequest.search')}
                   </button>
 
                   {suggestions.length > 0 && (
-                    <div style={{
-                      position: 'absolute', left: 0, right: 0, top: '100%', marginTop: 4,
-                      background: 'var(--bg-card)', border: '1px solid var(--border)',
-                      borderRadius: 10, boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
-                      zIndex: 100, maxHeight: 200, overflowY: 'auto',
-                    }}>
+                    <div className="location-suggestions">
                       {suggestions.map((s, i) => (
                         <div
                           key={String(s.place_id ?? '') || i}
@@ -535,25 +520,25 @@ export default function RequestForm({
           {currentStep === 2 && (
             <div>
               <div className="flex-col flex-gap-md py-sm">
-                <div className="ff-label-text">Review your request</div>
-                <div className="card p-sm" style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border)', borderRadius: 10 }}>
-                  <div className="text-sm" style={{ display: 'grid', gap: 10 }}>
-                    <div><span className="text-muted">Title:</span> <strong>{form.title}</strong></div>
-                    <div><span className="text-muted">Description:</span> <strong>{form.description}</strong></div>
-                    <div style={{ display: 'flex', gap: 20 }}>
-                      <div><span className="text-muted">Category:</span> <strong>{t(`categories.${form.category}`)}</strong></div>
-                      <div><span className="text-muted">Priority:</span> <strong>{t(`priorities.${form.priority}`)}</strong></div>
+                <div className="ff-label-text">{t('createRequest.review') || 'Review your request'}</div>
+                <div className="review-card">
+                  <div className="text-sm review-grid">
+                    <div><span className="text-muted">{t('createRequest.titleLabel') || 'Title'}:</span> <strong>{form.title}</strong></div>
+                    <div><span className="text-muted">{t('createRequest.descriptionLabel') || 'Description'}:</span> <strong>{form.description}</strong></div>
+                    <div className="review-field">
+                      <div><span className="text-muted">{t('createRequest.categoryLabel') || 'Category'}:</span> <strong>{t(`categories.${form.category}`)}</strong></div>
+                      <div><span className="text-muted">{t('createRequest.priorityLabel') || 'Priority'}:</span> <strong>{t(`priorities.${form.priority}`)}</strong></div>
                     </div>
-                    <div><span className="text-muted">People affected:</span> <strong>{form.peopleCount}</strong></div>
-                    <div><span className="text-muted">Location:</span> <strong>{form.locationName || `${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`}</strong></div>
+                    <div><span className="text-muted">{t('createRequest.peopleLabel') || 'People affected'}:</span> <strong>{form.peopleCount}</strong></div>
+                    <div><span className="text-muted">{t('createRequest.locationLabel') || 'Location'}:</span> <strong>{form.locationName || `${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`}</strong></div>
                     {form.lat && form.lng && (
-                      <div><span className="text-muted">Coordinates:</span> <strong>{Number(form.lat).toFixed(5)}, {Number(form.lng).toFixed(5)}</strong></div>
+                      <div><span className="text-muted">{t('createRequest.coordinatesLabel') || 'Coordinates'}:</span> <strong>{Number(form.lat).toFixed(5)}, {Number(form.lng).toFixed(5)}</strong></div>
                     )}
                   </div>
                 </div>
                 {!form.lat && (
-                  <div className="text-sm" style={{ color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <MapPin size={14} aria-hidden="true" /> Please select a location on the map before submitting.
+                  <div className="text-sm text-danger flex items-center gap-xs">
+                    <MapPin size={14} aria-hidden="true" /> {t('createRequest.locationRequired') || 'Please select a location on the map before submitting.'}
                   </div>
                 )}
               </div>

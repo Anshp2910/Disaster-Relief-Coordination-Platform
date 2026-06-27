@@ -54,7 +54,7 @@ export function SosFab() {
   return (
     <>
       <motion.button
-        className="sos-fab"
+        className="sos-fab sos-fab-btn"
         onClick={handleSOS}
         disabled={loading || cooldown > 0}
         aria-label={cooldown > 0 ? `SOS cooldown ${cooldown}s` : 'Emergency SOS alert'}

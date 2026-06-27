@@ -201,7 +201,7 @@ export default function Register() {
                 <div className="auth-input-wrap">
                   <input id="reg-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required maxLength={128} className="auth-input" placeholder=" " />
                   <label htmlFor="reg-password" className="auth-label">{t('auth.password')}</label>
-                  <button type="button" className="auth-pw-toggle" onClick={() => setShowPassword(!showPassword)}                     aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={-1}>
+                  <button type="button" className="auth-pw-toggle" onClick={() => setShowPassword(!showPassword)}                     aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={0}>
                     {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                   </button>
                 </div>

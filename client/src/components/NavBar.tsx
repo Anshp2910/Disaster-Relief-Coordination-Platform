@@ -230,7 +230,7 @@ const location = useLocation()
         {/* ─── Mobile Menu ─── */}
         {menuOpen && showNav && (
           <div className="gov-navbar-mobile">
-            <div className="gov-navbar-mobile-section-label">Navigation</div>
+            <div className="gov-navbar-mobile-section-label">{t('nav.navigation')}</div>
             {filteredLinks.map((link) => (
               <button
                 key={link.path}
@@ -244,7 +244,7 @@ const location = useLocation()
 
             <div className="gov-navbar-mobile-divider" />
 
-            <div className="gov-navbar-mobile-section-label">Settings</div>
+            <div className="gov-navbar-mobile-section-label">{t('nav.settings')}</div>
             <div className="gov-navbar-mobile-controls">
               <div className="gov-navbar-lang">
                 <select

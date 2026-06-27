@@ -421,7 +421,7 @@ button.btn,
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none.
+  box-shadow: none;
 }
 .btnDanger:focus-visible,
 .btn-danger:focus-visible {

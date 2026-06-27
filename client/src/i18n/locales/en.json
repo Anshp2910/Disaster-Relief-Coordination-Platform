@@ -21,6 +21,8 @@
     "bulkImport": "Bulk Import",
     "escalation": "Escalation",
     "geofencing": "Geofencing",
+    "navigation": "Navigation",
+    "settings": "Settings",
     "logoutConfirm": "Are you sure you want to logout?"
   },
   "auth": {
@@ -161,7 +163,19 @@
     "cancel": "Cancel",
     "locationError": "Please select a location by clicking on the map or searching.",
     "geolocationNotSupported": "Geolocation is not supported by your browser.",
-    "unableToRetrieve": "Unable to retrieve your location."
+    "unableToRetrieve": "Unable to retrieve your location.",
+    "draftFound": "You have an unsaved draft",
+    "restore": "Restore",
+    "dismiss": "Dismiss",
+    "review": "Review your request",
+    "titleLabel": "Title:",
+    "descriptionLabel": "Description:",
+    "categoryLabel": "Category:",
+    "priorityLabel": "Priority:",
+    "peopleLabel": "People affected:",
+    "locationLabel": "Location:",
+    "coordinatesLabel": "Coordinates:",
+    "locationRequired": "Please select a location on the map before submitting."
   },
   "editRequest": {
     "title": "Edit Request",
@@ -278,7 +292,13 @@
     "back": "Back",
     "complete": "Complete",
     "processing": "Processing...",
-    "stepOf": "Step {{current}} of {{total}}"
+    "stepOf": "Step {{current}} of {{total}}",
+    "stepDetails": "Details",
+    "stepDetailsDesc": "Basic information",
+    "stepLocation": "Location",
+    "stepLocationDesc": "Set crisis location",
+    "stepReview": "Review",
+    "stepReviewDesc": "Confirm & submit"
   },
   "imageUploader": {
     "dropHere": "Drop image here",
@@ -497,6 +517,7 @@
     "update": "Update",
     "create": "Create",
     "cancel": "Cancel",
+    "status": "Status",
     "radiusLabel": "Radius:",
     "km": "km",
     "totalResources": "Total resources",
@@ -633,7 +654,8 @@
     "checkArea": "Check Area",
     "zonesInArea": "Zones in area",
     "requestsNearby": "Requests nearby",
-    "resourcesNearby": "Resources nearby"
+    "resourcesNearby": "Resources nearby",
+    "checkHistory": "Check History"
   },
   "chat": {
     "title": "Chat",

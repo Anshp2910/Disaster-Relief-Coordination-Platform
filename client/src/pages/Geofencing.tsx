@@ -389,7 +389,7 @@ export default function Geofencing() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.3 }}
         >
-          <div className="text-base text-semi mb-sm">Check History</div>
+          <div className="text-base text-semi mb-sm">{t('geofencing.checkHistory') || 'Check History'}</div>
           <DataTable
             columns={[
               { id: 'time', header: 'Time', accessor: (e) => formatTime(e.timestamp), sortable: true },
