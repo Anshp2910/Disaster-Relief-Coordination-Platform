@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
@@ -50,6 +50,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const { t } = useTranslation()
   const { login } = useAuth()
   const toast = useToast()
@@ -65,7 +66,8 @@ export default function Login() {
     try {
       const { token, user } = (await clientApi.login({ email, password })) as { token: string; user: Record<string, unknown> }
       login(token, user)
-      navigate('/dashboard')
+      const from = (location.state as { from?: string })?.from || '/dashboard'
+      navigate(from, { replace: true })
     } catch (err) {
       const e = err as Error
       setError(e.message || t('common.loginFailed'))

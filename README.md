@@ -1,8 +1,8 @@
-# Disaster Relief Coordination Platform - National Emergency Command Center
+# Disaster Relief Coordination Platform
 > Terminal Version | Built with AI Technology for Emergency Response Teams
 
 ## Overview
-A comprehensive disaster relief coordination platform designed for National Emergency Command Centers. Built with professional-grade engineering, inspired by mission control interfaces and enterprise systems.
+A comprehensive disaster relief coordination platform for emergency response teams. Built with professional-grade engineering for enterprise reliability.
 
 ## Key Features
 - **Real-time emergency response coordination**
@@ -67,7 +67,7 @@ The entire application follows **UI-UX-DESIGN.md**, an industry-grade design spe
 - Enterprise-grade header system with language selector
 
 ## Development Team
-Built by the **National Emergency Command Center Development Team** using advanced AI tools for enterprise-level software engineering.
+Built by the **Disaster Relief Coordination Team** using advanced AI tools for enterprise-level software engineering.
 
 ## Quality Standards
 - **Lighthouse Score**: >95

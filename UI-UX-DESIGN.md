@@ -1,15 +1,14 @@
 # UI/UX Design Documentation — Disaster Relief Coordination Platform
 
 **Live URL**: https://disasterhelper.dpdns.org
-**Design System**: Emergency Command Center (ECC) v2.0
 
 ---
 
 ## 1. Design Philosophy
 
-**Tactical / High-Contrast / Dark-First / Glassmorphism**
+**High-Contrast / Dark-First / Glassmorphism**
 
-The UI is built for emergency operations — it must be readable under any lighting, convey urgency through color, and stay out of the operator's way. Dark mode is the default ("command center" aesthetic). A `.light` class flips all tokens for daytime / print use.
+The UI is built for emergency operations — it must be readable under any lighting, convey urgency through color, and stay out of the operator's way. Dark mode is the default. A `.light` class flips all tokens for daytime / print use.
 
 ---
 
@@ -159,7 +158,6 @@ Light mode shadows are softer (max 0.08 alpha).
 ### Card System
 - `.card`: Glass background, rounded-lg, subtle border, hover elevation
 - `.stat-card`: Dashboard stats with icon, value, label
-- `.ecc-stat`: Emergency stats with blue accent border
 - `.admin-stat-card`: Admin panel variant
 
 ### Form Elements
@@ -335,7 +333,7 @@ All disabled when `prefers-reduced-motion: reduce` is active.
 ## 14. Known Design Decisions for Reviewer
 
 1. **Dark top-strip in light mode** — Intentional: the "Official Government Website" banner stays dark in both themes for authority/contrast
-2. **Language dropdown uses glass style** — Semi-transparent white bg on dark strip; consistent with ECC glassmorphism
+2. **Language dropdown uses glass style** — Semi-transparent white bg on dark strip
 3. **No Tailwind/Bootstrap** — Pure CSS with custom properties keeps bundle minimal (74 KB main) and gives full control
 4. **Inline styles remain (63)** — All are dynamic (chart widths, computed status colors) — cannot be replaced with classes
 5. **`!important`: zero** — Entire CSS refactored to eliminate overrides
@@ -350,7 +348,7 @@ All disabled when `prefers-reduced-motion: reduce` is active.
 | Dimension | Score | Notes |
 |-----------|-------|-------|
 | Features | 10/10 | 17 pages, 70+ API endpoints |
-| UI Design | 10/10 | ECC theme, glassmorphism, light/dark, RTL |
+| UI Design | 10/10 | Glassmorphism, light/dark, RTL |
 | i18n | 10/10 | 10 languages, Urdu RTL, all keys synced |
 | Performance | 10/10 | Code-split, lazy, PWA, Web Vitals |
 | Security | 10/10 | CSP, helmet, JWT, 0 vulns |

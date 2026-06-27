@@ -1,5 +1,5 @@
 import { Suspense, type ReactNode } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Layout from './components/Layout'
 import { useAuth } from './context/AuthContext'
 import { retryLazy } from './utils/retryLazy'
@@ -36,13 +36,15 @@ function PageLoader() {
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth()
-  if (!isAuthenticated) return <Navigate to="/login" replace />
+  const location = useLocation()
+  if (!isAuthenticated) return <Navigate to="/login" state={{ from: location.pathname + location.search }} replace />
   return children
 }
 
 function RequireAdmin({ children }: { children: ReactNode }) {
   const { isAuthenticated, isAdmin } = useAuth()
-  if (!isAuthenticated) return <Navigate to="/login" replace />
+  const location = useLocation()
+  if (!isAuthenticated) return <Navigate to="/login" state={{ from: location.pathname + location.search }} replace />
   if (!isAdmin) return <Navigate to="/dashboard" replace />
   return children
 }
