@@ -4,30 +4,17 @@
    ================================================================ */
 
 button, .btn { font-family: var(--font); }
-/* Global default button styling – applies to any <button> without a more specific class */
-button {
+.btn, button.rp-btn, .btnPrimary, .btnSecondary, .btnDanger, .btnGhost, .sos-btn, .pwa-install-btn, .error-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, var(--pri-500), var(--pri-600));
-  color: var(--text-on-accent);
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-semibold);
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
-  box-shadow: var(--shadow-accent);
   text-decoration: none;
   line-height: 1.4;
-  min-height: 40px;
 }
-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-accent-lg); }
-button:active { transform: translateY(0) scale(0.97); }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .btnRow {
   display: flex;

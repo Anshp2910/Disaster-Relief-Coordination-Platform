@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useLocation, Link } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -161,7 +161,7 @@ export function NavBar() {
                   aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'}
                   title={isEmergency ? 'Emergency Mode Active (Alt+E)' : 'Emergency Mode (Alt+E)'}
                 >
-                  <AlertTriangle size={14} className={isEmergency ? 'text-danger' : 'text-warning'} />
+                  <AlertTriangle size={14} className={isEmergency ? 'text-[--danger]' : 'text-[--warning]'} />
                 </button>
               </>
             )}

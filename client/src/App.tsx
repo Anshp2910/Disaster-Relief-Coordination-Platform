@@ -52,7 +52,7 @@ function App() {
   return (
     <Routes>
       {/* Standalone routes (no Layout — full-screen pages) */}
-      <Route path="/command-center" element={<EmergencyCommandCenter />} />
+      <Route path="/command-center" element={<Layout><EmergencyCommandCenter /></Layout>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
