@@ -56,12 +56,43 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(networkFirstStrategy(request, STATIC_CACHE))
+    event.respondWith(staleWhileRevalidateHtml(request))
     return
   }
 
   event.respondWith(networkFirstStrategy(request, DYNAMIC_CACHE))
 })
+
+function staleWhileRevalidateHtml(request) {
+  return caches.match(request).then((cached) => {
+    const fetched = fetch(request).then((response) => {
+      if (response && response.status === 200) {
+        const clone = response.clone()
+        caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone))
+      }
+      return response
+    }).catch(() => cached)
+
+    if (cached) {
+      fetched.then((freshResponse) => {
+        if (freshResponse && freshResponse.ok) {
+          caches.match(request).then((latestCached) => {
+            if (!latestCached ||
+                latestCached.headers.get('etag') !== freshResponse.headers.get('etag') ||
+                latestCached.headers.get('last-modified') !== freshResponse.headers.get('last-modified')) {
+              self.clients.matchAll({ type: 'window' }).then((clients) => {
+                clients.forEach((client) => client.postMessage({ type: 'NEW_VERSION' }))
+              })
+            }
+          })
+        }
+      })
+      return cached
+    }
+
+    return fetched
+  })
+}
 
 function limitCache(cacheName, maxItems) {
   caches.open(cacheName).then((cache) => {
