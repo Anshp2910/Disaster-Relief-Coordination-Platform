@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -49,8 +49,7 @@ const NAV_LINKS: NavLink[] = [
 
 export function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const navigate = useNavigate()
-  const location = useLocation()
+const location = useLocation()
   const { t, i18n } = useTranslation()
   const { user: currentUser, isAuthenticated, isAdmin, logout: authLogout } = useAuth()
   const { theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, toggleEmergency } = useTheme()
@@ -97,10 +96,10 @@ export function NavBar() {
           {/* ─── Logo + Title ─── */}
           <div
             className="gov-navbar-brand"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => { window.location.hash = '#/dashboard' }}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter') navigate('/dashboard') }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { window.location.hash = '#/dashboard' } }}
           >
             <svg width="32" height="32" viewBox="0 0 40 40" fill="none" className="gov-navbar-logo" aria-hidden="true">
               <rect width="40" height="40" rx="10" fill="var(--accent)" />
@@ -117,7 +116,7 @@ export function NavBar() {
           <div className="gov-navbar-links">
             {showNav && filteredLinks.map((link) => (
               <button                key={link.path}
-                onClick={() => navigate(link.path)}
+                onClick={() => { window.location.hash = '#/' + link.path.replace(/^\//, '') }}
                 className={`gov-navbar-link ${isActive(link.path) ? 'active' : ''}`}
                 aria-current={isActive(link.path) ? 'page' : undefined}
               >
@@ -193,7 +192,7 @@ export function NavBar() {
                 <div className="gov-navbar-btn-group">
                   <NotificationBell />
                   <button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => { window.location.hash = '#/profile' }}
                     className="gov-navbar-user-btn"
                     aria-label="Profile"
                     title={currentUser?.displayName || t('nav.profile')}
@@ -205,7 +204,7 @@ export function NavBar() {
                     onClick={() => {
                       if (socket?.connected) socket.disconnect()
                       authLogout()
-                      navigate('/login')
+                      window.location.hash = '#/login'
                     }}
                     className="gov-navbar-tool-btn"
                     aria-label={t('nav.logout')}
@@ -235,7 +234,7 @@ export function NavBar() {
             {filteredLinks.map((link) => (
               <button
                 key={link.path}
-                onClick={() => navigate(link.path)}
+                onClick={() => { window.location.hash = '#/' + link.path.replace(/^\//, '') }}
                 className={`gov-navbar-mobile-link ${isActive(link.path) ? 'active' : ''}`}
               >
                 {link.icon}
