@@ -51,10 +51,6 @@ vi.mock('../hooks/useSocket', () => ({
   registerRefreshListener: () => () => {},
 }))
 
-vi.mock('../hooks/usePwaInstall', () => ({
-  usePwaInstall: () => ({ canInstall: false, install: vi.fn() }),
-}))
-
 vi.mock('../components/NotificationBell', () => ({
   default: () => null,
 }))
