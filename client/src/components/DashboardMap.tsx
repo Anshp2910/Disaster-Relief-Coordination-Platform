@@ -52,15 +52,21 @@ function DashboardMapInner() {
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
-    const map = initLeafletMap(mapRef.current)
-    mapInstanceRef.current = map
+    let map: L.Map | null = null
+    try {
+      map = initLeafletMap(mapRef.current)
+      mapInstanceRef.current = map
+    } catch (e) {
+      console.error('[DashboardMap] Leaflet init failed:', e)
+      return
+    }
     const onResize = () => { if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize() }
     window.addEventListener('resize', onResize)
     if (window.visualViewport) (window.visualViewport as EventTarget).addEventListener('resize', onResize)
     return () => {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) (window.visualViewport as EventTarget).removeEventListener('resize', onResize)
-      cleanupLeafletMap(map); mapInstanceRef.current = null
+      if (map) cleanupLeafletMap(map); mapInstanceRef.current = null
     }
   }, [])
 

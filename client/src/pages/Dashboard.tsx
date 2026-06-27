@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
 import { RippleBtn, PageTransition } from '../components/ui'
 import ErrorState from '../components/ui/ErrorState'
+import ErrorBoundary from '../components/ErrorBoundary'
 import {
   AlertTriangle, Box, FilePlus,
   Map as MapIcon, MapPin, Radio, ShieldCheck,
@@ -259,7 +260,7 @@ export default function Dashboard() {
       )}
 
       {/* ── INTERACTIVE INDIA MAP ── */}
-      <DashboardMap />
+      <ErrorBoundary><DashboardMap /></ErrorBoundary>
 
       {/* ── BOTTOM GRID: Charts + Activity + Tasks + Quick Actions ── */}
       <motion.div className="grid-2 mb-lg" variants={fadeUp}>
@@ -267,9 +268,11 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           {/* Charts */}
           <motion.div className="bento-card mb-md" variants={itemVariants}>
-            <Suspense fallback={<div className="sk-card chart-container-sm" />}>
-              <RequestsChart data={chartData} />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<div className="sk-card chart-container-sm" />}>
+                <RequestsChart data={chartData} />
+              </Suspense>
+            </ErrorBoundary>
           </motion.div>
 
           {/* Recent Activities */}
