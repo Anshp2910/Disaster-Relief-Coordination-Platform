@@ -54,8 +54,8 @@ function App() {
       {/* Standalone routes (no Layout — full-screen pages) */}
       <Route path="/command-center" element={<Layout><EmergencyCommandCenter /></Layout>} />
       <Route path="/login" element={<Layout><Login /></Layout>} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/register" element={<Layout><Register /></Layout>} />
+      <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
       <Route path="/reset-password" element={<ResetPassword />} />
       {/* Standard routes with Layout (header + footer) */}
       <Route path="/*" element={

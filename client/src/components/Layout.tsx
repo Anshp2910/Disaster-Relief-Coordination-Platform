@@ -41,6 +41,18 @@ function Layout({ children }: LayoutProps) {
           </motion.div>
         </AnimatePresence>
       </motion.main>
+      <footer className="gov-navbar-bottom">
+        <div className="gov-navbar-bottom-inner">
+          <span>&copy; {new Date().getFullYear()} Disaster Relief Coordination Platform</span>
+          <span className="gov-navbar-bottom-links">
+            <a href="#" onClick={(e) => e.preventDefault()}>Privacy</a>
+            <span className="gov-navbar-bottom-dot">&middot;</span>
+            <a href="#" onClick={(e) => e.preventDefault()}>Terms</a>
+            <span className="gov-navbar-bottom-dot">&middot;</span>
+            <span>{t('footer.emergencyHelpline')}: 112</span>
+          </span>
+        </div>
+      </footer>
       {canInstall && !dismissed && (
         <motion.div
           className="pwa-install-banner"

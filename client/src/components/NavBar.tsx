@@ -292,20 +292,6 @@ export function NavBar() {
           </div>
         )}
       </nav>
-
-      {/* Minimal bottom bar (replaces old footer) */}
-      <div className="gov-navbar-bottom">
-        <div className="gov-navbar-bottom-inner">
-          <span>&copy; {new Date().getFullYear()} Disaster Relief Coordination Platform</span>
-          <span className="gov-navbar-bottom-links">
-            <a href="#" onClick={(e) => e.preventDefault()}>Privacy</a>
-            <span className="gov-navbar-bottom-dot">&middot;</span>
-            <a href="#" onClick={(e) => e.preventDefault()}>Terms</a>
-            <span className="gov-navbar-bottom-dot">&middot;</span>
-            <span>{t('footer.emergencyHelpline')}: 112</span>
-          </span>
-        </div>
-      </div>
     </>
   )
 }
