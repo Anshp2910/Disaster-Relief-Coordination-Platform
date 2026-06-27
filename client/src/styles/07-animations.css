@@ -25,6 +25,61 @@
 [data-animate="fade"] { animation-name: fadeIn; }
 [data-animate="scale"] { animation-name: scaleIn; }
 [data-animate="slide-down"] { animation-name: slideDown; }
+[data-animate="stagger"] > * {
+  opacity: 0;
+  animation: fadeInUp 0.4s var(--ease-out) forwards;
+}
+[data-animate="stagger"] > *:nth-child(1) { animation-delay: 0.05s; }
+[data-animate="stagger"] > *:nth-child(2) { animation-delay: 0.1s; }
+[data-animate="stagger"] > *:nth-child(3) { animation-delay: 0.15s; }
+[data-animate="stagger"] > *:nth-child(4) { animation-delay: 0.2s; }
+[data-animate="stagger"] > *:nth-child(5) { animation-delay: 0.25s; }
+[data-animate="stagger"] > *:nth-child(6) { animation-delay: 0.3s; }
+[data-animate="stagger"] > *:nth-child(7) { animation-delay: 0.35s; }
+[data-animate="stagger"] > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* ── Page Enter Animations ── */
+.page-enter { animation: pageSlideIn 0.35s var(--ease-out) both; }
+.page-enter--d1 { animation-delay: 0.05s; }
+.page-enter--d2 { animation-delay: 0.1s; }
+.page-enter--d3 { animation-delay: 0.15s; }
+.page-enter--d4 { animation-delay: 0.2s; }
+
+/* ── Empty State Animations ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-3xl) var(--space-lg);
+  min-height: 240px;
+}
+.empty-state-icon {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: var(--space-lg);
+  filter: grayscale(0.2);
+  transition: filter var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+}
+.empty-state:hover .empty-state-icon {
+  filter: grayscale(0);
+  transform: scale(1.1) rotate(-3deg);
+}
+.empty-state-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text);
+  margin: 0 0 var(--space-xs);
+  letter-spacing: var(--tracking-tight);
+}
+.empty-state-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 400px;
+  margin: 0 auto var(--space-lg);
+  line-height: 1.6;
+}
 
 /* ── Map Marker Pulse ── */
 .marker-pulse {
@@ -64,6 +119,27 @@
 /* ── Skeleton shimmer ── */
 .sk-line, .sk-circle, .sk-map, .sk-card .sk-line {
   animation: shimmer 1.5s var(--ease-in-out) infinite;
+}
+
+/* ── Pulse Animations ── */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.pulse-soft { animation: pulse-soft 2s var(--ease-in-out) infinite; }
+
+/* ── Scale Bounce ── */
+@keyframes scale-bounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.scale-bounce { animation: scale-bounce 0.4s var(--ease-spring); }
+
+/* ── Shimmer Overlay ── */
+@keyframes shimmer-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* ── Reduced Motion ── */

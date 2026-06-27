@@ -1,5 +1,6 @@
 /* ================================================================
    ENTERPRISE SKELETON LOADERS — Premium shimmer placeholders
+   Uses layered gradient for depth effect
    ================================================================ */
 
 .sk-line {
@@ -9,8 +10,15 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s var(--ease-in-out) infinite;
   margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
 }
 .sk-line:last-child { width: 60%; }
+.sk-line--w40 { width: 40%; }
+.sk-line--w60 { width: 60%; }
+.sk-line--w80 { width: 80%; }
+.sk-line--h-sm { height: 10px; }
+.sk-line--h-lg { height: 20px; }
 
 .sk-text { height: 12px; }
 .sk-title { height: 20px; width: 70%; margin-bottom: 12px; border-radius: var(--radius-sm); }
@@ -20,6 +28,8 @@
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
 }
 .sk-card .sk-line {
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
@@ -43,4 +53,27 @@
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s var(--ease-in-out) infinite;
+}
+
+.sk-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sk-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s var(--ease-in-out) infinite;
+  flex-shrink: 0;
+}
+
+.sk-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
 }

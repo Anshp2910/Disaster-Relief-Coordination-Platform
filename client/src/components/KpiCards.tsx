@@ -1,9 +1,14 @@
 import { memo, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { AnimatedCounter } from './ui'
 import { TrendingUp, FileText, AlertTriangle, UserCheck, CheckCircle, ListChecks } from 'lucide-react'
 import useReducedMotion from '../hooks/useReducedMotion'
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+}
 
 interface AdminStats {
   totalUsers: number
@@ -58,11 +63,19 @@ function KpiCardsInner({ stats, loading = false }: KpiCardsProps) {
   }), [stats])
 
   return (
-    <div className="kpi-grid mb-lg">
+    <motion.div
+      className="kpi-grid mb-lg"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
+      }}
+    >
       {config.map((kpi) => (
         <KpiCard key={kpi.id} label={kpi.label} icon={kpi.icon} color={kpi.color} value={values[kpi.id] ?? 0} loading={loading} reduced={reduced} liveLabel={t('kpi.live')} />
       ))}
-    </div>
+    </motion.div>
   )
 }
 

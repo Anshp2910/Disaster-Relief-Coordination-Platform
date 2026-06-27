@@ -214,6 +214,9 @@
   --duration-slowest: 700ms;
 
   /* ── Legacy Vars (backward compat) ── */
+  /* ── Legacy / Compat Vars ── */
+  --z-overlay: var(--z-above);
+  --z-above: 10;
   --gov-blue: var(--blue-600);
   --gov-saffron: var(--amber-500);
   --gov-green: var(--success);
@@ -224,6 +227,7 @@
   --gov-border: var(--border);
   --gov-card-bg: var(--bg-card);
   --gov-danger: var(--danger);
+  --danger-dark: var(--red-700);
 
   --accent-blue: var(--blue-600);
   --accent-indigo: #818cf8;
@@ -284,6 +288,7 @@
   --gradient-login-hero: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #312e81 100%);
 
   --overlay-bg: rgba(0, 0, 0, 0.5);
+  --overlay-bg-strong: rgba(0, 0, 0, 0.75);
 
   --ecc-glow: 0 0 15px rgba(37, 99, 235, 0.05);
   --ecc-border-focus: rgba(37, 99, 235, 0.2);
@@ -390,6 +395,7 @@
   --ecc-border-focus: rgba(96, 165, 250, 0.25);
 
   --overlay-bg: rgba(0, 0, 0, 0.7);
+  --overlay-bg-strong: rgba(0, 0, 0, 0.85);
 
   --gradient-login-hero: linear-gradient(135deg, #060b18 0%, #0c1a30 50%, #1e1b4b 100%);
 

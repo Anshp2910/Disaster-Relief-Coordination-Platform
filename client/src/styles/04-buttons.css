@@ -35,10 +35,10 @@ button, .btn { font-family: var(--font); }
   overflow: hidden;
 }
 .btnPrimary:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-accent-lg);
 }
-.btnPrimary:active { transform: translateY(0) scale(0.98); }
+.btnPrimary:active { transform: translateY(0) scale(0.97); }
 .btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 .btnPrimary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -84,8 +84,8 @@ button, .btn { font-family: var(--font); }
   line-height: 1.4;
   min-height: 40px;
 }
-.btnDanger:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
-.btnDanger:active { transform: translateY(0) scale(0.98); }
+.btnDanger:hover { transform: translateY(-2px); box-shadow: 0 4px 24px rgba(239, 68, 68, 0.4); }
+.btnDanger:active { transform: translateY(0) scale(0.97); }
 .btnDanger:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 .btnDanger:focus-visible { outline: 2px solid var(--danger); outline-offset: 2px; }
 

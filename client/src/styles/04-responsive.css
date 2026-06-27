@@ -2,22 +2,27 @@
    ENTERPRISE RESPONSIVE — Breakpoints & touch/rtl optimizations
    ================================================================ */
 
+/* ── Responsive Container ── */
 @media (max-width: 1200px) {
-  .container { max-width: 100%; }
+  .container { max-width: 100%; padding: 0 var(--space-lg); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .admin-stats-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
   .bento--wide { grid-column: span 1; }
   .grid-sidebar, .grid-sidebar-wide { grid-template-columns: 1fr; }
+  .gov-footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
 }
 
 @media (max-width: 900px) {
   .gov-footer-grid { grid-template-columns: 1fr; gap: var(--space-xl); }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
-  .gov-header-inner { flex-wrap: wrap; }
+  .gov-header-inner { flex-wrap: wrap; gap: var(--space-sm); }
   .gov-footer { padding: var(--space-2xl) 0 0; }
   .notification-dropdown { width: 320px; right: -40px; }
   .bento-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .filter-group { flex-wrap: wrap; }
+  .filter-group select { width: 100%; }
+  .admin-charts-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
@@ -36,6 +41,13 @@
   .toast-container { left: var(--space-md); right: var(--space-md); max-width: none; }
   .gov-footer-bottom > .container { flex-direction: column; gap: var(--space-sm); text-align: center; }
   .gov-header-actions .header-user-btn .header-user-name { display: none; }
+  .bento--wide { grid-column: span 1; }
+  .grid-sidebar, .grid-sidebar-wide { grid-template-columns: 1fr; }
+  
+  /* Better touch targets on mobile */
+  .nav-chip { min-width: 70px; padding: var(--space-sm) var(--space-md); }
+  .filter-pill { padding: 8px 16px; }
+  button, .btn, .btnPrimary, .btnSecondary, .btnDanger { min-height: 44px; }
 }
 
 @media (max-width: 480px) {
@@ -51,6 +63,11 @@
   .listCard { padding: var(--space-md); }
   .card { padding: var(--space-md); }
   .gov-footer-grid { gap: var(--space-lg); }
+  .pageTitle { font-size: var(--text-xl); }
+  
+  /* Stack all filters */
+  .dt-toolbar { flex-direction: column; align-items: stretch; }
+  .dt-search-input { width: 100%; }
 }
 
 @media (max-width: 360px) {
@@ -60,11 +77,13 @@
 
 @media (hover: none) and (pointer: coarse) {
   .listCard:hover, .bento-card:hover, .kpi-card:hover { transform: none; }
-  .nav-chip:hover { transform: none; }
+  .nav-chip:hover, .nav-chip::after { transform: none; opacity: 0; }
   select, input, textarea { font-size: 16px !important; }
 }
 
+/* ── RTL Overrides ── */
 [dir="rtl"] .gov-header-inner { flex-direction: row-reverse; }
 [dir="rtl"] .lang-select { background-position: left 8px center; padding: 5px 10px 5px 28px; }
 [dir="rtl"] .toast-item { flex-direction: row-reverse; }
 [dir="rtl"] .notification-dropdown { right: auto; left: 0; }
+[dir="rtl"] .activity-item:hover { padding-left: var(--space-lg); padding-right: calc(var(--space-lg) + 3px); border-left: none; border-right: 3px solid var(--accent); }
