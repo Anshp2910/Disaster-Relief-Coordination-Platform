@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
@@ -81,20 +81,6 @@ export function NavBar() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [toggleEmergency, togglePremiumTheme])
 
-  const prefetchPage = useCallback((path: string) => {
-    const routes: Record<string, () => Promise<unknown>> = {
-      '/dashboard': () => import('../pages/Dashboard'),
-      '/map': () => import('../pages/MapOverview'),
-      '/resources': () => import('../pages/Resources'),
-      '/zones': () => import('../pages/ZoneHeatMap'),
-      '/incidents': () => import('../pages/Incidents'),
-      '/requests/new': () => import('../pages/CreateRequest'),
-      '/admin': () => import('../pages/AdminDashboard'),
-      '/profile': () => import('../pages/Profile'),
-    }
-    routes[path]?.().catch(() => {})
-  }, [])
-
   const isActive = (path: string) => {
     if (path === '/dashboard') return location.pathname === '/dashboard'
     return location.pathname.startsWith(path)
@@ -133,8 +119,7 @@ export function NavBar() {
               <button
                 key={link.path}
                 onClick={() => navigate(link.path)}
-                onMouseEnter={() => prefetchPage(link.path)}
-                onFocus={() => prefetchPage(link.path)}
+
                 className={`gov-navbar-link ${isActive(link.path) ? 'active' : ''}`}
                 aria-current={isActive(link.path) ? 'page' : undefined}
               >
