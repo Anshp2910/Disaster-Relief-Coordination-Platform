@@ -14,11 +14,15 @@ describe('i18n', () => {
     expect(i18n.hasResourceBundle('en', 'translation')).toBe(true)
   })
 
-  it('has all Indian language bundles loaded', () => {
+  it('has all Indian language bundles loaded', async () => {
     const langs = ['hi', 'bn', 'ta', 'te', 'mr', 'gu', 'kn', 'pa']
-    langs.forEach((lang) => {
+    // Load each bundle dynamically then check they're registered
+    for (const lang of langs) {
+      await i18n.changeLanguage(lang)
       expect(i18n.hasResourceBundle(lang, 'translation')).toBe(true)
-    })
+    }
+    // Reset back to English
+    await i18n.changeLanguage('en')
   })
 
   it('uses en as fallback language', () => {

@@ -43,7 +43,9 @@ const markerPulse = {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(() => {
+    try { return localStorage.getItem('rememberedEmail') || '' } catch { return '' }
+  })
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(false)
@@ -55,8 +57,24 @@ export default function Login() {
   const { login } = useAuth()
   const toast = useToast()
 
-  function handleSocialLogin(provider: 'google' | 'github') {
-    toast.info(t('auth.socialLoginComingSoon', { provider: provider.charAt(0).toUpperCase() + provider.slice(1) }))
+  async function handleSocialLogin(provider: 'google' | 'github') {
+    setLoading(true)
+    setError('')
+    try {
+      const { token, user } = await clientApi.socialLogin(provider) as { token: string; user: Record<string, unknown> }
+      login(token, user)
+      const from = (location.state as { from?: string })?.from || '/dashboard'
+      navigate(from, { replace: true })
+    } catch (err) {
+      const e = err as Error
+      if (e.message?.includes('not configured') || e.message?.includes('not found')) {
+        toast.info(t('auth.socialLoginComingSoon', { provider: provider.charAt(0).toUpperCase() + provider.slice(1) }))
+      } else {
+        setError(e.message || t('common.loginFailed'))
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -65,6 +83,11 @@ export default function Login() {
     setLoading(true)
     try {
       const { token, user } = (await clientApi.login({ email, password })) as { token: string; user: Record<string, unknown> }
+      if (remember) {
+        try { localStorage.setItem('rememberedEmail', email) } catch { /* noop */ }
+      } else {
+        try { localStorage.removeItem('rememberedEmail') } catch { /* noop */ }
+      }
       login(token, user)
       const from = (location.state as { from?: string })?.from || '/dashboard'
       navigate(from, { replace: true })

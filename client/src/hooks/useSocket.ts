@@ -35,6 +35,7 @@ function getSocket(): Socket {
       autoConnect: false,
       reconnection: true,
       reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
       reconnectionAttempts: 20,
       auth: { token },
     })
@@ -43,9 +44,9 @@ function getSocket(): Socket {
   const auth = socket.auth as Record<string, unknown>
   if (auth.token !== storedToken) {
     auth.token = storedToken
-    if (socket.connected) {
-      socket.disconnect()
-      socket.connect()
+    if (socket.connected && storedToken) {
+      socket.auth = { token: storedToken }
+      socket.disconnect().connect()
     }
   }
   return socket

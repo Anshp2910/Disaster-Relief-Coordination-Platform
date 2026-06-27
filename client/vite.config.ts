@@ -10,10 +10,14 @@ export default defineConfig({
     target: 'es2020',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          i18n: ['i18next', 'react-i18next'],
-          leaflet: ['leaflet'],
+        manualChunks(id: string) {
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/react-router')) return 'vendor'
+          if (id.includes('node_modules/i18next') || id.includes('node_modules/react-i18next')) return 'i18n'
+          if (id.includes('node_modules/leaflet')) return 'leaflet'
+          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3')) return 'charts'
+          if (id.includes('node_modules/framer-motion')) return 'motion'
+          if (id.includes('node_modules/socket.io-client')) return 'socket'
+          if (id.includes('node_modules/lucide-react')) return 'icons'
         },
       },
       preserveEntrySignatures: 'allow-extension',

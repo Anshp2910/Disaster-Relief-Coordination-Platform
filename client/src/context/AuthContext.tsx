@@ -63,10 +63,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     safeRemoveItem('token')
     safeRemoveItem('user')
+    safeRemoveItem('notifications')
     setToken(null)
     setUser(null)
     setIdleWarning(false)
     if (idleRef.current) clearTimeout(idleRef.current)
+    try {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' })
+      }
+    } catch { /* noop */ }
   }, [])
 
   const updateUser = useCallback((updates: Partial<User>) => {

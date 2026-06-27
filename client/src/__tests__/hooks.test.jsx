@@ -268,41 +268,68 @@ describe('useFormValidation', () => {
   describe('validate', () => {
     it('returns required error for empty required field', () => {
       const { result } = renderHook(() => useFormValidation())
-      const err = result.current.validate('email', '')
+      let err
+      act(() => { err = result.current.validate('email', '') })
       expect(err).toBe('Email is required')
     })
 
     it('validates email format', () => {
       const { result } = renderHook(() => useFormValidation())
-      expect(result.current.validate('email', 'not-an-email')).toBe('Please enter a valid email address')
-      expect(result.current.validate('email', 'test@example.com')).toBe('')
-      expect(result.current.validate('email', 'a@b.co')).toBe('')
+      let r1, r2, r3
+      act(() => {
+        r1 = result.current.validate('email', 'not-an-email')
+        r2 = result.current.validate('email', 'test@example.com')
+        r3 = result.current.validate('email', 'a@b.co')
+      })
+      expect(r1).toBe('Please enter a valid email address')
+      expect(r2).toBe('')
+      expect(r3).toBe('')
     })
 
     it('validates required fields', () => {
       const { result } = renderHook(() => useFormValidation())
-      expect(result.current.validate('title', '')).toBe('Title is required')
-      expect(result.current.validate('title', 'Valid Title')).toBe('')
-      expect(result.current.validate('password', '')).toBe('Password is required')
+      let r1, r2, r3
+      act(() => {
+        r1 = result.current.validate('title', '')
+        r2 = result.current.validate('title', 'Valid Title')
+        r3 = result.current.validate('password', '')
+      })
+      expect(r1).toBe('Title is required')
+      expect(r2).toBe('')
+      expect(r3).toBe('Password is required')
     })
 
     it('validates number fields', () => {
       const { result } = renderHook(() => useFormValidation())
-      expect(result.current.validate('lat', 'not-a-number')).toBe('Latitude must be a number')
-      expect(result.current.validate('lat', '91')).toBe('Latitude must be at most 90')
-      expect(result.current.validate('lat', '-91')).toBe('Latitude must be at least -90')
-      expect(result.current.validate('lat', '45')).toBe('')
+      let r1, r2, r3, r4
+      act(() => {
+        r1 = result.current.validate('lat', 'not-a-number')
+        r2 = result.current.validate('lat', '91')
+        r3 = result.current.validate('lat', '-91')
+        r4 = result.current.validate('lat', '45')
+      })
+      expect(r1).toBe('Latitude must be a number')
+      expect(r2).toBe('Latitude must be at most 90')
+      expect(r3).toBe('Latitude must be at least -90')
+      expect(r4).toBe('')
     })
 
     it('validates min/max length for strings', () => {
       const { result } = renderHook(() => useFormValidation())
-      expect(result.current.validate('password', 'ab')).toBe('Password must be at least 6 characters')
-      expect(result.current.validate('password', 'a'.repeat(200))).toBe('Password must be at most 128 characters')
+      let r1, r2
+      act(() => {
+        r1 = result.current.validate('password', 'ab')
+        r2 = result.current.validate('password', 'a'.repeat(200))
+      })
+      expect(r1).toBe('Password must be at least 6 characters')
+      expect(r2).toBe('Password must be at most 128 characters')
     })
 
     it('returns empty string for unknown field', () => {
       const { result } = renderHook(() => useFormValidation())
-      expect(result.current.validate('unknownField', 'value')).toBe('')
+      let r
+      act(() => { r = result.current.validate('unknownField', 'value') })
+      expect(r).toBe('')
     })
 
     it('sets error in state', () => {
@@ -317,10 +344,13 @@ describe('useFormValidation', () => {
   describe('validateAll', () => {
     it('returns true when all fields valid', () => {
       const { result } = renderHook(() => useFormValidation())
-      const valid = result.current.validateAll({
-        title: 'My Title',
-        email: 'user@example.com',
-        password: 'secret123',
+      let valid
+      act(() => {
+        valid = result.current.validateAll({
+          title: 'My Title',
+          email: 'user@example.com',
+          password: 'secret123',
+        })
       })
       expect(valid).toBe(true)
     })
@@ -350,7 +380,8 @@ describe('useFormValidation', () => {
 
     it('ignores fields without validation rules', () => {
       const { result } = renderHook(() => useFormValidation())
-      const valid = result.current.validateAll({ someExtraField: 'value' })
+      let valid
+      act(() => { valid = result.current.validateAll({ someExtraField: 'value' }) })
       expect(valid).toBe(true)
     })
   })

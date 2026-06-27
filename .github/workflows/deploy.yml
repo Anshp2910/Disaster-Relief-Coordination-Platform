@@ -25,6 +25,13 @@ jobs:
         env:
           RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
-          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
-            curl -X POST "$RENDER_DEPLOY_HOOK"
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "Warning: RENDER_DEPLOY_HOOK not set, skipping deploy"
+            exit 0
           fi
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$RENDER_DEPLOY_HOOK")
+          if [ "$HTTP_CODE" -ne 200 ] && [ "$HTTP_CODE" -ne 201 ] && [ "$HTTP_CODE" -ne 202 ]; then
+            echo "Deploy hook returned $HTTP_CODE, expected 2xx"
+            exit 1
+          fi
+          echo "Deploy triggered successfully (HTTP $HTTP_CODE)"

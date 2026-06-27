@@ -261,7 +261,7 @@ export default function Dashboard() {
   )
 }
 
-const OwnerActions = (function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
+function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const toast = useToast()
@@ -288,4 +288,4 @@ const OwnerActions = (function OwnerActions({ id, item, onChanged }: OwnerAction
       {ConfirmDialog}
     </div>
   )
-})
+}

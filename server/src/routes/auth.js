@@ -5,6 +5,7 @@ import { getJwtSecret } from '../config/env.js'
 import { User } from '../models/User.js'
 import { requireAuth } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
+import { logger } from '../utils/logger.js'
 
 export const authRouter = express.Router()
 
@@ -168,7 +169,7 @@ authRouter.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + 3600000)
     await user.save()
 
-    console.log(`[auth] Reset token for ${email}: ${resetToken}`)
+    logger.info('password-reset-token-generated', { email })
 
     return res.json({ ok: true })
   } catch (err) {
@@ -195,6 +196,14 @@ authRouter.post('/reset-password', async (req, res) => {
     console.error('[auth] reset-password error:', err.message)
     return res.status(500).json({ error: 'Server error' })
   }
+})
+
+authRouter.post('/social/:provider', async (req, res) => {
+  const { provider } = req.params
+  if (!['google', 'github'].includes(provider)) {
+    return res.status(400).json({ error: 'Unsupported social provider' })
+  }
+  return res.status(501).json({ error: `${provider} login not configured. Social login coming soon.` })
 })
 
 authRouter.post('/refresh', async (req, res) => {

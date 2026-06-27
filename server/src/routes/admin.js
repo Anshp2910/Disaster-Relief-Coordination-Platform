@@ -189,10 +189,15 @@ adminRouter.get('/requests', validateQuery(querySchemas.requestsList), async (re
   }
 })
 
+let seedDemoFn = null
+
 adminRouter.post('/seed-demo', async (req, res) => {
   try {
-    const { seedDemo } = await import('../seed-demo.js')
-    await seedDemo()
+    if (!seedDemoFn) {
+      const mod = await import('../seed-demo.js')
+      seedDemoFn = mod.seedDemo
+    }
+    await seedDemoFn()
     const zoneCount = await Zone.countDocuments()
     const incidentCount = await Incident.countDocuments()
     const requestCount = await Request.countDocuments()

@@ -9,6 +9,18 @@ self.addEventListener('install', (event) => {
   self.skipWaiting()
 })
 
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map((k) => caches.delete(k)))
+    }).then(() => {
+      clients.matchAll({ type: 'window' }).then((clients) => {
+        clients.forEach((client) => client.postMessage({ type: 'CACHE_CLEARED' }))
+      })
+    })
+  }
+})
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>

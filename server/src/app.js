@@ -23,7 +23,7 @@ import { geofencingRouter } from './routes/geofencing.js'
 import { sosRouter } from './routes/sos.js'
 import weatherRouter from './routes/weather.js'
 import publicRouter from './routes/public.js'
-import { getEnv } from './config/env.js'
+import { getEnv, getJwtSecret } from './config/env.js'
 import { sanitizeBody } from './middleware/sanitize.js'
 import { rateLimitUser } from './middleware/rateLimitUser.js'
 import { requestLogger } from './middleware/requestLogger.js'
@@ -76,6 +76,7 @@ export function createApp() {
         workerSrc: ["'self'"],
         formAction: ["'self'"],
         frameSrc: ["'self'"],
+        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
       },
     },
   }))
@@ -103,17 +104,29 @@ export function createApp() {
   )
   app.use(express.json({ limit: '10mb' }))
   app.use(sanitizeBody)
-  app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+  app.use('/uploads', async (req, res, next) => {
+    const token = req.query.token || req.headers.authorization?.slice(7)
+    if (!token) return res.status(401).json({ error: 'Authentication required' })
+    try {
+      const jwt = await import('jsonwebtoken')
+      jwt.default.verify(token, getJwtSecret())
+      next()
+    } catch {
+      return res.status(401).json({ error: 'Invalid or expired token' })
+    }
+  }, express.static(path.join(__dirname, '../uploads')))
 
-  const BUILD_VERSION = Date.now()
-  app.get('/health', (req, res) => res.json({ ok: true }))
-  app.get('/api/version', (req, res) => res.json({ version: BUILD_VERSION }))
+  const BUILD_VERSION = process.env.BUILD_VERSION || process.env.npm_package_version || Date.now()
+  const COMMIT_SHA = process.env.COMMIT_SHA || ''
+  app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }))
+  app.get('/api/version', (req, res) => res.json({ version: BUILD_VERSION, commitSha: COMMIT_SHA, node: process.version, env: process.env.NODE_ENV || 'development' }))
 
-  app.post('/api/log', (req, res) => {
+  const clientErrorLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, message: { error: 'Too many error reports' } })
+  app.post('/api/log', clientErrorLimiter, (req, res) => {
     const { message, stack, componentStack, url, userAgent } = req.body || {}
     logger.error('client-error', { message, url, userAgent, ts: new Date().toISOString() })
-    if (stack) logger.error('client-error-stack', { stack })
-    if (componentStack) logger.error('client-error-component', { componentStack })
+    if (stack) logger.error('client-error-stack', { stack: stack.slice(0, 1000) })
+    if (componentStack) logger.error('client-error-component', { componentStack: componentStack.slice(0, 1000) })
     res.status(204).end()
   })
 
@@ -133,7 +146,8 @@ export function createApp() {
   app.use('/api/bulk', bulkLimiter, bulkRouter)
   app.use('/api/escalation', writeLimiter, escalationRouter)
   app.use('/api/geofencing', geofencingLimiter, geofencingRouter)
-  app.use('/api/sos', writeLimiter, sosRouter)
+  const sosLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 5, message: 'Too many SOS alerts, please slow down' })
+  app.use('/api/sos', sosLimiter, sosRouter)
   const publicLimiter = rateLimit({ windowMs: 60 * 1000, max: 30, message: { error: 'Too many requests, please slow down' } })
   app.use('/api/weather', publicLimiter, weatherRouter)
   app.use('/api/public', publicLimiter, publicRouter)

@@ -92,6 +92,7 @@ export const clientApi = {
   forgotPassword: (email: string) => apiFetch('/api/auth/forgot-password', { method: 'POST', body: { email }, auth: false }),
   resetPassword: (token: string, password: string) => apiFetch('/api/auth/reset-password', { method: 'POST', body: { token, password }, auth: false }),
   refreshToken: (token: string) => apiFetch('/api/auth/refresh', { method: 'POST', body: { token }, auth: false }),
+  socialLogin: (provider: string) => apiFetch(`/api/auth/social/${provider}`, { method: 'POST', auth: false }),
   me: () => apiFetch('/api/auth/me'),
   updateProfile: (payload: Record<string, unknown>) => apiFetch('/api/auth/profile', { method: 'PUT', body: payload }),
   getNotifications: () => apiFetch('/api/auth/notifications'),

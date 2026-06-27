@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+
+const routerFuture = { v7_startTransition: true, v7_relativeSplatPath: true }
 import { I18nextProvider } from 'react-i18next'
 import i18n from '../i18n'
 import { SkeletonLine, SkeletonCard, SkeletonList, SkeletonMap } from '../components/Skeleton'
@@ -121,7 +123,7 @@ describe('RippleBtn', () => {
 describe('PageTransition', () => {
   it('renders children inside motion.div', () => {
     const { container } = render(
-      <MemoryRouter>
+      <MemoryRouter future={routerFuture}>
         <PageTransition><div>content</div></PageTransition>
       </MemoryRouter>
     )

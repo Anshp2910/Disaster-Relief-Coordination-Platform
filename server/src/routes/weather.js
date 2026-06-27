@@ -5,6 +5,16 @@ import Joi from 'joi'
 const router = Router()
 const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1'
 
+const weatherCache = new Map()
+const CACHE_TTL_MS = 5 * 60 * 1000
+
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, entry] of weatherCache) {
+    if (now - entry.timestamp > CACHE_TTL_MS) weatherCache.delete(key)
+  }
+}, CACHE_TTL_MS)
+
 const weatherQuery = Joi.object({
   lat: Joi.number().min(-90).max(90).required(),
   lng: Joi.number().min(-180).max(180).required(),
@@ -13,10 +23,16 @@ const weatherQuery = Joi.object({
 router.get('/current', validateQuery(weatherQuery), async (req, res) => {
   try {
     const { lat, lng } = req.query
+    const cacheKey = `${lat},${lng}`
+
+    const cached = weatherCache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return res.json(cached.data)
+    }
 
     const url = `${OPEN_METEO_BASE}/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m&daily=precipitation_sum&timezone=auto`
 
-    const resp = await fetch(url)
+    const resp = await fetch(url, { signal: AbortSignal.timeout(5000) })
     if (!resp.ok) throw new Error(`Open-Meteo returned ${resp.status}`)
 
     const data = await resp.json()
@@ -24,7 +40,7 @@ router.get('/current', validateQuery(weatherQuery), async (req, res) => {
     const code = data.current?.weather_code ?? 0
     const conditions = WEATHER_CODES[code] || 'Unknown'
 
-    res.json({
+    const result = {
       temperature: data.current?.temperature_2m,
       feelsLike: data.current?.apparent_temperature,
       humidity: data.current?.relative_humidity_2m,
@@ -35,7 +51,11 @@ router.get('/current', validateQuery(weatherQuery), async (req, res) => {
       weatherCode: code,
       dailyPrecipitation: data.daily?.precipitation_sum?.[0],
       location: `${lat},${lng}`,
-    })
+    }
+
+    weatherCache.set(cacheKey, { data: result, timestamp: Date.now() })
+
+    res.json(result)
   } catch (err) {
     console.error('Weather fetch error:', err.message)
     res.status(502).json({ error: 'Failed to fetch weather data' })

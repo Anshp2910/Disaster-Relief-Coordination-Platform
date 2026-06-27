@@ -57,6 +57,7 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
     const skip = (pageNum - 1) * limitNum
     const [items, total] = await Promise.all([
       Request.find(filter)
+        .select('title description locationName lat lng status category priority peopleCount files.url files.filename files.mimetype createdAt createdBy claimedBy escalated matchedResources')
         .sort(sortStr)
         .skip(skip)
         .limit(limitNum)

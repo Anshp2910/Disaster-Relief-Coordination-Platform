@@ -12,12 +12,12 @@ services:
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
-        generateValue: true
+        sync: false
       - key: CLIENT_URL
         value: https://disasterhelper.dpdns.org
       - key: ADMIN_EMAIL
         value: admin@relief.gov.in
       - key: ADMIN_PASSWORD
-        generateValue: true
+        sync: false
       - key: ADMIN_DISPLAY_NAME
         value: Administrator

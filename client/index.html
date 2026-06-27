@@ -43,8 +43,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap" />
+    <!-- Load fonts async via preload (covers Inter 300-800 + JetBrains Mono in one request) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap" /></noscript>
 
     <!-- DNS prefetch for API -->
     <link rel="dns-prefetch" href="https://disaster-relief-coordination-platform-l6mk.onrender.com" />

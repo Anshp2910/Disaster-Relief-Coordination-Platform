@@ -280,11 +280,52 @@
   --gradient-main: var(--gradient-bg);
   --gradient-header: linear-gradient(90deg, var(--blue-500), #818cf8, #a78bfa, var(--blue-500));
   --gradient-saffron: linear-gradient(135deg, var(--amber-400), #ea580c);
-  --gradient-login-hero: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #312e81 100%);
+--gradient-login-hero: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #312e81 100%);
 
-  --overlay-bg: rgba(0, 0, 0, 0.5);
-  --overlay-bg-strong: rgba(0, 0, 0, 0.75);
+--overlay-bg: rgba(0, 0, 0, 0.5);
+--overlay-bg-strong: rgba(0, 0, 0, 0.75);
 
+/* ── Professional Reusable Tokens ── */
+--lift: translateY(-1px);
+--lift-y: -1px;
+--press: translateY(0) scale(0.98);
+--focus-ring: 2px solid var(--accent);
+--focus-ring-w: 2px;
+--focus-ring-offset: 2px;
+--border-focus: 3px solid var(--accent);
+--border-focus-idx: 3px;
+--shadow-lift: 0 4px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+--shadow-press: 0 1px 2px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02);
+
+/* ── Badge Tokens ── */
+--badge-radius: var(--radius-full);
+--badge-font-size: var(--text-xs);
+--badge-font-weight: var(--font-weight-semibold);
+--badge-padding: 3px 10px;
+--badge-success-bg: var(--success-soft);
+--badge-success-fg: var(--success);
+--badge-warning-bg: var(--warning-soft);
+--badge-warning-fg: var(--warning);
+--badge-danger-bg: var(--danger-soft);
+--badge-danger-fg: var(--danger);
+--badge-info-bg: var(--accent-soft);
+--badge-info-fg: var(--accent);
+--badge-neutral-bg: var(--bg-subtle);
+--badge-neutral-fg: var(--text-muted);
+
+/* ── Toast Tokens ── */
+--toast-radius: var(--radius-lg);
+--toast-enter: toastSlideIn var(--duration-normal) var(--ease-out);
+--toast-exit: toastSlideOut var(--duration-normal) var(--ease-out) forwards;
+
+/* ── Skeleton Tokens ── */
+--sk-shimmer-speed: 1.5s;
+--sk-shimmer-ease: var(--ease-in-out);
+
+/* ── Professional Card Tokens ── */
+--card-hover-shadow: var(--shadow-md);
+--card-hover-transform: translateY(-2px);
+--card-hover-duration: var(--duration-normal);
 }
 
 /* Neon Dark theme overrides */

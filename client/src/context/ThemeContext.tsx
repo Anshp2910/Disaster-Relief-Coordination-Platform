@@ -73,19 +73,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 export function useTheme(): ThemeContextType {
   const ctx = useContext(ThemeContext)
   if (!ctx) {
-    return {
-      theme: 'dark',
-      toggleTheme: () => {},
-      togglePremiumTheme: () => {},
-      isPremium: false,
-      isEmergency: false,
-      setIsEmergency: () => {},
-      toggleEmergency: () => {},
-      isHighContrast: false,
-      setIsHighContrast: () => {},
-      isSocketConnected: true,
-      setIsSocketConnected: () => {}
-    }
+    throw new Error('useTheme must be used within a ThemeProvider. Wrap your component tree with <ThemeProvider>.')
   }
   return ctx
 }
