@@ -56,11 +56,11 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(staleWhileRevalidateHtml(request))
+    event.respondWith(networkFirstStrategy(request, STATIC_CACHE))
     return
   }
 
-  event.respondWith(staleWhileRevalidate(request, DYNAMIC_CACHE))
+  event.respondWith(networkFirstStrategy(request, DYNAMIC_CACHE))
 })
 
 function limitCache(cacheName, maxItems) {
@@ -70,35 +70,6 @@ function limitCache(cacheName, maxItems) {
         cache.delete(keys[0]).then(() => limitCache(cacheName, maxItems))
       }
     })
-  })
-}
-
-function staleWhileRevalidateHtml(request) {
-  return caches.match(request).then((cached) => {
-    const fetched = fetch(request).then((response) => {
-      if (response && response.status === 200) {
-        const clone = response.clone()
-        caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone))
-      }
-      return response
-    }).catch(() => cached)
-
-    if (cached) {
-      fetched.then((freshResponse) => {
-        if (freshResponse && freshResponse.ok) {
-          caches.match(request).then((latestCached) => {
-            if (!latestCached || latestCached.headers.get('etag') !== freshResponse.headers.get('etag')) {
-              self.clients.matchAll({ type: 'window' }).then((clients) => {
-                clients.forEach((client) => client.postMessage({ type: 'NEW_VERSION' }))
-              })
-            }
-          })
-        }
-      })
-      return cached
-    }
-
-    return fetched
   })
 }
 
@@ -127,19 +98,6 @@ function cacheFirstStrategy(request, cacheName) {
       }
       return response
     })
-  })
-}
-
-function staleWhileRevalidate(request, cacheName) {
-  return caches.match(request).then((cached) => {
-    const fetched = fetch(request).then((response) => {
-      if (response && response.status === 200) {
-        const clone = response.clone()
-        caches.open(cacheName).then((cache) => cache.put(request, clone))
-      }
-      return response
-    })
-    return cached || fetched
   })
 }
 
