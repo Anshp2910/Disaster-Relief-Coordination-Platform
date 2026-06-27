@@ -108,6 +108,7 @@
     "filterFulfilled": "Fulfilled",
     "loading": "Loading requests...",
     "noRequests": "No requests found.",
+    "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
     "postedBy": "Posted by:",
     "unknown": "Unknown",
     "edit": "Edit",
@@ -464,6 +465,9 @@
     "searchPlaceholder": "Search resources...",
     "search": "Search",
     "noResources": "No resources tracked yet. Add your first resource to get started.",
+    "noResourcesDesc": "No resources match your filters.",
+    "exitSelectMode": "Exit Select",
+    "selectMode": "Select Mode",
     "deleteConfirm": "Delete this resource?",
     "delete": "Delete",
     "resourcesTracked": "resources tracked",
@@ -486,6 +490,7 @@
     "addZone": "Add Zone",
     "editZone": "Edit Zone",
     "createZone": "Create First Zone",
+    "noZonesDesc": "No disaster zones defined yet",
     "zoneName": "Zone Name",
     "zoneNamePlaceholder": "Zone name",
     "disasterType": "Disaster Type",
@@ -535,6 +540,10 @@
     "wind": "Wind",
     "precipitation": "Precip"
   },
+  "map": {
+    "title": "Map View",
+    "noRequestsDesc": "No request locations to display on the map. Try adjusting your filters or zoom out to see more area."
+  },
   "public": {
     "title": "Disaster Relief Status",
     "subtitle": "Real-time overview of relief operations and resource deployment",
@@ -553,6 +562,8 @@
     "title": "Incident Grouping",
     "incidentsTracked": "incidents tracked",
     "createIncident": "Create Incident",
+    "noIncidents": "No incidents found",
+    "noIncidentsDesc": "No incidents match your filters",
     "editIncident": "Edit Incident",
     "incidentName": "Incident name",
     "searchPlaceholder": "Search incidents...",
