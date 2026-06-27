@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v9'
+const CACHE_VERSION = 'v10'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
@@ -40,6 +40,9 @@ self.addEventListener('fetch', (event) => {
 
   if (url.origin !== self.location.origin) return
 
+  // Never intercept HTML document requests — let the browser handle them natively
+  if (request.mode === 'navigate') return
+
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(networkFirstStrategy(request, API_CACHE, MAX_API_CACHE))
     return
@@ -55,14 +58,7 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  event.respondWith(
-    networkFirstStrategy(request, DYNAMIC_CACHE).then((response) => {
-      return response || caches.match('/index.html') || new Response('Offline', {
-        status: 503,
-        headers: { 'Content-Type': 'text/html' },
-      })
-    })
-  )
+  event.respondWith(networkFirstStrategy(request, DYNAMIC_CACHE))
 })
 
 function fetchWithTimeout(request, timeout) {

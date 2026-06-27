@@ -77,7 +77,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               <RippleBtn
                 onClick={() => {
                   this.setState({ hasError: false, error: null })
-                  window.location.href = '/'
+                  window.location.hash = '#/dashboard'
                 }}
                 className="error-btn error-btn-primary"
                 aria-label="Go to home"
@@ -90,7 +90,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               </RippleBtn>
 
               <RippleBtn
-                onClick={() => window.location.reload()}
+                onClick={() => { this.setState({ hasError: false, error: null }); window.location.hash = '#/dashboard' }}
                 className="error-btn error-btn-secondary"
                 aria-label="Refresh page"
               >
