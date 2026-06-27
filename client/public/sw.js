@@ -5,8 +5,8 @@ const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
 const MAX_DYNAMIC_CACHE = 50
 const MAX_API_CACHE = 30
 
-self.addEventListener('install', () => {
-  /* SW activates on next visit — no skipWaiting to avoid navigation event */
+self.addEventListener('install', (event) => {
+  self.skipWaiting()
 })
 
 self.addEventListener('message', (event) => {
@@ -55,30 +55,12 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(staleWhileRevalidateHtml(request))
+    event.respondWith(networkFirstStrategy(request, STATIC_CACHE))
     return
   }
 
   event.respondWith(networkFirstStrategy(request, DYNAMIC_CACHE))
 })
-
-function staleWhileRevalidateHtml(request) {
-  return caches.match(request).then((cached) => {
-    const fetched = fetch(request).then((response) => {
-      if (response && response.status === 200) {
-        const clone = response.clone()
-        caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone))
-      }
-      return response
-    }).catch(() => cached)
-
-    if (cached) {
-      return cached
-    }
-
-    return fetched
-  })
-}
 
 function limitCache(cacheName, maxItems) {
   caches.open(cacheName).then((cache) => {

@@ -52,9 +52,9 @@ async function apiFetch<T = Record<string, unknown>>(path: string, { method = 'G
       if (res.status === 401 && auth) {
         safeRemoveItem('token')
         safeRemoveItem('user')
-        if (!redirectingToLogin && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+        if (!redirectingToLogin && !window.location.hash.startsWith('#/login') && !window.location.hash.startsWith('#/register')) {
           redirectingToLogin = true
-          window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname)
+          window.location.hash = '#/login'
         }
       }
       const msg = (data?.error as string) || `Request failed with status ${res.status}`
