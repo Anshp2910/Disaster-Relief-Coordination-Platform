@@ -28,11 +28,11 @@ interface GroupData extends GroupConfig {
 
 function useNotifTiers() {
   const { t } = useTranslation()
-  return {
+  return useMemo(() => ({
     sos: { label: t('notificationBell.alerts'), order: 0, icon: <AlertTriangle size={12} />, className: 'notif-tier-alert' },
     escalation: { label: t('notificationBell.escalations'), order: 1, icon: <ArrowUp size={12} />, className: 'notif-tier-escalation' },
     update: { label: t('notificationBell.updates'), order: 2, icon: <Bell size={12} />, className: 'notif-tier-update' },
-  } as Record<string, GroupConfig>
+  } as Record<string, GroupConfig>), [t])
 }
 
 function getTier(type: string): string {

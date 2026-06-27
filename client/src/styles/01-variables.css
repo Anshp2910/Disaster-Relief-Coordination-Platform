@@ -285,29 +285,6 @@
   --overlay-bg: rgba(0, 0, 0, 0.5);
   --overlay-bg-strong: rgba(0, 0, 0, 0.75);
 
-  --ecc-glow: 0 0 15px rgba(37, 99, 235, 0.05);
-  --ecc-border-focus: rgba(37, 99, 235, 0.2);
-
-  /* ── Command Center Tokens ── */
-  --cc-bg: #060b18;
-  --cc-bg-panel: rgba(6, 11, 24, 0.7);
-  --cc-bg-widget: rgba(13, 17, 31, 0.6);
-  --cc-border: rgba(14, 165, 233, 0.12);
-  --cc-border-hover: rgba(14, 165, 233, 0.25);
-  --cc-text: #e2e8f0;
-  --cc-text-secondary: #94a3b8;
-  --cc-text-muted: #64748b;
-  --cc-text-dim: #475569;
-  --cc-accent: #0ea5e9;
-  --cc-accent-soft: rgba(14, 165, 233, 0.15);
-  --cc-danger: #ef4444;
-  --cc-danger-soft: rgba(239, 68, 68, 0.06);
-  --cc-danger-border: rgba(239, 68, 68, 0.15);
-  --cc-warning: #f59e0b;
-  --cc-success: #22c55e;
-  --cc-orange: #f97316;
-  --cc-purple: #8b5cf6;
-  --cc-cyan: #06b6d4;
 }
 
 /* Neon Dark theme overrides */
@@ -388,9 +365,6 @@
   --glow-red: 0 0 24px rgba(248, 113, 113, 0.12);
   --glow-orange: 0 0 24px rgba(251, 191, 36, 0.12);
 
-  --ecc-glow: 0 0 15px rgba(96, 165, 250, 0.08);
-  --ecc-border-focus: rgba(96, 165, 250, 0.25);
-
   --overlay-bg: rgba(0, 0, 0, 0.7);
   --overlay-bg-strong: rgba(0, 0, 0, 0.85);
 
@@ -437,23 +411,4 @@
   --cat-power: #fde047;
   --cat-infrastructure: #94a3b8;
 
-  --cc-bg: #060b18;
-  --cc-bg-panel: rgba(6, 11, 24, 0.8);
-  --cc-bg-widget: rgba(13, 17, 31, 0.7);
-  --cc-border: rgba(96, 165, 250, 0.12);
-  --cc-border-hover: rgba(96, 165, 250, 0.25);
-  --cc-text: #e8edf5;
-  --cc-text-secondary: #94a3b8;
-  --cc-text-muted: #64748b;
-  --cc-text-dim: #475569;
-  --cc-accent: #60a5fa;
-  --cc-accent-soft: rgba(96, 165, 250, 0.15);
-  --cc-danger: #f87171;
-  --cc-danger-soft: rgba(248, 113, 113, 0.06);
-  --cc-danger-border: rgba(248, 113, 113, 0.15);
-  --cc-warning: #fbbf24;
-  --cc-success: #34d399;
-  --cc-orange: #fb923c;
-  --cc-purple: #a78bfa;
-  --cc-cyan: #22d3ee;
 }

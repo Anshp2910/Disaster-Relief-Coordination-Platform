@@ -144,6 +144,9 @@ export default function RequestForm({
   const mapInstance = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
   const draftKeyRef = useRef(DRAFT_PREFIX + (initialData?._id || 'new'))
+  useEffect(() => {
+    draftKeyRef.current = DRAFT_PREFIX + (initialData?._id || 'new')
+  }, [initialData?._id])
   const [currentStep, setCurrentStep] = useState(0)
   const [showRestore, setShowRestore] = useState(false)
   const [form, dispatch] = useReducer(formReducer, INITIAL_FORM)
@@ -203,10 +206,11 @@ export default function RequestForm({
     }
   }, [])
 
+  const initialId = initialData?._id
   useEffect(() => {
     if (loading || !initialData) return
     dispatch({ type: 'LOAD_INITIAL', state: initialData as Partial<FormState> })
-  }, [initialData, loading])
+  }, [initialId, loading])
 
   useEffect(() => {
     if (loading || mapInstance.current || !mapRef.current) return
@@ -509,14 +513,12 @@ export default function RequestForm({
                     }}>
                       {suggestions.map((s, i) => (
                         <div
-                          key={i}
+                          key={s.place_id || i}
                           onClick={() => pickSuggestion(s)}
+                          className="suggestion-item"
                           style={{
-                            padding: '8px 12px', cursor: 'pointer', fontSize: 12,
                             borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-light)' : 'none',
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-subtle)'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                         >
                           {s.display_name}
                         </div>

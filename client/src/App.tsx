@@ -24,7 +24,6 @@ const Geofencing = retryLazy(() => import('./pages/Geofencing'))
 const MapOverview = retryLazy(() => import('./pages/MapOverview'))
 const PublicStatus = retryLazy(() => import('./pages/PublicStatus'))
 const NotFound = retryLazy(() => import('./pages/NotFound'))
-const EmergencyCommandCenter = retryLazy(() => import('./pages/EmergencyCommandCenter'))
 
 function PageLoader() {
   return (
@@ -52,7 +51,6 @@ function App() {
   return (
     <Routes>
       {/* Standalone routes (no Layout — full-screen pages) */}
-      <Route path="/command-center" element={<Layout><EmergencyCommandCenter /></Layout>} />
       <Route path="/login" element={<Layout><Login /></Layout>} />
       <Route path="/register" element={<Layout><Register /></Layout>} />
       <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />

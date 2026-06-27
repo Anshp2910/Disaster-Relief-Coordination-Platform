@@ -1,21 +1,17 @@
-# Emergency Command Center Design System
+# Design System
 > Version: 1.0
 > Project: Disaster Relief Coordination Platform
 > Last Updated: 2026-06-26
 
 ## Vision
-Create a premium government-grade Emergency Operations Center (EOC)
-inspired by NASA Mission Control, Palantir Gotham, Apple Vision Pro,
-Vercel, and modern GIS platforms.
-
-> **Reference**: For the complete, current UI/UX documentation, see **UI-UX-DESIGN.md**
+Create a premium government-grade platform inspired by Palantir, Vercel,
+Apple HIG, and modern GIS platforms.
 
 **Design Goals:**
 - Fast
 - Mission critical
 - Trustworthy
 - Accessible
-- Futuristic
 - Data-driven
 - Responsive
 - Enterprise quality
@@ -138,89 +134,6 @@ Vercel, and modern GIS platforms.
 - **Section Top/Bottom**: 48px (--space-xl)
 - **Widget Spacing**: 24px (--space-md)
 - **Inline Spacing**: 16px (--space-sm)
-
-## Sidebar
-
-### Structure
-- **Width**: 280px
-- **Background**: rgba(255,255,255,0.04)
-- **Border**: 1px solid var(--border)
-
-### Sections
-1. **Dashboard** (Active indicator visible)
-2. **Live Map**
-3. **Incidents**
-4. **Resources**
-5. **Volunteers**
-6. **NGOs**
-7. **SOS Center**
-8. **Weather**
-9. **Reports**
-10. **Analytics**
-11. **AI Intelligence**
-12. **Settings**
-13. **Features**
-
-### Features
-- **Glass effect**: 8px backdrop blur
-- **Active indicator**: 3px blue accent bar
-- **Collapsible**: Hide/unhide sections
-- **Animated hover**: 200ms transform
-- **Keyboard navigation**: ARIA labels
-
-## Dashboard Widgets
-
-### Core Widgets
-1. **Incident Counter**
-   - Total incidents
-   - Active vs resolved
-   - Trend indicator
-
-2. **Active Volunteers**
-   - Live count
-   - Currently on duty
-   - Skills display
-
-3. **Resource Availability**
-   - Overall health
-   - Category breakdown
-   - Flow indicators
-
-4. **Emergency Requests**
-   - Recent requests
-   - Priority levels
-   - Location tags
-
-5. **Weather Summary**
-   - Current conditions
-   - Temperature
-   - Humidity
-   - Wind speed
-
-6. **Live Activity Feed**
-   - Timeline view
-   - User actions
-   - Incident updates
-
-7. **AI Prediction**
-   - Risk score
-   - Impact assessment
-   - Recommendations
-
-8. **Heatmap Preview**
-   - Geographic overlay
-   - Severity zones
-   - Resource density
-
-9. **Mission Timeline**
-   - Event history
-   - Response times
-   - Status updates
-
-10. **Quick Actions**
-    - Primary actions
-    - Emergency functions
-    - Tools access
 
 ## Live GIS Map
 
@@ -560,29 +473,14 @@ Each page must have:
 
 ## Inspiration Sources
 
-### Primary
 - Palantir Gotham (Enterprise intelligence)
-- NASA Mission Control (Command center)
 - Apple Vision Pro (Spatial UI)
 - Vercel (Developer experience)
 - Linear (Modern interface)
 
-### Secondary
-- Figma (Design system)
-- Arc Browser (Clean UI)
-- Material 3 Expressive (Material Design 3)
-
 ## Final Goal
 
-The application should look and feel like a **National Emergency Command Center**
-used by a government agency for real-time disaster response, with:
-
-- **Enterprise-grade usability**: Intuitive for emergency responders
-- **Accessibility**: Universal access (no barriers)
-- **Performance**: Instant load, smooth interactions
-- **Visual polish**: Professional presentation
-- **Data clarity**: Clear visualization of critical information
-- **Responsive design**: Seamless experience across devices
+The application should look and feel like a **premium government-grade disaster relief platform** used for real-time disaster response.
 
 The design system serves as the foundation for building a **mission-critical,
 high-performance, and visually cohesive** disaster relief coordination platform

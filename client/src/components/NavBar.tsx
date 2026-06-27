@@ -6,7 +6,7 @@ import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
 import {
   Sun, Moon, Search, User, LogOut, AlertTriangle, Zap,
-  LayoutDashboard, Map, Package, MapPin, Radio, PlusSquare,
+  LayoutDashboard, Map, Package, MapPin, PlusSquare,
   Shield, Menu, X
 } from 'lucide-react'
 import NotificationBell from './NotificationBell'
@@ -44,7 +44,6 @@ const NAV_LINKS: NavLink[] = [
   { path: '/zones', labelKey: 'nav.zones', fallback: 'Zones', icon: <MapPin size={16} /> },
   { path: '/incidents', labelKey: 'nav.incidents', fallback: 'Incidents', icon: <AlertTriangle size={16} /> },
   { path: '/requests/new', labelKey: 'nav.newRequest', fallback: 'New Request', icon: <PlusSquare size={16} /> },
-  { path: '/command-center', labelKey: 'nav.commandCenter', fallback: 'Command Center', icon: <Radio size={16} /> },
   { path: '/admin', labelKey: 'nav.admin', fallback: 'Admin', icon: <Shield size={16} />, admin: true },
 ]
 
@@ -268,7 +267,7 @@ export function NavBar() {
                 <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} aria-label="Toggle premium theme" title="Premium theme (Alt+N)">
                   <Zap size={14} />
                 </button>
-                <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} title="Emergency mode (Alt+E)">
+                <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'} title="Emergency mode (Alt+E)">
                   <AlertTriangle size={14} />
                 </button>
               </div>

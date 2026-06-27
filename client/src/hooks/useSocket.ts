@@ -71,11 +71,7 @@ export function useSocket() {
     }
   })
   const unreadCount = notifications.filter((n) => !n.read).length
-  const socketRef = useRef<Socket | null>(null)
-
-  if (!socketRef.current) {
-    socketRef.current = getSocket()
-  }
+  const socketRef = useRef<Socket | null>(getSocket())
 
   const addNotification = useCallback((notification: Omit<Notification, 'id' | 'read' | 'timestamp'>) => {
     setNotifications((prev) => {
