@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { RippleBtn } from '../components/ui'
-import { Header } from './Header'
-import { Footer } from './Footer'
+import { NavBar } from './NavBar'
 import { CommandPalette } from './CommandPalette'
 import { SosFab } from './SosFab'
 import { usePwaInstall } from '../hooks/usePwaInstall'
@@ -26,7 +25,7 @@ function Layout({ children }: LayoutProps) {
       <a href="#main-content" className="skip-link">
         {t('common.skipToContent')}
       </a>
-      <Header />
+      <NavBar />
       <CommandPalette isAdmin={isAdmin} />
       {isAuthenticated && <SosFab />}
       <motion.main className="gov-main" id="main-content" role="main" aria-label="Main content">
@@ -42,7 +41,6 @@ function Layout({ children }: LayoutProps) {
           </motion.div>
         </AnimatePresence>
       </motion.main>
-      <Footer />
       {canInstall && !dismissed && (
         <motion.div
           className="pwa-install-banner"

@@ -84,7 +84,4 @@
 }
 
 /* Tab order optimization for emergency scenarios */
-main[role="main"] { order: 1; }
-nav.gov-header-actions { order: 2; }
 sidebar.emergency-sidebar { order: 3; }
-header[role="banner"] { order: 4; }
