@@ -188,6 +188,8 @@
 .govt-badge-blue { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
 .govt-badge-green { background: var(--success-soft); color: var(--success); border-color: transparent; }
 .govt-badge-saffron { background: var(--warning-soft); color: var(--warning); border-color: transparent; }
+.govt-badge--sm { font-size: 9px; padding: 1px 6px; }
+.govt-badge--lg { font-size: var(--text-sm); padding: 4px 14px; }
 
 /* ── Loading spinner ── */
 .loading-spinner {
@@ -365,3 +367,11 @@
   border-top: 1px solid var(--border);
   z-index: var(--z-sticky);
 }
+
+/* ── Additional Missing Utilities ── */
+.grid-auto-sm { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-md); }
+.leading-lg { line-height: 1.6; }
+.bg-accent-soft { background: var(--accent-soft); }
+.bg-danger-soft { background: var(--danger-soft); }
+.bg-success-soft { background: var(--success-soft); }
+.bg-warning-soft { background: var(--warning-soft); }

@@ -55,6 +55,15 @@
   padding: var(--space-3xl) var(--space-lg);
   min-height: 240px;
 }
+.empty-state--compact {
+  padding: var(--space-lg) var(--space-md);
+  min-height: 120px;
+}
+.empty-state--compact .empty-state-icon {
+  font-size: 32px;
+  margin-bottom: var(--space-sm);
+}
+
 .empty-state-icon {
   font-size: 48px;
   line-height: 1;
