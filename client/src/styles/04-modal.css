@@ -32,6 +32,9 @@
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-sm);
 }
+.modal-icon { font-size: 40px; margin-bottom: var(--space-md); line-height: 1; }
+.modal-title { font-size: var(--text-lg); font-weight: var(--font-weight-bold); color: var(--text); margin: 0 0 var(--space-xs); }
+.modal-desc { font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.5; margin: 0 0 var(--space-md); }
 .modal-actions {
   display: flex;
   justify-content: flex-end;

@@ -179,7 +179,7 @@ export default function Register() {
 
             {/* Form */}
             <motion.form onSubmit={onSubmit} variants={item}>
-              {error && <div className="errorText">{error}</div>}
+              {error && <div className="error-text">{error}</div>}
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">

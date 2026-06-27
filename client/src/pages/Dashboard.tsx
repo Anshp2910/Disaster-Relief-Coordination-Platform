@@ -185,7 +185,7 @@ export default function Dashboard() {
               </RippleBtn>
             </div>
           </div>
-          {error ? <div className="errorText">{error}</div> : null}
+          {error ? <div className="error-text">{error}</div> : null}
           <nav aria-label="Filters">
             <motion.div className="flex flex-gap-sm mt-md flex-wrap" variants={fadeUp}>
               {filterOptions.map((f) => (

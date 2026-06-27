@@ -73,7 +73,7 @@ export default function EditRequest() {
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="card">
-            <div className="errorText">{error}</div>
+            <div className="error-text">{error}</div>
           </div>
         </motion.div>
       </PageTransition>

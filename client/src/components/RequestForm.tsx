@@ -352,7 +352,7 @@ export default function RequestForm({
           </div>
         )}
 
-        {error && <div className="errorText mt-sm mb-sm">{error}</div>}
+        {error && <div className="error-text mt-sm mb-sm">{error}</div>}
 
         <StepForm
           steps={STEPS}

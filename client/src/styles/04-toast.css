@@ -178,6 +178,9 @@
 .notification-message { font-size: var(--text-sm); color: var(--text-secondary); margin-top: 2px; }
 .notification-time { font-size: var(--text-xs); color: var(--text-muted); margin-top: 4px; }
 .notification-dot { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+.notification-bell { position: relative; display: inline-flex; }
+.notification-badge { position: absolute; top: -4px; right: -6px; min-width: 16px; height: 16px; border-radius: var(--radius-full); background: var(--accent); color: var(--text-on-accent); font-size: 9px; font-weight: var(--font-weight-bold); display: flex; align-items: center; justify-content: center; padding: 0 4px; line-height: 1; }
+.notification-badge-urgent { background: var(--danger); animation: notif-bell-shake 0.5s var(--ease-out); }
 
 .notif-group-header {
   display: flex;
