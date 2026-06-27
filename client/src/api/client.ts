@@ -1,6 +1,7 @@
 import { safeGetItem, safeRemoveItem } from '../utils/storage'
 
 const API_BASE: string = import.meta.env.VITE_API_BASE_URL || ''
+let redirectingToLogin = false
 
 function getToken(): string | null {
   return safeGetItem('token')
@@ -51,7 +52,8 @@ async function apiFetch<T = Record<string, unknown>>(path: string, { method = 'G
       if (res.status === 401 && auth) {
         safeRemoveItem('token')
         safeRemoveItem('user')
-        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+        if (!redirectingToLogin && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+          redirectingToLogin = true
           window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname)
         }
       }
