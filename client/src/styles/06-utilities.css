@@ -105,6 +105,7 @@
 .h-full { height: 100%; }
 .h-55vh { height: 55vh; }
 .h-65vh { height: 65vh; }
+.min-h-60vh { min-height: 60vh; }
 .map-container-60vh { width: 100%; height: 60vh; touch-action: manipulation; }
 
 /* ── Border / Radius ── */
@@ -336,6 +337,7 @@
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }
 .gap-lg { gap: var(--space-lg); }
+.gap-12 { gap: 12px; }
 
 .font-semibold { font-weight: var(--font-weight-semibold); }
 .font-extrabold { font-weight: var(--font-weight-extrabold); }

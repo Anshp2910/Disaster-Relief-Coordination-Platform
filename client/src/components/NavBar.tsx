@@ -164,11 +164,19 @@ export function NavBar() {
                 <div className="gov-navbar-btn-group">
                   <button
                     onClick={toggleTheme}
-                    className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`}
+                    className="gov-navbar-tool-btn"
                     aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                     title={theme === 'light' ? 'Dark mode' : 'Light mode'}
                   >
                     {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+                  </button>
+                  <button
+                    onClick={togglePremiumTheme}
+                    className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`}
+                    aria-label={isPremium ? 'Disable premium theme' : 'Activate premium theme'}
+                    title="Premium theme (Alt+N)"
+                  >
+                    <Zap size={14} />
                   </button>
                   <button
                     onClick={toggleEmergency}
@@ -249,7 +257,7 @@ export function NavBar() {
                   aria-label={t('header.selectLanguage')}
                 >
                   {LANGUAGES.map((l) => (
-                    <option key={l.code} value={l.code}>{l.label}</option>
+                    <option key={l.code} value={l.code}>{l.code.toUpperCase()}</option>
                   ))}
                 </select>
               </div>
@@ -257,7 +265,7 @@ export function NavBar() {
                 <button onClick={toggleTheme} className="gov-navbar-tool-btn" aria-label="Toggle theme">
                   {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
                 </button>
-                <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} title="Premium theme (Alt+N)">
+                <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} aria-label="Toggle premium theme" title="Premium theme (Alt+N)">
                   <Zap size={14} />
                 </button>
                 <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} title="Emergency mode (Alt+E)">

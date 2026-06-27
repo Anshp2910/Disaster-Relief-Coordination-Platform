@@ -200,7 +200,7 @@
 .activity-item:last-child { border-bottom: none; }
 .activity-item:hover {
   background: var(--accent-soft);
-  padding-left: calc(var(--space-lg) + 3px);
+  padding-left: var(--space-lg);
   border-left: 3px solid var(--accent);
 }
 .activity-item--unread { background: var(--accent-soft); }
@@ -416,6 +416,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent-soft), transparent 50%);
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-out);
   pointer-events: none;
