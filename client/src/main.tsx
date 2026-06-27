@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 
 const routerFuture = {
-  v7_startTransition: true,
+  v7_startTransition: false,
   v7_relativeSplatPath: true,
 }
 import { I18nextProvider } from 'react-i18next'

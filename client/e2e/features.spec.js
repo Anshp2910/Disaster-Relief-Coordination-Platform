@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Admin Charts', () => {
   test('admin dashboard redirects to login when unauthenticated', async ({ page }) => {
     await page.goto('/#/admin')
-    await page.waitForLoadState('networkidle')
+    await page.waitForURL('**/login', { timeout: 10000 }).catch(() => {})
     await expect(page).toHaveURL(/login/)
   })
 })
