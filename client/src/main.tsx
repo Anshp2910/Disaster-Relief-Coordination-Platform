@@ -1,6 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
+
+const routerFuture = {
+  v7_startTransition: true,
+  v7_relativeSplatPath: true,
+}
 import { I18nextProvider } from 'react-i18next'
 import i18n from './i18n'
 import { App } from './App'
@@ -41,8 +46,7 @@ if ('serviceWorker' in navigator) {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ErrorBoundary>
     <React.StrictMode>
-      <I18nextProvider i18n={i18n}>
-        <HashRouter>
+      <I18nextProvider i18n={i18n}>          <HashRouter future={routerFuture}>
           <ThemeProvider>
             <AuthProvider>
               <ToastProvider>

@@ -513,7 +513,7 @@ export default function RequestForm({
                     }}>
                       {suggestions.map((s, i) => (
                         <div
-                          key={s.place_id || i}
+                          key={String(s.place_id ?? '') || i}
                           onClick={() => pickSuggestion(s)}
                           className="suggestion-item"
                           style={{

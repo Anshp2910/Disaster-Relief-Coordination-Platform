@@ -93,7 +93,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     if (!socket) return
 
     function onConnect() {
-      socket.emit('chat:join', { requestId })
+      socket?.emit('chat:join', { requestId })
     }
 
     function onMessage(data: { message?: Message }) {
@@ -131,8 +131,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       }
     }
 
-    if (socket.connected) {
-      socket.emit('chat:join', { requestId })
+    if (socket?.connected) {
+      socket?.emit('chat:join', { requestId })
     }
 
     socket.on('connect', onConnect)
