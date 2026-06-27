@@ -354,6 +354,15 @@ export default function EmergencyCommandCenter() {
 
   const totalEvents = useMemo(() => counters.reduce((s, c) => s + c.value, 0), [counters])
 
+  const defaultLabels = [
+    { x: '25%', y: '35%', label: 'Mumbai', status: 'CRITICAL' },
+    { x: '55%', y: '45%', label: 'Delhi', status: 'CRITICAL' },
+    { x: '72%', y: '28%', label: 'Nainital', status: 'HIGH' },
+    { x: '40%', y: '65%', label: 'Chennai', status: 'WARNING' },
+    { x: '60%', y: '55%', label: 'Kolkata', status: 'MONITOR' },
+    { x: '80%', y: '60%', label: 'Guwahati', status: 'HIGH' },
+  ]
+
   /* ── Location labels from markers ── */
   const locationLabels = useMemo(() => {
     const combinedMarkers = markers.map(m => ({
@@ -364,15 +373,6 @@ export default function EmergencyCommandCenter() {
     if (combinedMarkers.length === 0) return defaultLabels
     return combinedMarkers.slice(0, 6)
   }, [markers])
-
-  const defaultLabels = [
-    { x: '25%', y: '35%', label: 'Mumbai', status: 'CRITICAL' },
-    { x: '55%', y: '45%', label: 'Delhi', status: 'CRITICAL' },
-    { x: '72%', y: '28%', label: 'Nainital', status: 'HIGH' },
-    { x: '40%', y: '65%', label: 'Chennai', status: 'WARNING' },
-    { x: '60%', y: '55%', label: 'Kolkata', status: 'MONITOR' },
-    { x: '80%', y: '60%', label: 'Guwahati', status: 'HIGH' },
-  ]
 
   return (
     <div className="cc-body">
