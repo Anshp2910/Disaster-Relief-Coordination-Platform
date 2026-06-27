@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test'
 
 test('app loads and shows login page', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/#/login')
   await page.waitForLoadState('networkidle')
-  await expect(page.locator('h2')).toContainText(/login|sign in/i)
+  await expect(page.locator('.auth-title')).toContainText(/login|sign in/i)
 })
 
 test('navigates to public status page without redirect', async ({ page }) => {
