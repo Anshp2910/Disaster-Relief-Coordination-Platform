@@ -58,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     safeSetItem('user', JSON.stringify(userObj))
     setToken(tokenVal)
     setUser(userObj)
+    window.dispatchEvent(new Event('authchange'))
   }, [])
 
   const logout = useCallback(() => {
@@ -73,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' })
       }
     } catch { /* noop */ }
+    window.dispatchEvent(new Event('authchange'))
   }, [])
 
   const updateUser = useCallback((updates: Partial<User>) => {
@@ -122,6 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (newToken) {
         safeSetItem('token', newToken)
         setToken(newToken)
+        window.dispatchEvent(new Event('authchange'))
       }
     } catch {
       logout()

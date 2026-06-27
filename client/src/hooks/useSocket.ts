@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { io, type Socket } from 'socket.io-client'
 import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+const isProduction = import.meta.env.PROD
 
 let socket: Socket | null = null
 
@@ -28,30 +29,36 @@ function notifyRefreshListeners(eventName: string): void {
   })
 }
 
-function getSocket(): Socket {
+function connectSocket(): void {
+  const token = safeGetItem('token')
+  if (!token) return
+
+  if (socket?.connected) return
+
   if (!socket) {
-    const token = safeGetItem('token')
     socket = io(API_BASE || window.location.origin, {
       autoConnect: false,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
-      reconnectionAttempts: 20,
-      transports: ['polling', 'websocket'],
+      reconnectionAttempts: 10,
+      transports: isProduction ? ['polling'] : ['polling', 'websocket'],
       withCredentials: true,
       auth: { token },
     })
+  } else {
+    socket.auth = { token }
   }
-  const storedToken = safeGetItem('token')
-  const auth = socket.auth as Record<string, unknown>
-  if (auth.token !== storedToken) {
-    auth.token = storedToken
-    if (socket.connected && storedToken) {
-      socket.auth = { token: storedToken }
-      socket.disconnect().connect()
-    }
+
+  if (!socket.connected) {
+    socket.connect()
   }
-  return socket
+}
+
+function disconnectSocket(): void {
+  if (socket?.connected) {
+    socket.disconnect()
+  }
 }
 
 interface Notification {
@@ -74,7 +81,6 @@ export function useSocket() {
     }
   })
   const unreadCount = notifications.filter((n) => !n.read).length
-  const socketRef = useRef<Socket | null>(getSocket())
 
   const addNotification = useCallback((notification: Omit<Notification, 'id' | 'read' | 'timestamp'>) => {
     setNotifications((prev) => {
@@ -88,12 +94,20 @@ export function useSocket() {
   }, [])
 
   useEffect(() => {
-    const s = socketRef.current || getSocket()
-
     function onConnect() { setConnected(true) }
     function onDisconnect() { setConnected(false) }
     function onConnectError(err: Error) {
       console.warn('[Socket] Connection error:', err.message)
+    }
+
+    function onAuthChange() {
+      const token = safeGetItem('token')
+      if (token) {
+        connectSocket()
+      } else {
+        disconnectSocket()
+        setConnected(false)
+      }
     }
 
     interface Handlers {
@@ -111,18 +125,22 @@ export function useSocket() {
       'request:deleted': (data: unknown) => { const d = data as Record<string, unknown>; addNotification({ type: 'request:deleted', title: 'Request Deleted', message: 'A relief request has been deleted', requestId: d.id as string | undefined }); notifyRefreshListeners('request:deleted') },
     }
 
+    const s = (() => { connectSocket(); return socket })()
+    if (!s) return
+
     s.on('connect', onConnect)
     s.on('disconnect', onDisconnect)
     s.on('connect_error', onConnectError)
     Object.entries(handlers).forEach(([event, handler]) => s.on(event, handler))
 
-    if (!s.connected) s.connect()
+    window.addEventListener('authchange', onAuthChange)
 
     return () => {
       s.off('connect', onConnect)
       s.off('disconnect', onDisconnect)
       s.off('connect_error', onConnectError)
       Object.entries(handlers).forEach(([event, handler]) => s.off(event, handler))
+      window.removeEventListener('authchange', onAuthChange)
     }
   }, [addNotification])
 
@@ -147,5 +165,5 @@ export function useSocket() {
     safeRemoveItem('notifications')
   }, [])
 
-  return { socket: socketRef.current, connected, notifications, unreadCount, markAsRead, markAllRead, clearAll }
+  return { socket, connected, notifications, unreadCount, markAsRead, markAllRead, clearAll }
 }

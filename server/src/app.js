@@ -72,6 +72,7 @@ export function createApp() {
         styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://fonts.googleapis.com"],
         connectSrc: ["'self'", "ws:", "wss:", "https://*.tile.openstreetmap.org", "https://nominatim.openstreetmap.org", "https://fonts.googleapis.com", ...allOrigins],
         scriptSrc: ["'self'", "https://static.cloudflareinsights.com"],
+        scriptSrcAttr: ["'unsafe-inline'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         workerSrc: ["'self'"],
         formAction: ["'self'"],
