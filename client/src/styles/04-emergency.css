@@ -74,18 +74,6 @@ html.emergency-mode body {
 }
 
 /* ── Priority Request Badges ── */
-.badge-emergency {
-  background: var(--danger);
-  color: var(--text-on-accent);
-  font-weight: var(--font-weight-bold);
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
-}
-
 .badge-critical {
   background: linear-gradient(135deg, var(--danger), var(--red-600));
 }

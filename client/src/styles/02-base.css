@@ -113,20 +113,17 @@ hr {
 .skip-link {
   position: absolute;
   top: -100%;
-  left: 8px;
-  z-index: 10000;
+  left: 0;
+  z-index: 999999;
   padding: 8px 16px;
-  background: var(--accent, #0ea5e9);
-  color: #fff;
-  border-radius: var(--radius-sm, 6px);
-  font-size: var(--text-sm, 14px);
-  font-weight: 600;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-weight: var(--font-weight-semibold);
   text-decoration: none;
-  transition: none;
+  border-radius: 0 0 var(--radius-sm) 0;
+  transition: top var(--duration-fast) var(--ease-out);
 }
-.skip-link:focus {
-  top: 8px;
-}
+.skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
 
 /* ── Focus ring (WCAG AA compliant) ── */
 *:focus:not(:focus-visible) {
