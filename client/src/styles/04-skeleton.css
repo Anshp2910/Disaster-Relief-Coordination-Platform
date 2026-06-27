@@ -14,14 +14,6 @@
   overflow: hidden;
 }
 .sk-line:last-child { width: 60%; }
-.sk-line--w40 { width: 40%; }
-.sk-line--w60 { width: 60%; }
-.sk-line--w80 { width: 80%; }
-.sk-line--h-sm { height: 10px; }
-.sk-line--h-lg { height: 20px; }
-
-.sk-text { height: 12px; }
-.sk-title { height: 20px; width: 70%; margin-bottom: 12px; border-radius: var(--radius-sm); }
 
 .sk-card {
   background: var(--bg-card);
@@ -32,15 +24,6 @@
   overflow: hidden;
 }
 .sk-card .sk-line {
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
-
-.sk-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s var(--ease-in-out) infinite;
@@ -61,103 +44,4 @@
   gap: var(--space-sm);
 }
 
-.sk-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-  flex-shrink: 0;
-}
 
-.sk-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-sm) 0;
-}
-
-.sk-avatar-sm { width: 28px; height: 28px; border-radius: var(--radius-full); }
-.sk-avatar-lg { width: 56px; height: 56px; border-radius: var(--radius-full); }
-.sk-avatar-sm, .sk-avatar-lg {
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-  flex-shrink: 0;
-}
-
-.sk-button {
-  height: 36px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
-
-.sk-image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-md);
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
-
-.sk-badge {
-  display: inline-block;
-  width: 60px;
-  height: 22px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
-
-.sk-list-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
-}
-.sk-list-item-content { flex: 1; min-width: 0; }
-.sk-list-item-title { height: 14px; width: 60%; border-radius: var(--radius-sm); margin-bottom: 6px; }
-.sk-list-item-subtitle { height: 10px; width: 40%; border-radius: var(--radius-sm); }
-.sk-list-item-title, .sk-list-item-subtitle {
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
-
-.sk-card-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-.sk-card-header .sk-image { width: 60px; height: 60px; aspect-ratio: auto; flex-shrink: 0; }
-.sk-card-header-content { flex: 1; min-width: 0; }
-.sk-card-header-title { height: 16px; width: 50%; border-radius: var(--radius-sm); margin-bottom: 6px; }
-.sk-card-header-subtitle { height: 12px; width: 35%; border-radius: var(--radius-sm); }
-.sk-card-header-title, .sk-card-header-subtitle {
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
-
-.sk-table { width: 100%; }
-.sk-table-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 80px;
-  gap: var(--space-sm);
-  padding: var(--space-sm) 0;
-  border-bottom: 1px solid var(--border-light);
-  align-items: center;
-}
-.sk-table-cell {
-  height: 12px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
