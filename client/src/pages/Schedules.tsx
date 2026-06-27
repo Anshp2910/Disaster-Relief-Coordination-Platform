@@ -152,15 +152,15 @@ export default function Schedules() {
     try {
       const zonesData = await clientApi.getZones() as { items?: Zone[] }
       setZones(zonesData.items || [])
-    } catch (e) {
-      console.warn('Failed to load zones:', (e as Error).message)
+    } catch {
+      // silent
     }
     if (currentUser?.role === 'admin') {
       try {
         const usersData = await clientApi.adminUsers() as { users: User[] }
         setUsers(usersData.users || [])
-      } catch (e) {
-        console.warn('Failed to load users:', (e as Error).message)
+      } catch {
+        // silent
       }
     } else {
       setUsers([{ _id: currentUser?.id || '', displayName: currentUser?.displayName || currentUser?.email, role: currentUser?.role }])

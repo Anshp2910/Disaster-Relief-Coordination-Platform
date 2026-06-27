@@ -190,7 +190,7 @@ export default function Geofencing() {
         if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${escapeHtml(r.name || '')}<br>${r.distanceKm} km away`, 'var(--gov-green)')
       })
     } catch (e) {
-      console.warn('Failed to load geofencing data:', (e as Error).message)
+      // quiet
     }
   }, [position, radius, result])
 

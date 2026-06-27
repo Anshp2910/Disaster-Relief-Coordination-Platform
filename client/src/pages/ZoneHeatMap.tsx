@@ -174,8 +174,8 @@ export default function ZoneHeatMap() {
       const center = map.getCenter()
       const data = await clientApi.getWeatherCurrent(Number(center.lat.toFixed(4)), Number(center.lng.toFixed(4))) as WeatherData
       setWeather(data)
-    } catch (e) {
-      console.warn('[ZoneHeatMap] Weather fetch failed:', e)
+    } catch {
+      // silent
     } finally {
       setWeatherLoading(false)
     }

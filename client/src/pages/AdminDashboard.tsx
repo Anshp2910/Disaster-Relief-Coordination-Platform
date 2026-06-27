@@ -272,7 +272,7 @@ function StatsPanel({ stats }: StatsPanelProps) {
             <motion.div key={c.label} className="bento-card" variants={itemVariants}>
               <div className="bento-header">
                 <span className="bento-title">{c.label}</span>
-                <div className="bento-icon" style={{ background: `${c.color}20`, color: c.color }}>
+                <div className="bento-icon" style={{ background: `${c.color}20`, color: c.color } as React.CSSProperties}>
                   {c.icon}
                 </div>
               </div>
@@ -651,8 +651,7 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => handleExport('csv')}
-              className="btn-ghost btn-sm"
-              style={{ color: 'var(--success)', borderColor: 'rgba(34,197,94,0.3)' }}
+              className="btn-success btn-sm"
               aria-label={t('common.exportCSV')}
             >
               <Download size={14} /> {t('common.exportCSV')}
@@ -668,8 +667,8 @@ export default function AdminDashboard() {
       )}
 
       <motion.div className="card mb-xl" variants={fadeUp} initial="hidden" animate="visible">
-        <nav aria-label={t('admin.title')}>
-          <div className="flex flex-gap-xs overflow-x-auto border-bottom" style={{ WebkitOverflowScrolling: 'touch' }} role="tablist">
+          <nav aria-label={t('admin.title')}>
+          <div className="flex flex-gap-xs overflow-x-auto border-bottom" role="tablist">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id
               return (

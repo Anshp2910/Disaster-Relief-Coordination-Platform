@@ -147,20 +147,13 @@ export default function Incidents() {
   useEffect(() => {
     if (!socket) return
 
-    function onIncidentCreated(data: unknown) {
-      const d = data as Record<string, unknown>
-      const item = d.item as Record<string, unknown> | undefined
-      toast.info(`Incident "${item?.name || 'New'}" created`)
+    function onIncidentCreated() {
       load()
     }
-    function onIncidentUpdated(data: unknown) {
-      const d = data as Record<string, unknown>
-      const item = d.item as Record<string, unknown> | undefined
-      toast.info(`Incident "${item?.name || 'Updated'}" updated`)
+    function onIncidentUpdated() {
       load()
     }
     function onIncidentDeleted() {
-      toast.info('Incident removed')
       load()
     }
 
@@ -292,21 +285,21 @@ export default function Incidents() {
         filters={[
           {
             key: 'status',
-            label: 'Status',
+            label: t('incidents.status') || 'Status',
             options: STATUS_OPTIONS.map((s) => ({ key: s, label: s })),
             value: filterStatus,
             onChange: (v) => { setFilterStatus(v); setPage(1) },
           },
           {
             key: 'severity',
-            label: 'Severity',
+            label: t('incidents.severity') || 'Severity',
             options: SEVERITY_OPTIONS.map((s) => ({ key: s, label: s })),
             value: filterSeverity,
             onChange: (v) => { setFilterSeverity(v); setPage(1) },
           },
           {
             key: 'disaster',
-            label: 'Disaster Type',
+            label: t('incidents.disasterType') || 'Disaster Type',
             options: DISASTER_OPTIONS.map((d) => ({ key: d, label: d })),
             value: filterDisaster,
             onChange: (v) => { setFilterDisaster(v); setPage(1) },
@@ -367,7 +360,7 @@ export default function Incidents() {
                   {(selectedIncident.affectedPopulation ?? 0) > 0 && (
                     <div className="flex items-center gap-xs">
                       <User size={14} />
-                      <span>Affected: <strong>{(selectedIncident.affectedPopulation ?? 0).toLocaleString()}</strong></span>
+                      <span>{t('incidents.affectedPopulation') || 'Affected'}: <strong>{(selectedIncident.affectedPopulation ?? 0).toLocaleString()}</strong></span>
                     </div>
                   )}
                   {selectedIncident.stats && (
@@ -428,7 +421,7 @@ export default function Incidents() {
           <div className="flex flex-gap-sm">
             <div className="ff-group flex-1">
               <ModernSelect
-                label="Disaster type"
+                label={t('incidents.disasterType') || 'Disaster type'}
                 options={disasterTypeOptions}
                 value={form.disasterType}
                 onChange={(v) => setForm((prev) => ({ ...prev, disasterType: v }))}
@@ -436,7 +429,7 @@ export default function Incidents() {
             </div>
             <div className="ff-group flex-1">
               <ModernSelect
-                label="Severity"
+                label={t('incidents.severity') || 'Severity'}
                 options={severityOptions}
                 value={form.severity}
                 onChange={(v) => setForm((prev) => ({ ...prev, severity: v }))}
@@ -444,7 +437,7 @@ export default function Incidents() {
             </div>
             <div className="ff-group flex-1">
               <ModernSelect
-                label="Status"
+                label={t('incidents.status') || 'Status'}
                 options={statusFormOptions}
                 value={form.status}
                 onChange={(v) => setForm((prev) => ({ ...prev, status: v }))}
@@ -463,10 +456,10 @@ export default function Incidents() {
                   onChange={updateForm('centerLat')}
                   required
                   className={`ff-input ${form.centerLat ? 'ff-input-filled' : ''}`}
-                  placeholder="Center Latitude"
+                  placeholder={t('incidents.latitude') || 'Center Latitude'}
                 />
                 <label htmlFor="inc-centerlat" className={`ff-label ${form.centerLat ? 'ff-label-float' : ''}`}>
-                  Center Latitude
+                  {t('incidents.latitude') || 'Center Latitude'}
                 </label>
               </div>
             </div>
@@ -480,10 +473,10 @@ export default function Incidents() {
                   onChange={updateForm('centerLng')}
                   required
                   className={`ff-input ${form.centerLng ? 'ff-input-filled' : ''}`}
-                  placeholder="Center Longitude"
+                  placeholder={t('incidents.longitude') || 'Center Longitude'}
                 />
                 <label htmlFor="inc-centerlng" className={`ff-label ${form.centerLng ? 'ff-label-float' : ''}`}>
-                  Center Longitude
+                  {t('incidents.longitude') || 'Center Longitude'}
                 </label>
               </div>
             </div>
@@ -496,10 +489,10 @@ export default function Incidents() {
                   value={form.affectedPopulation}
                   onChange={updateForm('affectedPopulation')}
                   className={`ff-input ${form.affectedPopulation ? 'ff-input-filled' : ''}`}
-                  placeholder="Affected population"
+                  placeholder={t('incidents.affectedPopulation') || 'Affected population'}
                 />
                 <label htmlFor="inc-population" className={`ff-label ${form.affectedPopulation ? 'ff-label-float' : ''}`}>
-                  Affected population
+                  {t('incidents.affectedPopulation') || 'Affected population'}
                 </label>
               </div>
             </div>
@@ -513,10 +506,10 @@ export default function Incidents() {
                 onChange={updateForm('description')}
                 rows={3}
                 className="ff-input ff-textarea"
-                placeholder="Description"
+                placeholder={t('incidents.descriptionPlaceholder') || 'Description'}
               />
               <label htmlFor="inc-description" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
-                Description
+                {t('incidents.descriptionPlaceholder') || 'Description'}
               </label>
             </div>
           </div>

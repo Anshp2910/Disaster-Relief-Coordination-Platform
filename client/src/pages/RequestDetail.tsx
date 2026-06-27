@@ -159,7 +159,7 @@ export default function RequestDetail() {
       const data = await clientApi.getResources({ status: 'Available', limit: '100' }) as { items?: Resource[] }
       setResources(data.items || [])
     } catch {
-      console.warn('[RequestDetail] Failed to load resources')
+      // silent
     }
   }, [])
 
@@ -168,7 +168,7 @@ export default function RequestDetail() {
       const data = await clientApi.getFeedback(id!) as { feedback?: Feedback[] }
       setFeedbackList(data.feedback || [])
     } catch {
-      console.warn('[RequestDetail] Failed to load feedback')
+      // silent
     }
   }, [id])
 
@@ -177,7 +177,7 @@ export default function RequestDetail() {
       const data = await clientApi.matchResources(id!) as { matches?: Match[] }
       setMatches(data.matches || [])
     } catch {
-      console.warn('[RequestDetail] Failed to load matches')
+      // silent
     }
   }, [id])
 

@@ -150,38 +150,12 @@ export default function Profile() {
             tabIndex={0}
             aria-label={t('profile.uploadAvatar') || 'Upload avatar photo'}
             onKeyDown={(e) => { if (e.key === 'Enter') handleAvatarClick() }}
-            style={{
-              width: 96,
-              height: 96,
-              borderRadius: '50%',
-              background: avatarUrl ? `url(${avatarUrl}) center/cover no-repeat` : 'var(--accent-blue-light)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              position: 'relative',
-              fontSize: 32,
-              color: '#fff',
-              fontWeight: 700,
-            }}
+            className={`avatar-circle ${avatarUrl ? '' : 'avatar-circle-initial'}`}
+            style={avatarUrl ? { background: `url(${avatarUrl}) center/cover no-repeat` } : undefined}
           >
             {!avatarUrl && (user?.displayName?.[0]?.toUpperCase() || 'U')}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                background: 'rgba(0,0,0,0.5)',
-                borderRadius: '50%',
-                width: 28,
-                height: 28,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-              }}
-            >
-              <Camera size={14} aria-hidden="true" />
+            <div className="avatar-camera-overlay" aria-hidden="true">
+              <Camera size={14} />
             </div>
           </div>
           <input

@@ -31,7 +31,7 @@
 
   /* NavBar mobile: show hamburger, hide desktop links + extras */
   .gov-navbar-links { display: none; }
-  .gov-navbar-hamburger { display: flex !important; }
+  .gov-navbar-hamburger { display: flex; }
   .gov-navbar-user-name { display: none; }
   .gov-navbar-lang { display: none; }
   .gov-navbar-divider { display: none; }
@@ -46,7 +46,6 @@
   .toast-container { left: var(--space-md); right: var(--space-md); max-width: none; }
   .bento--wide { grid-column: span 1; }
   .grid-sidebar, .grid-sidebar-wide { grid-template-columns: 1fr; }
-  .gov-main { padding: var(--space-sm) 0 var(--space-lg); }
 
   /* Better touch targets on mobile */
   .nav-chip { min-width: 70px; padding: var(--space-sm) var(--space-md); }

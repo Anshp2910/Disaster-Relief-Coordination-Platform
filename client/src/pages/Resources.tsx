@@ -473,7 +473,7 @@ export default function Resources() {
               type="checkbox"
               checked={selectedIds.size === items.length}
               onChange={handleSelectAll}
-              style={{ width: 18, height: 18, cursor: 'pointer' }}
+              className="input-checkbox"
               aria-label={t('resources.selectAll') || 'Select All'}
             />
             <span className="text-sm text-muted">{t('resources.selectAll') || 'Select All'} ({selectedIds.size}/{items.length})</span>
@@ -489,7 +489,7 @@ export default function Resources() {
           skeletonLines={3}
           keyExtractor={(r) => r._id}
           renderItem={(r) => (
-            <div className="listCard" style={selectMode ? { paddingLeft: '0.5rem' } : undefined}>
+            <div className={`listCard ${selectMode ? 'p-sm' : ''}`}>
               <div className="flex flex-between flex-gap-sm">
                 {selectMode && (
                   <label className="flex items-center cursor-pointer pr-sm">
@@ -497,7 +497,7 @@ export default function Resources() {
                       type="checkbox"
                       checked={selectedIds.has(r._id)}
                       onChange={() => handleSelectOne(r._id)}
-                      style={{ width: 18, height: 18, cursor: 'pointer' }}
+                      className="input-checkbox"
                       aria-label={`${t('resources.select') || 'Select'} ${r.name || r._id}`}
                     />
                   </label>
