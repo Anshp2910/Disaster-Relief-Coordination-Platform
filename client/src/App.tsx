@@ -51,39 +51,41 @@ function RequireAdmin({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <Routes>
-      {/* Standalone routes (no Layout — full-screen pages) */}
-      <Route path="/login" element={<Layout><Login /></Layout>} />
-      <Route path="/register" element={<Layout><Register /></Layout>} />
-      <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      {/* Standard routes with Layout (header + footer) */}
-      <Route path="/*" element={
-        <Layout>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/public" element={<PublicStatus />} />
-              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-              <Route path="/map" element={<RequireAuth><MapOverview /></RequireAuth>} />
-              <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-              <Route path="/resources" element={<RequireAuth><Resources /></RequireAuth>} />
-              <Route path="/zones" element={<RequireAuth><ZoneHeatMap /></RequireAuth>} />
-              <Route path="/requests/new" element={<RequireAuth><CreateRequest /></RequireAuth>} />
-              <Route path="/requests/:id" element={<RequireAuth><RequestDetail /></RequireAuth>} />
-              <Route path="/requests/:id/edit" element={<RequireAuth><EditRequest /></RequireAuth>} />
-              <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
-              <Route path="/incidents" element={<RequireAuth><Incidents /></RequireAuth>} />
-              <Route path="/schedules" element={<RequireAuth><Schedules /></RequireAuth>} />
-              <Route path="/bulk" element={<RequireAdmin><BulkImport /></RequireAdmin>} />
-              <Route path="/escalation" element={<RequireAdmin><Escalation /></RequireAdmin>} />
-              <Route path="/geofencing" element={<RequireAuth><Geofencing /></RequireAuth>} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </Layout>
-      } />
-    </Routes>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        {/* Standalone routes (no Layout — full-screen pages) */}
+        <Route path="/login" element={<Layout><Login /></Layout>} />
+        <Route path="/register" element={<Layout><Register /></Layout>} />
+        <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        {/* Standard routes with Layout (header + footer) */}
+        <Route path="/*" element={
+          <Layout>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/public" element={<PublicStatus />} />
+                <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+                <Route path="/map" element={<RequireAuth><MapOverview /></RequireAuth>} />
+                <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+                <Route path="/resources" element={<RequireAuth><Resources /></RequireAuth>} />
+                <Route path="/zones" element={<RequireAuth><ZoneHeatMap /></RequireAuth>} />
+                <Route path="/requests/new" element={<RequireAuth><CreateRequest /></RequireAuth>} />
+                <Route path="/requests/:id" element={<RequireAuth><RequestDetail /></RequireAuth>} />
+                <Route path="/requests/:id/edit" element={<RequireAuth><EditRequest /></RequireAuth>} />
+                <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
+                <Route path="/incidents" element={<RequireAuth><Incidents /></RequireAuth>} />
+                <Route path="/schedules" element={<RequireAuth><Schedules /></RequireAuth>} />
+                <Route path="/bulk" element={<RequireAdmin><BulkImport /></RequireAdmin>} />
+                <Route path="/escalation" element={<RequireAdmin><Escalation /></RequireAdmin>} />
+                <Route path="/geofencing" element={<RequireAuth><Geofencing /></RequireAuth>} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </Layout>
+        } />
+      </Routes>
+    </Suspense>
   )
 }
 
