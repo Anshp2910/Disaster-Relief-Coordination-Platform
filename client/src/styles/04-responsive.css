@@ -17,7 +17,7 @@
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .gov-header-inner { flex-wrap: wrap; gap: var(--space-sm); }
-  .gov-footer { padding: var(--space-2xl) 0 0; }
+  .gov-footer { padding: var(--space-2xl) 0 var(--space-lg); }
   .notification-dropdown { width: 320px; right: -40px; }
   .bento-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .filter-group { flex-wrap: wrap; }

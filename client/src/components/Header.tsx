@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -26,6 +27,8 @@ const LANGUAGES: Language[] = [
 ]
 
 function Header() {
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const toggleMenu = () => setMenuOpen(!menuOpen);
   const navigate = useNavigate()
   const location = useLocation()
   const { t, i18n } = useTranslation()
@@ -68,8 +71,23 @@ function Header() {
 
   return (
     <header role="banner">
+        {/* Mobile hamburger – visible on small screens */}
+        <button
+          className="icon-btn md:hidden"
+          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          onClick={toggleMenu}
+        >
+          {/* Simple three-line icon */}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            {menuOpen ? (
+              <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            ) : (
+              <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            )}
+          </svg>
+        </button>
 
-      <div className="gov-top-strip">
+      <div className={`gov-top-strip ${menuOpen ? 'block' : 'hidden'} md:block`}>
         <div className="container flex-between">
           <span className="gov-top-strip-text">{t('topStrip')}</span>
           <div className="flex flex-gap-sm items-center">

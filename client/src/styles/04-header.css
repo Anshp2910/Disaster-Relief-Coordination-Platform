@@ -8,6 +8,7 @@ header[role="banner"] {
   left: 0;
   right: 0;
   z-index: var(--z-sticky);
+  background: var(--bg);
 }
 
 /* ── Offline Banner ── */
@@ -32,6 +33,8 @@ header[role="banner"] {
   gap: var(--space-sm);
   padding: 6px 0;
   font-size: var(--text-xs);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
 }
 .gov-top-strip > .container {
   display: flex;
@@ -510,6 +513,7 @@ header[role="banner"] {
   padding: var(--space-3xl) 0 var(--space-xl);
   border-top: 1px solid var(--border);
   position: relative;
+  margin-top: auto;
 }
 .gov-footer::before {
   content: '';
