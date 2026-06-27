@@ -37,6 +37,8 @@ function getSocket(): Socket {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: 20,
+      transports: ['polling', 'websocket'],
+      withCredentials: true,
       auth: { token },
     })
   }
@@ -90,6 +92,9 @@ export function useSocket() {
 
     function onConnect() { setConnected(true) }
     function onDisconnect() { setConnected(false) }
+    function onConnectError(err: Error) {
+      console.warn('[Socket] Connection error:', err.message)
+    }
 
     interface Handlers {
       [event: string]: (data: unknown) => void
@@ -108,6 +113,7 @@ export function useSocket() {
 
     s.on('connect', onConnect)
     s.on('disconnect', onDisconnect)
+    s.on('connect_error', onConnectError)
     Object.entries(handlers).forEach(([event, handler]) => s.on(event, handler))
 
     if (!s.connected) s.connect()
@@ -115,6 +121,7 @@ export function useSocket() {
     return () => {
       s.off('connect', onConnect)
       s.off('disconnect', onDisconnect)
+      s.off('connect_error', onConnectError)
       Object.entries(handlers).forEach(([event, handler]) => s.off(event, handler))
     }
   }, [addNotification])
