@@ -13,7 +13,6 @@
 
 @media (max-width: 1024px) {
   .gov-navbar-links .gov-navbar-link span { display: none; }
-  .gov-navbar-subtitle { display: none; }
 }
 
 @media (max-width: 900px) {
@@ -33,12 +32,10 @@
   /* NavBar mobile: show hamburger, hide desktop links + extras */
   .gov-navbar-links { display: none; }
   .gov-navbar-hamburger { display: flex !important; }
-  .gov-navbar-icon-btn.cmd-hint { display: none; }
   .gov-navbar-user-name { display: none; }
   .gov-navbar-lang { display: none; }
-  .gov-navbar-icon-btn[title*="Keyboard shortcuts"] { display: none; }
-  .gov-navbar-icon-btn[title*="Premium Theme"] { display: none; }
-  .gov-navbar-inner { padding: 8px var(--space-md); }
+  .gov-navbar-divider { display: none; }
+  .gov-navbar-inner { height: 48px; padding: 0 var(--space-md); }
   .gov-navbar-bottom-inner { flex-direction: column; gap: var(--space-3xs); text-align: center; padding: var(--space-sm) var(--space-md); }
 
   .bento-grid { grid-template-columns: 1fr; }
@@ -58,8 +55,8 @@
 
 @media (max-width: 480px) {
   .container { padding: 0 var(--space-sm); }
-  html { scroll-padding-top: 56px; }
-  .gov-navbar-inner { padding: 6px var(--space-sm); gap: 2px; }
+  html { scroll-padding-top: 52px; }
+  .gov-navbar-inner { height: 44px; padding: 0 var(--space-sm); gap: 2px; }
   .kpi-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xs); }
   .kpi-card { padding: var(--space-md); }
   .bento-kpi-value { font-size: var(--text-2xl); }

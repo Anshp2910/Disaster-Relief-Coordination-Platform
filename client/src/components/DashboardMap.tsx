@@ -83,7 +83,7 @@ function DashboardMapInner() {
   }, [mapItems, t])
 
   return (
-    <motion.div className="bento-grid mb-lg" variants={fadeUp}>
+    <motion.div className="bento-grid mb-md" variants={fadeUp}>
       <div className="bento-card bento--wide">
         <div className="bento-header">
           <span className="bento-title"><MapIcon size={14} /> {t('dashboard.mapView')}</span>

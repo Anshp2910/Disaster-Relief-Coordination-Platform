@@ -323,7 +323,7 @@ export default function Dashboard() {
       </motion.div>
 
       {/* ── REQUESTS LIST ── */}
-      <motion.div className="card mt-lg" variants={fadeUp}>
+      <motion.div className="card" variants={fadeUp}>
         <div className="flex-between mb-md">
           <h2 className="text-lg text-bold m-0">{t('dashboard.allRequests')}</h2>
           <div className="flex flex-gap-sm">

@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { useSocket } from '../hooks/useSocket'
 import {
-  Sun, Moon, Search, User, LogOut, AlertTriangle, Info, Zap,
+  Sun, Moon, Search, User, LogOut, AlertTriangle, Zap,
   LayoutDashboard, Map, Package, MapPin, Radio, PlusSquare,
   Shield, Menu, X
 } from 'lucide-react'
@@ -67,20 +67,8 @@ export function NavBar() {
     try { localStorage.setItem('language', langCode) } catch { /* noop */ }
   }
 
-  function openKeyboardHints() {
-    const hints = document.getElementById('keyboard-hints-emergency')
-    if (hints) {
-      hints.classList.add('active')
-      setTimeout(() => hints.classList.remove('active'), 4000)
-    }
-  }
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'H') {
-        e.preventDefault()
-        openKeyboardHints()
-      }
       if (e.altKey && e.key === 'E') {
         e.preventDefault()
         toggleEmergency()
@@ -100,16 +88,22 @@ export function NavBar() {
   }
 
   const filteredLinks = NAV_LINKS.filter(l => !l.admin || (l.admin && isAdmin))
-
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+  const showNav = isAuthenticated && !isAuthPage
 
   return (
     <>
       <nav className="gov-navbar" role="navigation" aria-label="Main navigation">
         <div className="gov-navbar-inner">
-          {/* Logo + Title */}
-          <div className="gov-navbar-brand" onClick={() => navigate('/dashboard')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') navigate('/dashboard') }}>
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="gov-navbar-logo" aria-hidden="true">
+          {/* ─── Logo + Title ─── */}
+          <div
+            className="gov-navbar-brand"
+            onClick={() => navigate('/dashboard')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') navigate('/dashboard') }}
+          >
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" className="gov-navbar-logo" aria-hidden="true">
               <rect width="40" height="40" rx="10" fill="var(--accent)" />
               <path d="M20 8a2 2 0 0 1 2 2v18a2 2 0 0 1-4 0V10a2 2 0 0 1 2-2z" fill="white" />
               <path d="M12 16a2 2 0 0 1 2 2v10a2 2 0 0 1-4 0V18a2 2 0 0 1 2-2z" fill="white" opacity="0.8" />
@@ -117,13 +111,12 @@ export function NavBar() {
             </svg>
             <div className="gov-navbar-title-group">
               <div className="gov-navbar-title">{t('appTitle')}</div>
-              <div className="gov-navbar-subtitle">{t('appSubtitle')}</div>
             </div>
           </div>
 
-          {/* Desktop Nav Links */}
+          {/* ─── Desktop Nav Links ─── */}
           <div className="gov-navbar-links">
-            {isAuthenticated && !isAuthPage && filteredLinks.map((link) => (
+            {showNav && filteredLinks.map((link) => (
               <button
                 key={link.path}
                 onClick={() => navigate(link.path)}
@@ -136,123 +129,103 @@ export function NavBar() {
             ))}
           </div>
 
-          {/* Right Controls */}
+          {/* ─── Right Controls ─── */}
           <div className="gov-navbar-controls">
-            {isAuthenticated && !isAuthPage && (
+            {showNav && (
               <>
-                {/* Command palette hint */}
-                <button
-                  className="gov-navbar-icon-btn cmd-hint"
-                  onClick={() => window.dispatchEvent(new CustomEvent('toggle-cmd-palette'))}
-                  aria-label="Open command palette"
-                  title="Open command palette - Press Ctrl+K"
-                >
-                  <Search size={12} />
-                  <kbd>Ctrl+K</kbd>
-                </button>
+                {/* Tools group */}
+                <div className="gov-navbar-btn-group">
+                  <button
+                    className="gov-navbar-tool-btn"
+                    onClick={() => window.dispatchEvent(new CustomEvent('toggle-cmd-palette'))}
+                    aria-label="Open command palette"
+                    title="Command palette (Ctrl+K)"
+                  >
+                    <Search size={14} />
+                  </button>
 
-                {/* Notification bell */}
-                <NotificationBell />
+                  <div className="gov-navbar-lang">
+                    <select
+                      value={i18n.language}
+                      onChange={(e) => changeLanguage(e.target.value)}
+                      className="gov-navbar-lang-select"
+                      aria-label={t('header.selectLanguage')}
+                    >
+                      {LANGUAGES.map((l) => (
+                        <option key={l.code} value={l.code}>{l.code.toUpperCase()}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-                {/* Emergency toggle */}
-                <button
-                  onClick={toggleEmergency}
-                  className={`gov-navbar-icon-btn ${isEmergency ? 'emergency-active' : ''}`}
-                  aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'}
-                  title={isEmergency ? 'Emergency Mode Active (Alt+E)' : 'Emergency Mode (Alt+E)'}
-                >
-                  <AlertTriangle size={14} className={isEmergency ? 'text-[--danger]' : 'text-[--warning]'} />
-                </button>
+                <div className="gov-navbar-divider" />
+
+                {/* Theme group */}
+                <div className="gov-navbar-btn-group">
+                  <button
+                    onClick={toggleTheme}
+                    className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`}
+                    aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                    title={theme === 'light' ? 'Dark mode' : 'Light mode'}
+                  >
+                    {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+                  </button>
+                  <button
+                    onClick={toggleEmergency}
+                    className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`}
+                    aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'}
+                    title="Emergency mode (Alt+E)"
+                  >
+                    <AlertTriangle size={14} />
+                    {isEmergency && <span className="gov-navbar-emergency-dot" />}
+                  </button>
+                </div>
+
+                <div className="gov-navbar-divider" />
+
+                {/* User group */}
+                <div className="gov-navbar-btn-group">
+                  <NotificationBell />
+                  <button
+                    onClick={() => navigate('/profile')}
+                    className="gov-navbar-user-btn"
+                    aria-label="Profile"
+                    title={currentUser?.displayName || t('nav.profile')}
+                  >
+                    <User size={16} />
+                    <span className="gov-navbar-user-name">{currentUser?.displayName?.split(' ')[0] || t('nav.profile')}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (socket?.connected) socket.disconnect()
+                      authLogout()
+                      navigate('/login')
+                    }}
+                    className="gov-navbar-tool-btn"
+                    aria-label={t('nav.logout')}
+                    title={t('nav.logout')}
+                  >
+                    <LogOut size={14} />
+                  </button>
+                </div>
               </>
             )}
 
-            {/* Language selector */}
-            <div className="gov-navbar-lang">
-              <select
-                value={i18n.language}
-                onChange={(e) => changeLanguage(e.target.value)}
-                className="gov-navbar-lang-select"
-                aria-label={t('header.selectLanguage')}
-              >
-                {LANGUAGES.map((l) => (
-                  <option key={l.code} value={l.code}>{l.code.toUpperCase()}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Theme toggle */}
-            <button
-              onClick={toggleTheme}
-              className="gov-navbar-icon-btn"
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-              title={theme === 'light' ? 'Dark mode' : 'Light mode'}
-            >
-              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-            </button>
-
-            {/* Premium theme toggle */}
-            <button
-              onClick={togglePremiumTheme}
-              className={`gov-navbar-icon-btn ${isPremium ? 'premium-active' : ''}`}
-              aria-label={isPremium ? 'Disable premium neon theme' : 'Enable premium neon theme'}
-              title={isPremium ? 'Premium Theme (Alt+N)' : 'Premium Theme (Alt+N)'}
-            >
-              <Zap size={14} />
-            </button>
-
-            {/* Keyboard hints */}
-            <button
-              onClick={openKeyboardHints}
-              className="gov-navbar-icon-btn"
-              aria-label="Show keyboard shortcuts"
-              title="Keyboard shortcuts (Ctrl+Shift+H)"
-            >
-              <Info size={14} />
-            </button>
-
-            {/* Profile / Logout */}
-            {isAuthenticated && !isAuthPage && (
-              <>
-                <button
-                  onClick={() => navigate('/profile')}
-                  className="gov-navbar-icon-btn gov-navbar-profile-btn"
-                  aria-label="Profile"
-                  title={currentUser?.displayName || t('nav.profile')}
-                >
-                  <User size={16} />
-                  {currentUser?.displayName && (
-                    <span className="gov-navbar-user-name">{currentUser.displayName.split(' ')[0]}</span>
-                  )}
-                </button>
-                <button
-                  onClick={() => {
-                    if (socket?.connected) socket.disconnect()
-                    authLogout()
-                    navigate('/login')
-                  }}
-                  className="gov-navbar-icon-btn"
-                  aria-label={t('nav.logout')}
-                  title={t('nav.logout')}
-                >
-                  <LogOut size={14} />
-                </button>
-              </>
-            )}
-
-            {/* Mobile hamburger */}
+            {/* Always visible: hamburger */}
             <button
               className="gov-navbar-hamburger"
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {menuOpen && isAuthenticated && !isAuthPage && (
+        {/* ─── Mobile Menu ─── */}
+        {menuOpen && showNav && (
           <div className="gov-navbar-mobile">
+            <div className="gov-navbar-mobile-section-label">Navigation</div>
             {filteredLinks.map((link) => (
               <button
                 key={link.path}
@@ -263,7 +236,10 @@ export function NavBar() {
                 <span>{t(link.labelKey, link.fallback)}</span>
               </button>
             ))}
+
             <div className="gov-navbar-mobile-divider" />
+
+            <div className="gov-navbar-mobile-section-label">Settings</div>
             <div className="gov-navbar-mobile-controls">
               <div className="gov-navbar-lang">
                 <select
@@ -278,13 +254,13 @@ export function NavBar() {
                 </select>
               </div>
               <div className="gov-navbar-mobile-theme">
-                <button onClick={toggleTheme} className="gov-navbar-icon-btn" aria-label="Toggle theme">
+                <button onClick={toggleTheme} className="gov-navbar-tool-btn" aria-label="Toggle theme">
                   {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
                 </button>
-                <button onClick={togglePremiumTheme} className={`gov-navbar-icon-btn ${isPremium ? 'premium-active' : ''}`}>
+                <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} title="Premium theme (Alt+N)">
                   <Zap size={14} />
                 </button>
-                <button onClick={toggleEmergency} className={`gov-navbar-icon-btn ${isEmergency ? 'emergency-active' : ''}`}>
+                <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} title="Emergency mode (Alt+E)">
                   <AlertTriangle size={14} />
                 </button>
               </div>

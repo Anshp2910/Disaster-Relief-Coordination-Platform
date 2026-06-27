@@ -64,7 +64,7 @@ function KpiCardsInner({ stats, loading = false }: KpiCardsProps) {
 
   return (
     <motion.div
-      className="kpi-grid mb-lg"
+      className="kpi-grid mb-md"
       initial="hidden"
       animate="visible"
       variants={{
