@@ -155,10 +155,10 @@ export default function EmergencyCommandCenter() {
       const items = data.items || []
       setSosAlerts(items.map((a, i) => ({
         id: i + 1,
-        title: (a.title as string) || (a.location as string) || t('sos.noActiveAlerts'),
-        meta: `${(a.location as string) || 'Unknown'} · Priority ${(a.priority as number) || 1}`,
+        title: (a.message as string) || (a.userName as string) || t('sos.noActiveAlerts'),
+        meta: `${(a.userName as string) || 'Unknown'} · ${a.lat && a.lng ? `${Number(a.lat).toFixed(2)},${Number(a.lng).toFixed(2)}` : 'Location unknown'}`,
         time: timeAgo((a.createdAt as string) || new Date().toISOString()),
-        icon: (a.type as string) || 'Emergency',
+        icon: 'SOS',
       })))
     } catch (err) {
       setErrorSos((err as Error).message)
@@ -172,12 +172,12 @@ export default function EmergencyCommandCenter() {
     try {
       const data = await clientApi.getWeatherCurrent(20.5937, 78.9629) as Record<string, unknown>
       setWeather({
-        temp: Math.round((data.temp as number) || 0),
-        condition: (data.condition as string) || (data.description as string) || 'Unknown',
+        temp: Math.round((data.temperature as number) || 0),
+        condition: (data.conditions as string) || 'Unknown',
         humidity: (data.humidity as number) || 0,
-        wind: (data.windSpeed as string) || `${(data.windSpeed as number) || 0} km/h`,
-        visibility: (data.visibility as string) || `${(data.visibility as number) || 0} km`,
-        icon: (data.icon as string) || 'cloud',
+        wind: `${(data.windSpeed as number) || 0} km/h`,
+        visibility: 'N/A',
+        icon: 'cloud',
       })
     } catch (err) {
       setErrorWeather((err as Error).message)
@@ -191,14 +191,20 @@ export default function EmergencyCommandCenter() {
     try {
       const data = await clientApi.getIncidents({ limit: 10 }) as { items?: Record<string, unknown>[] }
       const items = data.items || []
-      setIncidents(items.map((inc, i) => ({
-        id: i + 1,
-        title: (inc.title as string) || (inc.description as string) || 'Incident',
-        severity: (inc.severity as string) || 'Medium',
-        location: (inc.location as string) || (inc.address as string) || 'Unknown',
-        time: formatIncidentTime((inc.createdAt as string) || new Date().toISOString()),
-        resources: (inc.resourcesCount as number) || (inc.personnel as number) || 0,
-      })))
+      setIncidents(items.map((inc, i) => {
+        const stats = inc.stats as Record<string, unknown> | undefined
+        const zones = inc.zones as Array<Record<string, unknown>> | undefined
+        return {
+          id: i + 1,
+          title: (inc.name as string) || (inc.title as string) || (inc.description as string) || 'Incident',
+          severity: (inc.severity as string) || 'Medium',
+          location: zones && zones.length > 0
+            ? (zones[0].name as string) || (zones[0].location as string) || 'Unknown'
+            : `${Number(inc.centerLat).toFixed(2) || ''},${Number(inc.centerLng).toFixed(2) || ''}` || 'Unknown',
+          time: formatIncidentTime((inc.createdAt as string) || (inc.startDate as string) || new Date().toISOString()),
+          resources: (stats?.resourceCount as number) || (inc.resourcesCount as number) || (inc.personnel as number) || 0,
+        }
+      }))
     } catch (err) {
       setErrorIncidents((err as Error).message)
     } finally {
@@ -230,15 +236,15 @@ export default function EmergencyCommandCenter() {
       const newBlobs: HeatmapBlob[] = []
 
       incItems.forEach((inc) => {
-        const lat = parseFloat(inc.lat as string) || parseFloat(inc.latitude as string) || 0
-        const lon = parseFloat(inc.lng as string) || parseFloat(inc.longitude as string) || 0
+        const lat = parseFloat(inc.centerLat as string) || parseFloat(inc.lat as string) || parseFloat(inc.latitude as string) || 0
+        const lon = parseFloat(inc.centerLng as string) || parseFloat(inc.lng as string) || parseFloat(inc.longitude as string) || 0
         if (!lat || !lon) return
         const p = pointToPercent(lat, lon)
         const sev = (inc.severity as string) || 'medium'
         const col = severityColor(sev)
         const sz = sev.toLowerCase() === 'critical' || sev.toLowerCase() === 'emergency' ? 'lg' as const
                : sev.toLowerCase() === 'high' ? 'md' as const : 'sm' as const
-        const lbl = (inc.title as string) || (inc.location as string) || (inc.locationName as string) || ''
+        const lbl = (inc.name as string) || (inc.title as string) || (inc.locationName as string) || ''
         newMarkers.push({ x: p.x, y: p.y, color: col, size: sz, pulse: sev.toLowerCase() === 'critical' || sev.toLowerCase() === 'emergency', label: lbl })
         newBlobs.push({ x: p.x, y: p.y, size: sev.toLowerCase() === 'critical' ? 180 : sev.toLowerCase() === 'high' ? 140 : 100, color: severityColor(sev) })
       })

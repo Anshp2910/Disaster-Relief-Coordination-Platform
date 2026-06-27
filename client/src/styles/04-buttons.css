@@ -3,7 +3,26 @@
    Inspired by Stripe, Vercel, Linear button systems
    ================================================================ */
 
-button, .btn { font-family: var(--font); }
+/* ── Global Button Reset ── */
+button {
+  font-family: var(--font);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  text-align: inherit;
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn { font-family: var(--font); }
+
 .btn, button.rp-btn, .btnPrimary, .btnSecondary, .btnDanger, .btnGhost, .sos-btn, .pwa-install-btn, .error-btn {
   display: inline-flex;
   align-items: center;
@@ -14,7 +33,6 @@ button, .btn { font-family: var(--font); }
   text-decoration: none;
   line-height: 1.4;
 }
-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btnRow {
   display: flex;
