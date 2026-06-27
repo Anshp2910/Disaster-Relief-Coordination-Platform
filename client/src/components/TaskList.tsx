@@ -20,17 +20,17 @@ interface TaskListProps {
   loading?: boolean
 }
 
-function timeSince(dateStr: string, t: (key: string, opts?: object) => string): string {
+function timeSince(dateStr: string, tr: (key: string, opts?: Record<string, unknown>) => string): string {
   const now = Date.now()
   const then = new Date(dateStr).getTime()
   const diff = now - then
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return t('taskList.justNow')
-  if (mins < 60) return t('taskList.minutesAgo', { count: mins })
+  if (mins < 1) return tr('taskList.justNow')
+  if (mins < 60) return tr('taskList.minutesAgo', { count: mins })
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return t('taskList.hoursAgo', { count: hours })
+  if (hours < 24) return tr('taskList.hoursAgo', { count: hours })
   const days = Math.floor(hours / 24)
-  return t('taskList.daysAgo', { count: days })
+  return tr('taskList.daysAgo', { count: days })
 }
 
 const cardVariants = {

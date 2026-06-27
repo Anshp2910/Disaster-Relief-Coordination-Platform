@@ -50,7 +50,7 @@ interface DataTableProps<T> {
 
 export default function DataTable<T>({
   columns: rawColumns, data, keyExtractor,
-  searchable = true, searchPlaceholder: searchPlaceholderProp,
+  searchable = true, searchPlaceholder: _,
   pageSize = 10, pageSizeOptions = [10, 25, 50, 100],
   sortable: globalSortable = true,
   filterable = true,
@@ -71,7 +71,6 @@ export default function DataTable<T>({
   renderTop,
 }: DataTableProps<T>) {
   const { t } = useTranslation()
-  const searchPlaceholder = searchPlaceholderProp ?? t('dataTable.searchPlaceholder')
   const emptyTitle = emptyTitleProp ?? t('dataTable.noData')
   const bulkActionLabel = bulkActionLabelProp ?? t('dataTable.deleteSelected')
   const [globalSearch, setGlobalSearch] = useState('')

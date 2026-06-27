@@ -1,17 +1,16 @@
 import { AlertCircle, RefreshCw, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 
 interface ErrorStateProps {
   message: string
   onRetry?: () => void
   fullPage?: boolean
+  onHomeClick?: () => void
 }
 
-export default function ErrorState({ message, onRetry, fullPage = false }: ErrorStateProps) {
+export default function ErrorState({ message, onRetry, fullPage = false, onHomeClick }: ErrorStateProps) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
 
   return (
     <motion.div
@@ -74,10 +73,10 @@ export default function ErrorState({ message, onRetry, fullPage = false }: Error
             {t('errorState.retry')}
           </button>
         )}
-        {fullPage && (
+        {fullPage && onHomeClick && (
           <button
             className="btnPrimary btn-sm"
-            onClick={() => navigate('/dashboard')}
+            onClick={onHomeClick}
           >
             <Home size={14} aria-hidden="true" />
             {t('common.goToDashboard') || 'Dashboard'}

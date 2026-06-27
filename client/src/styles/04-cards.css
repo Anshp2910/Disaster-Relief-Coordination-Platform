@@ -161,6 +161,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent-soft), transparent 50%);
   opacity: 0;
   transition: opacity var(--duration-slow) var(--ease-out);
   pointer-events: none;
@@ -170,7 +171,7 @@
   transform: translateY(-3px);
   border-color: var(--accent-soft);
 }
-.kpi-card:hover::after { opacity: 0.3; }
+.kpi-card:hover::after { opacity: 0.25; }
 .kpi-header {
   display: flex;
   align-items: center;
