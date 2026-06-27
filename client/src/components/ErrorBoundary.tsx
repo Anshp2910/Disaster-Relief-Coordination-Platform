@@ -56,25 +56,67 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     const { t } = this.props
     if (this.state.hasError) {
       return (
-        <div className="flex-center" role="alert">
-          <div className="text-center p-2xl rounded-lg shadow">
-            <div className="text-3xl mb-lg">&#9888;</div>
-            <h1 className="text-xl text-gradient m-0 mb-sm">
+        <div className="error-page">
+          <div className="error-card">
+            {/* Brand Logo */}
+            <div className="error-brand-icon">
+              <svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                <rect width="40" height="40" rx="10" fill="var(--danger)" />
+                <path d="M20 8a2 2 0 0 1 2 2v18a2 2 0 0 1-4 0V10a2 2 0 0 1 2-2z" fill="white" />
+                <path d="M12 16a2 2 0 0 1 2 2v10a2 2 0 0 1-4 0V18a2 2 0 0 1 2-2z" fill="white" opacity="0.8" />
+                <path d="M28 12a2 2 0 0 1 2 2v14a2 2 0 0 1-4 0V14a2 2 0 0 1 2-2z" fill="white" opacity="0.9" />
+              </svg>
+            </div>
+
+            <div className="error-icon" aria-hidden="true">⚠️</div>
+
+            <h1 className="error-title">
               {t('common.somethingWentWrong')}
             </h1>
-            <p className="text-sm text-muted m-0 mb-lg">
+
+            <p className="error-description">
               {t('common.unexpectedError')}
             </p>
-            <RippleBtn
-              onClick={() => {
-                this.setState({ hasError: false, error: null })
-                window.location.href = '/dashboard'
-              }}
-              className=""
-              aria-label={t('common.goToDashboard')}
-            >
-              {t('common.goToDashboard')}
-            </RippleBtn>
+
+            <div className="error-actions">
+              <RippleBtn
+                onClick={() => {
+                  this.setState({ hasError: false, error: null })
+                  window.location.href = '/'
+                }}
+                className="error-btn error-btn-primary"
+                aria-label={t('common.goToDashboard')}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                {t('common.goToDashboard')}
+              </RippleBtn>
+
+              <RippleBtn
+                onClick={() => window.location.reload()}
+                className="error-btn error-btn-secondary"
+                aria-label="Refresh page"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="23 4 23 10 17 10" />
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                </svg>
+                Refresh Page
+              </RippleBtn>
+            </div>
+
+            {this.state.error && (
+              <details className="error-details">
+                <summary className="error-details-summary">
+                  Technical Details
+                </summary>
+                <pre className="error-details-pre">
+                  {this.state.error.message}
+                </pre>
+              </details>
+            )}
           </div>
         </div>
       )

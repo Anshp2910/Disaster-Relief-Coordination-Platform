@@ -133,14 +133,23 @@ function Header() {
       </div>
 
       <div className="gov-header-main">
-        <div className="container flex flex-gap-lg">
-          <img src="/images/logo.svg" alt="" className="gov-logo" loading="lazy" />
+        <div className="container gov-header-inner">
+          <div className="gov-logo-wrapper">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="gov-logo" aria-hidden="true">
+              <rect width="40" height="40" rx="10" fill="var(--accent)" />
+              <path d="M20 8a2 2 0 0 1 2 2v18a2 2 0 0 1-4 0V10a2 2 0 0 1 2-2z" fill="white" />
+              <path d="M12 16a2 2 0 0 1 2 2v10a2 2 0 0 1-4 0V18a2 2 0 0 1 2-2z" fill="white" opacity="0.8" />
+              <path d="M28 12a2 2 0 0 1 2 2v14a2 2 0 0 1-4 0V14a2 2 0 0 1 2-2z" fill="white" opacity="0.9" />
+              <circle cx="20" cy="20" r="6" fill="rgba(255,255,255,0.2)" />
+              <circle cx="20" cy="20" r="3" fill="white" />
+            </svg>
+          </div>
           <div className="gov-title-group">
             <div className="gov-app-title">{t('appTitle')}</div>
             <div className="gov-app-subtitle">{t('appSubtitle')}</div>
           </div>
           <div className="flex-1" />
-              {isAuthenticated && !isAuthPage && (
+          {isAuthenticated && !isAuthPage && (
             <nav aria-label="Main navigation" className="gov-header-actions">
               <button
                 className="cmd-hint"
