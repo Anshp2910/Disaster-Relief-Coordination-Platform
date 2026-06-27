@@ -17,7 +17,9 @@ function Layout({ children }: LayoutProps) {
   const { t } = useTranslation()
   const location = useLocation()
   const { canInstall, install } = usePwaInstall()
-  const [dismissed, setDismissed] = useState(false)
+  const [dismissed, setDismissed] = useState(() => {
+    try { return localStorage.getItem('pwa-install-dismissed') === 'true' } catch { return false }
+  })
   const { isAdmin, isAuthenticated } = useAuth()
 
   return (
@@ -63,7 +65,7 @@ function Layout({ children }: LayoutProps) {
         >
           <span className="pwa-install-text">{t('common.installApp')}</span>
           <RippleBtn onClick={install} className="pwa-install-btn">{t('common.install')}</RippleBtn>
-          <button onClick={() => setDismissed(true)} className="pwa-dismiss-btn" aria-label="Dismiss install banner">&times;</button>
+          <button onClick={() => { setDismissed(true); try { localStorage.setItem('pwa-install-dismissed', 'true') } catch { /* noop */ } }} className="pwa-dismiss-btn" aria-label="Dismiss install banner">&times;</button>
         </motion.div>
       )}
     </div>

@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react'
 
 const API_BASE: string = import.meta.env.VITE_API_BASE_URL || ''
+const RELOAD_COOLDOWN = 300000
+
+let lastReload = 0
 
 export function useVersionCheck(): void {
   const versionRef = useRef<string | null>(null)
@@ -24,7 +27,11 @@ export function useVersionCheck(): void {
         }
 
         if (versionRef.current !== serverVer) {
-          window.location.reload()
+          const now = Date.now()
+          if (now - lastReload > RELOAD_COOLDOWN) {
+            lastReload = now
+            window.location.reload()
+          }
         }
       } catch (e) {
         console.warn('Version check failed:', (e as Error).message)

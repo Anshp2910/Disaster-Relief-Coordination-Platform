@@ -1,19 +1,22 @@
-const CACHE_VERSION = 'v8'
+const CACHE_VERSION = 'v9'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
 const MAX_DYNAMIC_CACHE = 50
 const MAX_API_CACHE = 30
+const FETCH_TIMEOUT = 10000
 
-self.addEventListener('install', () => {})
+self.addEventListener('install', (event) => {
+  self.skipWaiting()
+})
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CLEAR_CACHE') {
     caches.keys().then((keys) => {
       return Promise.all(keys.map((k) => caches.delete(k)))
     }).then(() => {
-      clients.matchAll({ type: 'window' }).then((clients) => {
-        clients.forEach((client) => client.postMessage({ type: 'CACHE_CLEARED' }))
+      clients.matchAll({ type: 'window' }).then((windowClients) => {
+        windowClients.forEach((client) => client.postMessage({ type: 'CACHE_CLEARED' }))
       })
     })
   }
@@ -27,7 +30,7 @@ self.addEventListener('activate', (event) => {
           .filter((k) => k !== STATIC_CACHE && k !== DYNAMIC_CACHE && k !== API_CACHE)
           .map((k) => caches.delete(k))
       )
-    )
+    ).then(() => self.clients.claim())
   )
 })
 
@@ -52,8 +55,21 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  event.respondWith(networkFirstStrategy(request, DYNAMIC_CACHE))
+  event.respondWith(
+    networkFirstStrategy(request, DYNAMIC_CACHE).then((response) => {
+      return response || caches.match('/index.html') || new Response('Offline', {
+        status: 503,
+        headers: { 'Content-Type': 'text/html' },
+      })
+    })
+  )
 })
+
+function fetchWithTimeout(request, timeout) {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeout)
+  return fetch(request, { signal: controller.signal }).finally(() => clearTimeout(timeoutId))
+}
 
 function limitCache(cacheName, maxItems) {
   caches.open(cacheName).then((cache) => {
@@ -66,7 +82,7 @@ function limitCache(cacheName, maxItems) {
 }
 
 function networkFirstStrategy(request, cacheName, maxItems) {
-  return fetch(request)
+  return fetchWithTimeout(request, FETCH_TIMEOUT)
     .then((response) => {
       if (response && response.status === 200) {
         const clone = response.clone()
@@ -83,13 +99,15 @@ function networkFirstStrategy(request, cacheName, maxItems) {
 function cacheFirstStrategy(request, cacheName) {
   return caches.match(request).then((cached) => {
     if (cached) return cached
-    return fetch(request).then((response) => {
-      if (response && response.status === 200) {
-        const clone = response.clone()
-        caches.open(cacheName).then((cache) => cache.put(request, clone))
-      }
-      return response
-    })
+    return fetchWithTimeout(request, FETCH_TIMEOUT)
+      .then((response) => {
+        if (response && response.status === 200) {
+          const clone = response.clone()
+          caches.open(cacheName).then((cache) => cache.put(request, clone))
+        }
+        return response
+      })
+      .catch(() => new Response('Offline', { status: 503, statusText: 'Service Unavailable' }))
   })
 }
 
@@ -109,8 +127,8 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
-      for (const client of clients) {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      for (const client of windowClients) {
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           client.focus()
           client.navigate(event.notification.data)
