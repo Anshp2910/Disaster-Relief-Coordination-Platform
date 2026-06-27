@@ -111,6 +111,24 @@
 .notification-action-btn:hover { background: var(--accent-soft); }
 .notification-action-danger { color: var(--danger); }
 .notification-action-danger:hover { background: var(--danger-soft); }
+.notification-bell-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-out);
+  position: relative;
+  flex-shrink: 0;
+}
+.notification-bell-btn:hover { background: var(--accent-soft); color: var(--accent); }
+.notification-bell-btn.notif-bell-urgent { color: var(--danger); animation: notif-bell-shake 0.5s var(--ease-out); }
+@keyframes notif-bell-shake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(8deg); } 50% { transform: rotate(-8deg); } 75% { transform: rotate(4deg); } }
 .notification-empty { padding: var(--space-xl); text-align: center; color: var(--text-muted); font-size: var(--text-sm); }
 .notification-item {
   display: flex;
@@ -165,3 +183,19 @@
 }
 .pwa-install-banner span { font-size: var(--text-sm); font-weight: var(--font-weight-medium); }
 .pwa-install-banner button { flex-shrink: 0; }
+.pwa-dismiss-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.pwa-dismiss-btn:hover { background: var(--accent-soft); color: var(--accent); }
