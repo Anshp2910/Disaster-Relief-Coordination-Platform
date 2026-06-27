@@ -39,15 +39,6 @@
   padding-top: var(--space-lg);
 }
 
-/* ── Page Section ── */
-.section {
-  padding: var(--space-xl) 0;
-}
-
-.section-sm {
-  padding: var(--space-md) 0;
-}
-
 /* ── Page Section Separators ── */
 .page-section {
   padding: var(--space-lg) 0;
@@ -107,7 +98,3 @@
   gap: var(--space-lg);
 }
 
-/* ── Flex Helpers ── */
-.flex-row { display: flex; align-items: center; }
-
-/* ── Animation ── */

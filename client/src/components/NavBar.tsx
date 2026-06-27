@@ -47,6 +47,17 @@ const NAV_LINKS: NavLink[] = [
   { path: '/admin', labelKey: 'nav.admin', fallback: 'Admin', icon: <Shield size={16} />, admin: true },
 ]
 
+/* Hover-based prefetching: start loading JS chunks before click */
+const PAGE_PREFETCHERS: Record<string, () => Promise<unknown>> = {
+  '/dashboard': () => import('../pages/Dashboard'),
+  '/map': () => import('../pages/MapOverview'),
+  '/resources': () => import('../pages/Resources'),
+  '/zones': () => import('../pages/ZoneHeatMap'),
+  '/incidents': () => import('../pages/Incidents'),
+  '/requests/new': () => import('../pages/CreateRequest'),
+  '/admin': () => import('../pages/AdminDashboard'),
+}
+
 export function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
@@ -116,10 +127,10 @@ export function NavBar() {
           {/* ─── Desktop Nav Links ─── */}
           <div className="gov-navbar-links">
             {showNav && filteredLinks.map((link) => (
-              <button
-                key={link.path}
+              <button                key={link.path}
                 onClick={() => navigate(link.path)}
-
+                onMouseEnter={() => PAGE_PREFETCHERS[link.path]?.()}
+                onTouchStart={() => PAGE_PREFETCHERS[link.path]?.()}
                 className={`gov-navbar-link ${isActive(link.path) ? 'active' : ''}`}
                 aria-current={isActive(link.path) ? 'page' : undefined}
               >
@@ -238,6 +249,8 @@ export function NavBar() {
               <button
                 key={link.path}
                 onClick={() => navigate(link.path)}
+                onMouseEnter={() => PAGE_PREFETCHERS[link.path]?.()}
+                onTouchStart={() => PAGE_PREFETCHERS[link.path]?.()}
                 className={`gov-navbar-mobile-link ${isActive(link.path) ? 'active' : ''}`}
               >
                 {link.icon}

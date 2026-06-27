@@ -54,11 +54,6 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  if (request.mode === 'navigate') {
-    event.respondWith(networkFirstStrategy(request, STATIC_CACHE))
-    return
-  }
-
   event.respondWith(networkFirstStrategy(request, DYNAMIC_CACHE))
 })
 

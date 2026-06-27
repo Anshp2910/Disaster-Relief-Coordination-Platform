@@ -152,24 +152,3 @@ hr {
   box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-md);
 }
 
-.professional-shadow {
-  box-shadow: var(--shadow-md);
-}
-.professional-shadow-lg {
-  box-shadow: var(--shadow-lg);
-}
-.professional-shadow-xl {
-  box-shadow: var(--shadow-xl);
-}
-
-.professional-card-static {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
-}
-
-/* ── Enhanced Skip Link ── */
-.skip-link {
-  border-radius: 0 0 var(--radius-sm) 0;
-}
