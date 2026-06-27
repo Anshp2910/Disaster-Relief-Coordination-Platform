@@ -1,13 +1,14 @@
 import { RippleBtn } from '../components/ui'
-import { Component, type ReactNode, type ErrorInfo, type PropsWithChildren } from 'react'
-import { withTranslation, type WithTranslation } from 'react-i18next'
+import { Component, type ReactNode, type ErrorInfo } from 'react'
 
 interface ErrorBoundaryState {
   hasError: boolean
   error: Error | null
 }
 
-type ErrorBoundaryProps = PropsWithChildren<WithTranslation>
+interface ErrorBoundaryProps {
+  children: ReactNode
+}
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
@@ -53,12 +54,10 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   render(): ReactNode {
-    const { t } = this.props
     if (this.state.hasError) {
       return (
         <div className="error-page">
           <div className="error-card">
-            {/* Brand Logo */}
             <div className="error-brand-icon">
               <svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                 <rect width="40" height="40" rx="10" fill="var(--danger)" />
@@ -70,13 +69,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
             <div className="error-icon" aria-hidden="true">⚠️</div>
 
-            <h1 className="error-title">
-              {t('common.somethingWentWrong')}
-            </h1>
+            <h1 className="error-title">Something went wrong</h1>
 
-            <p className="error-description">
-              {t('common.unexpectedError')}
-            </p>
+            <p className="error-description">An unexpected error occurred. Please try again.</p>
 
             <div className="error-actions">
               <RippleBtn
@@ -85,13 +80,13 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                   window.location.href = '/'
                 }}
                 className="error-btn error-btn-primary"
-                aria-label={t('common.goToDashboard')}
+                aria-label="Go to home"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                   <polyline points="9 22 9 12 15 12 15 22" />
                 </svg>
-                {t('common.goToDashboard')}
+                Go to home
               </RippleBtn>
 
               <RippleBtn
@@ -126,4 +121,4 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 }
 
-export default withTranslation()(ErrorBoundary)
+export default ErrorBoundary
