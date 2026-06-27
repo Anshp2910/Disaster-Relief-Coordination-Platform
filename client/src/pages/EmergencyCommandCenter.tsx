@@ -156,7 +156,7 @@ export default function EmergencyCommandCenter() {
       setSosAlerts(items.map((a, i) => ({
         id: i + 1,
         title: (a.message as string) || (a.userName as string) || t('sos.noActiveAlerts'),
-        meta: `${(a.userName as string) || 'Unknown'} · ${a.lat && a.lng ? `${Number(a.lat).toFixed(2)},${Number(a.lng).toFixed(2)}` : 'Location unknown'}`,
+        meta: `${(a.userName as string) || 'Unknown'} · ${a.lat != null && a.lng != null ? `${Number(a.lat).toFixed(2)},${Number(a.lng).toFixed(2)}` : 'Location unknown'}`,
         time: timeAgo((a.createdAt as string) || new Date().toISOString()),
         icon: 'SOS',
       })))
@@ -200,7 +200,9 @@ export default function EmergencyCommandCenter() {
           severity: (inc.severity as string) || 'Medium',
           location: zones && zones.length > 0
             ? (zones[0].name as string) || (zones[0].location as string) || 'Unknown'
-            : `${Number(inc.centerLat).toFixed(2) || ''},${Number(inc.centerLng).toFixed(2) || ''}` || 'Unknown',
+            : inc.centerLat != null && inc.centerLng != null
+              ? `${Number(inc.centerLat).toFixed(2)},${Number(inc.centerLng).toFixed(2)}`
+              : 'Unknown',
           time: formatIncidentTime((inc.createdAt as string) || (inc.startDate as string) || new Date().toISOString()),
           resources: (stats?.resourceCount as number) || (inc.resourcesCount as number) || (inc.personnel as number) || 0,
         }
