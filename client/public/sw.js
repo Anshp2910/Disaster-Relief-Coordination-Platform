@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v10'
+const CACHE_VERSION = 'v11'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
@@ -6,9 +6,7 @@ const MAX_DYNAMIC_CACHE = 50
 const MAX_API_CACHE = 30
 const FETCH_TIMEOUT = 10000
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting()
-})
+self.addEventListener('install', () => {})
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CLEAR_CACHE') {
@@ -30,7 +28,7 @@ self.addEventListener('activate', (event) => {
           .filter((k) => k !== STATIC_CACHE && k !== DYNAMIC_CACHE && k !== API_CACHE)
           .map((k) => caches.delete(k))
       )
-    ).then(() => self.clients.claim())
+    )
   )
 })
 
@@ -40,7 +38,6 @@ self.addEventListener('fetch', (event) => {
 
   if (url.origin !== self.location.origin) return
 
-  // Never intercept HTML document requests — let the browser handle them natively
   if (request.mode === 'navigate') return
 
   if (url.pathname.startsWith('/api/')) {
