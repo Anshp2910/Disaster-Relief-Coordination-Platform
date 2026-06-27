@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
+
+const routerFuture = { v7_startTransition: true, v7_relativeSplatPath: true }
 import i18n from '../i18n'
 import { NavBar } from '../components/NavBar'
 import Layout from '../components/Layout'
@@ -73,7 +75,7 @@ vi.mock('framer-motion', () => ({
 function renderWithProviders(ui: React.ReactElement) {
   return render(
     <I18nextProvider i18n={i18n}>
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/dashboard']} future={routerFuture}>
         {ui}
       </MemoryRouter>
     </I18nextProvider>

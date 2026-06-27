@@ -3,6 +3,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
+
+const routerFuture = { v7_startTransition: true, v7_relativeSplatPath: true }
 import i18n from '../i18n'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
@@ -54,7 +56,7 @@ vi.mock('framer-motion', () => ({
 function renderWithProviders(ui: React.ReactElement) {
   return render(
     <I18nextProvider i18n={i18n}>
-      <MemoryRouter>
+      <MemoryRouter future={routerFuture}>
         {ui}
       </MemoryRouter>
     </I18nextProvider>

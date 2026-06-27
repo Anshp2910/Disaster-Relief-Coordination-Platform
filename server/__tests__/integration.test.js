@@ -56,10 +56,10 @@ afterAll(async () => {
 
 describe('Health & Version', () => {
   it('GET /health returns ok', async () => {
-    const res = await fetch('http://localhost:5001/health')
-    // This test relies on the server being started separately
-    // or we use supertest (which is available)
-    expect(true).toBe(true)
+    const { default: request } = await import('supertest')
+    const res = await request(app).get('/health')
+    expect(res.status).toBe(200)
+    expect(res.body.ok).toBe(true)
   })
 })
 
