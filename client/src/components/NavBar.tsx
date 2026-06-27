@@ -100,7 +100,8 @@ const location = useLocation()
             onClick={() => { navigate('/dashboard') }}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter') { navigate('/dashboard') } }}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/dashboard') } }}
+            aria-label="Go to dashboard"
           >
             <svg width="32" height="32" viewBox="0 0 40 40" fill="none" className="gov-navbar-logo" aria-hidden="true">
               <rect width="40" height="40" rx="10" fill="var(--accent)" />
@@ -221,6 +222,8 @@ const location = useLocation()
             <button
               className="gov-navbar-hamburger"
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -230,13 +233,14 @@ const location = useLocation()
 
         {/* ─── Mobile Menu ─── */}
         {menuOpen && showNav && (
-          <div className="gov-navbar-mobile">
+          <div className="gov-navbar-mobile" id="mobile-menu" role="region" aria-label="Mobile navigation">
             <div className="gov-navbar-mobile-section-label">{t('nav.navigation')}</div>
             {filteredLinks.map((link) => (
               <button
                 key={link.path}
                 onClick={() => { navigate(link.path) }}
                 className={`gov-navbar-mobile-link ${isActive(link.path) ? 'active' : ''}`}
+                aria-current={isActive(link.path) ? 'page' : undefined}
               >
                 {link.icon}
                 <span>{t(link.labelKey, link.fallback)}</span>

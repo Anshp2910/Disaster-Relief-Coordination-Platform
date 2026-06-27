@@ -18,7 +18,7 @@ jobs:
       - name: Install & Build
         working-directory: ./client
         run: |
-          npm ci
+          npm install
           npm run build
       
       - name: Deploy to Render
