@@ -171,36 +171,45 @@ authRouter.post('/forgot-password', async (req, res) => {
       return res.status(400).json({ error: 'Invalid email format' })
     }
 
-    const resetToken = crypto.randomBytes(32).toString('hex')
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
-    const resetUrl = `${clientUrl}/#/reset-password?token=${resetToken}`
 
-    let saveSucceeded = false
+    let resetUrl = null
+    let sent = false
+
     try {
       const user = await User.findOne({ email: email.toLowerCase().trim() })
-      if (!user) return res.json({ ok: true })
-
-      user.resetPasswordToken = resetToken
-      user.resetPasswordExpires = new Date(Date.now() + 3600000)
-      await user.save()
-      saveSucceeded = true
-      logger.info('password-reset-token-generated', { email })
+      if (user) {
+        userExists = true
+        const resetToken = crypto.randomBytes(32).toString('hex')
+        resetUrl = `${clientUrl}/#/reset-password?token=${resetToken}`
+        user.resetPasswordToken = resetToken
+        user.resetPasswordExpires = new Date(Date.now() + 3600000)
+        await user.save()
+        logger.info('password-reset-token-generated', { email })
+      }
     } catch (dbErr) {
       logger.warn('[auth] MongoDB unavailable — using in-memory token store', { email, message: dbErr.message })
+      const resetToken = crypto.randomBytes(32).toString('hex')
+      resetUrl = `${clientUrl}/#/reset-password?token=${resetToken}`
       resetTokens.set(resetToken, { email: email.toLowerCase().trim(), expiresAt: Date.now() + 3600000 })
     }
 
-    const sent = await sendPasswordResetEmail(email, resetUrl)
-    if (!sent) {
-      logger.info('password-reset-console', { email, resetUrl })
+    if (resetUrl) {
+      sent = await sendPasswordResetEmail(email, resetUrl)
+      if (!sent) {
+        logger.info('password-reset-console', { email, resetUrl })
+      }
     }
 
-    const payload = { ok: true, emailSent: !!sent }
-    if (typeof sent === 'string') {
-      payload.emailPreviewUrl = sent
-    }
-    if (!sent) {
-      payload.resetUrl = resetUrl
+    const payload = { ok: true }
+    if (resetUrl) {
+      payload.emailSent = !!sent
+      if (typeof sent === 'string') {
+        payload.emailPreviewUrl = sent
+      }
+      if (!sent) {
+        payload.resetUrl = resetUrl
+      }
     }
     return res.json(payload)
   } catch (err) {
