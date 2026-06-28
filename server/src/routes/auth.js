@@ -247,30 +247,34 @@ authRouter.post('/reset-password', async (req, res) => {
   }
 })
 
-authRouter.get('/google', passport.authenticate('google', { session: false }))
-authRouter.get('/github', passport.authenticate('github', { session: false }))
+// Only register OAuth routes when the corresponding provider is configured
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  authRouter.get('/google', passport.authenticate('google', { session: false }))
+  authRouter.get('/google/callback', (req, res, next) => {
+    passport.authenticate('google', { session: false }, (err, user) => {
+      if (err || !user) {
+        return res.redirect(`${CLIENT_URL}/#/login?error=google-auth-failed`)
+      }
+      const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
+      const { csrfToken } = generateCsrfToken(user._id)
+      res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
+    })(req, res, next)
+  })
+}
 
-authRouter.get('/google/callback', (req, res, next) => {
-  passport.authenticate('google', { session: false }, (err, user) => {
-    if (err || !user) {
-      return res.redirect(`${CLIENT_URL}/#/login?error=google-auth-failed`)
-    }
-    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
-    const { csrfToken } = generateCsrfToken(user._id)
-    res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
-  })(req, res, next)
-})
-
-authRouter.get('/github/callback', (req, res, next) => {
-  passport.authenticate('github', { session: false }, (err, user) => {
-    if (err || !user) {
-      return res.redirect(`${CLIENT_URL}/#/login?error=github-auth-failed`)
-    }
-    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
-    const { csrfToken } = generateCsrfToken(user._id)
-    res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
-  })(req, res, next)
-})
+if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+  authRouter.get('/github', passport.authenticate('github', { session: false }))
+  authRouter.get('/github/callback', (req, res, next) => {
+    passport.authenticate('github', { session: false }, (err, user) => {
+      if (err || !user) {
+        return res.redirect(`${CLIENT_URL}/#/login?error=github-auth-failed`)
+      }
+      const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
+      const { csrfToken } = generateCsrfToken(user._id)
+      res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
+    })(req, res, next)
+  })
+}
 
 authRouter.post('/refresh', async (req, res) => {
   try {
