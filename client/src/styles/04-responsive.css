@@ -16,7 +16,7 @@
 
 @media (max-width: 900px) {
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4-responsive { grid-template-columns: repeat(2, 1fr); }
   .notification-dropdown { width: 320px; right: -40px; }
   .bento-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .filter-group { flex-wrap: wrap; }
@@ -38,7 +38,7 @@
   .gov-navbar-bottom-inner { flex-direction: column; gap: var(--space-xs); text-align: center; padding: var(--space-md) var(--space-md); }
 
   .bento-grid { grid-template-columns: 1fr; }
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4-responsive { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); }
   .admin-charts-grid { grid-template-columns: 1fr; }
   .notification-dropdown { width: 300px; right: -60px; }
@@ -48,8 +48,8 @@
 
   /* Better touch targets on mobile */
   .nav-chip { min-width: 70px; padding: var(--space-sm) var(--space-md); }
-  .filter-pill { padding: 8px 16px; }
-  button, .btn, .btnPrimary, .btnSecondary, .btnDanger { min-height: 44px; }
+  .btn-filter { padding: 8px 16px; }
+  button, .btn { min-height: 44px; }
 }
 
 @media (max-width: 480px) {

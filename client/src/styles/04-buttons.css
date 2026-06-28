@@ -315,6 +315,11 @@ button.btn,
   outline-offset: 2px;
 }
 
+@keyframes pulse-soft {
+  0%, 100% { box-shadow: var(--shadow-danger); }
+  50% { box-shadow: var(--shadow-danger), 0 0 20px rgba(239, 68, 68, 0.3); }
+}
+
 .sos-btn {
   background: linear-gradient(135deg, var(--red-500), var(--red-600));
   color: var(--text-on-accent);
