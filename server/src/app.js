@@ -133,6 +133,15 @@ export function createApp() {
     res.status(204).end()
   })
 
+  const forgotPasswordLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 3,
+    message: { error: 'Too many password reset requests, please try again later' },
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+
+  app.use('/api/auth/forgot-password', forgotPasswordLimiter)
   app.use('/api/auth', authLimiter, authRouter)
   const writeLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 30, message: 'Too many write requests, please slow down' })
   const requestsLimiter = rateLimitUser({ windowMs: 60 * 1000, max: 60, message: 'Too many requests, please slow down' })

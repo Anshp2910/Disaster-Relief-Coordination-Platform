@@ -43,4 +43,22 @@ describe('API Routes', () => {
     const res = await request(app).get('/api/unknown')
     expect(res.status).toBe(404)
   })
+
+  it('POST /api/auth/forgot-password validates email', async () => {
+    const res = await request(app)
+      .post('/api/auth/forgot-password')
+      .send({ email: 'not-an-email' })
+      .set('Content-Type', 'application/json')
+    expect(res.status).toBe(400)
+    expect(res.body.error).toMatch(/invalid email/i)
+  })
+
+  it('POST /api/auth/reset-password validates required fields', async () => {
+    const res = await request(app)
+      .post('/api/auth/reset-password')
+      .send({})
+      .set('Content-Type', 'application/json')
+    expect(res.status).toBe(400)
+    expect(res.body.error).toBeDefined()
+  })
 })

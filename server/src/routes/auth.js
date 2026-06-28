@@ -162,8 +162,11 @@ authRouter.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body || {}
     if (!email) return res.status(400).json({ error: 'Email required' })
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' })
+    }
 
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email: email.toLowerCase().trim() })
     if (!user) return res.json({ ok: true })
 
     const resetToken = crypto.randomBytes(32).toString('hex')

@@ -55,11 +55,11 @@ function App() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        {/* Standalone routes (no Layout — full-screen pages) */}
+        {/* Auth routes with Layout (header + footer) */}
         <Route path="/login" element={<Layout><Login /></Layout>} />
         <Route path="/register" element={<Layout><Register /></Layout>} />
         <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<Layout><ResetPassword /></Layout>} />
         {/* Standard routes with Layout (header + footer) */}
         <Route path="/*" element={
           <Layout>
