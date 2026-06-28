@@ -85,7 +85,7 @@ export async function sendEmail({ to, subject, html, text }) {
     })
     const previewUrl = nodemailer.getTestMessageUrl(info)
     logger.info('email-sent', { to, subject, previewUrl })
-    return previewUrl ? (previewUrl as string) : true
+    return previewUrl ? String(previewUrl) : true
   } catch (err) {
     logger.error('email-send-failed', { to, subject, message: err.message })
     return false
