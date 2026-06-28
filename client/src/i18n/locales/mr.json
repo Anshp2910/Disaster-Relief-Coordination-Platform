@@ -87,7 +87,9 @@
     "signUpWithGitHub": "Sign up with GitHub",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "rateLimited": "Too many requests. Please wait a moment and try again."
+    "rateLimited": "Too many requests. Please wait a moment and try again.",
+    "directResetLink": "🔗 Direct reset link (email not sent):",
+    "previewUrl": "📬 View email:"
   },
   "dashboard": {
     "title": "आपत्ती निवारण विनंत्या",
