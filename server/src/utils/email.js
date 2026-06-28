@@ -46,21 +46,38 @@ export async function sendEmail({ to, subject, html, text }) {
   }
 
   try {
-    const from = process.env.RESEND_FROM || process.env.RESEND_EMAIL || 'noreply@resend.dev'
-    const { data, error } = await client.emails.send({
-      from,
-      to: [to],
-      subject,
-      html,
-      text: text || html.replace(/<[^>]+>/g, ''),
-    })
+    const sendAttempt = async (from) => {
+      return client.emails.send({
+        from,
+        to: [to],
+        subject,
+        html,
+        text: text || html.replace(/<[^>]+>/g, ''),
+      })
+    }
 
-    if (error) {
-      logger.error('email-send-failed', { to, subject, message: error.message })
+    const preferredFrom = process.env.RESEND_FROM || process.env.RESEND_EMAIL || ''
+    const defaultFrom = 'noreply@resend.dev'
+
+    let result = await sendAttempt(preferredFrom || defaultFrom)
+
+    if (result.error && preferredFrom) {
+      logger.warn('email-send-failed-with-custom-from', {
+        to,
+        subject,
+        from: preferredFrom,
+        message: result.error.message,
+        hint: 'Your custom sender domain may not be verified in Resend. Retrying with default sender.',
+      })
+      result = await sendAttempt(defaultFrom)
+    }
+
+    if (result.error) {
+      logger.error('email-send-failed', { to, subject, message: result.error.message })
       return false
     }
 
-    logger.info('email-sent', { to, subject, id: data?.id })
+    logger.info('email-sent', { to, subject, id: result.data?.id })
     return true
   } catch (err) {
     logger.error('email-send-failed', { to, subject, message: err.message })
