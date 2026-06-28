@@ -99,7 +99,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  line-height: var(--leading-none);
   transition: color var(--duration-fast) var(--ease-out);
   opacity: 0.6;
 }
@@ -186,7 +186,7 @@
 .notification-time { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-3xs); }
 .notification-dot { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--accent); flex-shrink: 0; margin-top: var(--space-2xs); }
 .notification-bell { position: relative; display: inline-flex; }
-.notification-badge { position: absolute; top: -4px; right: -6px; min-width: 16px; height: 16px; border-radius: var(--radius-full); background: var(--accent); color: var(--text-on-accent); font-size: var(--text-3xs); font-weight: var(--font-weight-bold); display: flex; align-items: center; justify-content: center; padding: 0 var(--space-3xs); line-height: 1; }
+.notification-badge { position: absolute; top: -4px; right: -6px; min-width: 16px; height: 16px; border-radius: var(--radius-full); background: var(--accent); color: var(--text-on-accent); font-size: var(--text-3xs); font-weight: var(--font-weight-bold); display: flex; align-items: center; justify-content: center; padding: 0 var(--space-3xs); line-height: var(--leading-none); }
 .notification-badge-urgent { background: var(--danger); animation: notif-bell-shake 0.5s var(--ease-out); }
 
 .notif-group-header {

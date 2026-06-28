@@ -44,7 +44,7 @@ button.btn,
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
   text-decoration: none;
-  line-height: 1.4;
+  line-height: var(--leading-snug);
   font-family: var(--font);
   font-weight: var(--font-weight-semibold);
   border-radius: var(--radius-md);

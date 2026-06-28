@@ -109,7 +109,7 @@
   font-size: var(--text-3xl);
   font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--tracking-tight);
-  line-height: 1.1;
+  line-height: var(--leading-tight);
   color: var(--text);
 }
 .bento-kpi-label {
@@ -176,7 +176,7 @@
   font-size: var(--text-2xl);
   font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--tracking-tight);
-  line-height: 1.1;
+  line-height: var(--leading-tight);
 }
 .kpi-change {
   font-size: var(--text-xs);
@@ -253,7 +253,7 @@
   font-size: var(--text-3xl);
   font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--tracking-tight);
-  line-height: 1.1;
+  line-height: var(--leading-tight);
 }
 .stat-label {
   font-size: var(--text-sm);
@@ -292,7 +292,7 @@
   font-size: var(--text-2xl);
   font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--tracking-tight);
-  line-height: 1.2;
+  line-height: var(--leading-tight);
   color: var(--text);
   margin: 0;
 }

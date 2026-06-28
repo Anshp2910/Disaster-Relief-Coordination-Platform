@@ -435,7 +435,7 @@
   font-size: var(--text-sm);
   color: var(--text-secondary);
   margin: 0 0 var(--space-lg);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
 }
 .error-actions {
   display: flex;
@@ -446,8 +446,8 @@
 
 /* ── Error Boundary Internal Styles ── */
 .error-icon {
-  font-size: 40px;
-  line-height: 1;
+  font-size: var(--text-4xl);
+  line-height: var(--leading-none);
   margin-bottom: var(--space-md);
 }
 .error-btn {
@@ -462,7 +462,7 @@
   border: none;
   transition: all var(--duration-normal) var(--ease-out);
   text-decoration: none;
-  line-height: 1.4;
+  line-height: var(--leading-snug);
   min-height: 40px;
 }
 .error-btn-primary {

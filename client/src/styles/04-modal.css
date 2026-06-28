@@ -32,7 +32,7 @@
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-sm);
 }
-.modal-icon { font-size: 40px; margin-bottom: var(--space-md); line-height: var(--leading-none); }
+.modal-icon { font-size: var(--text-4xl); margin-bottom: var(--space-md); line-height: var(--leading-none); }
 .modal-title { font-size: var(--text-lg); font-weight: var(--font-weight-bold); color: var(--text); margin: 0 0 var(--space-xs); }
 .modal-desc { font-size: var(--text-sm); color: var(--text-secondary);   line-height: var(--leading-normal); margin: 0 0 var(--space-md); }
 .modal-actions {

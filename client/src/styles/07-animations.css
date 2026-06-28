@@ -60,13 +60,13 @@
   min-height: 120px;
 }
 .empty-state--compact .empty-state-icon {
-  font-size: 32px;
+  font-size: var(--text-3xl);
   margin-bottom: var(--space-sm);
 }
 
 .empty-state-icon {
-  font-size: 48px;
-  line-height: 1;
+  font-size: var(--text-5xl);
+  line-height: var(--leading-none);
   margin-bottom: var(--space-lg);
   filter: grayscale(0.2);
   transition: filter var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
@@ -87,7 +87,7 @@
   color: var(--text-muted);
   max-width: 400px;
   margin: 0 auto var(--space-lg);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
 }
 
 /* ── Map Marker Pulse ── */

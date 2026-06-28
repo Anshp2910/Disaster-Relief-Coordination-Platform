@@ -92,14 +92,14 @@
   font-size: clamp(2rem, 3.5vw, 2.8rem);
   font-weight: var(--font-weight-extrabold);
   letter-spacing: var(--tracking-tighter);
-  line-height: 1.15;
+  line-height: var(--leading-tight);
   color: var(--text);
   margin-bottom: var(--space-md);
 }
 .auth-hero-sub {
   font-size: var(--text-base);
   color: var(--text-tertiary);
-  line-height: 1.7;
+  line-height: var(--leading-relaxed);
   margin-bottom: var(--space-2xl);
   max-width: 440px;
 }
@@ -466,7 +466,7 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
 .auth-subtitle {
   font-size: var(--text-sm);
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
   margin-bottom: var(--space-md);
 }
 .auth-link {
