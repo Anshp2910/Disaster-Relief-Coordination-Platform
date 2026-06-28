@@ -212,7 +212,7 @@ export default function RequestForm({
   }, [initialId, loading])
 
   useEffect(() => {
-    if (loading || mapInstance.current || !mapRef.current) return
+    if (loading || currentStep !== 1 || mapInstance.current || !mapRef.current) return
 
     const map = initLeafletMap(mapRef.current, { onClick: (e: L.LeafletMouseEvent) => placeMarker(e.latlng.lat, e.latlng.lng) })
     mapInstance.current = map
@@ -234,7 +234,7 @@ export default function RequestForm({
       mapInstance.current = null
       markerRef.current = null
     }
-  }, [loading, placeMarker])
+  }, [loading, currentStep, placeMarker])
 
   function useMyLocation() {
     if (!navigator.geolocation) {
@@ -488,8 +488,7 @@ export default function RequestForm({
                     onClick={onSearch}
                     disabled={searching}
                     aria-label={searching ? t('createRequest.searching') : t('createRequest.search')}
-                    className="btn-ghost btn-sm"
-                    style={{ position: 'absolute', right: 4, top: 4 }}
+                    className="btn-ghost btn-sm location-search-btn"
                   >
                     {searching ? t('createRequest.searching') : t('createRequest.search')}
                   </button>
