@@ -48,7 +48,8 @@
 
   /* Better touch targets on mobile */
   .nav-chip { min-width: 70px; padding: var(--space-sm) var(--space-md); }
-  .btn-filter { padding: 8px 16px; }
+  .btn-filter,
+  .filter-pill { padding: 8px 16px; }
   button, .btn { min-height: 44px; }
 }
 
