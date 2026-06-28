@@ -2,7 +2,7 @@
 
 A comprehensive disaster relief coordination platform for emergency response teams. Built with professional-grade engineering for enterprise reliability.
 
-# WEB URL: https//:disasterhelper.dpdns.org
+# WEB URL: (https://disasterhelper.dpdns.org)
 
 ## Features
 
