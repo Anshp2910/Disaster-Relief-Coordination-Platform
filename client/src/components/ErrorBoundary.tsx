@@ -56,7 +56,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="error-page">
+        <main className="error-page">
           <div className="error-card">
             <div className="error-brand-icon">
               <svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true">
@@ -113,7 +113,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               </details>
             )}
           </div>
-        </div>
+        </main>
       )
     }
 

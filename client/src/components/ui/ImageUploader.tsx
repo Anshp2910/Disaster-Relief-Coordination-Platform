@@ -86,7 +86,7 @@ export default function ImageUploader({
         onClick={() => { setErrorMsg(null); if (!displayPreview) inputRef.current?.click() }}
         role="button"
         tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter' && !displayPreview) { setErrorMsg(null); inputRef.current?.click() } }}
+        onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && !displayPreview) { e.preventDefault(); setErrorMsg(null); inputRef.current?.click() } }}
         aria-label={t('imageUploader.uploadImage')}
       >
         <input
@@ -106,7 +106,7 @@ export default function ImageUploader({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
             >
-              <img src={displayPreview} alt="Preview" className="iu-preview-img" loading="lazy" />
+              <img src={displayPreview} alt={t('imageUploader.previewImageAlt')} className="iu-preview-img" loading="lazy" />
               <button
                 className="iu-remove"
                 onClick={e => { e.stopPropagation(); remove() }}

@@ -144,12 +144,10 @@ export default function NotificationBell() {
                     <span className="notif-group-count">{group.items.length}</span>
                   </div>
                   {group.items.map((n) => (
-                    <div
+                    <button
                       key={n.id}
-                      role="button"
-                      tabIndex={0}
+                      type="button"
                       onClick={() => handleNotificationClick(n)}
-                      onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNotificationClick(n) } }}
                       className={`notification-item ${!n.read ? 'notification-unread' : ''} ${group.className}`}
                     >
                       <div className="notification-item-content">
@@ -165,7 +163,7 @@ export default function NotificationBell() {
                         </div>
                         {!n.read && <span className="notification-dot" />}
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               ))}

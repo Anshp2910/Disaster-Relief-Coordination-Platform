@@ -69,8 +69,8 @@ export default function FormField(props: FormFieldProps) {
           />
         )}
 
-        <label className={`ff-label ${isFloating ? 'ff-label-float' : ''} ${leftIcon ? 'ff-label-with-icon' : ''}`}>
-          {label}{required ? ' *' : ''}
+        <label className={`ff-label ${isFloating ? 'ff-label-float' : ''} ${leftIcon ? 'ff-label-with-icon' : ''}`} htmlFor={'id' in props ? props.id as string : undefined}>
+          {label}{required ? <span aria-label="required"> *</span> : ''}
         </label>
 
         {isPassword && (

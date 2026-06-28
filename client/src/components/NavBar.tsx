@@ -95,12 +95,9 @@ const location = useLocation()
       <nav className="gov-navbar" role="navigation" aria-label="Main navigation">
         <div className="gov-navbar-inner">
           {/* ─── Logo + Title ─── */}
-          <div
+          <button
             className="gov-navbar-brand"
             onClick={() => { navigate('/dashboard') }}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate('/dashboard') } }}
             aria-label="Go to dashboard"
           >
             <svg width="32" height="32" viewBox="0 0 40 40" fill="none" className="gov-navbar-logo" aria-hidden="true">
@@ -112,7 +109,7 @@ const location = useLocation()
             <div className="gov-navbar-title-group">
               <div className="gov-navbar-title">{t('appTitle')}</div>
             </div>
-          </div>
+          </button>
 
           {/* ─── Desktop Nav Links ─── */}
           <div className="gov-navbar-links">

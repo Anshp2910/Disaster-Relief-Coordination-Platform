@@ -59,7 +59,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      <div className="toast-container" role="alert" aria-live="assertive" aria-atomic="true">
+      <div className="toast-container" role="region" aria-live="polite" aria-atomic="true" aria-label="Notifications">
         <AnimatePresence>
           {toasts.map((t) => (
             <motion.div
@@ -76,7 +76,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 {t.type === 'success' ? <CheckCircle size={16} /> : t.type === 'error' ? <XCircle size={16} /> : t.type === 'warning' ? <AlertTriangle size={16} /> : <Info size={16} />}
               </span>
               <span className="toast-message">{t.message}</span>
-              <button className="toast-close" aria-label="Dismiss" onClick={() => removeToast(t.id)}><X size={14} aria-hidden="true" /></button>
+              <button className="toast-close" aria-label="Dismiss" onClick={() => removeToast(t.id)} type="button"><X size={14} aria-hidden="true" /></button>
             </motion.div>
           ))}
         </AnimatePresence>

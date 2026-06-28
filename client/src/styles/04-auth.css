@@ -365,8 +365,9 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   padding: 0;
+  text-decoration: underline;
 }
-.auth-forgot:hover { text-decoration: underline; }
+.auth-forgot:hover { color: var(--accent-hover); }
 
 /* ── Submit Button ── */
 .auth-submit {

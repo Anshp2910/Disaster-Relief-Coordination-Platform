@@ -29,7 +29,7 @@
 }
 .sos-fab-btn:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(239, 68, 68, 0.5); }
 .sos-fab-btn:active { transform: scale(0.95); }
-.sos-fab-btn:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.sos-fab-btn:focus-visible { outline: 3px solid #fff; outline-offset: 4px; box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.3); }
 
 .sos-fab-label {
   position: absolute;

@@ -200,7 +200,7 @@ export default function Login() {
 
             {/* Form */}
             <motion.form onSubmit={onSubmit} variants={item}>
-              {error && <div className="error-text">{error}</div>}
+              {error && <div className="error-text" id="login-error" role="alert">{error}</div>}
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">
@@ -212,6 +212,8 @@ export default function Login() {
                     required
                     className="auth-input"
                     placeholder=" "
+                    aria-describedby={error ? "login-error" : undefined}
+                    aria-invalid={error ? "true" : "false"}
                   />
                   <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
                 </div>
@@ -227,6 +229,8 @@ export default function Login() {
                     required
                     className="auth-input"
                     placeholder=" "
+                    aria-describedby={error ? "login-error" : undefined}
+                    aria-invalid={error ? "true" : "false"}
                   />
                   <label htmlFor="login-password" className="auth-label">{t('auth.password')}</label>
                   <button

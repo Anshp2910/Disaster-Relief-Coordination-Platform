@@ -94,6 +94,11 @@
   color: var(--text-muted);
   cursor: pointer;
   padding: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
   transition: color var(--duration-fast) var(--ease-out);
   opacity: 0.6;
@@ -147,8 +152,10 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -179,7 +186,7 @@
 .notification-time { font-size: var(--text-xs); color: var(--text-muted); margin-top: 4px; }
 .notification-dot { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--accent); flex-shrink: 0; margin-top: 6px; }
 .notification-bell { position: relative; display: inline-flex; }
-.notification-badge { position: absolute; top: -4px; right: -6px; min-width: 16px; height: 16px; border-radius: var(--radius-full); background: var(--accent); color: var(--text-on-accent); font-size: 9px; font-weight: var(--font-weight-bold); display: flex; align-items: center; justify-content: center; padding: 0 4px; line-height: 1; }
+.notification-badge { position: absolute; top: -4px; right: -6px; min-width: 16px; height: 16px; border-radius: var(--radius-full); background: var(--accent); color: var(--text-on-accent); font-size: 12px; font-weight: var(--font-weight-bold); display: flex; align-items: center; justify-content: center; padding: 0 4px; line-height: 1; }
 .notification-badge-urgent { background: var(--danger); animation: notif-bell-shake 0.5s var(--ease-out); }
 
 .notif-group-header {
@@ -196,7 +203,7 @@
   background: var(--bg-subtle);
 }
 .notif-group-icon { font-size: 12px; }
-.notif-group-count { margin-left: auto; background: var(--border); padding: 1px 6px; border-radius: var(--radius-full); font-size: 10px; }
+.notif-group-count { margin-left: auto; background: var(--border); padding: 1px 6px; border-radius: var(--radius-full); font-size: 12px; }
 
 /* ── PWA Install Banner ── */
 .pwa-install-banner {
@@ -222,8 +229,10 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   font-size: 18px;
   line-height: 1;
   border-radius: var(--radius-sm);

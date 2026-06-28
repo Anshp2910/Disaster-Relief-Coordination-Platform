@@ -191,7 +191,7 @@
 .govt-badge-blue { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
 .govt-badge-green { background: var(--success-soft); color: var(--success); border-color: transparent; }
 .govt-badge-saffron { background: var(--warning-soft); color: var(--warning); border-color: transparent; }
-.govt-badge--sm { font-size: 9px; padding: 1px 6px; }
+.govt-badge--sm { font-size: 12px; padding: 2px 8px; }
 .govt-badge--lg { font-size: var(--text-sm); padding: 4px 14px; }
 
 /* ── Loading spinner ── */
@@ -268,8 +268,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-md);
   border: none;
   background: transparent;
