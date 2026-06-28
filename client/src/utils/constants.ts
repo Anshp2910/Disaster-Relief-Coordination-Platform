@@ -27,6 +27,7 @@ export const CATEGORY_COLORS: Record<string, { bg: string; border: string; text:
   'Communication': { bg: 'rgba(14,165,233,.1)', border: 'rgba(14,165,233,.25)', text: 'var(--cat-communication)' },
   'Power': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--cat-power)' },
   'Infrastructure': { bg: 'rgba(100,116,139,.1)', border: 'rgba(100,116,139,.25)', text: 'var(--cat-infrastructure)' },
+  'Equipment': { bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.25)', text: 'var(--cat-transportation)' },
   'Other': { bg: 'rgba(156,163,175,.1)', border: 'rgba(156,163,175,.25)', text: 'var(--cat-other)' },
 }
 
@@ -51,11 +52,13 @@ export const RESOURCE_STATUS_COLORS: Record<string, { bg: string; border: string
   Low: { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-high)' },
   Depleted: { bg: 'rgba(239,68,68,.1)', border: 'rgba(239,68,68,.25)', text: 'var(--color-critical)' },
   Reserved: { bg: 'rgba(129,140,248,.1)', border: 'rgba(129,140,248,.25)', text: 'var(--accent-indigo)' },
+  'In Transit': { bg: 'rgba(14,165,233,.1)', border: 'rgba(14,165,233,.25)', text: 'var(--color-open)' },
+  'Low Stock': { bg: 'rgba(245,158,11,.1)', border: 'rgba(245,158,11,.25)', text: 'var(--color-high)' },
 }
 
 export const COLORS_FALLBACK = { bg: 'rgba(128,128,128,.1)', border: 'rgba(128,128,128,.3)', text: 'var(--gov-muted)' }
 
 export const STATUS_OPTIONS = ['Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
 export const PRIORITY_OPTIONS = ['Critical', 'High', 'Medium', 'Low']
-export const CATEGORY_OPTIONS = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
-export const RESOURCE_STATUS_OPTIONS = ['Available', 'Deployed', 'Maintenance']
+export const CATEGORY_OPTIONS = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other']
+export const RESOURCE_STATUS_OPTIONS = ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock', 'Deployed', 'Maintenance']

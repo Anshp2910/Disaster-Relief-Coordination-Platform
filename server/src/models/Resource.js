@@ -5,7 +5,7 @@ const ResourceSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true, maxlength: 200 },
     category: {
       type: String,
-      enum: ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other'],
+      enum: ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Rescue', 'Equipment', 'Other'],
       required: true,
     },
     quantity: { type: Number, required: true, min: 0 },
@@ -19,7 +19,7 @@ const ResourceSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Available', 'Low', 'Depleted', 'Reserved'],
+      enum: ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock'],
       default: 'Available',
     },
     allocatedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Request', default: null },
@@ -30,6 +30,12 @@ const ResourceSchema = new mongoose.Schema(
   },
   { timestamps: true },
 )
+
+ResourceSchema.pre('save', function syncLocation() {
+  if (this.lat != null && this.lng != null) {
+    this.location = { type: 'Point', coordinates: [this.lng, this.lat] }
+  }
+})
 
 ResourceSchema.index({ location: '2dsphere' })
 ResourceSchema.index({ category: 1, status: 1 })

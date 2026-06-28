@@ -123,8 +123,8 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkIm
       return res.status(400).json({ error: 'No rows to import' })
     }
 
-    const validCategories = ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
-    const validStatuses = ['Available', 'Low', 'Depleted', 'Reserved']
+    const validCategories = ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Rescue', 'Equipment', 'Other']
+    const validStatuses = ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock']
 
     const imported = []
     const errors = []

@@ -49,8 +49,8 @@ describe('constants', () => {
       expect(CATEGORY_COLORS).toHaveProperty('Other')
     })
 
-    it('has 14 categories', () => {
-      expect(Object.keys(CATEGORY_COLORS)).toHaveLength(14)
+    it('has 15 categories', () => {
+      expect(Object.keys(CATEGORY_COLORS)).toHaveLength(15)
     })
   })
 
@@ -70,10 +70,15 @@ describe('constants', () => {
   })
 
   describe('RESOURCE_STATUS_COLORS', () => {
-    it('has Available, Deployed, Maintenance', () => {
+    it('has all resource status colors', () => {
       expect(RESOURCE_STATUS_COLORS).toHaveProperty('Available')
+      expect(RESOURCE_STATUS_COLORS).toHaveProperty('Low')
+      expect(RESOURCE_STATUS_COLORS).toHaveProperty('Depleted')
+      expect(RESOURCE_STATUS_COLORS).toHaveProperty('Reserved')
       expect(RESOURCE_STATUS_COLORS).toHaveProperty('Deployed')
       expect(RESOURCE_STATUS_COLORS).toHaveProperty('Maintenance')
+      expect(RESOURCE_STATUS_COLORS).toHaveProperty('In Transit')
+      expect(RESOURCE_STATUS_COLORS).toHaveProperty('Low Stock')
     })
   })
 
@@ -94,12 +99,12 @@ describe('constants', () => {
       expect(PRIORITY_OPTIONS).toHaveLength(4)
     })
 
-    it('CATEGORY_OPTIONS has 14 items', () => {
-      expect(CATEGORY_OPTIONS).toHaveLength(14)
+    it('CATEGORY_OPTIONS has 15 items', () => {
+      expect(CATEGORY_OPTIONS).toHaveLength(15)
     })
 
-    it('RESOURCE_STATUS_OPTIONS has 3 items', () => {
-      expect(RESOURCE_STATUS_OPTIONS).toHaveLength(3)
+    it('RESOURCE_STATUS_OPTIONS has 8 items', () => {
+      expect(RESOURCE_STATUS_OPTIONS).toHaveLength(8)
     })
 
     it('STATUS_OPTIONS contains expected values', () => {
