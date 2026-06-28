@@ -179,7 +179,6 @@ authRouter.post('/forgot-password', async (req, res) => {
     try {
       const user = await User.findOne({ email: email.toLowerCase().trim() })
       if (user) {
-        userExists = true
         const resetToken = crypto.randomBytes(32).toString('hex')
         resetUrl = `${clientUrl}/#/reset-password?token=${resetToken}`
         user.resetPasswordToken = resetToken
