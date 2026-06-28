@@ -2,43 +2,8 @@
    ENTERPRISE FEATURE PACK — Glass, maps, command palette, chat
    ================================================================ */
 
-/* ── 1. Vision Glass ── */
-.glass-vision {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.08);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.08);
-  border: 1px solid var(--glass-border);
-}
-.glass-vision:hover { border-color: var(--accent-soft); box-shadow: var(--shadow-md), var(--glow-blue); }
-.glass-vision-strong {
-  background: var(--glass-bg-strong);
-  backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(1.15);
-  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(1.15);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-.glass-inset { background: var(--glass-inset-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--glass-border); }
-.glass-glow { box-shadow: 0 0 30px var(--accent-soft), var(--shadow-md); }
-
-/* ── 2. Map Styles ── */
-.map-wrapper { position: relative; width: 100%; border-radius: var(--radius-md); overflow: hidden; }
-.map-fullscreen-btn {
-  position: absolute; top: var(--space-s); right: var(--space-s); z-index: var(--z-toast);
-  background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border);
-  border-radius: var(--radius-sm); padding: var(--space-2xs) var(--space-s); cursor: pointer; font-size: var(--text-sm);
-  color: var(--text-secondary); transition: all var(--duration-fast) var(--ease-out);
-  display: flex; align-items: center; gap: var(--space-3xs); min-height: unset;
-}
-.map-fullscreen-btn:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
-.map-container-full { width: 100%; max-width: 100%; touch-action: manipulation; min-height: 60vh; }
-.map-container-full:fullscreen,
-.map-container-full:-webkit-full-screen { height: 100vh; width: 100vw; padding: 0; border-radius: 0; }
-html body .map-fullscreen-active { position: fixed; inset: 0; z-index: var(--z-overlay-active); height: 100vh; width: 100vw; border-radius: 0; border: none; }
+/* ── 1. Map Styles ── */
 .mapBox { min-height: 360px; height: 40vh; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-light); transition: all var(--duration-normal) var(--ease-out); }
-.map-popup-content { min-width: 180px; }
-.map-popup-content h4 { margin: 0 0 var(--space-3xs); font-size: var(--text-sm); font-weight: var(--font-weight-bold); }
-.map-popup-content p { margin: 0 0 var(--space-2xs); font-size: var(--text-xs); color: var(--text-secondary); }
-.map-popup-content .badge-row { display: flex; gap: var(--space-3xs); flex-wrap: wrap; }
 
 /* ── 3. Command Palette ── */
 .cmd-palette-overlay {
@@ -69,7 +34,6 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: var(--z-o
 .cmd-item:hover, .cmd-item.highlighted { background: var(--accent-soft); color: var(--text); }
 .cmd-item-icon { width: 20px; text-align: center; flex-shrink: 0; color: var(--text-muted); }
 .cmd-item-label { flex: 1; min-width: 0; }
-.cmd-item-desc { font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
 .cmd-item-badge { font-size: var(--text-3xs); padding: var(--space-px) var(--space-2xs); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-weight: var(--font-weight-semibold); flex-shrink: 0; }
 
 /* ── 4. Chat UI ── */
@@ -97,33 +61,8 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: var(--z-o
 .severity-badge[data-severity="Medium"]::before { background: var(--severity-medium); }
 .severity-badge[data-severity="Low"]::before { background: var(--severity-low); }
 
-/* ── 6. Glow Border ── */
-.glow-border { position: relative; }
-.glow-border::after {
-  content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
-  background: linear-gradient(135deg, var(--accent), transparent, var(--accent-indigo));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* ── 7. Gradient Text ── */
+/* ── 6. Gradient Text ── */
 .text-gradient { background: linear-gradient(135deg, var(--accent), var(--accent-indigo)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-/* ── 8. Hover Lift ── */
-.hover-lift { transition: all var(--duration-normal) var(--ease-out); }
-.hover-lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
-/* ── 9. Shimmer Overlay ── */
-.shimmer-overlay { position: relative; overflow: hidden; }
-.shimmer-overlay::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, var(--overlay-light), transparent);
-  transform: translateX(-100%); animation: shimmer-slide 1.5s var(--ease-in-out) infinite;
-}
-
-/* ── 10. Status Bar ── */
-.status-bar-accent { height: 3px; border-radius: 0 0 var(--radius-sm) var(--radius-sm); background: linear-gradient(90deg, var(--accent), var(--accent-indigo)); }
 
 /* ── 11. Admin Dashboard Components ── */
 .admin-breakdown-card {
@@ -471,21 +410,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: var(--z-o
   font-weight: var(--font-weight-semibold);
 }
 
-/* ── 17. Chat Bubble Variants ── */
-.chat-bubble--sent {
-  background: var(--accent);
-  color: var(--text-on-accent);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-sm) var(--radius-lg);
-}
-.chat-bubble--received {
-  background: var(--bg-subtle);
-  color: var(--text);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm);
-}
-
-/* ── 18. Review Card ── */
+/* ── 17. Review Card ── */
 .review-card {
   background: var(--bg-subtle);
   border: 1px solid var(--border);

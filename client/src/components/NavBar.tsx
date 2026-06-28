@@ -91,7 +91,7 @@ export function NavBar() {
   const showNav = isAuthenticated && !isAuthPage
 
   return (
-    <nav className="gov-navbar" role="navigation" aria-label="Main navigation">
+    <nav className="gov-navbar" role="navigation" aria-label={t('nav.mainNavigation')}>
       <div className="gov-navbar-inner">
         {/* ─── Logo + Title ─── */}
         <button

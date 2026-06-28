@@ -131,7 +131,7 @@
   --shadow-inset-lg: inset 0 2px 4px rgba(0, 0, 0, 0.06);
 
   /* ── Typography — Apple/Inter inspired scale ── */
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
   --font-weight-light: 300;
   --font-weight-regular: 400;
@@ -184,6 +184,8 @@
   --space-2xl: 64px;
   --space-3xl: 96px;
   --space-4xl: 128px;
+
+  --navbar-height: 60px;
 
   /* ── Radius ── */
   --radius-2xs: 4px;

@@ -1,5 +1,6 @@
 import { useState, type ReactNode, type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 interface FormFieldBase {
@@ -20,6 +21,7 @@ type CustomField = FormFieldBase & { as: 'custom'; children: ReactNode }
 type FormFieldProps = InputField | TextareaField | CustomField
 
 export default function FormField(props: FormFieldProps) {
+  const { t } = useTranslation()
   const { label, error, hint, success, touched, required, className = '', leftIcon } = props
   const [focused, setFocused] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -79,7 +81,7 @@ export default function FormField(props: FormFieldProps) {
             className="ff-pw-toggle"
             onClick={() => setShowPassword(p => !p)}
             tabIndex={-1}
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
           >
             {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
           </button>

@@ -73,7 +73,7 @@ export default function ResetPassword() {
             <label htmlFor="password">{t('auth.newPassword')}</label>
             <div className="auth-password-wrap">
               <input id="password" type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required autoFocus disabled={loading} minLength={8} />
-              <button type="button" className="auth-password-toggle" onClick={() => setShow(!show)} aria-label={show ? 'Hide password' : 'Show password'} tabIndex={-1}>
+              <button type="button" className="auth-password-toggle" onClick={() => setShow(!show)} aria-label={show ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={-1}>
                 {show ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>

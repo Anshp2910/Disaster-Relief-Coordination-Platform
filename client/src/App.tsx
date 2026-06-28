@@ -1,5 +1,6 @@
 import { Suspense, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Layout from './components/Layout'
 import { useAuth } from './context/AuthContext'
 import { retryLazy } from './utils/retryLazy'
@@ -26,10 +27,11 @@ const PublicStatus = retryLazy(() => import('./pages/PublicStatus'))
 const NotFound = retryLazy(() => import('./pages/NotFound'))
 
 function PageLoader() {
+  const { t } = useTranslation()
   return (
-    <div className="flex-center min-h-60vh gap-12">
+    <div className="flex-center min-h-60vh gap-12" role="status" aria-live="polite">
       <div className="loading-spinner" />
-      <span className="text-14 text-muted">Loading...</span>
+      <span className="text-14 text-muted">{t('common.loading')}</span>
     </div>
   )
 }

@@ -21,7 +21,7 @@ function Layout({ children }: LayoutProps) {
       <NavBar />
       <CommandPalette isAdmin={isAdmin} />
       {isAuthenticated && <SosFab />}
-      <main className="gov-main" id="main-content" role="main" aria-label="Main content">
+      <main className="gov-main" id="main-content" role="main" aria-label={t('layout.mainContent')}>
         {children}
       </main>
       <footer className="gov-navbar-bottom">

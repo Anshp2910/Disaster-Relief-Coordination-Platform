@@ -33,6 +33,7 @@
     "escalation": "Escalation",
     "geofencing": "Geofencing",
     "navigation": "Navigation",
+    "mainNavigation": "Main navigation",
     "settings": "Settings",
     "logoutConfirm": "Are you sure you want to logout?",
     "openCommandPalette": "Open command palette",
@@ -51,6 +52,9 @@
     "darkMode": "Dark mode",
     "lightMode": "Light mode",
     "switchTo": "Switch to {{mode}} mode"
+  },
+  "layout": {
+    "mainContent": "Main content"
   },
   "auth": {
     "appName": "DisasterRelief",
@@ -290,6 +294,7 @@
     "retry": "Retry"
   },
   "dataTable": {
+    "label": "Data table",
     "searchPlaceholder": "Search...",
     "noData": "No data",
     "deleteSelected": "Delete selected",
@@ -311,6 +316,9 @@
     "columns": "Columns",
     "clearSearch": "Clear search",
     "clearAllFilters": "Clear all filters"
+  },
+  "dataList": {
+    "noItems": "No items"
   },
   "pagination": {
     "previousPage": "Previous page",

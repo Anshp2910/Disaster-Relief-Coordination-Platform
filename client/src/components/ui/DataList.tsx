@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import Pagination from './Pagination'
 import ErrorState from './ErrorState'
 import { SkeletonList } from '../Skeleton'
@@ -30,7 +31,8 @@ export default function DataList<T>({
 }: DataListProps<T>) {
   if (error) return <ErrorState message={error} onRetry={onRetry} />
   if (loading) return <SkeletonList count={skeletonCount} lines={skeletonLines} />
-  if (items.length === 0) return <EmptyState icon={emptyIcon || '📋'} title={emptyTitle || 'No items'} description={emptyDescription} />
+  const { t } = useTranslation()
+  if (items.length === 0) return <EmptyState icon={emptyIcon || '📋'} title={emptyTitle || t('dataList.noItems')} description={emptyDescription} />
 
   return (
     <>

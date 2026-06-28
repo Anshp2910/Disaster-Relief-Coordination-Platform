@@ -352,7 +352,7 @@ export default function DataTable<T>({
         </div>
       ) : (
         <div className="dt-table-wrap">
-          <div className="dt-table" role="grid" aria-label="Data table">
+          <div className="dt-table" role="grid" aria-label={t('dataTable.label')}>
             {/* Header */}
             <div className={`dt-thead ${stickyHeader ? 'dt-sticky' : ''}`} role="rowgroup">
               <div className="dt-tr dt-tr-header" role="row">
