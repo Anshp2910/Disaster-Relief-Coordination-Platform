@@ -1,72 +1,42 @@
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 import { logger } from './logger.js'
 
-let transporter = null
+let resendClient = null
 
-async function getTransporter() {
-  if (transporter) return transporter
+function getClient() {
+  if (resendClient) return resendClient
 
-  const host = process.env.SMTP_HOST
-  const port = process.env.SMTP_PORT
-  const user = process.env.SMTP_USER
-  const pass = process.env.SMTP_PASS
-
-  if (!host || !user || !pass) {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
     if (process.env.NODE_ENV === 'production') {
-      logger.warn('SMTP not configured — emails will be logged to console only', {
-        hint: 'Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in your .env file',
+      logger.warn('Resend not configured — set RESEND_API_KEY in your .env file', {
+        hint: 'Get an API key at https://resend.com/api-keys',
       })
-      return null
+    } else {
+      logger.info('Resend not configured — emails will be logged to console only', {
+        hint: 'Set RESEND_API_KEY in your .env to send real emails',
+      })
     }
-
-    logger.info('SMTP not configured — creating ephemeral Ethereal test account...')
-    let testAccount
-    try {
-      testAccount = await nodemailer.createTestAccount()
-    } catch {
-      logger.warn('Failed to create Ethereal test account — emails will be logged to console only')
-      return null
-    }
-
-    logger.info('Ethereal test account created', {
-      user: testAccount.user,
-      pass: testAccount.pass,
-      web: 'https://ethereal.email/login',
-    })
-
-    transporter = nodemailer.createTransport({
-      host: testAccount.smtp.host,
-      port: testAccount.smtp.port,
-      secure: testAccount.smtp.secure,
-      auth: { user: testAccount.user, pass: testAccount.pass },
-    })
-
-    return transporter
+    return null
   }
 
-  transporter = nodemailer.createTransport({
-    host,
-    port: Number(port) || 587,
-    secure: Number(port) === 465,
-    auth: { user, pass },
-  })
-
-  return transporter
+  resendClient = new Resend(apiKey)
+  return resendClient
 }
 
 /**
- * Send an email. Falls back to console logging when SMTP is not configured.
+ * Send an email via Resend. Falls back to console logging when RESEND_API_KEY is not set.
  * @param {object} options
  * @param {string} options.to - Recipient email address
  * @param {string} options.subject - Email subject
  * @param {string} options.html - HTML body
  * @param {string} [options.text] - Plain text fallback
- * @returns {Promise<boolean>} true if sent, false if console-only
+ * @returns {Promise<boolean>} true if sent, false if console-only or failed
  */
 export async function sendEmail({ to, subject, html, text }) {
-  const transport = await getTransporter()
+  const client = getClient()
 
-  if (!transport) {
+  if (!client) {
     logger.info('email-console-fallback', {
       to,
       subject,
@@ -76,16 +46,22 @@ export async function sendEmail({ to, subject, html, text }) {
   }
 
   try {
-    const info = await transport.sendMail({
-      from: process.env.SMTP_FROM || transport.options?.auth?.user || 'noreply@localhost',
-      to,
+    const from = process.env.RESEND_FROM || process.env.RESEND_EMAIL || 'noreply@resend.dev'
+    const { data, error } = await client.emails.send({
+      from,
+      to: [to],
       subject,
       html,
       text: text || html.replace(/<[^>]+>/g, ''),
     })
-    const previewUrl = nodemailer.getTestMessageUrl(info)
-    logger.info('email-sent', { to, subject, previewUrl })
-    return previewUrl ? String(previewUrl) : true
+
+    if (error) {
+      logger.error('email-send-failed', { to, subject, message: error.message })
+      return false
+    }
+
+    logger.info('email-sent', { to, subject, id: data?.id })
+    return true
   } catch (err) {
     logger.error('email-send-failed', { to, subject, message: err.message })
     return false
