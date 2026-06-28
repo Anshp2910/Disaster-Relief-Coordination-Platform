@@ -56,7 +56,7 @@ export default function EmptyState({ icon = '📋', title, description, action, 
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.25 }}
         >
-          <RippleBtn onClick={action.onClick} className="btnPrimary mt-md">
+          <RippleBtn onClick={action.onClick} className="btn-primary mt-md">
             {action.label}
           </RippleBtn>
         </motion.div>

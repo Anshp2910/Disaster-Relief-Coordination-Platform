@@ -284,7 +284,7 @@ function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
   return (
     <div className="flex flex-col flex-gap-sm items-end">
       <RippleBtn disabled={!canEdit} onClick={edit} className="text-sm p-xs" aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</RippleBtn>
-      <button disabled={!canEdit || deleting} onClick={del} className="btnDanger text-sm p-xs" aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
+      <button disabled={!canEdit || deleting} onClick={del} className="btn-danger text-sm p-xs" aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
       {ConfirmDialog}
     </div>
   )

@@ -13,6 +13,7 @@
 }
 .ff-wrap:hover { border-color: var(--text-tertiary); }
 .ff-focused { border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft); }
+.ff-pw { position: relative; }
 .ff-error { border-color: var(--danger) !important; box-shadow: 0 0 0 3px var(--danger-soft); }
 .ff-success { border-color: var(--success) !important; }
 .ff-input {
@@ -27,6 +28,9 @@
   outline: none;
   box-sizing: border-box;
   line-height: 1.4;
+}
+.ff-input-filled {
+  color: var(--text);
 }
 .ff-input-with-icon { padding-left: 38px; }
 .ff-input::placeholder { color: transparent; }
@@ -130,6 +134,7 @@
 .ms-option-disabled { opacity: 0.4; cursor: default; }
 .ms-option-check { margin-left: auto; color: var(--accent); flex-shrink: 0; }
 .ms-option-icon { display: flex; flex-shrink: 0; }
+.ms-option-label { flex: 1; min-width: 0; }
 .ms-no-options { padding: var(--space-sm); text-align: center; color: var(--text-muted); font-size: var(--text-xs); }
 
 /* ── DatePicker ── */

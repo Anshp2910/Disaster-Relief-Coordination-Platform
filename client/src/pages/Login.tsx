@@ -213,7 +213,7 @@ export default function Login() {
                     className="auth-input"
                     placeholder=" "
                     aria-describedby={error ? "login-error" : undefined}
-                    aria-invalid={error ? "true" : "false"}
+                    aria-invalid={error ? "true" : "false"} 
                   />
                   <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
                 </div>

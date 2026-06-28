@@ -379,7 +379,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
       render: (_, u) => (
         <button
           onClick={() => onDelete(u._id)}
-          className="admin-action-btn btnDanger"
+          className="admin-action-btn btn-danger"
           aria-label={`${t('admin.delete')} ${u.displayName || u.email || u._id}`}
         >
           <Trash2 size={14} /> {t('admin.delete')}
@@ -490,7 +490,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
       render: (_, r) => (
         <button
           onClick={() => onDelete(r._id)}
-          className="admin-action-btn btnDanger"
+          className="admin-action-btn btn-danger"
           aria-label={`${t('admin.delete')} ${r.title || r._id}`}
         >
           <Trash2 size={14} /> {t('admin.delete')}

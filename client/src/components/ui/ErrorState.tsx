@@ -65,7 +65,7 @@ export default function ErrorState({ message, onRetry, fullPage = false, onHomeC
       >
         {onRetry && (
           <button
-            className="btnSecondary btn-sm"
+            className="btn-secondary btn-sm"
             onClick={onRetry}
             aria-label={t('errorState.retry')}
           >
@@ -75,7 +75,7 @@ export default function ErrorState({ message, onRetry, fullPage = false, onHomeC
         )}
         {fullPage && onHomeClick && (
           <button
-            className="btnPrimary btn-sm"
+            className="btn-primary btn-sm"
             onClick={onHomeClick}
           >
             <Home size={14} aria-hidden="true" />

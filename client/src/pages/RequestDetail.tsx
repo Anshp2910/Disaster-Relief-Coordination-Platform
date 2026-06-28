@@ -397,7 +397,7 @@ export default function RequestDetail() {
                 </RippleBtn>
               )}
               {item.claimedBy?._id === currentUser?.id && (
-                <button className="btnDanger" onClick={handleUnclaim} disabled={claiming} aria-label={t('dashboard.unclaim')}>
+                <button className="btn-danger" onClick={handleUnclaim} disabled={claiming} aria-label={t('dashboard.unclaim')}>
                   {claiming ? '...' : t('dashboard.unclaim')}
                 </button>
               )}
@@ -408,7 +408,7 @@ export default function RequestDetail() {
                 </button>
               )}
               {(currentUser?.role === 'admin' || currentUser?.id === item.createdBy?._id) && (
-                <button className="btnDanger flex-center gap-xs" onClick={handleDelete} aria-label={t('dashboard.delete')}>
+                <button className="btn-danger flex-center gap-xs" onClick={handleDelete} aria-label={t('dashboard.delete')}>
                   <Trash2 size={14} />
                   {t('dashboard.delete')}
                 </button>
@@ -424,7 +424,7 @@ export default function RequestDetail() {
             {item.files?.length ? (
               <div className="flex-col flex-gap-sm">
                 {item.files.map((f) => (
-                  <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs bg-gov-bg rounded-sm">
+                  <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs bg-card rounded-sm">
                     {f.mimetype?.startsWith('image/') ? (
                       <img src={`${API_BASE}${f.url}`} alt={f.filename} loading="lazy" className="cursor-pointer object-cover rounded-sm w-40 h-40" role="button" tabIndex={0} onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }} />
                     ) : f.mimetype === 'application/pdf' ? (
@@ -497,7 +497,7 @@ export default function RequestDetail() {
             </div>
             <div className="flex-col flex-gap-sm">
               {matches.map((m) => (
-                <div key={m._id} className="flex-between text-sm p-sm bg-gov-bg rounded-sm">
+                <div key={m._id} className="flex-between text-sm p-sm bg-card rounded-sm">
                   <div className="flex-1 min-w-0">
                     <div className="text-semi">{m.name}</div>
                     <div className="text-sm text-muted-extra mt-xs">
@@ -546,7 +546,7 @@ export default function RequestDetail() {
           {item.comments && item.comments.length > 0 ? (
             <div className="flex-col flex-gap-xs">
               {[...item.comments].reverse().map((c) => (
-                <div key={c._id} className="text-sm p-sm bg-gov-bg" style={{ borderRadius: 8 }}>
+                <div key={c._id} className="text-sm p-sm bg-card" style={{ borderRadius: 8 }}>
                   <div className="flex-between mb-xs">
                     <strong className="text-sm">{c.createdBy?.displayName || c.createdBy?.email}</strong>
                     <div className="flex flex-gap-sm">
@@ -655,7 +655,7 @@ export default function RequestDetail() {
           {feedbackList.length > 0 ? (
             <div className="flex-col flex-gap-sm">
               {feedbackList.map((f) => (
-                <div key={f._id} className="text-sm p-sm bg-gov-bg rounded-sm">
+                <div key={f._id} className="text-sm p-sm bg-card rounded-sm">
                   <div className="flex flex-gap-xs mb-xs">
                     {[1, 2, 3, 4, 5].map((s) => (
                       <span key={s} className="text-base" style={{ color: s <= (f.rating ?? 0) ? 'var(--gov-saffron)' : 'var(--gov-border)' }}>★</span>

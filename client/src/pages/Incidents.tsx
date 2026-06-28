@@ -383,7 +383,7 @@ export default function Incidents() {
                       <Edit size={14} />
                       {t('common.edit')}
                     </button>
-                    <button onClick={() => handleDelete(selectedIncident._id)} className="btnDanger text-sm p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
+                    <button onClick={() => handleDelete(selectedIncident._id)} className="btn-danger text-sm p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
                       <Trash2 size={14} />
                       {t('common.delete')}
                     </button>

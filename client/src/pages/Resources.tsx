@@ -544,7 +544,7 @@ export default function Resources() {
                     <Edit size={14} />
                     <span className="ml-xs">{t('resources.editResource')}</span>
                   </button>
-                  <button onClick={() => handleDelete(r._id)} className="btnDanger text-sm p-xs" aria-label={`${t('resources.delete')} ${r.name || ''}`}>
+                  <button onClick={() => handleDelete(r._id)} className="btn-danger text-sm p-xs" aria-label={`${t('resources.delete')} ${r.name || ''}`}>
                     <Trash2 size={14} />
                     <span className="ml-xs">{t('resources.delete')}</span>
                   </button>

@@ -36,7 +36,7 @@ export default function NotFound() {
         <RippleBtn className="" onClick={() => navigate('/dashboard')}>
           <LayoutDashboard size={16} /> {t('notFound.goHome') || 'Go to Dashboard'}
         </RippleBtn>
-        <motion.button className="btnGhost" onClick={() => navigate(-1)} whileTap={{ scale: 0.97 }}>
+        <motion.button className="btn-ghost" onClick={() => navigate(-1)} whileTap={{ scale: 0.97 }}>
           <ArrowLeft size={16} /> {t('notFound.goBack') || 'Go Back'}
         </motion.button>
       </div>

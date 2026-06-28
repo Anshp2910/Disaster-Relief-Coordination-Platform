@@ -61,8 +61,8 @@ export function useConfirm() {
             <h2 id="confirm-title" className="modal-title">{state.title}</h2>
             <p id="confirm-message" className="modal-desc">{state.message}</p>
             <div className="modal-actions mt">
-              <button onClick={handleCancel} className="btnSecondary" autoFocus>{state.cancelText}</button>
-              <RippleBtn onClick={handleConfirm} className={state.danger ? 'btnDanger' : ''}>{state.confirmText}</RippleBtn>
+              <button onClick={handleCancel} className="btn-secondary" autoFocus>{state.cancelText}</button>
+              <RippleBtn onClick={handleConfirm} className={state.danger ? 'btn-danger' : ''}>{state.confirmText}</RippleBtn>
             </div>
           </div>
         </div>,

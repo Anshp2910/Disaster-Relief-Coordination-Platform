@@ -211,6 +211,7 @@
 .dt-table { display: flex; flex-direction: column; min-width: 100%; }
 .dt-thead { display: flex; flex-direction: column; z-index: 10; }
 .dt-thead.dt-sticky { position: sticky; top: 0; }
+.dt-tbody { display: flex; flex-direction: column; }
 
 .dt-tr {
   display: flex;

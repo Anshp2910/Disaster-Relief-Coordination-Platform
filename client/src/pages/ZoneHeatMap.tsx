@@ -331,7 +331,7 @@ export default function ZoneHeatMap() {
                 <span className="ml-xs">{t('zones.addZone')}</span>
               </RippleBtn>
             )}
-            <button className="btnSecondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
+            <button className="btn-secondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
               <Thermometer size={16} />
               <span className="ml-xs">{weatherLoading ? '...' : (t('zones.weather') || 'Weather')}</span>
             </button>
@@ -465,7 +465,7 @@ export default function ZoneHeatMap() {
                     <Edit size={14} />
                     {t('common.edit')}
                   </button>
-                  <button onClick={() => handleDelete(selectedZone._id)} className="btnDanger text-sm p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
+                  <button onClick={() => handleDelete(selectedZone._id)} className="btn-danger text-sm p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
                     <Trash2 size={14} />
                     {t('common.delete')}
                   </button>

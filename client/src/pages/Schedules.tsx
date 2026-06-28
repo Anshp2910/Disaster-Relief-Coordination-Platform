@@ -419,6 +419,9 @@ export default function Schedules() {
                       <div key={s._id} className="mb-xs">
                         <div
                           onClick={() => setSelectedDaySchedule(selectedDaySchedule?._id === s._id ? null : s)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedDaySchedule(selectedDaySchedule?._id === s._id ? null : s) } }}
+                          role="button"
+                          tabIndex={0}
                           className="text-xs"
                           style={{
                             background: shiftC.bg,
@@ -524,7 +527,7 @@ export default function Schedules() {
                       <button onClick={() => openEdit(item)} className="btn-ghost btn-sm" aria-label={t('common.edit')}>
                         <Edit size={14} /> {t('common.edit')}
                       </button>
-                      <button onClick={() => handleDelete(item._id)} className="btnDanger text-xs p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
+                      <button onClick={() => handleDelete(item._id)} className="btn-danger text-xs p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
                         <Trash2 size={14} /> {t('common.delete')}
                       </button>
                     </div>
