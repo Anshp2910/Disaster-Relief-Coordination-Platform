@@ -7,6 +7,7 @@ import { retryLazy } from './utils/retryLazy'
 
 const Login = retryLazy(() => import('./pages/Login'))
 const Register = retryLazy(() => import('./pages/Register'))
+const SocialCallback = retryLazy(() => import('./pages/SocialCallback'))
 const ForgotPassword = retryLazy(() => import('./pages/ForgotPassword'))
 const ResetPassword = retryLazy(() => import('./pages/ResetPassword'))
 const Dashboard = retryLazy(() => import('./pages/Dashboard'))
@@ -60,6 +61,7 @@ function App() {
         <Route path="/register" element={<Layout><Register /></Layout>} />
         <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
         <Route path="/reset-password" element={<Layout><ResetPassword /></Layout>} />
+        <Route path="/social-callback" element={<SocialCallback />} />
         {/* Standard routes with Layout (header + footer) */}
         <Route path="/*" element={
           <Layout>

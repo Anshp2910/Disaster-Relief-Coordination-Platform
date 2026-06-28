@@ -1,12 +1,16 @@
 import crypto from 'crypto'
 import express from 'express'
 import jwt from 'jsonwebtoken'
+import passport from 'passport'
 import { getJwtSecret } from '../config/env.js'
 import { User } from '../models/User.js'
 import { requireAuth } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
 import { logger } from '../utils/logger.js'
 import { sendPasswordResetEmail } from '../utils/email.js'
+import '../config/passport.js'
+
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 
 export const authRouter = express.Router()
 
@@ -140,6 +144,9 @@ authRouter.post('/login', validate('login'), async (req, res) => {
 
     const user = await User.findOne({ email })
     if (!user) return res.status(401).json({ error: 'Invalid credentials' })
+    if (user.provider !== 'local') {
+      return res.status(401).json({ error: 'This account uses social login. Please sign in with ' + user.provider + '.' })
+    }
 
     const ok = await user.verifyPassword(password)
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' })
@@ -240,12 +247,29 @@ authRouter.post('/reset-password', async (req, res) => {
   }
 })
 
-authRouter.post('/social/:provider', async (req, res) => {
-  const { provider } = req.params
-  if (!['google', 'github'].includes(provider)) {
-    return res.status(400).json({ error: 'Unsupported social provider' })
-  }
-  return res.status(501).json({ error: `${provider} login not configured. Social login coming soon.` })
+authRouter.get('/google', passport.authenticate('google', { session: false }))
+authRouter.get('/github', passport.authenticate('github', { session: false }))
+
+authRouter.get('/google/callback', (req, res, next) => {
+  passport.authenticate('google', { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.redirect(`${CLIENT_URL}/#/login?error=google-auth-failed`)
+    }
+    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
+    const { csrfToken } = generateCsrfToken(user._id)
+    res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
+  })(req, res, next)
+})
+
+authRouter.get('/github/callback', (req, res, next) => {
+  passport.authenticate('github', { session: false }, (err, user) => {
+    if (err || !user) {
+      return res.redirect(`${CLIENT_URL}/#/login?error=github-auth-failed`)
+    }
+    const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
+    const { csrfToken } = generateCsrfToken(user._id)
+    res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
+  })(req, res, next)
 })
 
 authRouter.post('/refresh', async (req, res) => {

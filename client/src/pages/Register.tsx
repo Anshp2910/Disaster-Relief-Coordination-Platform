@@ -6,7 +6,6 @@ import { createStagger, createListItem } from '../utils/animations'
 import { MapPin, ShieldCheck, Users, Eye, EyeOff, Loader2, GitBranch, Globe, User, Mail } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
-import { useToast } from '../components/Toast'
 import { evaluatePasswordStrength } from '../utils/passwordStrength'
 
 const STATS = [
@@ -54,10 +53,10 @@ export default function Register() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { login } = useAuth()
-  const toast = useToast()
 
   function handleSocialLogin(provider: 'google' | 'github') {
-    toast.info(t('auth.socialLoginComingSoon', { provider: provider.charAt(0).toUpperCase() + provider.slice(1) }))
+    const API_BASE: string = (import.meta as Record<string, any>).env?.VITE_API_BASE_URL || ''
+    window.location.href = `${API_BASE}/api/auth/${provider}`
   }
 
   const strength = useMemo(() => {
