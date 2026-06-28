@@ -30,7 +30,7 @@ select:not(.lang-select):not(.tab):not(.gov-navbar-lang-select) {
   border-radius: var(--radius-md);
   transition: all var(--duration-fast) var(--ease-out);
   outline: none;
-  line-height: 1.5;
+  line-height: var(--leading-normal);
   box-shadow: var(--shadow-inset);
   box-sizing: border-box;
 }

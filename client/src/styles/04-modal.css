@@ -32,9 +32,9 @@
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-sm);
 }
-.modal-icon { font-size: 40px; margin-bottom: var(--space-md); line-height: 1; }
+.modal-icon { font-size: 40px; margin-bottom: var(--space-md); line-height: var(--leading-none); }
 .modal-title { font-size: var(--text-lg); font-weight: var(--font-weight-bold); color: var(--text); margin: 0 0 var(--space-xs); }
-.modal-desc { font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.5; margin: 0 0 var(--space-md); }
+.modal-desc { font-size: var(--text-sm); color: var(--text-secondary);   line-height: var(--leading-normal); margin: 0 0 var(--space-md); }
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -45,5 +45,5 @@
 }
 
 .confirm-dialog .modal-card { max-width: 400px; }
-.confirm-dialog p { color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; }
+.confirm-dialog p { color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
 .confirm-dialog .modal-actions { margin-top: var(--space-lg); }

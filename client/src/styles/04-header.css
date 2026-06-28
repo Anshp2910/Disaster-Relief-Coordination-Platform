@@ -373,7 +373,7 @@
   margin: 0 auto;
   font-size: var(--text-xs);
   color: var(--text-muted);
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
 }
 
 .gov-navbar-bottom-links {
@@ -426,7 +426,7 @@
 }
 .error-title {
   font-size: var(--text-xl);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--text);
   margin: 0 0 var(--space-xsml);
   letter-spacing: -0.02em;

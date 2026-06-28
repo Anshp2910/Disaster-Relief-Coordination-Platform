@@ -77,7 +77,7 @@
 .toast-item.toast-exit--swipe-left { animation: toastSwipeLeft 0.3s var(--ease-in) forwards; }
 .toast-item.toast-exit--fade { animation: toastFadeOut var(--duration-fast) var(--ease-out) forwards; }
 
-.toast-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+.toast-icon { flex-shrink: 0; font-size: var(--text-sm); margin-top: 1px; }
 .toast-icon.success { color: var(--success); }
 .toast-icon.error { color: var(--danger); }
 .toast-icon.warning { color: var(--warning); }
@@ -179,7 +179,7 @@
 .notification-item:hover { background: var(--accent-soft); }
 .notification-unread { background: var(--accent-soft); }
 .notification-item-content { display: flex; gap: var(--space-sm); width: 100%; align-items: flex-start; }
-.notification-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+.notification-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: var(--text-sm); }
 .notification-text { flex: 1; min-width: 0; }
 .notification-title { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--text); }
 .notification-message { font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-4xs); }
@@ -234,8 +234,8 @@
   height: 44px;
   min-width: 44px;
   min-height: 44px;
-  font-size: 18px;
-  line-height: 1;
+  font-size: var(--text-base);
+  line-height: var(--leading-none);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;

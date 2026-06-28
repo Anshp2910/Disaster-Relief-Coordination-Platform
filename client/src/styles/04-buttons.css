@@ -329,7 +329,7 @@ button.btn,
   color: var(--text-on-accent);
   font-size: var(--text-base);
   font-weight: var(--font-weight-bold);
-  padding: 14px 28px;
+  padding: var(--space-sm) var(--space-lg);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-danger);
   animation: pulse-soft 2s var(--ease-in-out) infinite;
@@ -340,7 +340,7 @@ button.btn,
   color: var(--text-on-accent);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
-  padding: 8px 16px;
+  padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-accent);
 }
@@ -352,7 +352,7 @@ button.btn,
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
-  padding: 8px 16px;
+  padding: var(--space-xs) var(--space-sm);
 }
 
 .rp-btn {

@@ -41,7 +41,7 @@ html.emergency-mode body {
 .emergency-alert {
   background: linear-gradient(135deg, var(--danger), var(--warning));
   color: var(--text-on-accent);
-  padding: 8px var(--space-lg);
+  padding: var(--space-xs) var(--space-lg);
   text-align: center;
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--tracking-wide);

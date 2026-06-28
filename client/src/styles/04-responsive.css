@@ -49,7 +49,7 @@
   /* Better touch targets on mobile */
   .nav-chip { min-width: 70px; padding: var(--space-sm) var(--space-md); }
   .btn-filter,
-  .filter-pill { padding: 8px 16px; }
+  .filter-pill { padding: var(--space-xs) var(--space-sm); }
   button, .btn { min-height: 44px; }
 }
 
