@@ -2,7 +2,7 @@ import { lazy, ComponentType } from 'react'
 
 function PageLoadError() {
   return (
-    <div className="flex-center min-h-60vh" style={{ flexDirection: 'column', gap: '12px' }}>
+    <div className="flex-center min-h-60vh" style={{ flexDirection: 'column', gap: 'var(--space-xsml)' }}>
       <p className="text-muted">Something went wrong loading this page.</p>
       <button className="btn-primary btn-sm" onClick={() => window.location.reload()}>
         Reload

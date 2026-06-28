@@ -158,11 +158,13 @@
   --tracking-wider: 0.08em;
   --tracking-widest: 0.12em;
 
-  /* ── 8px Spacing Scale ── */
+  /* ── Spacing Scale ── */
   --space-4xs: 2px;
   --space-3xs: 4px;
   --space-2xs: 6px;
   --space-xs: 8px;
+  --space-s: 10px;
+  --space-xsml: 12px;
   --space-sm: 16px;
   --space-md: 24px;
   --space-lg: 32px;
@@ -301,7 +303,7 @@
 --badge-radius: var(--radius-full);
 --badge-font-size: var(--text-xs);
 --badge-font-weight: var(--font-weight-semibold);
---badge-padding: 3px 10px;
+--badge-padding: var(--space-4xs) var(--space-s);
 --badge-success-bg: var(--success-soft);
 --badge-success-fg: var(--success);
 --badge-warning-bg: var(--warning-soft);

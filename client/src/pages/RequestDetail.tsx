@@ -356,7 +356,7 @@ export default function RequestDetail() {
 
         <div className="grid-3-responsive gap-16">
           <motion.div variants={itemVariants} className="card">
-            <h3 className="text-base text-bold text-accent-blue" style={{ margin: '0 0 14px' }}>{t('editRequest.subtitle')}</h3>
+            <h3 className="text-base text-bold text-accent-blue" style={{ margin: '0 0 var(--space-xsml)' }}>{t('editRequest.subtitle')}</h3>
             <p className="text-base m-0 leading-normal">{item.description}</p>
 
             <div className="mt-lg text-sm">

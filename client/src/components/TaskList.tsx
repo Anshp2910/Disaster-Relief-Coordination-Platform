@@ -62,10 +62,10 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
       <div className="bento-header">
         <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="sk-card" style={{ padding: '12px 16px' }}>
-              <div className="sk-line" style={{ width: '70%', height: 14, marginBottom: 6 }} />
+            <div key={i} className="sk-card" style={{ padding: 'var(--space-xsml) var(--space-sm)' }}>
+              <div className="sk-line" style={{ width: '70%', height: 14, marginBottom: 'var(--space-2xs)' }} />
               <div className="sk-line" style={{ width: '40%', height: 10 }} />
             </div>
           ))}
@@ -80,7 +80,7 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
         <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
         <span className="text-xs text-muted">{t('taskList.openCount', { count: tasks.length })}</span>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
         {tasks.length === 0 ? (
           <div className="text-sm text-muted p-md text-center">{t('taskList.noOpenTasks')}</div>
         ) : (

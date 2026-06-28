@@ -317,8 +317,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                 <div className="text-sm chat-bubble" style={{
                   background: isMe ? 'var(--accent)' : 'var(--accent-soft)',
                   color: isMe ? '#fff' : 'var(--text)',
-                  padding: '7px 12px',
-                  borderRadius: isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
+                  padding: 'var(--space-2xs) var(--space-xsml)',
+                  borderRadius: isMe ? 'var(--radius-md) var(--radius-md) var(--radius-2xs) var(--radius-md)' : 'var(--radius-md) var(--radius-md) var(--radius-md) var(--radius-2xs)',
                 }}>
                   {m.text}
                 </div>
@@ -391,7 +391,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           </div>
         </div>
         <span className="text-xs text-muted self-center">{text.length}/2000</span>
-        <RippleBtn type="submit" className="text-xs p-sm flex items-center gap-xs" style={{ height: 36, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
+        <RippleBtn type="submit" className="text-xs p-sm flex items-center gap-xs" style={{ height: 44, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
           {sending ? '...' : <><Send size={14} /> {t('chat.send')}</>}
         </RippleBtn>
       </form>

@@ -396,7 +396,7 @@ export default function Schedules() {
               {t('common.next')} <ChevronRight size={16} />
             </button>
           </div>
-          <div className="week-grid mt-sm" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
+          <div className="week-grid mt-sm" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 'var(--space-xs)' }}>
             {weekDays.map((day, idx) => {
               const key = day.toDateString()
               const daySchedules = schedulesByDay[key] || []
@@ -409,7 +409,7 @@ export default function Schedules() {
                     {day.getDate()} {day.toLocaleDateString('en-IN', { month: 'short' })}
                   </div>
                   {daySchedules.length > 0 && (
-                    <div className="text-xs" style={{ textAlign: 'center', margin: '4px 0' }}>
+                    <div className="text-xs" style={{ textAlign: 'center', margin: 'var(--space-3xs) 0' }}>
                       {daySchedules.length} schedule{daySchedules.length > 1 ? 's' : ''}
                     </div>
                   )}
@@ -424,8 +424,8 @@ export default function Schedules() {
                             background: shiftC.bg,
                             color: shiftC.text,
                             border: `1px solid ${shiftC.border}`,
-                            borderRadius: 4,
-                            padding: '2px 4px',
+                            borderRadius: 'var(--radius-2xs)',
+                            padding: 'var(--space-4xs) var(--space-3xs)',
                             cursor: 'pointer',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',

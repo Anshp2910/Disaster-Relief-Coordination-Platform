@@ -41,10 +41,10 @@
 .gov-navbar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-s);
   cursor: pointer;
   flex-shrink: 0;
-  padding: 4px;
+  padding: var(--space-3xs);
   border-radius: var(--radius-sm);
   transition: opacity var(--duration-fast) var(--ease-out);
   margin-right: var(--space-sm);
@@ -92,8 +92,8 @@
 .gov-navbar-link {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-xsml);
   border: none;
   background: none;
   color: var(--text-secondary);
@@ -133,7 +133,7 @@
 .gov-navbar-controls {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--space-4xs);
   flex-shrink: 0;
 }
 
@@ -147,7 +147,7 @@
   width: 1px;
   height: 24px;
   background: var(--glass-border);
-  margin: 0 4px;
+  margin: 0 var(--space-3xs);
   flex-shrink: 0;
 }
 
@@ -222,13 +222,13 @@
 .gov-navbar-user-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px 4px 6px;
+  gap: var(--space-2xs);
+  padding: var(--space-3xs) var(--space-s) var(--space-3xs) var(--space-2xs);
   border: none;
   background: none;
   color: var(--text-secondary);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   transition: all var(--duration-fast) var(--ease-out);
   font-family: var(--font);
   font-size: var(--text-xs);
@@ -259,8 +259,8 @@
   background: transparent;
   color: var(--text-muted);
   border: none;
-  border-radius: 6px;
-  padding: 0 4px;
+  border-radius: var(--radius-xs);
+  padding: 0 var(--space-3xs);
   cursor: pointer;
   transition: color var(--duration-fast) var(--ease-out);
   appearance: none;
@@ -282,7 +282,7 @@
   cursor: pointer;
   width: 36px;
   height: 36px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   align-items: center;
   justify-content: center;
   transition: all var(--duration-fast) var(--ease-out);
@@ -313,14 +313,14 @@
   align-items: center;
   gap: var(--space-xs);
   width: 100%;
-  padding: 10px 12px;
+  padding: var(--space-s) var(--space-xsml);
   border: none;
   background: none;
   color: var(--text-secondary);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   transition: all var(--duration-fast) var(--ease-out);
   font-family: var(--font);
 }
@@ -346,7 +346,7 @@
 
 .gov-navbar-mobile-theme {
   display: flex;
-  gap: 2px;
+  gap: var(--space-4xs);
 }
 
 /* ── Clean Footer ── */
@@ -401,7 +401,7 @@
   min-height: 100vh;
   background: var(--bg);
   background-image: var(--gradient-bg);
-  padding: 24px;
+  padding: var(--space-md);
   font-family: var(--font);
 }
 .error-card {
@@ -409,37 +409,37 @@
   width: 100%;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 48px 32px;
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl) var(--space-lg);
   text-align: center;
   box-shadow: var(--shadow-xl);
 }
 .error-brand-icon {
   width: 56px;
   height: 56px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   background: var(--danger-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
+  margin: 0 auto var(--space-md);
 }
 .error-title {
-  font-size: 20px;
+  font-size: var(--text-xl);
   font-weight: 700;
   color: var(--text);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-xsml);
   letter-spacing: -0.02em;
 }
 .error-description {
-  font-size: 14px;
+  font-size: var(--text-sm);
   color: var(--text-secondary);
-  margin: 0 0 32px;
+  margin: 0 0 var(--space-lg);
   line-height: 1.6;
 }
 .error-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--space-xsml);
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -453,8 +453,8 @@
 .error-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
+  gap: var(--space-2xs);
+  padding: var(--space-s) var(--space-md);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);

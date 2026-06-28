@@ -33,12 +33,12 @@
 
 .sos-fab-label {
   position: absolute;
-  right: calc(100% + 12px);
+  right: calc(100% + var(--space-xsml));
   background: var(--bg-elevated);
   color: var(--text);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
-  padding: 6px 14px;
+  padding: var(--space-2xs) var(--space-xsml);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);

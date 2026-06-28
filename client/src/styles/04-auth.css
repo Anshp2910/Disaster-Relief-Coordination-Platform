@@ -127,7 +127,7 @@
 .auth-stat-label {
   font-size: var(--text-xs);
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: var(--space-4xs);
 }
 .auth-mission {
   display: flex;
@@ -224,7 +224,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-xs);
-  padding: 10px 16px;
+  padding: var(--space-s) var(--space-sm);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   background: var(--bg-subtle);
@@ -266,7 +266,7 @@
 
 .auth-input {
   width: 100%;
-  padding: 14px 16px;
+  padding: var(--space-xsml) var(--space-sm);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -300,20 +300,20 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
 
 .auth-label {
   position: absolute;
-  left: 16px;
-  top: 14px;
+  left: var(--space-sm);
+  top: var(--space-xsml);
   color: var(--text-muted);
   font-size: var(--text-sm);
   pointer-events: none;
   transition: all var(--duration-normal) var(--ease-spring);
   background: transparent;
-  padding: 0 4px;
+  padding: 0 var(--space-3xs);
   transform-origin: left center;
 }
 
 .auth-input-icon {
   position: absolute;
-  right: 14px;
+  right: var(--space-xsml);
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
@@ -322,7 +322,7 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
 
 .auth-pw-toggle {
   position: absolute;
-  right: 12px;
+  right: var(--space-xsml);
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -372,7 +372,7 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
 /* ── Submit Button ── */
 .auth-submit {
   width: 100%;
-  padding: 13px;
+  padding: var(--space-xsml);
   border-radius: var(--radius-md);
   border: none;
   background: var(--gradient-accent);
@@ -481,7 +481,7 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
   background: var(--danger-soft);
   border: 1px solid rgba(239, 68, 68, 0.2);
   border-radius: var(--radius-md);
-  padding: 10px 14px;
+  padding: var(--space-s) var(--space-xsml);
   font-size: var(--text-xs);
   color: var(--red-300);
   width: 100%;
@@ -496,7 +496,7 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
 }
 .auth-page .auth-field input {
   width: 100%;
-  padding: 12px 14px;
+  padding: var(--space-xsml) var(--space-xsml);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -516,7 +516,7 @@ select.auth-input option { background: var(--bg-card); color: var(--text); }
 }
 .auth-password-toggle {
   position: absolute;
-  right: 12px;
+  right: var(--space-xsml);
   top: 50%;
   transform: translateY(-50%);
   background: none;
