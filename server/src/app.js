@@ -28,7 +28,6 @@ import { getEnv, getJwtSecret } from './config/env.js'
 import { sanitizeBody } from './middleware/sanitize.js'
 import { rateLimitUser } from './middleware/rateLimitUser.js'
 import { requestLogger } from './middleware/requestLogger.js'
-import { requireCsrf } from './routes/auth.js'
 import { logger } from './utils/logger.js'
 
 dotenv.config()
@@ -105,9 +104,8 @@ export function createApp() {
     }),
   )
   app.use(express.json({ limit: '10mb' }))
-  app.use(sanitizeBody)
-  app.use(requireCsrf)
-  app.use('/uploads', async (req, res, next) => {
+app.use(sanitizeBody)
+app.use('/uploads', async (req, res, next) => {
     const token = req.query.token || req.headers.authorization?.slice(7)
     if (!token) return res.status(401).json({ error: 'Authentication required' })
     try {
