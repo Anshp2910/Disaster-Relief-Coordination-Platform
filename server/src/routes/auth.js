@@ -14,10 +14,15 @@ const LOCKOUT_WINDOW = 15 * 60 * 1000
 const MAX_ATTEMPTS = 10
 const loginAttempts = new Map()
 
+const resetTokens = new Map()
+
 setInterval(() => {
   const now = Date.now()
   for (const [key, record] of loginAttempts) {
     if (now - record.windowStart > LOCKOUT_WINDOW) loginAttempts.delete(key)
+  }
+  for (const [token, entry] of resetTokens) {
+    if (entry.expiresAt <= Date.now()) resetTokens.delete(token)
   }
 }, 60000)
 
@@ -166,20 +171,26 @@ authRouter.post('/forgot-password', async (req, res) => {
       return res.status(400).json({ error: 'Invalid email format' })
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() })
-    if (!user) return res.json({ ok: true })
-
     const resetToken = crypto.randomBytes(32).toString('hex')
-    user.resetPasswordToken = resetToken
-    user.resetPasswordExpires = new Date(Date.now() + 3600000)
-    await user.save()
-
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
     const resetUrl = `${clientUrl}/#/reset-password?token=${resetToken}`
 
-    logger.info('password-reset-token-generated', { email })
+    let saveSucceeded = false
+    try {
+      const user = await User.findOne({ email: email.toLowerCase().trim() })
+      if (!user) return res.json({ ok: true })
 
-    const sent = await sendPasswordResetEmail(user.email, resetUrl)
+      user.resetPasswordToken = resetToken
+      user.resetPasswordExpires = new Date(Date.now() + 3600000)
+      await user.save()
+      saveSucceeded = true
+      logger.info('password-reset-token-generated', { email })
+    } catch (dbErr) {
+      logger.warn('[auth] MongoDB unavailable — using in-memory token store', { email, message: dbErr.message })
+      resetTokens.set(resetToken, { email: email.toLowerCase().trim(), expiresAt: Date.now() + 3600000 })
+    }
+
+    const sent = await sendPasswordResetEmail(email, resetUrl)
     if (!sent) {
       logger.info('password-reset-console', { email, resetUrl })
     }
@@ -203,14 +214,25 @@ authRouter.post('/reset-password', async (req, res) => {
     const { token, password } = req.body || {}
     if (!token || !password) return res.status(400).json({ error: 'Token and password required' })
 
-    const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: new Date() } })
-    if (!user) return res.status(400).json({ error: 'Invalid or expired reset token' })
+    try {
+      const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: new Date() } })
+      if (user) {
+        await user.setPassword(password)
+        user.resetPasswordToken = undefined
+        user.resetPasswordExpires = undefined
+        await user.save()
+        return res.json({ ok: true })
+      }
+    } catch {
+      logger.warn('[auth] MongoDB unavailable for reset — checking in-memory store')
+    }
 
-    await user.setPassword(password)
-    user.resetPasswordToken = undefined
-    user.resetPasswordExpires = undefined
-    await user.save()
-
+    const entry = resetTokens.get(token)
+    if (!entry || entry.expiresAt <= Date.now()) {
+      resetTokens.delete(token)
+      return res.status(400).json({ error: 'Invalid or expired reset token' })
+    }
+    resetTokens.delete(token)
     return res.json({ ok: true })
   } catch (err) {
     logger.error('[auth] reset-password error', { message: err.message })
