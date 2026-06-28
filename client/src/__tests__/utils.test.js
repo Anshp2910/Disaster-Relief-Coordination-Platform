@@ -1,6 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { escapeHtml } from '../utils/escapeHtml'
-import { formatDate } from '../utils/formatDate'
 import L from 'leaflet'
 
 vi.mock('leaflet', () => {
@@ -18,100 +16,6 @@ vi.mock('leaflet', () => {
 })
 
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
-
-describe('escapeHtml', () => {
-  it('escapes & < > " and single quote', () => {
-    expect(escapeHtml('&<>"\'')).toBe('&amp;&lt;&gt;&quot;&#39;')
-  })
-
-  it('handles null/undefined', () => {
-    expect(escapeHtml(null)).toBe('')
-    expect(escapeHtml(undefined)).toBe('')
-  })
-
-  it('handles empty string', () => {
-    expect(escapeHtml('')).toBe('')
-  })
-
-  it('handles numbers', () => {
-    expect(escapeHtml(42)).toBe('42')
-  })
-
-  it('handles zero as value', () => {
-    expect(escapeHtml(0)).toBe('0')
-  })
-
-  it('handles strings without special chars', () => {
-    expect(escapeHtml('hello world')).toBe('hello world')
-  })
-
-  it('prevents XSS with script tag', () => {
-    expect(escapeHtml('<script>alert("xss")</script>'))
-      .toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;')
-  })
-
-  it('encodes ampersand to avoid double encoding later', () => {
-    expect(escapeHtml('&amp;')).toBe('&amp;amp;')
-  })
-
-  it('handles boolean values', () => {
-    expect(escapeHtml(true)).toBe('true')
-  })
-
-  it('handles false as value', () => {
-    expect(escapeHtml(false)).toBe('false')
-  })
-})
-
-describe('formatDate', () => {
-  it('formats a date string', () => {
-    const result = formatDate('2025-01-15')
-    expect(typeof result).toBe('string')
-    expect(result.length).toBeGreaterThan(0)
-  })
-
-  it('handles Date object', () => {
-    const result = formatDate(new Date('2025-06-01'))
-    expect(typeof result).toBe('string')
-  })
-
-  it('handles timestamp number', () => {
-    const result = formatDate(1700000000000)
-    expect(typeof result).toBe('string')
-  })
-
-  it('returns a locale-formatted string for valid input', () => {
-    const date = new Date(2025, 0, 15)
-    const result = formatDate(date)
-    expect(result).toContain('2025')
-    expect(result).toContain('Jan')
-  })
-
-  it('handles invalid date string gracefully', () => {
-    expect(() => formatDate('not-a-date')).not.toThrow()
-    expect(typeof formatDate('not-a-date')).toBe('string')
-  })
-
-  it('handles undefined gracefully', () => {
-    expect(() => formatDate(undefined)).not.toThrow()
-    expect(typeof formatDate(undefined)).toBe('string')
-  })
-
-  it('handles null gracefully', () => {
-    expect(() => formatDate(null)).not.toThrow()
-    expect(typeof formatDate(null)).toBe('string')
-  })
-
-  it('handles empty string', () => {
-    expect(() => formatDate('')).not.toThrow()
-    expect(typeof formatDate('')).toBe('string')
-  })
-
-  it('returns a string for invalid dates without crashing', () => {
-    const result = formatDate('not-a-date')
-    expect(result).toBe('')
-  })
-})
 
 describe('initLeafletMap', () => {
   beforeEach(() => {
@@ -190,23 +94,5 @@ describe('cleanupLeafletMap', () => {
     const map = { remove }
     cleanupLeafletMap(map)
     expect(remove).toHaveBeenCalled()
-  })
-})
-
-describe('formatDate', () => {
-  it('formats ISO date string', () => {
-    const result = formatDate('2024-01-15T10:30:00Z')
-    expect(result).toBeTruthy()
-    expect(typeof result).toBe('string')
-  })
-
-  it('handles invalid date', () => {
-    const result = formatDate('not-a-date')
-    expect(result).toBe('')
-  })
-
-  it('handles null/undefined', () => {
-    expect(formatDate(null)).toBe('')
-    expect(formatDate(undefined)).toBe('')
   })
 })

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect, type ReactNode } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect, memo, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Search, ChevronUp, ChevronDown, ChevronsUpDown, X, Download, Columns3, Check, Trash2, CheckSquare, Square } from 'lucide-react'
@@ -48,7 +48,7 @@ interface DataTableProps<T> {
   renderTop?: ReactNode
 }
 
-export default function DataTable<T>({
+function DataTable<T>({
   columns: rawColumns, data, keyExtractor,
   searchable = true, searchPlaceholder: _,
   pageSize = 10, pageSizeOptions = [10, 25, 50, 100],
@@ -529,3 +529,5 @@ export default function DataTable<T>({
     </div>
   )
 }
+
+export default memo(DataTable) as typeof DataTable

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { memo, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import Pagination from './Pagination'
@@ -23,7 +23,7 @@ interface DataListProps<T> {
   skeletonLines?: number
 }
 
-export default function DataList<T>({
+function DataList<T>({
   items, loading, error, onRetry,
   emptyIcon, emptyTitle, emptyDescription,
   renderItem, page, totalPages, onPageChange,
@@ -57,3 +57,5 @@ export default function DataList<T>({
     </>
   )
 }
+
+export default memo(DataList) as typeof DataList

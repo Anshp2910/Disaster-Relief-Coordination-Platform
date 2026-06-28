@@ -110,20 +110,14 @@ export function useSocket() {
       }
     }
 
-    interface Handlers {
-      [event: string]: (data: unknown) => void
-    }
-
-    const handlers: Handlers = {
-      'request:created': (data: unknown) => { const d = data as Record<string, unknown>; addNotification({ type: 'request:created', title: 'New Relief Request', message: `"${(d.item as Record<string, unknown> | undefined)?.title}" has been posted`, requestId: (d.item as Record<string, unknown> | undefined)?._id as string | undefined }); notifyRefreshListeners('request:created') },
-      'request:updated': (data: unknown) => { const d = data as Record<string, unknown>; addNotification({ type: 'request:updated', title: 'Request Updated', message: 'A relief request has been updated', requestId: (d.item as Record<string, unknown> | undefined)?._id as string | undefined }); notifyRefreshListeners('request:updated') },
-      'request:commented': (data: unknown) => { const d = data as Record<string, unknown>; const comment = d.comment as Record<string, unknown> | undefined; const createdBy = comment?.createdBy as Record<string, unknown> | undefined; addNotification({ type: 'request:commented', title: 'New Comment', message: `${createdBy?.displayName || 'Someone'} commented on a request`, requestId: d.requestId as string | undefined }); notifyRefreshListeners('request:commented') },
-      'resource:allocated': (data: unknown) => { const d = data as Record<string, unknown>; const resource = d.resource as Record<string, unknown> | undefined; addNotification({ type: 'resource:allocated', title: 'Resource Allocated', message: `${resource?.name} allocated to a request` }); notifyRefreshListeners('resource:allocated') },
-      'resource:created': (data: unknown) => { const d = data as Record<string, unknown>; addNotification({ type: 'resource:created', title: 'New Resource Added', message: `${(d.item as Record<string, unknown> | undefined)?.name || 'A resource'} has been added` }); notifyRefreshListeners('resource:created') },
-      'sos:alert': (data: unknown) => { const d = data as Record<string, unknown>; addNotification({ type: 'sos:alert', title: 'SOS Emergency Alert', message: (d.message as string) || 'Emergency broadcast received' }); notifyRefreshListeners('sos:alert') },
-      'request:escalated': (data: unknown) => { const d = data as Record<string, unknown>; addNotification({ type: 'request:escalated', title: 'Request Escalated', message: `"${d.title}" has been escalated`, requestId: d.requestId as string | undefined }); notifyRefreshListeners('request:escalated') },
-      'request:deleted': (data: unknown) => { const d = data as Record<string, unknown>; addNotification({ type: 'request:deleted', title: 'Request Deleted', message: 'A relief request has been deleted', requestId: d.id as string | undefined }); notifyRefreshListeners('request:deleted') },
-    }
+    function onRequestCreated(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:created', title: 'New Relief Request', message: `"${(d.item as Record<string, unknown> | undefined)?.title}" has been posted`, requestId: (d.item as Record<string, unknown> | undefined)?._id as string | undefined }); notifyRefreshListeners('request:created') }
+    function onRequestUpdated(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:updated', title: 'Request Updated', message: 'A relief request has been updated', requestId: (d.item as Record<string, unknown> | undefined)?._id as string | undefined }); notifyRefreshListeners('request:updated') }
+    function onRequestCommented(data: unknown) { const d = data as Record<string, unknown>; const comment = d.comment as Record<string, unknown> | undefined; const createdBy = comment?.createdBy as Record<string, unknown> | undefined; addNotification({ type: 'request:commented', title: 'New Comment', message: `${createdBy?.displayName || 'Someone'} commented on a request`, requestId: d.requestId as string | undefined }); notifyRefreshListeners('request:commented') }
+    function onResourceAllocated(data: unknown) { const d = data as Record<string, unknown>; const resource = d.resource as Record<string, unknown> | undefined; addNotification({ type: 'resource:allocated', title: 'Resource Allocated', message: `${resource?.name} allocated to a request` }); notifyRefreshListeners('resource:allocated') }
+    function onResourceCreated(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'resource:created', title: 'New Resource Added', message: `${(d.item as Record<string, unknown> | undefined)?.name || 'A resource'} has been added` }); notifyRefreshListeners('resource:created') }
+    function onSosAlert(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'sos:alert', title: 'SOS Emergency Alert', message: (d.message as string) || 'Emergency broadcast received' }); notifyRefreshListeners('sos:alert') }
+    function onRequestEscalated(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:escalated', title: 'Request Escalated', message: `"${d.title}" has been escalated`, requestId: d.requestId as string | undefined }); notifyRefreshListeners('request:escalated') }
+    function onRequestDeleted(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:deleted', title: 'Request Deleted', message: 'A relief request has been deleted', requestId: d.id as string | undefined }); notifyRefreshListeners('request:deleted') }
 
     const s = (() => { connectSocket(); return socket })()
     if (!s) return
@@ -131,7 +125,14 @@ export function useSocket() {
     s.on('connect', onConnect)
     s.on('disconnect', onDisconnect)
     s.on('connect_error', onConnectError)
-    Object.entries(handlers).forEach(([event, handler]) => s.on(event, handler))
+    s.on('request:created', onRequestCreated)
+    s.on('request:updated', onRequestUpdated)
+    s.on('request:commented', onRequestCommented)
+    s.on('resource:allocated', onResourceAllocated)
+    s.on('resource:created', onResourceCreated)
+    s.on('sos:alert', onSosAlert)
+    s.on('request:escalated', onRequestEscalated)
+    s.on('request:deleted', onRequestDeleted)
 
     window.addEventListener('authchange', onAuthChange)
 
@@ -139,7 +140,14 @@ export function useSocket() {
       s.off('connect', onConnect)
       s.off('disconnect', onDisconnect)
       s.off('connect_error', onConnectError)
-      Object.entries(handlers).forEach(([event, handler]) => s.off(event, handler))
+      s.off('request:created', onRequestCreated)
+      s.off('request:updated', onRequestUpdated)
+      s.off('request:commented', onRequestCommented)
+      s.off('resource:allocated', onResourceAllocated)
+      s.off('resource:created', onResourceCreated)
+      s.off('sos:alert', onSosAlert)
+      s.off('request:escalated', onRequestEscalated)
+      s.off('request:deleted', onRequestDeleted)
       window.removeEventListener('authchange', onAuthChange)
     }
   }, [addNotification])

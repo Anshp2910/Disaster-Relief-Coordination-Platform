@@ -6,6 +6,7 @@ import { User } from '../models/User.js'
 import { requireAuth } from '../middleware/auth.js'
 import { validate } from '../middleware/validate.js'
 import { logger } from '../utils/logger.js'
+import { sendPasswordResetEmail } from '../utils/email.js'
 
 export const authRouter = express.Router()
 
@@ -170,7 +171,15 @@ authRouter.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + 3600000)
     await user.save()
 
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
+    const resetUrl = `${clientUrl}/#/reset-password?token=${resetToken}`
+
     logger.info('password-reset-token-generated', { email })
+
+    const sent = await sendPasswordResetEmail(user.email, resetUrl)
+    if (!sent) {
+      logger.info('password-reset-console', { email, resetUrl })
+    }
 
     return res.json({ ok: true })
   } catch (err) {
