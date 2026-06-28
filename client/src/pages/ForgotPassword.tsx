@@ -44,7 +44,7 @@ export default function ForgotPassword() {
     return (
       <div className="auth-page">
         <div className="auth-card">
-          <motion.div className="auth-content" variants={container} initial="hidden" animate="show">
+          <motion.div className="auth-content" variants={container} initial="hidden" animate="visible">
             <motion.div className="flex-center" style={{ fontSize: '3rem', color: 'var(--success)' }} variants={item}>
               <CheckCircle size={48} />
             </motion.div>
@@ -62,7 +62,7 @@ export default function ForgotPassword() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <motion.form className="auth-content" variants={container} initial="hidden" animate="show" onSubmit={handleSubmit}>
+        <motion.form className="auth-content" variants={container} initial="hidden" animate="visible" onSubmit={handleSubmit}>
           <motion.div className="flex-center" style={{ fontSize: '3rem', color: 'var(--primary)' }} variants={item}>
             <Mail size={48} />
           </motion.div>
