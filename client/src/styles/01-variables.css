@@ -64,7 +64,7 @@
   --text: #0b0f1a;
   --text-secondary: #475569;
   --text-tertiary: #475569;
-  --text-muted: #64748b;
+  --text-muted: #4b5e78;
   --text-disabled: #cbd5e1;
   --text-on-accent: #ffffff;
 
@@ -78,16 +78,16 @@
   --accent-soft: rgba(37, 99, 235, 0.08);
   --accent-soft-hover: rgba(37, 99, 235, 0.14);
 
-  --danger: #ef4444;
-  --danger-hover: #dc2626;
+  --danger: #b91c1c;
+  --danger-hover: #991b1b;
   --danger-soft: rgba(239, 68, 68, 0.08);
 
-  --success: #10b981;
-  --success-hover: #059669;
+  --success: #047857;
+  --success-hover: #065f46;
   --success-soft: rgba(16, 185, 129, 0.08);
 
-  --warning: #f59e0b;
-  --warning-hover: #d97706;
+  --warning: #b45309;
+  --warning-hover: #92400e;
   --warning-soft: rgba(245, 158, 11, 0.08);
 
   --info: var(--blue-500);
@@ -100,9 +100,9 @@
   --gradient-card: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   --gradient-accent: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   --gradient-accent-subtle: linear-gradient(135deg, rgba(37, 99, 235, 0.04) 0%, rgba(59, 130, 246, 0.02) 100%);
-  --gradient-danger: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-  --gradient-success: linear-gradient(135deg, #059669 0%, #10b981 100%);
-  --gradient-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+  --gradient-danger: linear-gradient(135deg, #991b1b 0%, #b91c1c 100%);
+  --gradient-success: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  --gradient-warning: linear-gradient(135deg, #92400e 0%, #b45309 100%);
 
   /* ── Enterprise Shadows (multi-layer, like Stripe/Apple) ── */
   --shadow-xs: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
@@ -336,10 +336,10 @@
   --bg-subtle: #0f0f0f;
   --text: #e0f8ff;
   --text-muted: #a0c8ff;
-  --accent: #00ffea;
-  --accent-hover: #00e5d1;
-  --accent-soft: rgba(0,255,234,0.08);
-  --shadow-accent: 0 0 8px #00ffea, 0 0 20px #00e5d1;
+  --accent: #0f766e;
+  --accent-hover: #0d9488;
+  --accent-soft: rgba(15, 118, 110, 0.08);
+  --shadow-accent: 0 0 8px #0f766e, 0 0 20px #0d9488;
   --gradient-bg: radial-gradient(ellipse at top left, #001f3f, transparent), radial-gradient(ellipse at bottom right, #001f3f, transparent), linear-gradient(180deg, #0a0a0a, #111111);
 }
 
@@ -355,8 +355,8 @@
 
   --text: #e8edf5;
   --text-secondary: #94a3b8;
-  --text-tertiary: #475569;
-  --text-muted: #55607a;
+  --text-tertiary: #8494a7;
+  --text-muted: #7b8ca2;
   --text-disabled: #334155;
   --text-on-accent: #ffffff;
 
@@ -379,8 +379,11 @@
                  radial-gradient(ellipse 60% 50% at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
                  linear-gradient(180deg, #060b18 0%, #0a1020 100%);
   --gradient-card: linear-gradient(180deg, #0f172a 0%, #0c1322 100%);
-  --gradient-accent: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-  --gradient-accent-subtle: linear-gradient(135deg, rgba(96, 165, 250, 0.06) 0%, rgba(59, 130, 246, 0.03) 100%);
+  --gradient-accent: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --gradient-accent-subtle: linear-gradient(135deg, rgba(37, 99, 235, 0.06) 0%, rgba(29, 78, 216, 0.03) 100%);
+  --gradient-danger: linear-gradient(135deg, #991b1b 0%, #b91c1c 100%);
+  --gradient-success: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  --gradient-warning: linear-gradient(135deg, #92400e 0%, #b45309 100%);
 
   --shadow-xs: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
