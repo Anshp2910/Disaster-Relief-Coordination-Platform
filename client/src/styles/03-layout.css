@@ -1,6 +1,25 @@
 ﻿/* ================================================================
-   ENTERPRISE LAYOUT — Container, grids, page structure
+   ENTERPRISE LAYOUT — Fixed navbar, container, grids, page structure
    ================================================================ */
+
+/* ── Page Shell ── */
+.gov-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Main Content ── */
+.gov-main {
+  flex: 1;
+  padding-top: 60px; /* navbar height */
+  padding-bottom: var(--space-xl);
+}
+
+.gov-main > .container,
+.gov-main > div > .container {
+  padding-top: var(--space-lg);
+}
 
 /* ── Container ── */
 .container {
@@ -20,23 +39,6 @@
 
 .container-xl {
   max-width: 1520px;
-}
-
-/* ── Page Shell ── */
-.gov-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.gov-main {
-  flex: 1;
-  padding-bottom: var(--space-xl);
-}
-
-.gov-main > .container,
-.gov-main > div > .container {
-  padding-top: var(--space-lg);
 }
 
 /* ── Page Section Separators ── */

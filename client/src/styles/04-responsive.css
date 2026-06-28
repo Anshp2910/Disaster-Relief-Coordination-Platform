@@ -26,7 +26,7 @@
 
 @media (max-width: 768px) {
   .container { padding: 0 var(--space-md); }
-  html { scroll-padding-top: 60px; }
+  .gov-main { padding-top: 52px; }
 
   /* NavBar mobile: show hamburger, hide desktop links + extras */
   .gov-navbar-links { display: none; }
@@ -55,7 +55,7 @@
 
 @media (max-width: 480px) {
   .container { padding: 0 var(--space-sm); }
-  html { scroll-padding-top: 52px; }
+  .gov-main { padding-top: 48px; }
   .gov-navbar-inner { height: 48px; padding: 0 var(--space-sm); gap: 2px; }
   .kpi-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xs); }
   .kpi-card { padding: var(--space-md); }
