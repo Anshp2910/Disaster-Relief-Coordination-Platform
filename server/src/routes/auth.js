@@ -182,12 +182,14 @@ authRouter.post('/forgot-password', async (req, res) => {
     const sent = await sendPasswordResetEmail(user.email, resetUrl)
     if (!sent) {
       logger.info('password-reset-console', { email, resetUrl })
-      if (process.env.NODE_ENV !== 'production') {
-        return res.json({ ok: true, devResetUrl: resetUrl })
-      }
     }
 
-    return res.json({ ok: true })
+    const payload = { ok: true }
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof sent === 'string') payload.devPreviewUrl = sent
+      else payload.devResetUrl = resetUrl
+    }
+    return res.json(payload)
   } catch (err) {
     logger.error('[auth] forgot-password error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })

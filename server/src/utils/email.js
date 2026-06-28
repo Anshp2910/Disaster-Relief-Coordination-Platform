@@ -3,7 +3,7 @@ import { logger } from './logger.js'
 
 let transporter = null
 
-function getTransporter() {
+async function getTransporter() {
   if (transporter) return transporter
 
   const host = process.env.SMTP_HOST
@@ -12,10 +12,36 @@ function getTransporter() {
   const pass = process.env.SMTP_PASS
 
   if (!host || !user || !pass) {
-    logger.warn('SMTP not configured — emails will be logged to console only', {
-      hint: 'Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in your .env file',
+    if (process.env.NODE_ENV === 'production') {
+      logger.warn('SMTP not configured — emails will be logged to console only', {
+        hint: 'Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in your .env file',
+      })
+      return null
+    }
+
+    logger.info('SMTP not configured — creating ephemeral Ethereal test account...')
+    let testAccount
+    try {
+      testAccount = await nodemailer.createTestAccount()
+    } catch {
+      logger.warn('Failed to create Ethereal test account — emails will be logged to console only')
+      return null
+    }
+
+    logger.info('Ethereal test account created', {
+      user: testAccount.user,
+      pass: testAccount.pass,
+      web: 'https://ethereal.email/login',
     })
-    return null
+
+    transporter = nodemailer.createTransport({
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      auth: { user: testAccount.user, pass: testAccount.pass },
+    })
+
+    return transporter
   }
 
   transporter = nodemailer.createTransport({
@@ -38,7 +64,7 @@ function getTransporter() {
  * @returns {Promise<boolean>} true if sent, false if console-only
  */
 export async function sendEmail({ to, subject, html, text }) {
-  const transport = getTransporter()
+  const transport = await getTransporter()
 
   if (!transport) {
     logger.info('email-console-fallback', {
@@ -50,15 +76,16 @@ export async function sendEmail({ to, subject, html, text }) {
   }
 
   try {
-    await transport.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    const info = await transport.sendMail({
+      from: process.env.SMTP_FROM || transport.options?.auth?.user || 'noreply@localhost',
       to,
       subject,
       html,
       text: text || html.replace(/<[^>]+>/g, ''),
     })
-    logger.info('email-sent', { to, subject })
-    return true
+    const previewUrl = nodemailer.getTestMessageUrl(info)
+    logger.info('email-sent', { to, subject, previewUrl })
+    return previewUrl ? (previewUrl as string) : true
   } catch (err) {
     logger.error('email-send-failed', { to, subject, message: err.message })
     return false
