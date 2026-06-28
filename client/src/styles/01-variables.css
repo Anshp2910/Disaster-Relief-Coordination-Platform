@@ -159,6 +159,7 @@
   --tracking-widest: 0.12em;
 
   /* ── Spacing Scale ── */
+  --space-px: 1px;
   --space-4xs: 2px;
   --space-3xs: 4px;
   --space-2xs: 6px;
@@ -167,6 +168,7 @@
   --space-xsml: 12px;
   --space-sm: 16px;
   --space-md: 24px;
+  --input-pad-y: 20px;
   --space-lg: 32px;
   --space-xl: 48px;
   --space-2xl: 64px;

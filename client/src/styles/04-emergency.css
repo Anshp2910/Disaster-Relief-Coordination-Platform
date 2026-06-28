@@ -89,12 +89,12 @@ html.high-contrast {
 }
 
 html.high-contrast .text-muted {
-  color: #333333 !important;
+  color: var(--text-secondary) !important;
 }
 
 html.high-contrast .bg-card,
 html.high-contrast [class*="card"] {
-  background: #ffffff !important;
-  border: 2px solid #000000 !important;
+  background: var(--bg-card) !important;
+  border: 2px solid var(--border) !important;
 }
 

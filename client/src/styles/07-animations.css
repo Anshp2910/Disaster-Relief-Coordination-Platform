@@ -129,12 +129,3 @@
 .sk-line, .sk-circle, .sk-map, .sk-card .sk-line {
   animation: shimmer 1.5s var(--ease-in-out) infinite;
 }
-
-/* ── Reduced Motion ── */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}

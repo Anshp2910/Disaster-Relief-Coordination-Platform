@@ -11,6 +11,7 @@ import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { escapeHtml } from '../utils/escapeHtml'
 import EmptyState from '../components/EmptyState'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface Item {
   _id: string
@@ -61,7 +62,7 @@ export default function MapOverview() {
       setItems(data.items || [])
       setLoading(false)
     } catch (e) {
-      setError((e as Error).message || 'Failed to load request data')
+      setError(getErrorMessage(e) || 'Failed to load request data')
       setLoading(false)
     }
   }, [])
@@ -126,11 +127,11 @@ export default function MapOverview() {
       }).addTo(map)
 
       marker.bindPopup(`
-        <div style="min-width:180px">
-          <div style="font-weight:700;font-size:13px;margin-bottom:4px">${escapeHtml(item.title || '')}</div>
-          <div style="font-size:12px;color:var(--gov-muted);margin-bottom:4px">${t(`statuses.${item.status || 'Open'}`)} | ${t(`priorities.${item.priority || 'Medium'}`)}</div>
-          <div style="font-size:12px;color:var(--gov-muted);margin-bottom:8px">${escapeHtml(item.locationName || '')}</div>
-          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:linear-gradient(135deg,var(--accent-blue),var(--accent-indigo));color:#fff;text-decoration:none;padding:4px 10px;border-radius:4px;font-size:12px">${t('common.viewDetails')}</a>
+        <div style="min-width:180px;font-family:var(--font)">
+          <div style="font-weight:700;font-size:var(--text-sm);margin-bottom:var(--space-3xs)">${escapeHtml(item.title || '')}</div>
+          <div style="font-size:var(--text-xs);color:var(--gov-muted);margin-bottom:var(--space-3xs)">${t(`statuses.${item.status || 'Open'}`)} | ${t(`priorities.${item.priority || 'Medium'}`)}</div>
+          <div style="font-size:var(--text-xs);color:var(--gov-muted);margin-bottom:var(--space-xs)">${escapeHtml(item.locationName || '')}</div>
+          <a href="#/requests/${escapeHtml(item._id)}" style="display:inline-block;background:var(--gradient-accent);color:var(--text-on-accent);text-decoration:none;padding:var(--space-3xs) var(--space-xsml);border-radius:var(--radius-2xs);font-size:var(--text-xs)">${t('common.viewDetails')}</a>
         </div>
       `)
 

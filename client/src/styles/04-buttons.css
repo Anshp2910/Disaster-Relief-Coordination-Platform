@@ -355,20 +355,3 @@ button.btn,
   padding: var(--space-xs) var(--space-sm);
 }
 
-.rp-btn {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform var(--duration-fast) var(--ease-out);
-}
-.rp-btn:active {
-  transform: scale(0.97);
-}
-.rp-ripple {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.35);
-  transform: scale(0);
-}

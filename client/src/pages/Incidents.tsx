@@ -16,6 +16,7 @@ import { escapeHtml } from '../utils/escapeHtml'
 import { useConfirm } from '../hooks/useConfirm'
 import { useAuth } from '../context/AuthContext'
 import EmptyState from '../components/EmptyState'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface Incident {
   _id: string
@@ -64,13 +65,13 @@ function buildIncidentPopup(inc: Incident) {
   const color = SEVERITY_COLORS[inc.severity || ''] || 'var(--text-muted)'
   const stats = inc.stats || {}
   return `
-    <div style="font-family:Arial,sans-serif;min-width:180px">
-      <div style="font-weight:700;font-size:13px;color:var(--pri-500);margin-bottom:4px">${DISASTER_ICONS[inc.disasterType || ''] || ''} ${escapeHtml(inc.name || '')}</div>
-      <div style="font-size:12px;margin-bottom:6px">
+    <div style="font-family:var(--font);min-width:180px">
+      <div style="font-weight:700;font-size:var(--text-sm);color:var(--pri-500);margin-bottom:var(--space-3xs)">${DISASTER_ICONS[inc.disasterType || ''] || ''} ${escapeHtml(inc.name || '')}</div>
+      <div style="font-size:var(--text-xs);margin-bottom:var(--space-2xs)">
         <span style="color:${color};font-weight:600">${escapeHtml(inc.severity || '')}</span> &middot; ${escapeHtml(inc.status || '')}
       </div>
-      <div style="font-size:12px">Requests: <strong>${stats.requestCount || 0}</strong> (${stats.openRequests || 0} open)</div>
-      <div style="font-size:12px">Resources: <strong>${stats.resourceCount || 0}</strong></div>
+      <div style="font-size:var(--text-xs)">Requests: <strong>${stats.requestCount || 0}</strong> (${stats.openRequests || 0} open)</div>
+      <div style="font-size:var(--text-xs)">Resources: <strong>${stats.resourceCount || 0}</strong></div>
     </div>
   `
 }
@@ -80,7 +81,7 @@ function buildIncidentIcon(inc: Incident) {
   const pulseClass = 'marker-pulse' + (inc.severity === 'Critical' ? ' marker-pulse-danger' : inc.severity === 'High' ? ' marker-pulse-warning' : '')
   return L.divIcon({
     className: pulseClass,
-    html: `<div style="width:28px;height:28px;background:${color};border:2px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
+    html: `<div style="width:28px;height:28px;background:${color};border:2px solid var(--bg-card);border-radius:50%;box-shadow:var(--shadow-md)"></div>`,
     iconSize: [28, 28],
     iconAnchor: [14, 14],
   })
@@ -130,7 +131,7 @@ export default function Incidents() {
       setIncidents(data.items || [])
       setTotalPages(data.pages || 1)
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     } finally {
       setLoading(false)
     }
@@ -238,7 +239,7 @@ export default function Incidents() {
       setShowForm(false)
       load()
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     }
   }
 
@@ -250,7 +251,7 @@ export default function Incidents() {
       setSelectedIncident(null)
       load()
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     }
   }
 

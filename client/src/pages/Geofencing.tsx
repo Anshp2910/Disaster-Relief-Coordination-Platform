@@ -7,6 +7,7 @@ import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
 import { escapeHtml } from '../utils/escapeHtml'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const DEFAULT_CENTER: [number, number] = [20.5937, 78.9629]
 const SEVERITY_COLORS: Record<string, string> = { Critical: 'var(--severity-critical)', High: 'var(--severity-high)', Medium: 'var(--severity-medium)', Low: 'var(--severity-low)' }
@@ -62,7 +63,7 @@ const MAX_HISTORY = 20
 function createMapIcon(color: string) {
   return L.divIcon({
     className: 'marker-pulse',
-    html: `<div style="width:22px;height:22px;background:${color};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>`,
+    html: `<div style="width:22px;height:22px;background:${color};border:2px solid var(--bg-card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--text-3xs);box-shadow:var(--shadow-md)"></div>`,
     iconSize: [22, 22],
     iconAnchor: [11, 11],
   })
@@ -116,7 +117,7 @@ export default function Geofencing() {
         return next.slice(0, MAX_HISTORY)
       })
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     } finally {
       setLoading(false)
     }
@@ -311,7 +312,6 @@ export default function Geofencing() {
             onClick={toggleMonitoring}
             disabled={!position}
             className={`text-sm p-sm flex items-center gap-xs ${monitoring ? 'btn-danger' : 'btn-pill'}`}
-            style={monitoring ? { background: 'var(--gov-danger)', color: '#fff', border: 'none', borderRadius: '4px' } : {}}
             aria-label={monitoring ? 'Stop monitoring' : 'Start monitoring'}
           >
             <Activity size={16} />

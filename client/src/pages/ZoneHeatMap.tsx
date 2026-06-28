@@ -14,6 +14,7 @@ import { escapeHtml } from '../utils/escapeHtml'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import EmptyState from '../components/EmptyState'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface Zone {
   _id: string
@@ -87,29 +88,29 @@ const itemVariants = createListItem(10, 0.3)
 function buildPopup(zone: Zone, color: { fill: string }, t: (key: string) => string) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus || ''] || 'var(--text-muted)'
   return `
-    <div style="font-family:Arial,sans-serif;min-width:200px">
-      <div style="font-weight:700;font-size:14px;color:var(--pri-500);margin-bottom:4px">
+    <div style="font-family:var(--font);min-width:200px">
+      <div style="font-weight:700;font-size:var(--text-sm);color:var(--pri-500);margin-bottom:var(--space-3xs)">
         ${DISASTER_ICONS[zone.disasterType || ''] || ''} ${escapeHtml(zone.name || '')}
       </div>
-      <div style="font-size:12px;margin-bottom:6px">
+      <div style="font-size:var(--text-xs);margin-bottom:var(--space-2xs)">
         <span style="color:${color.fill};font-weight:600">${escapeHtml(zone.severity || '')}</span> severity
         &middot; ${escapeHtml(zone.disasterType || '')}
       </div>
-      <div style="font-size:12px;margin-bottom:4px">Radius: ${zone.radiusKm} km</div>
+      <div style="font-size:var(--text-xs);margin-bottom:var(--space-3xs)">Radius: ${zone.radiusKm} km</div>
       ${(zone.affectedPopulation ?? 0) > 0
-        ? `<div style="font-size:12px;margin-bottom:4px">Affected: ${zone.affectedPopulation?.toLocaleString()}</div>`
+        ? `<div style="font-size:var(--text-xs);margin-bottom:var(--space-3xs)">Affected: ${zone.affectedPopulation?.toLocaleString()}</div>`
         : ''
       }
-      <hr style="margin:6px 0;border:none;border-top:1px solid rgba(255,255,255,0.1)"/>
-      <div style="font-size:12px">
+      <hr style="margin:var(--space-2xs) 0;border:none;border-top:1px solid var(--border-light)"/>
+      <div style="font-size:var(--text-xs)">
         <div>Open requests: <strong style="color:var(--red-500)">${zone.openRequests}</strong></div>
         <div>Resources: <strong>${zone.totalResources}</strong> units</div>
-        <div style="margin-top:4px">
-          Coverage: <span style="background:${coverageColor};color:var(--gov-white);padding:1px 6px;border-radius:3px;font-size:11px">${escapeHtml(zone.coverageStatus || '')}</span>
+        <div style="margin-top:var(--space-3xs)">
+          Coverage: <span style="background:${coverageColor};color:var(--text-on-accent);padding:var(--space-px) var(--space-2xs);border-radius:var(--radius-2xs);font-size:var(--text-3xs)">${escapeHtml(zone.coverageStatus || '')}</span>
         </div>
       </div>
-      <div style="margin-top:8px">
-        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:var(--gov-blue);color:var(--gov-white);border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px">${t('common.viewDetails')}</button>
+      <div style="margin-top:var(--space-xs)">
+        <button data-zone-id="${escapeHtml(zone._id)}" class="zone-view-btn" style="background:var(--gradient-accent);color:var(--text-on-accent);border:none;padding:var(--space-3xs) var(--space-xsml);border-radius:var(--radius-2xs);cursor:pointer;font-size:var(--text-3xs);font-weight:var(--font-weight-semibold)">${t('common.viewDetails')}</button>
       </div>
     </div>
   `
@@ -156,7 +157,7 @@ export default function ZoneHeatMap() {
       const data = await clientApi.getZones(params) as { items?: Zone[] }
       setZones(data.items || [])
     } catch (e) {
-      setError((e as Error).message || 'Failed to load zones')
+      setError(getErrorMessage(e) || 'Failed to load zones')
     } finally {
       setLoading(false)
     }
@@ -292,7 +293,7 @@ export default function ZoneHeatMap() {
       setShowForm(false)
       load()
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     } finally {
       setSaving(false)
     }
@@ -306,7 +307,7 @@ export default function ZoneHeatMap() {
       setSelectedZone(null)
       load()
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     }
   }
 

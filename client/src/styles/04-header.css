@@ -80,7 +80,7 @@
 .gov-navbar-links {
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: var(--space-px);
   flex: 1;
   justify-content: center;
   overflow-x: auto;
@@ -140,7 +140,7 @@
 .gov-navbar-btn-group {
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: var(--space-px);
 }
 
 .gov-navbar-divider {

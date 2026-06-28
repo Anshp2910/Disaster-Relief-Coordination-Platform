@@ -8,7 +8,6 @@
   border-radius: var(--radius-sm);
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
   margin-bottom: var(--space-xs);
   position: relative;
   overflow: hidden;
@@ -26,7 +25,6 @@
 .sk-card .sk-line {
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
 }
 
 .sk-map {
@@ -35,7 +33,6 @@
   border-radius: var(--radius-md);
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
 }
 
 .sk-circle {
@@ -44,7 +41,6 @@
   border-radius: 50%;
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
 }
 
 .sk-list {
@@ -52,4 +48,3 @@
   flex-direction: column;
   gap: var(--space-sm);
 }
-

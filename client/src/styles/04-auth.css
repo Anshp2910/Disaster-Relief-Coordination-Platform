@@ -287,6 +287,8 @@
 .auth-input:not(:placeholder-shown) + .auth-label {
   transform: translateY(-22px) scale(0.85);
   color: var(--accent);
+  background: var(--bg-card);
+  padding: 0 var(--space-3xs);
 }
 select.auth-input {
   appearance: none;

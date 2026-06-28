@@ -8,6 +8,7 @@ import { useAutoSave, AutoSaveIndicator } from '../hooks/useAutoSave'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { safeGetItem, safeRemoveItem } from '../utils/storage'
 import { CATEGORY_OPTIONS, PRIORITY_OPTIONS, STATUS_OPTIONS } from '../utils/constants'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface Suggestion {
   lat: string
@@ -313,7 +314,7 @@ export default function RequestForm({
       await onSubmit(data)
       safeRemoveItem(draftKeyRef.current)
     } catch (err) {
-      setError((err as Error).message || 'Failed to submit')
+      setError(getErrorMessage(err) || 'Failed to submit')
     } finally {
       setFormLoading(false)
     }
