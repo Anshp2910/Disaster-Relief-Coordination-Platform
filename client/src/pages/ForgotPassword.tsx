@@ -16,6 +16,7 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [devUrl, setDevUrl] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -26,7 +27,8 @@ export default function ForgotPassword() {
     }
     setLoading(true)
     try {
-      await clientApi.forgotPassword(email)
+      const res = await clientApi.forgotPassword(email)
+      setDevUrl((res as { devResetUrl?: string }).devResetUrl || '')
       setSent(true)
     } catch (err) {
       const msg = getErrorMessage(err)
@@ -50,6 +52,12 @@ export default function ForgotPassword() {
             </motion.div>
             <motion.h1 className="auth-title" variants={item}>{t('auth.checkEmail')}</motion.h1>
             <motion.p className="auth-subtitle" variants={item}>{t('auth.resetLinkSent')}</motion.p>
+            {devUrl && (
+              <motion.div className="auth-field" variants={item} style={{ width: '100%' }}>
+                <label htmlFor="devResetUrl">{t('auth.devResetLink') || 'Dev reset link (SMTP not configured):'}</label>
+                <input id="devResetUrl" type="text" readOnly value={devUrl} onClick={(e) => (e.target as HTMLInputElement).select()} style={{ fontSize: 'var(--text-xs)', wordBreak: 'break-all' }} />
+              </motion.div>
+            )}
             <motion.div variants={item}>
               <Link to="/login" className="auth-link">{t('auth.backToLogin')}</Link>
             </motion.div>
