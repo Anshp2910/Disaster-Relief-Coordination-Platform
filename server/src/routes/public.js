@@ -4,6 +4,7 @@ import { Resource } from '../models/Resource.js'
 import { Zone } from '../models/Zone.js'
 import { Incident } from '../models/Incident.js'
 import { SosAlert } from '../models/SosAlert.js'
+import { logger } from '../utils/logger.js'
 
 const router = Router()
 
@@ -44,7 +45,7 @@ router.get('/overview', async (req, res) => {
       updatedAt: new Date().toISOString(),
     })
   } catch (err) {
-    console.error('Public overview error:', err.message)
+    logger.error('Public overview error', { message: err.message })
     res.status(500).json({ error: 'Failed to fetch overview' })
   }
 })

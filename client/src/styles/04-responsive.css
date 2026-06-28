@@ -92,3 +92,48 @@
 [dir="rtl"] .toast-item { flex-direction: row-reverse; }
 [dir="rtl"] .notification-dropdown { right: auto; left: 0; }
 [dir="rtl"] .activity-item:hover { padding-left: var(--space-lg); padding-right: calc(var(--space-lg) + 3px); border-left: none; border-right: 3px solid var(--accent); }
+
+/* ── Modal Responsive ── */
+@media (max-width: 480px) {
+  .modal-card { max-width: calc(100vw - var(--space-md)); margin: var(--space-sm); }
+}
+
+/* ── Command Palette Responsive ── */
+@media (max-width: 480px) {
+  .cmd-palette { max-width: calc(100vw - var(--space-md)); margin: var(--space-sm); border-radius: var(--radius-md); }
+  .cmd-palette-overlay { padding-top: 5vh; }
+}
+
+/* ── SOS FAB Responsive ── */
+@media (max-width: 480px) {
+  .sos-fab { bottom: var(--space-md); right: var(--space-md); }
+}
+
+/* ── Map Responsive ── */
+@media (max-width: 768px) {
+  .mapBox { min-height: 260px; height: 35vh; }
+  .map-container-full { min-height: 50vh; }
+}
+
+/* ── StepForm Responsive ── */
+@media (max-width: 480px) {
+  .sf-header { gap: 0; }
+  .sf-step-indicator { width: 28px; height: 28px; font-size: var(--text-3xs); }
+  .sf-content { min-height: 80px; }
+}
+
+/* ── DataTable Responsive ── */
+@media (max-width: 768px) {
+  .dt-container { overflow-x: auto; }
+  .dt-pagination { flex-wrap: wrap; gap: var(--space-xs); }
+}
+
+/* ── ModernSelect Responsive ── */
+@media (max-width: 480px) {
+  .ms-dropdown { max-height: 180px; }
+}
+
+/* ── Location Search Responsive ── */
+@media (max-width: 480px) {
+  .location-search-input { font-size: var(--text-sm); }
+}

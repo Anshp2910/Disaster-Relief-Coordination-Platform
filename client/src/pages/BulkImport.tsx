@@ -6,6 +6,7 @@ import { PageHeader, ErrorState, RippleBtn, PageTransition } from '../components
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 import { downloadBlob } from '../utils/export'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface ColumnMap {
   csvCol: string
@@ -280,7 +281,7 @@ export default function BulkImport() {
       await (tab === 'requests' ? clientApi.exportRequestsCSV() : clientApi.exportResourcesCSV())
       toast.success(t('bulkImport.exportSuccess') || 'CSV exported successfully')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     }
   }
 

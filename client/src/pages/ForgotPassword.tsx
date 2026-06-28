@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
 import { Mail, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
 import { clientApi } from '../api/client'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const container = createStagger(0.08, 0.1)
 const item = createListItem(20, 0.5)
@@ -28,7 +29,7 @@ export default function ForgotPassword() {
       await clientApi.forgotPassword(email)
       setSent(true)
     } catch (err) {
-      const msg = (err as Error).message
+      const msg = getErrorMessage(err)
       if (msg.includes('429') || msg.toLowerCase().includes('too many') || msg.toLowerCase().includes('rate limit')) {
         setError(t('auth.rateLimited') || 'Too many requests. Please wait a moment and try again.')
       } else {

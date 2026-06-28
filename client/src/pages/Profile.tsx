@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../components/Toast'
 import { clientApi } from '../api/client'
 import { evaluatePasswordStrength } from '../utils/passwordStrength'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 export default function Profile() {
   const { t } = useTranslation()
@@ -63,7 +64,7 @@ export default function Profile() {
       toast.success(t('profile.avatarUpdated'))
       setSelectedFile(null)
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -192,7 +193,7 @@ export default function Profile() {
         </div>
         <div className="text-sm mb-lg flex items-center gap-xs">
           <Shield size={14} className="text-muted" aria-hidden="true" />
-          <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${user?.role}` as any) || user?.role}</strong>
+          <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${user?.role}` as string) || user?.role}</strong>
         </div>
 
         <form onSubmit={handleUpdateProfile}>

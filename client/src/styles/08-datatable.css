@@ -209,7 +209,7 @@
 
 .dt-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .dt-table { display: flex; flex-direction: column; min-width: 100%; }
-.dt-thead { display: flex; flex-direction: column; z-index: 10; }
+.dt-thead { display: flex; flex-direction: column; z-index: var(--z-above); }
 .dt-thead.dt-sticky { position: sticky; top: 0; }
 .dt-tbody { display: flex; flex-direction: column; }
 

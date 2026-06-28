@@ -6,6 +6,7 @@ import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { haversineKm, escapeRegex } from '../utils/geo.js'
+import { logger } from '../utils/logger.js'
 
 export const incidentsRouter = express.Router()
 
@@ -66,7 +67,7 @@ incidentsRouter.get('/', requireAuth, validateQuery(querySchemas.incidentsList),
             }).select('quantity').lean(),
           ])
         } catch (geoErr) {
-          console.error('[incidents] geo fallback:', geoErr.message)
+          logger.error('[incidents] geo fallback', { message: geoErr.message })
           const allR = await Request.find({}).select('lat lng status').lean()
           const allRes = await Resource.find({}).select('lat lng quantity').lean()
           zoneRequests = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (z.radiusKm || 10))
@@ -83,7 +84,7 @@ incidentsRouter.get('/', requireAuth, validateQuery(querySchemas.incidentsList),
 
     res.json({ items: enriched, total, pages: Math.ceil(total / Number(limit)) })
   } catch (err) {
-    console.error('[incidents] list error:', err.message)
+    logger.error('[incidents] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -97,7 +98,7 @@ incidentsRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res
     if (!incident) return res.status(404).json({ error: 'Incident not found' })
     res.json({ item: incident })
   } catch (err) {
-    console.error('[incidents] get error:', err.message)
+    logger.error('[incidents] get error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -110,7 +111,7 @@ incidentsRouter.post('/', requireAuth, requireAdmin, validate('createIncident'),
     await incident.save()
     return res.status(201).json({ item: incident })
   } catch (err) {
-    console.error('[incidents] create error:', err.message)
+    logger.error('[incidents] create error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -132,7 +133,7 @@ incidentsRouter.put('/:id', requireAuth, requireAdmin, validateObjectId('id'), v
     await incident.save()
     return res.json({ item: incident })
   } catch (err) {
-    console.error('[incidents] update error:', err.message)
+    logger.error('[incidents] update error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -146,7 +147,7 @@ incidentsRouter.delete('/:id', requireAuth, requireAdmin, validateObjectId('id')
     await incident.deleteOne()
     return res.json({ ok: true })
   } catch (err) {
-    console.error('[incidents] delete error:', err.message)
+    logger.error('[incidents] delete error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

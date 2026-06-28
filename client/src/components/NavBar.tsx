@@ -97,7 +97,7 @@ export function NavBar() {
         <button
           className="gov-navbar-brand"
           onClick={() => { navigate('/dashboard') }}
-          aria-label="Go to dashboard"
+          aria-label={t('nav.dashboard')}
         >
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none" className="gov-navbar-logo" aria-hidden="true">
             <rect width="40" height="40" rx="10" fill="var(--accent)" />
@@ -133,8 +133,8 @@ export function NavBar() {
                 <button
                   className="gov-navbar-tool-btn"
                   onClick={() => window.dispatchEvent(new CustomEvent('toggle-cmd-palette'))}
-                  aria-label="Open command palette"
-                  title="Command palette (Ctrl+K)"
+                  aria-label={t('nav.openCommandPalette')}
+                  title={t('nav.commandPaletteHint')}
                 >
                   <Search size={14} />
                 </button>
@@ -160,24 +160,24 @@ export function NavBar() {
                 <button
                   onClick={toggleTheme}
                   className="gov-navbar-tool-btn"
-                  aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-                  title={theme === 'light' ? 'Dark mode' : 'Light mode'}
+                  aria-label={t('nav.switchTo', { mode: theme === 'light' ? t('nav.darkMode') : t('nav.lightMode') })}
+                  title={theme === 'light' ? t('nav.darkMode') : t('nav.lightMode')}
                 >
                   {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
                 </button>
                 <button
                   onClick={togglePremiumTheme}
                   className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`}
-                  aria-label={isPremium ? 'Disable premium theme' : 'Activate premium theme'}
-                  title="Premium theme (Alt+N)"
+                  aria-label={isPremium ? t('nav.disablePremiumTheme') : t('nav.activatePremiumTheme')}
+                  title={t('nav.premiumThemeHint')}
                 >
                   <Zap size={14} />
                 </button>
                 <button
                   onClick={toggleEmergency}
                   className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`}
-                  aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'}
-                  title="Emergency mode (Alt+E)"
+                  aria-label={isEmergency ? t('nav.disableEmergencyMode') : t('nav.activateEmergencyMode')}
+                  title={t('nav.emergencyModeHint')}
                 >
                   <AlertTriangle size={14} />
                   {isEmergency && <span className="gov-navbar-emergency-dot" />}
@@ -192,7 +192,7 @@ export function NavBar() {
                 <button
                   onClick={() => { navigate('/profile') }}
                   className="gov-navbar-user-btn"
-                  aria-label="Profile"
+                  aria-label={t('nav.profile')}
                   title={currentUser?.displayName || t('nav.profile')}
                 >
                   <User size={16} />
@@ -220,7 +220,7 @@ export function NavBar() {
             onClick={() => setMenuOpen(!menuOpen)}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
           >
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -229,7 +229,7 @@ export function NavBar() {
 
       {/* ─── Mobile Menu ─── */}
       {menuOpen && showNav && (
-        <div className="gov-navbar-mobile" id="mobile-menu" role="region" aria-label="Mobile navigation">
+        <div className="gov-navbar-mobile" id="mobile-menu" role="region" aria-label={t('nav.mobileNavigation')}>
           <div className="gov-navbar-mobile-section-label">{t('nav.navigation')}</div>
           {filteredLinks.map((link) => (
             <button
@@ -260,13 +260,13 @@ export function NavBar() {
               </select>
             </div>
             <div className="gov-navbar-mobile-theme">
-              <button onClick={toggleTheme} className="gov-navbar-tool-btn" aria-label="Toggle theme">
+              <button onClick={toggleTheme} className="gov-navbar-tool-btn" aria-label={t('nav.toggleTheme')}>
                 {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
               </button>
-              <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} aria-label="Toggle premium theme" title="Premium theme (Alt+N)">
+              <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} aria-label={t('nav.togglePremiumTheme')} title={t('nav.premiumThemeHint')}>
                 <Zap size={14} />
               </button>
-              <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} aria-label={isEmergency ? 'Disable emergency mode' : 'Activate emergency mode'} title="Emergency mode (Alt+E)">
+              <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} aria-label={isEmergency ? t('nav.disableEmergencyMode') : t('nav.activateEmergencyMode')} title={t('nav.emergencyModeHint')}>
                 <AlertTriangle size={14} />
               </button>
             </div>

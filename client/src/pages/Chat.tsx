@@ -8,6 +8,7 @@ import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface Message {
   _id: string
@@ -99,7 +100,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     function onMessage(data: { message?: Message }) {
       if (String(data.message?.requestId) === String(requestId)) {
         setMessages((prev) => {
-          if (prev.some((m) => m._id === data.message!._id)) return prev
+          if (prev.some((m) => m._id === data.message?._id)) return prev
           return [...prev, data.message!]
         })
         const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
@@ -183,7 +184,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           const data = (await clientApi.sendChatMessage(requestId, msg)) as { message?: Message }
           if (data.message) {
             setMessages((prev) => {
-              if (prev.some((m) => m._id === data.message!._id)) return prev
+              if (prev.some((m) => m._id === data.message?._id)) return prev
               return [...prev, data.message!]
             })
             const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
@@ -191,7 +192,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           }
         }
       } catch (err) {
-        toast.error((err as Error).message)
+        toast.error(getErrorMessage(err))
       }
       setSelectedFile(null)
       setSending(false)
@@ -205,7 +206,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       const data = (await clientApi.sendChatMessage(requestId, msg)) as { message?: Message }
       if (data.message) {
         setMessages((prev) => {
-          if (prev.some((m) => m._id === data.message!._id)) return prev
+          if (prev.some((m) => m._id === data.message?._id)) return prev
           return [...prev, data.message!]
         })
         const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
@@ -213,9 +214,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       }
       inputRef.current?.focus()
     } catch (err) {
-      const e = err as Error
       setText(msg)
-      toast.error(e.message)
+      toast.error(getErrorMessage(err))
     } finally {
       setSending(false)
     }

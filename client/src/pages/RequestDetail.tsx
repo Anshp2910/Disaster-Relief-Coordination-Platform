@@ -15,6 +15,7 @@ import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import Chat from './Chat'
 import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -130,11 +131,12 @@ export default function RequestDetail() {
   const { confirm, ConfirmDialog } = useConfirm()
 
   const load = useCallback(async () => {
+    if (!id) return
     try {
-      const data = await clientApi.getRequest(id!) as { item: RequestDetailItem }
+      const data = await clientApi.getRequest(id) as { item: RequestDetailItem }
       setItem(data.item)
     } catch (err) {
-      setError((err as Error).message)
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -150,8 +152,9 @@ export default function RequestDetail() {
   }, [])
 
   const loadFeedback = useCallback(async () => {
+    if (!id) return
     try {
-      const data = await clientApi.getFeedback(id!) as { feedback?: Feedback[] }
+      const data = await clientApi.getFeedback(id) as { feedback?: Feedback[] }
       setFeedbackList(data.feedback || [])
     } catch {
       // silent
@@ -159,8 +162,9 @@ export default function RequestDetail() {
   }, [id])
 
   const loadMatches = useCallback(async () => {
+    if (!id) return
     try {
-      const data = await clientApi.matchResources(id!) as { matches?: Match[] }
+      const data = await clientApi.matchResources(id) as { matches?: Match[] }
       setMatches(data.matches || [])
     } catch {
       // silent
@@ -181,7 +185,8 @@ export default function RequestDetail() {
     e.preventDefault()
     setFeedbackLoading(true)
     try {
-      await clientApi.submitFeedback(id!, { rating: feedbackRating, comment: feedbackComment, deliveryConfirmed: true })
+      if (!id) return
+      await clientApi.submitFeedback(id, { rating: feedbackRating, comment: feedbackComment, deliveryConfirmed: true })
       setFeedbackComment('')
       setFeedbackRating(5)
       setShowFeedbackForm(false)
@@ -189,7 +194,7 @@ export default function RequestDetail() {
       load()
       toast.success(t('requestDetail.feedbackSubmitted') || 'Feedback submitted')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setFeedbackLoading(false)
     }
@@ -199,67 +204,72 @@ export default function RequestDetail() {
     const ok = await confirm({ message: t('dashboard.deleteConfirm') || 'Are you sure you want to delete this request?', confirmText: t('dashboard.delete'), danger: true })
     if (!ok) return
     try {
-      await clientApi.deleteRequest(id!)
+      if (!id) return
+      await clientApi.deleteRequest(id)
       toast.success(t('requestDetail.deleted') || 'Request deleted')
       navigate('/')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     }
   }
 
   async function handleClaim() {
+    if (!id) return
     setClaiming(true)
     try {
-      const data = await clientApi.claimRequest(id!) as { item: RequestDetailItem }
+      const data = await clientApi.claimRequest(id) as { item: RequestDetailItem }
       setItem(data.item)
       toast.success(t('requestDetail.claimed') || 'Request claimed')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setClaiming(false)
     }
   }
 
   async function handleUnclaim() {
+    if (!id) return
     const ok = await confirm({ message: t('dashboard.unclaimConfirm') || 'Are you sure you want to unclaim this request?', confirmText: t('dashboard.unclaim'), danger: true })
     if (!ok) return
     setClaiming(true)
     try {
-      const data = await clientApi.unclaimRequest(id!) as { item: RequestDetailItem }
+      const data = await clientApi.unclaimRequest(id) as { item: RequestDetailItem }
       setItem(data.item)
       toast.success(t('requestDetail.unclaimed') || 'Request unclaimed')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setClaiming(false)
     }
   }
 
   async function handleComment(e: React.FormEvent) {
+    if (!id) return
     e.preventDefault()
     if (!comment.trim()) return
     setPosting(true)
     try {
-      const data = await clientApi.addComment(id!, comment) as { comments?: CommentItem[] }
+      const data = await clientApi.addComment(id, comment) as { comments?: CommentItem[] }
       setItem((prev) => ({ ...prev!, comments: data.comments || prev?.comments || [] }))
       setComment('')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setPosting(false)
     }
   }
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!id) return
     const files = Array.from(e.target.files || [])
     if (!files.length) return
     setUploading(true)
     try {
-      const data = await clientApi.uploadFiles(id!, files) as { files: FileItem[] }
+      const data = await clientApi.uploadFiles(id, files) as { files: FileItem[] }
       setItem((prev) => ({ ...prev!, files: data.files }))
       toast.success(t('requestDetail.filesUploaded') || 'Files uploaded')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
@@ -267,54 +277,58 @@ export default function RequestDetail() {
   }
 
   async function handleDeleteFile(fileId: string) {
+    if (!id) return
     const ok = await confirm({ message: 'Delete this file?', danger: true })
     if (!ok) return
     try {
-      const data = await clientApi.deleteFile(id!, fileId) as { files: FileItem[] }
+      const data = await clientApi.deleteFile(id, fileId) as { files: FileItem[] }
       setItem((prev) => ({ ...prev!, files: data.files }))
       toast.success('File deleted')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     }
   }
 
   async function handleDeleteComment(commentId: string) {
+    if (!id) return
     const ok = await confirm({ message: t('dashboard.deleteConfirm'), danger: true })
     if (!ok) return
     try {
-      await clientApi.deleteComment(id!, commentId)
+      await clientApi.deleteComment(id, commentId)
       setItem((prev) => ({ ...prev!, comments: (prev?.comments || []).filter((c: { _id: string }) => c._id !== commentId) }))
       toast.success(t('requestDetail.commentDeleted') || 'Comment deleted')
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     }
   }
 
   async function handleAllocate(e: React.FormEvent) {
+    if (!id) return
     e.preventDefault()
     if (!allocResource || !allocQty) return
     setAllocating(true)
     try {
-      await clientApi.allocateResource(allocResource, { requestId: id!, allocQuantity: Number(allocQty) })
+      await clientApi.allocateResource(allocResource, { requestId: id, allocQuantity: Number(allocQty) })
       setAllocResource('')
       setAllocQty('')
       loadResources()
       toast.success(t('requestDetail.allocatedSuccessfully'))
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setAllocating(false)
     }
   }
 
   async function quickAllocate(match: Match) {
+    if (!id) return
     try {
-      await clientApi.allocateResource(match._id, { requestId: id!, allocQuantity: Math.min(match.quantity ?? 0, 10) })
+      await clientApi.allocateResource(match._id, { requestId: id, allocQuantity: Math.min(match.quantity ?? 0, 10) })
       loadResources()
       loadMatches()
       toast.success(t('requestDetail.resourceAllocated'))
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     }
   }
 
@@ -599,7 +613,7 @@ export default function RequestDetail() {
           </div>
           {showChat && (
             <div id="chat-panel" className="mt-sm overflow-hidden border-gov rounded-sm" style={{ height: 350 }}>
-              <Chat requestId={id!} onClose={() => setShowChat(false)} />
+              <Chat requestId={id || ''} onClose={() => setShowChat(false)} />
             </div>
           )}
         </motion.div>

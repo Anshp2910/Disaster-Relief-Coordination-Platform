@@ -513,7 +513,7 @@ export default function RequestForm({
                 </div>
               </div>
 
-              <div ref={mapRef} className="mapBox" role="application" aria-label="Map for selecting location" />
+              <div ref={mapRef} className="mapBox" role="application" aria-label={t('map.selectLocation')} />
             </div>
           )}
 

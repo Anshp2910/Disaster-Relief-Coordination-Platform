@@ -6,6 +6,7 @@ import { Request } from '../models/Request.js'
 import { Zone } from '../models/Zone.js'
 import { Incident } from '../models/Incident.js'
 import { ChatMessage } from '../models/ChatMessage.js'
+import { logger } from '../utils/logger.js'
 
 export const escCsv = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
 
@@ -42,7 +43,7 @@ adminRouter.get('/stats', async (req, res) => {
       dailyRequests: dailyRequests.map((d) => ({ date: d._id, count: d.count })),
     })
   } catch (err) {
-    console.error('[admin] stats error:', err.message)
+    logger.error('[admin] stats error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -63,7 +64,7 @@ adminRouter.get('/users', validateQuery(querySchemas.adminUsersList), async (req
     ])
     return res.json({ users, total, pages: Math.ceil(total / lim) })
   } catch (err) {
-    console.error('[admin] users list error:', err.message)
+    logger.error('[admin] users list error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -80,7 +81,7 @@ adminRouter.put('/users/:id/role', validateObjectId('id'), validate('updateUserR
     await user.save()
     return res.json({ user: { _id: user._id, email: user.email, displayName: user.displayName, role: user.role } })
   } catch (err) {
-    console.error('[admin] role update error:', err.message)
+    logger.error('[admin] role update error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -103,7 +104,7 @@ adminRouter.delete('/users/:id', validateObjectId('id'), async (req, res) => {
     await user.deleteOne()
     return res.json({ deleted: true })
   } catch (err) {
-    console.error('[admin] user delete error:', err.message)
+    logger.error('[admin] user delete error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -118,7 +119,7 @@ adminRouter.delete('/requests/:id', validateObjectId('id'), async (req, res) => 
     await item.deleteOne()
     return res.json({ deleted: true })
   } catch (err) {
-    console.error('[admin] request delete error:', err.message)
+    logger.error('[admin] request delete error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -149,7 +150,7 @@ adminRouter.get('/export/requests', validateQuery(querySchemas.adminExport), asy
 
     return res.json({ items, total: items.length })
   } catch (err) {
-    console.error('[admin] export error:', err.message)
+    logger.error('[admin] export error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -184,7 +185,7 @@ adminRouter.get('/requests', validateQuery(querySchemas.requestsList), async (re
     ])
     return res.json({ items, total, pages: Math.ceil(total / lim) })
   } catch (err) {
-    console.error('[admin] requests list error:', err.message)
+    logger.error('[admin] requests list error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -203,7 +204,7 @@ adminRouter.post('/seed-demo', async (req, res) => {
     const requestCount = await Request.countDocuments()
     return res.json({ message: 'Demo data seeded', zones: zoneCount, incidents: incidentCount, requests: requestCount })
   } catch (err) {
-    console.error('[admin] seed-demo error:', err.message)
+    logger.error('[admin] seed-demo error', { message: err.message })
     return res.status(500).json({ error: 'Seed failed: ' + err.message })
   }
 })

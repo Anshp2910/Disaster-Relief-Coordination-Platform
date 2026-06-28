@@ -7,6 +7,7 @@ import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { escapeRegex } from '../utils/geo.js'
 import { Request } from '../models/Request.js'
+import { logger } from '../utils/logger.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const uploadDir = path.join(__dirname, '../../uploads')
@@ -74,7 +75,7 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
       pages: Math.ceil(total / limitNum),
     })
   } catch (err) {
-    console.error('[requests] list error:', err.message)
+    logger.error('[requests] list error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -108,13 +109,13 @@ requestsRouter.post('/', requireAuth, validate('createRequest'), async (req, res
       try {
         io.emit('request:created', { item: populated })
       } catch (err) {
-        console.error('[ws] emit request:created error:', err.message)
+        logger.error('[ws] emit request:created error', { message: err.message })
       }
     }
 
     return res.status(201).json({ item: populated })
   } catch (err) {
-    console.error('[requests] create error:', err.message)
+    logger.error('[requests] create error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -130,7 +131,7 @@ requestsRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res)
     if (!item) return res.status(404).json({ error: 'Not found' })
     return res.json({ item })
   } catch (err) {
-    console.error('[requests] get error:', err.message)
+    logger.error('[requests] get error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -177,13 +178,13 @@ requestsRouter.put('/:id', requireAuth, validateObjectId('id'), validate('update
       try {
         io.emit('request:updated', { item: populated })
       } catch (err) {
-        console.error('[ws] emit request:updated error:', err.message)
+        logger.error('[ws] emit request:updated error', { message: err.message })
       }
     }
 
     return res.json({ item: populated })
   } catch (err) {
-    console.error('[requests] update error:', err.message)
+    logger.error('[requests] update error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -205,13 +206,13 @@ requestsRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, r
       try {
         io.emit('request:deleted', { id })
       } catch (err) {
-        console.error('[ws] emit request:deleted error:', err.message)
+        logger.error('[ws] emit request:deleted error', { message: err.message })
       }
     }
 
     return res.json({ deleted: true })
   } catch (err) {
-    console.error('[requests] delete error:', err.message)
+    logger.error('[requests] delete error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -240,13 +241,13 @@ requestsRouter.post('/:id/claim', requireAuth, validateObjectId('id'), async (re
       try {
         io.emit('request:updated', { item: populated })
       } catch (err) {
-        console.error('[ws] emit request:updated error:', err.message)
+        logger.error('[ws] emit request:updated error', { message: err.message })
       }
     }
 
     return res.json({ item: populated })
   } catch (err) {
-    console.error('[requests] claim error:', err.message)
+    logger.error('[requests] claim error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -274,13 +275,13 @@ requestsRouter.post('/:id/unclaim', requireAuth, validateObjectId('id'), async (
       try {
         io.emit('request:updated', { item: populated })
       } catch (err) {
-        console.error('[ws] emit request:updated error:', err.message)
+        logger.error('[ws] emit request:updated error', { message: err.message })
       }
     }
 
     return res.json({ item: populated })
   } catch (err) {
-    console.error('[requests] unclaim error:', err.message)
+    logger.error('[requests] unclaim error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -308,13 +309,13 @@ requestsRouter.post('/:id/comments', requireAuth, validateObjectId('id'), valida
           comment: populated.comments[populated.comments.length - 1],
         })
       } catch (err) {
-        console.error('[ws] emit request:commented error:', err.message)
+        logger.error('[ws] emit request:commented error', { message: err.message })
       }
     }
 
     return res.json({ comments: populated.comments })
   } catch (err) {
-    console.error('[requests] comment error:', err.message)
+    logger.error('[requests] comment error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -337,7 +338,7 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, validateObjectId(
 
     return res.json({ deleted: true })
   } catch (err) {
-    console.error('[requests] delete comment error:', err.message)
+    logger.error('[requests] delete comment error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -373,13 +374,13 @@ requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), upload.ar
       try {
         io.emit('request:updated', { item: { _id: id, files: item.files } })
       } catch (err) {
-        console.error('[ws] emit request:updated error:', err.message)
+        logger.error('[ws] emit request:updated error', { message: err.message })
       }
     }
 
     return res.json({ files: item.files })
   } catch (err) {
-    console.error('[requests] file upload error:', err.message)
+    logger.error('[requests] file upload error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -408,7 +409,7 @@ requestsRouter.delete('/:id/files/:fileId', requireAuth, validateObjectId('id'),
 
     return res.json({ files: item.files })
   } catch (err) {
-    console.error('[requests] file delete error:', err.message)
+    logger.error('[requests] file delete error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })

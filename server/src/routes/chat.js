@@ -3,6 +3,7 @@ import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { ChatMessage } from '../models/ChatMessage.js'
 import { Request } from '../models/Request.js'
+import { logger } from '../utils/logger.js'
 
 export const chatRouter = express.Router()
 
@@ -24,7 +25,7 @@ chatRouter.get('/:requestId', requireAuth, validateObjectId('requestId'), valida
     ])
     res.json({ messages: messages.reverse(), total, page: Number(page), pages: Math.ceil(total / Number(limit)) })
   } catch (err) {
-    console.error('[chat] list error:', err.message)
+    logger.error('[chat] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -50,7 +51,7 @@ chatRouter.post('/:requestId', requireAuth, validateObjectId('requestId'), valid
 
     return res.status(201).json({ message: populated })
   } catch (err) {
-    console.error('[chat] create error:', err.message)
+    logger.error('[chat] create error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -67,7 +68,7 @@ chatRouter.delete('/:requestId/:messageId', requireAuth, validateObjectId('reque
     await message.deleteOne()
     return res.json({ deleted: true })
   } catch (err) {
-    console.error('[chat] delete error:', err.message)
+    logger.error('[chat] delete error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

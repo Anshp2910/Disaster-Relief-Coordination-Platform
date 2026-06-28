@@ -1,4 +1,5 @@
 import { User } from './models/User.js'
+import { logger } from './utils/logger.js'
 
 export async function seedAdmin() {
   const email = process.env.ADMIN_EMAIL
@@ -6,7 +7,7 @@ export async function seedAdmin() {
   const displayName = process.env.ADMIN_DISPLAY_NAME || 'Administrator'
 
   if (!email || !password) {
-    console.log('[seed] ADMIN_EMAIL or ADMIN_PASSWORD not set, skipping admin seed')
+    logger.info('[seed] ADMIN_EMAIL or ADMIN_PASSWORD not set, skipping admin seed')
     return
   }
 
@@ -17,9 +18,9 @@ export async function seedAdmin() {
       if (existing.role !== 'admin') {
         existing.role = 'admin'
         await existing.save()
-        console.log('[seed] promoted existing user to admin')
+        logger.info('[seed] promoted existing user to admin')
       } else {
-        console.log('[seed] admin user already exists')
+        logger.info('[seed] admin user already exists')
       }
       return
     }
@@ -32,8 +33,8 @@ export async function seedAdmin() {
     })
     await user.setPassword(password)
     await user.save()
-    console.log('[seed] admin user created')
+    logger.info('[seed] admin user created')
   } catch (err) {
-    console.error('[seed] failed to seed admin:', err.message)
+    logger.error('[seed] failed to seed admin', { message: err.message })
   }
 }

@@ -3,6 +3,7 @@ import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Schedule } from '../models/Schedule.js'
 import { Zone } from '../models/Zone.js'
+import { logger } from '../utils/logger.js'
 
 export const schedulesRouter = express.Router()
 
@@ -29,7 +30,7 @@ schedulesRouter.get('/', requireAuth, validateQuery(querySchemas.schedulesList),
     ])
     res.json({ items, total, pages: Math.ceil(total / Number(limit)) })
   } catch (err) {
-    console.error('[schedules] list error:', err.message)
+    logger.error('[schedules] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -49,7 +50,7 @@ schedulesRouter.post('/', requireAuth, validate('createSchedule'), async (req, r
     const populated = await schedule.populate('userId', 'displayName email role skills')
     return res.status(201).json({ item: populated })
   } catch (err) {
-    console.error('[schedules] create error:', err.message)
+    logger.error('[schedules] create error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -71,7 +72,7 @@ schedulesRouter.put('/:id', requireAuth, validateObjectId('id'), validate('updat
     const populated = await schedule.populate('userId', 'displayName email role skills')
     return res.json({ item: populated })
   } catch (err) {
-    console.error('[schedules] update error:', err.message)
+    logger.error('[schedules] update error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -88,7 +89,7 @@ schedulesRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, 
     await schedule.deleteOne()
     return res.json({ ok: true })
   } catch (err) {
-    console.error('[schedules] delete error:', err.message)
+    logger.error('[schedules] delete error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

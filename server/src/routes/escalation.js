@@ -2,6 +2,7 @@ import express from 'express'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { validate, validateObjectId } from '../middleware/validate.js'
 import { Request } from '../models/Request.js'
+import { logger } from '../utils/logger.js'
 
 export const escalationRouter = express.Router()
 
@@ -13,7 +14,7 @@ escalationRouter.get('/', requireAuth, requireAdmin, async (req, res) => {
       .lean()
     res.json({ items })
   } catch (err) {
-    console.error('[escalation] list error:', err.message)
+    logger.error('[escalation] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -35,13 +36,13 @@ escalationRouter.post('/:requestId', requireAuth, requireAdmin, validateObjectId
       try {
         io.emit('request:escalated', { requestId: item._id, title: item.title, reason: item.escalationReason })
       } catch (err) {
-        console.error('[ws] emit request:escalated error:', err.message)
+        logger.error('[ws] emit request:escalated error', { message: err.message })
       }
     }
 
     return res.json({ item })
   } catch (err) {
-    console.error('[escalation] create error:', err.message)
+    logger.error('[escalation] create error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -59,7 +60,7 @@ escalationRouter.delete('/:requestId', requireAuth, requireAdmin, validateObject
 
     return res.json({ item })
   } catch (err) {
-    console.error('[escalation] delete error:', err.message)
+    logger.error('[escalation] delete error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

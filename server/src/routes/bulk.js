@@ -4,6 +4,7 @@ import { validate, validateQuery, querySchemas } from '../middleware/validate.js
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { Zone } from '../models/Zone.js'
+import { logger } from '../utils/logger.js'
 
 export const bulkRouter = express.Router()
 
@@ -20,7 +21,7 @@ bulkRouter.get('/requests/export', requireAuth, requireAdmin, async (req, res) =
     res.setHeader('Content-Disposition', 'attachment; filename="requests.csv"')
     return res.send(csv.join('\n'))
   } catch (err) {
-    console.error('[bulk] export requests error:', err.message)
+    logger.error('[bulk] export requests error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -38,7 +39,7 @@ bulkRouter.get('/resources/export', requireAuth, requireAdmin, async (req, res) 
     res.setHeader('Content-Disposition', 'attachment; filename="resources.csv"')
     return res.send(csv.join('\n'))
   } catch (err) {
-    console.error('[bulk] export resources error:', err.message)
+    logger.error('[bulk] export resources error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -110,7 +111,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImp
 
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
-    console.error('[bulk] import requests error:', err.message)
+    logger.error('[bulk] import requests error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -183,7 +184,7 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkIm
 
     return res.status(201).json({ imported: imported.length, errors })
   } catch (err) {
-    console.error('[bulk] import resources error:', err.message)
+    logger.error('[bulk] import resources error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

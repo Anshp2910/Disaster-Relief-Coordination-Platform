@@ -5,6 +5,7 @@ import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { Zone } from '../models/Zone.js'
 import { haversineKm } from '../utils/geo.js'
+import { logger } from '../utils/logger.js'
 
 export const geofencingRouter = express.Router()
 
@@ -29,7 +30,7 @@ geofencingRouter.get('/check', requireAuth, validateQuery(querySchemas.geofencin
         },
       }).lean()
     } catch (e) {
-      console.error('[geofencing] zone query fallback:', e.message)
+      logger.error('[geofencing] zone query fallback', { message: e.message })
       const allZones = await Zone.find({ status: { $ne: 'Closed' } }).lean()
       zones = allZones.filter((z) => {
         if (z.centerLat == null || z.centerLng == null) return false
@@ -48,7 +49,7 @@ geofencingRouter.get('/check', requireAuth, validateQuery(querySchemas.geofencin
         },
       }).lean()
     } catch (e) {
-      console.error('[geofencing] request query fallback:', e.message)
+      logger.error('[geofencing] request query fallback', { message: e.message })
       const allRequests = await Request.find({}).lean()
       requests = allRequests.filter((r) => {
         if (r.lat == null || r.lng == null) return false
@@ -67,7 +68,7 @@ geofencingRouter.get('/check', requireAuth, validateQuery(querySchemas.geofencin
         },
       }).lean()
     } catch (e) {
-      console.error('[geofencing] resource query fallback:', e.message)
+      logger.error('[geofencing] resource query fallback', { message: e.message })
       const allResources = await Resource.find({}).lean()
       resources = allResources.filter((r) => {
         if (r.lat == null || r.lng == null) return false
@@ -103,7 +104,7 @@ geofencingRouter.get('/check', requireAuth, validateQuery(querySchemas.geofencin
       radiusKm,
     })
   } catch (err) {
-    console.error('[geofencing] check error:', err.message)
+    logger.error('[geofencing] check error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

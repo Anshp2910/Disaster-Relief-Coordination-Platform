@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
 import { Lock, ArrowLeft, Loader2, CheckCircle, Eye, EyeOff } from 'lucide-react'
 import { clientApi } from '../api/client'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const container = createStagger(0.08, 0.1)
 const item = createListItem(20, 0.5)
@@ -31,7 +32,7 @@ export default function ResetPassword() {
       await clientApi.resetPassword(token, password)
       setDone(true)
     } catch (err) {
-      setError((err as Error).message || t('auth.resetFailed'))
+      setError(getErrorMessage(err) || t('auth.resetFailed'))
     } finally {
       setLoading(false)
     }

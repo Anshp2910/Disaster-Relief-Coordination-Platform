@@ -115,7 +115,7 @@ hr {
   position: absolute;
   top: -100%;
   left: 0;
-  z-index: 999999;
+  z-index: var(--z-skip-link);
   padding: var(--space-xs) var(--space-sm);
   background: var(--accent);
   color: var(--text-on-accent);

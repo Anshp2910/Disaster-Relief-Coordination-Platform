@@ -4,6 +4,7 @@ import { validate, validateObjectId, validateQuery, querySchemas } from '../midd
 import { Resource } from '../models/Resource.js'
 import { Request } from '../models/Request.js'
 import { haversineKm, escapeRegex } from '../utils/geo.js'
+import { logger } from '../utils/logger.js'
 
 export const resourcesRouter = express.Router()
 
@@ -31,7 +32,7 @@ resourcesRouter.get('/', requireAuth, validateQuery(querySchemas.resourcesList),
 
     res.json({ items, total, pages: Math.ceil(total / Number(limit)), summary })
   } catch (err) {
-    console.error('[resources] list error:', err.message)
+    logger.error('[resources] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -57,13 +58,13 @@ resourcesRouter.post('/', requireAuth, validate('createResource'), async (req, r
       try {
         io.emit('resource:created', { item: resource })
       } catch (err) {
-        console.error('[ws] emit resource:created error:', err.message)
+        logger.error('[ws] emit resource:created error', { message: err.message })
       }
     }
 
     return res.status(201).json({ item: resource })
   } catch (err) {
-    console.error('[resources] create error:', err.message)
+    logger.error('[resources] create error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -102,7 +103,7 @@ resourcesRouter.put('/:id', requireAuth, validateObjectId('id'), validate('updat
     await resource.save()
     return res.json({ item: resource })
   } catch (err) {
-    console.error('[resources] update error:', err.message)
+    logger.error('[resources] update error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -125,7 +126,7 @@ resourcesRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, 
     await resource.deleteOne()
     return res.json({ ok: true })
   } catch (err) {
-    console.error('[resources] delete error:', err.message)
+    logger.error('[resources] delete error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -166,13 +167,13 @@ resourcesRouter.post('/:id/allocate', requireAuth, validateObjectId('id'), valid
           allocQuantity,
         })
       } catch (err) {
-        console.error('[ws] emit resource:allocated error:', err.message)
+        logger.error('[ws] emit resource:allocated error', { message: err.message })
       }
     }
 
     return res.json({ item: resource })
   } catch (err) {
-    console.error('[resources] allocate error:', err.message)
+    logger.error('[resources] allocate error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -202,7 +203,7 @@ resourcesRouter.post('/:id/deallocate', requireAuth, validateObjectId('id'), val
     await resource.save()
     return res.json({ item: resource })
   } catch (err) {
-    console.error('[resources] deallocate error:', err.message)
+    logger.error('[resources] deallocate error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -244,7 +245,7 @@ resourcesRouter.get('/match/:requestId', requireAuth, validateObjectId('requestI
           },
         }).lean()
       } catch (geoErr) {
-        console.error('[resources] match geo fallback:', geoErr.message)
+        logger.error('[resources] match geo fallback', { message: geoErr.message })
         resources = await Resource.find({
           category: { $in: matchedCategories },
           status: { $in: ['Available', 'Low'] },
@@ -285,7 +286,7 @@ resourcesRouter.get('/match/:requestId', requireAuth, validateObjectId('requestI
 
     return res.json({ matches: scored })
   } catch (err) {
-    console.error('[resources] match error:', err.message)
+    logger.error('[resources] match error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -298,7 +299,7 @@ resourcesRouter.get('/stats', requireAuth, async (req, res) => {
     ])
     res.json({ stats })
   } catch (err) {
-    console.error('[resources] stats error:', err.message)
+    logger.error('[resources] stats error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

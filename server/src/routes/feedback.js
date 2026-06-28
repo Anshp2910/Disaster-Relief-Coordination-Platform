@@ -3,6 +3,7 @@ import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId } from '../middleware/validate.js'
 import { Feedback } from '../models/Feedback.js'
 import { Request } from '../models/Request.js'
+import { logger } from '../utils/logger.js'
 
 export const feedbackRouter = express.Router()
 
@@ -15,7 +16,7 @@ feedbackRouter.get('/request/:requestId', requireAuth, validateObjectId('request
       .lean()
     res.json({ feedback })
   } catch (err) {
-    console.error('[feedback] list error:', err.message)
+    logger.error('[feedback] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -51,7 +52,7 @@ feedbackRouter.post('/request/:requestId', requireAuth, validateObjectId('reques
     const populated = await feedback.populate('submittedBy', 'displayName email role')
     return res.status(201).json({ feedback: populated })
   } catch (err) {
-    console.error('[feedback] create error:', err.message)
+    logger.error('[feedback] create error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -63,7 +64,7 @@ feedbackRouter.get('/stats', requireAuth, async (req, res) => {
     ])
     res.json({ stats: stats[0] || { avgRating: 0, totalFeedback: 0, confirmedDeliveries: 0 } })
   } catch (err) {
-    console.error('[feedback] stats error:', err.message)
+    logger.error('[feedback] stats error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

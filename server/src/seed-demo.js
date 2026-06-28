@@ -8,6 +8,7 @@ import { Incident } from './models/Incident.js'
 import { Schedule } from './models/Schedule.js'
 import { Feedback } from './models/Feedback.js'
 import { ChatMessage } from './models/ChatMessage.js'
+import { logger } from './utils/logger.js'
 
 const LOCATIONS = [
   { name: 'Chennai, Tamil Nadu', lat: 13.0827, lng: 80.2707 },
@@ -120,7 +121,7 @@ function generateLatLng(baseLat, baseLng) {
 export async function seedDemo() {
   const admin = await User.findOne({ role: 'admin' })
   if (!admin) {
-    console.log('[demo] no admin user found, skipping')
+    logger.info('[demo] no admin user found, skipping')
     return
   }
 
@@ -142,7 +143,7 @@ export async function seedDemo() {
 
   const existingZones = await Zone.countDocuments()
   if (existingZones < ZONE_NAMES.length) {
-    console.log('[demo] creating zones...')
+    logger.info('[demo] creating zones...')
     const zoneDocs = []
     for (let i = 0; i < ZONE_NAMES.length; i++) {
       const loc = LOCATIONS[i % LOCATIONS.length]
@@ -166,7 +167,7 @@ export async function seedDemo() {
 
   const existingIncidents = await Incident.countDocuments()
   if (existingIncidents < INCIDENT_DATA.length) {
-    console.log('[demo] creating incidents...')
+    logger.info('[demo] creating incidents...')
     const zoneDocs = await Zone.find()
     for (let i = 0; i < INCIDENT_DATA.length; i++) {
       const inc = INCIDENT_DATA[i]
@@ -197,15 +198,15 @@ export async function seedDemo() {
 
   const existingCount = await Request.countDocuments()
   if (existingCount > 50) {
-    console.log(`[demo] ${existingCount} requests already exist, skipping request seed`)
+    logger.info(`[demo] ${existingCount} requests already exist, skipping request seed`)
     const zoneCount = await Zone.countDocuments()
     const incCount = await Incident.countDocuments()
-    console.log(`[demo] done: ${zoneCount} zones, ${incCount} incidents (requests skipped)`)
+    logger.info(`[demo] done: ${zoneCount} zones, ${incCount} incidents (requests skipped)`)
     return
   }
 
   const count = 100
-  console.log(`[demo] creating ${count} requests...`)
+  logger.info(`[demo] creating ${count} requests...`)
   for (let i = 0; i < count; i++) {
     const loc = pick(LOCATIONS)
     const offset = generateLatLng(loc.lat, loc.lng)
@@ -233,7 +234,7 @@ export async function seedDemo() {
     }
   }
 
-  console.log('[demo] creating resources...')
+  logger.info('[demo] creating resources...')
   for (let i = 0; i < 30; i++) {
     const loc = pick(LOCATIONS)
     const qty = Math.floor(Math.random() * 500) + 10
@@ -248,7 +249,7 @@ export async function seedDemo() {
     })
   }
 
-  console.log('[demo] creating schedules...')
+  logger.info('[demo] creating schedules...')
   const zoneDocs = await Zone.find()
   for (let i = 0; i < 20; i++) {
     const user = pick(allUsers)
@@ -266,7 +267,7 @@ export async function seedDemo() {
   }
 
   const allRequests = await Request.find().lean()
-  console.log('[demo] creating chat messages...')
+  logger.info('[demo] creating chat messages...')
   for (let i = 0; i < 50; i++) {
     const req = pick(allRequests)
     const sender = pick(allUsers)
@@ -276,7 +277,7 @@ export async function seedDemo() {
     })
   }
 
-  console.log('[demo] creating feedback...')
+  logger.info('[demo] creating feedback...')
   const fulfilledReqs = allRequests.filter((r) => r.status === 'Fulfilled')
   for (const req of fulfilledReqs.slice(0, 30)) {
     const requester = await User.findById(req.createdBy).lean()
@@ -290,7 +291,7 @@ export async function seedDemo() {
     }
   }
 
-  console.log('[demo] done: ${count} requests, 30 resources, zones and incidents seeded')
+  logger.info('[demo] done: ${count} requests, 30 resources, zones and incidents seeded')
 }
 
 async function main() {
@@ -298,12 +299,12 @@ async function main() {
     await connectDB()
     const existing = await Request.countDocuments()
     if (existing > 50) {
-      console.log(`[demo] ${existing} requests exist, skipping`)
+      logger.info(`[demo] ${existing} requests exist, skipping`)
       process.exit(0)
     }
     await seedDemo()
   } catch (err) {
-    console.error('[demo] error:', err)
+    logger.error('[demo] error', { message: err.message, stack: err.stack })
   } finally {
     await mongoose.connection.close()
   }

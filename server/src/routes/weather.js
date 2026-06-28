@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { validateQuery } from '../middleware/validate.js'
 import Joi from 'joi'
+import { logger } from '../utils/logger.js'
 
 const router = Router()
 const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1'
@@ -57,7 +58,7 @@ router.get('/current', validateQuery(weatherQuery), async (req, res) => {
 
     res.json(result)
   } catch (err) {
-    console.error('Weather fetch error:', err.message)
+    logger.error('Weather fetch error', { message: err.message })
     res.status(502).json({ error: 'Failed to fetch weather data' })
   }
 })

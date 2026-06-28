@@ -6,6 +6,7 @@ import { ArrowLeft, Edit } from 'lucide-react'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
 import { PageTransition } from '../components/ui'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 export default function EditRequest() {
   const { id } = useParams<{ id: string }>()
@@ -19,8 +20,9 @@ export default function EditRequest() {
   useEffect(() => {
     let cancelled = false
     async function load() {
+      if (!id) return
       try {
-        const { item } = (await clientApi.getRequest(id!)) as { item: Record<string, unknown> }
+        const { item } = (await clientApi.getRequest(id)) as { item: Record<string, unknown> }
         if (cancelled) return
         setLoadedRequest({
           title: item.title,
@@ -34,8 +36,7 @@ export default function EditRequest() {
           lng: item.lng,
         })
       } catch (err) {
-        const e = err as Error
-        if (!cancelled) setError(e.message || 'Failed to load request')
+        if (!cancelled) setError(getErrorMessage(err) || 'Failed to load request')
       } finally {
         if (!cancelled) setFetching(false)
       }
@@ -101,7 +102,7 @@ export default function EditRequest() {
         subtitle={t('editRequest.subtitle')}
         submitLabel={t('editRequest.saving')}
         submitButtonLabel={t('editRequest.saveChanges')}
-        onSubmit={async (data) => { await clientApi.updateRequest(id!, data); navigate('/dashboard') }}
+        onSubmit={async (data) => { if (!id) return; await clientApi.updateRequest(id, data); navigate('/dashboard') }}
         onCancel={() => navigate('/dashboard')}
         showStatus
       />

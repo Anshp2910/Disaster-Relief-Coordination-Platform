@@ -23,7 +23,7 @@
 /* ── 2. Map Styles ── */
 .map-wrapper { position: relative; width: 100%; border-radius: var(--radius-md); overflow: hidden; }
 .map-fullscreen-btn {
-  position: absolute; top: var(--space-s); right: var(--space-s); z-index: 1000;
+  position: absolute; top: var(--space-s); right: var(--space-s); z-index: var(--z-toast);
   background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm); padding: var(--space-2xs) var(--space-s); cursor: pointer; font-size: var(--text-sm);
   color: var(--text-secondary); transition: all var(--duration-fast) var(--ease-out);
@@ -33,7 +33,7 @@
 .map-container-full { width: 100%; max-width: 100%; touch-action: manipulation; min-height: 60vh; }
 .map-container-full:fullscreen,
 .map-container-full:-webkit-full-screen { height: 100vh; width: 100vw; padding: 0; border-radius: 0; }
-html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; height: 100vh; width: 100vw; border-radius: 0; border: none; }
+html body .map-fullscreen-active { position: fixed; inset: 0; z-index: var(--z-overlay-active); height: 100vh; width: 100vw; border-radius: 0; border: none; }
 .mapBox { min-height: 360px; height: 40vh; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-light); transition: all var(--duration-normal) var(--ease-out); }
 .map-popup-content { min-width: 180px; }
 .map-popup-content h4 { margin: 0 0 var(--space-3xs); font-size: var(--text-sm); font-weight: var(--font-weight-bold); }
@@ -42,7 +42,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
 
 /* ── 3. Command Palette ── */
 .cmd-palette-overlay {
-  position: fixed; inset: 0; z-index: 99999; background: var(--overlay-bg);
+  position: fixed; inset: 0; z-index: var(--z-command-palette); background: var(--overlay-bg);
   backdrop-filter: blur(var(--glass-blur)); display: flex; align-items: flex-start;
   justify-content: center; padding-top: 12vh; animation: fadeIn var(--duration-fast) var(--ease-out);
 }
@@ -58,7 +58,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
 .cmd-shortcut-hint { font-size: var(--text-3xs); color: var(--text-muted); padding: var(--space-4xs) var(--space-xs); border: 1px solid var(--border); border-radius: var(--radius-sm); flex-shrink: 0; }
 .cmd-list { max-height: 360px; overflow-y: auto; padding: var(--space-xs) 0; }
 .cmd-list::-webkit-scrollbar { width: 4px; }
-.cmd-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.cmd-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-2xs); }
 .cmd-empty { padding: var(--space-2xl) var(--space-lg); text-align: center; color: var(--text-muted); font-size: var(--text-sm); }
 .cmd-item {
   display: flex; align-items: center; gap: var(--space-md); padding: var(--space-s) var(--space-lg);
@@ -84,7 +84,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
   position: absolute; bottom: 60px; right: var(--space-sm); width: 36px; height: 36px;
   border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border);
   box-shadow: var(--shadow-md); cursor: pointer; display: flex; align-items: center;
-  justify-content: center; color: var(--accent); z-index: 10;
+  justify-content: center; color: var(--accent); z-index: var(--z-above);
   transition: all var(--duration-fast) var(--ease-out);
 }
 .scroll-to-bottom-btn:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
@@ -118,7 +118,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
 .shimmer-overlay { position: relative; overflow: hidden; }
 .shimmer-overlay::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background: linear-gradient(90deg, transparent, var(--overlay-light), transparent);
   transform: translateX(-100%); animation: shimmer-slide 1.5s var(--ease-in-out) infinite;
 }
 
@@ -157,7 +157,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
 .admin-breakdown-bar-fill {
   height: 100%;
   border-radius: var(--radius-full);
-  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width var(--duration-slow) var(--ease-out);
 }
 .admin-role-select {
   padding: var(--space-3xs) var(--space-xs);
@@ -240,7 +240,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
   position: absolute;
   bottom: 0;
   right: 0;
-  background: rgba(0,0,0,0.5);
+  background: var(--overlay-dark);
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -434,7 +434,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
   justify-content: center;
   font-size: var(--text-3xs);
   font-weight: var(--font-weight-bold);
-  z-index: 1;
+  z-index: var(--z-base);
   transition: all var(--duration-normal) var(--ease-out);
 }
 .step--complete .step-indicator {
@@ -536,7 +536,7 @@ html body .map-fullscreen-active { position: fixed; inset: 0; z-index: 9999; hei
   top: 100%;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: var(--z-toast);
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);

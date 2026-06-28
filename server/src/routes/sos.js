@@ -2,6 +2,7 @@ import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { SosAlert } from '../models/SosAlert.js'
+import { logger } from '../utils/logger.js'
 
 export const sosRouter = express.Router()
 
@@ -32,13 +33,13 @@ sosRouter.post('/broadcast', requireAuth, validate('sosAlert'), async (req, res)
           timestamp: alert.createdAt,
         })
       } catch (err) {
-        console.error('[ws] emit sos:alert error:', err.message)
+        logger.error('[ws] emit sos:alert error', { message: err.message })
       }
     }
 
     return res.status(201).json({ alert })
   } catch (err) {
-    console.error('[sos] broadcast error:', err.message)
+    logger.error('[sos] broadcast error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -63,7 +64,7 @@ sosRouter.get('/', requireAuth, validateQuery(querySchemas.sosList), async (req,
 
     return res.json({ items, total, page, pages: Math.ceil(total / limit) })
   } catch (err) {
-    console.error('[sos] list error:', err.message)
+    logger.error('[sos] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -79,7 +80,7 @@ sosRouter.put('/:id/acknowledge', requireAuth, validateObjectId('id'), async (re
     if (!alert) return res.status(404).json({ error: 'Alert not found' })
     return res.json({ alert })
   } catch (err) {
-    console.error('[sos] acknowledge error:', err.message)
+    logger.error('[sos] acknowledge error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -95,7 +96,7 @@ sosRouter.put('/:id/resolve', requireAuth, validateObjectId('id'), async (req, r
     if (!alert) return res.status(404).json({ error: 'Alert not found' })
     return res.json({ alert })
   } catch (err) {
-    console.error('[sos] resolve error:', err.message)
+    logger.error('[sos] resolve error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

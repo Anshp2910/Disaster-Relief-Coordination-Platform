@@ -5,6 +5,7 @@ import { Zone } from '../models/Zone.js'
 import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { haversineKm, escapeRegex } from '../utils/geo.js'
+import { logger } from '../utils/logger.js'
 
 export const zonesRouter = express.Router()
 
@@ -55,7 +56,7 @@ zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (
           }).select('lat lng category quantity status').lean(),
         ])
       } catch (geoErr) {
-        console.error('[zones] geo query fallback:', geoErr.message)
+        logger.error('[zones] geo query fallback', { message: geoErr.message })
         const allR = await Request.find({}).select('lat lng status category priority').lean()
         const allRes = await Resource.find({}).select('lat lng category quantity status').lean()
         requestsInRange = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
@@ -85,7 +86,7 @@ zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (
 
     res.json({ items: zonesWithStats, total, pages: Math.ceil(total / Number(limit)) })
   } catch (err) {
-    console.error('[zones] list error:', err.message)
+    logger.error('[zones] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -121,7 +122,7 @@ zonesRouter.get('/heatmap', requireAuth, async (req, res) => {
           }).select('lat lng category quantity status').lean(),
         ])
       } catch (geoErr) {
-        console.error('[zones] heatmap geo fallback:', geoErr.message)
+        logger.error('[zones] heatmap geo fallback', { message: geoErr.message })
         const allR = await Request.find({}).select('lat lng status').lean()
         const allRes = await Resource.find({}).select('lat lng category quantity status').lean()
         requests = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
@@ -150,7 +151,7 @@ zonesRouter.get('/heatmap', requireAuth, async (req, res) => {
 
     res.json({ zones: heatData })
   } catch (err) {
-    console.error('[zones] heatmap error:', err.message)
+    logger.error('[zones] heatmap error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -186,7 +187,7 @@ zonesRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) =>
         }).select('lat lng category quantity status name unit').lean(),
       ])
     } catch (geoErr) {
-      console.error('[zones] detail geo fallback:', geoErr.message)
+      logger.error('[zones] detail geo fallback', { message: geoErr.message })
       const allR = await Request.find({}).select('lat lng status category priority title').lean()
       const allRes = await Resource.find({}).select('lat lng category quantity status name unit').lean()
       requestsInRange = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
@@ -205,7 +206,7 @@ zonesRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) =>
       },
     })
   } catch (err) {
-    console.error('[zones] get error:', err.message)
+    logger.error('[zones] get error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -221,7 +222,7 @@ zonesRouter.post('/', requireAuth, requireAdmin, validate('createZone'), async (
     await zone.save()
     return res.status(201).json({ item: zone })
   } catch (err) {
-    console.error('[zones] create error:', err.message)
+    logger.error('[zones] create error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -245,7 +246,7 @@ zonesRouter.put('/:id', requireAuth, requireAdmin, validateObjectId('id'), valid
     await zone.save()
     return res.json({ item: zone })
   } catch (err) {
-    console.error('[zones] update error:', err.message)
+    logger.error('[zones] update error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })
@@ -257,7 +258,7 @@ zonesRouter.delete('/:id', requireAuth, requireAdmin, validateObjectId('id'), as
     await zone.deleteOne()
     return res.json({ ok: true })
   } catch (err) {
-    console.error('[zones] delete error:', err.message)
+    logger.error('[zones] delete error', { message: err.message })
     res.status(500).json({ error: 'Server error' })
   }
 })

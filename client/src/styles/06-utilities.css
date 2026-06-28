@@ -317,7 +317,7 @@
 
 /* ── Password Strength ── */
 .password-strength { display: flex; gap: var(--space-3xs); margin-top: var(--space-3xs); }
-.password-strength-bar { height: var(--space-3xs); flex: 1; border-radius: 2px; background: var(--border); transition: background var(--duration-normal) var(--ease-out); }
+.password-strength-bar { height: var(--space-3xs); flex: 1; border-radius: var(--radius-4xs); background: var(--border); transition: background var(--duration-normal) var(--ease-out); }
 .password-strength-bar.weak { background: var(--danger); }
 .password-strength-bar.medium { background: var(--warning); }
 .password-strength-bar.strong { background: var(--success); }

@@ -15,6 +15,7 @@ import type { ColumnDef } from '../components/ui/DataTable'
 import Badge from '../components/Badge'
 import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
 import { SkeletonList } from '../components/Skeleton'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 
 
@@ -545,7 +546,7 @@ export default function AdminDashboard() {
       setUsers(u.users || [])
       setRequests(r.items || [])
     } catch (e) {
-      setError((e as Error).message || t('admin.loadFailed'))
+      setError(getErrorMessage(e) || t('admin.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -567,7 +568,7 @@ export default function AdminDashboard() {
       setUsers((prev) => prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u)))
       toast.success(t('admin.roleUpdated'))
     } catch (e) {
-      toast.error((e as Error).message || t('admin.updateRoleFailed'))
+      toast.error(getErrorMessage(e) || t('admin.updateRoleFailed'))
     }
   }, [toast, t])
 
@@ -581,7 +582,7 @@ export default function AdminDashboard() {
       setUsers((prev) => prev.filter((u) => u._id !== userId))
       toast.success(t('admin.userDeleted'))
     } catch (e) {
-      toast.error((e as Error).message || t('admin.deleteUserFailed'))
+      toast.error(getErrorMessage(e) || t('admin.deleteUserFailed'))
     }
   }, [toast, t])
 
@@ -593,7 +594,7 @@ export default function AdminDashboard() {
       setRequests((prev) => prev.filter((r) => r._id !== requestId))
       toast.success(t('admin.requestDeleted'))
     } catch (e) {
-      toast.error((e as Error).message || t('admin.deleteRequestFailed'))
+      toast.error(getErrorMessage(e) || t('admin.deleteRequestFailed'))
     }
   }, [toast, t])
 
@@ -615,7 +616,7 @@ export default function AdminDashboard() {
         toast.success(t('admin.exportSuccess') || 'Export downloaded successfully')
       }
     } catch (e) {
-      toast.error((e as Error).message || t('admin.exportFailed'))
+      toast.error(getErrorMessage(e) || t('admin.exportFailed'))
     }
   }
 

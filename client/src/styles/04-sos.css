@@ -23,11 +23,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+  box-shadow: var(--shadow-danger-lg);
   transition: all var(--duration-normal) var(--ease-out);
   position: relative;
 }
-.sos-fab-btn:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(239, 68, 68, 0.5); }
+.sos-fab-btn:hover { transform: scale(1.08); box-shadow: var(--shadow-danger-xl); }
 .sos-fab-btn:active { transform: scale(0.95); }
 .sos-fab-btn:focus-visible { outline: 3px solid #fff; outline-offset: 4px; box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.3); }
 

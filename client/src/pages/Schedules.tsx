@@ -11,6 +11,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface ScheduleItem {
   _id: string
@@ -142,7 +143,7 @@ export default function Schedules() {
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     } finally {
       setLoading(false)
     }
@@ -211,7 +212,7 @@ export default function Schedules() {
       setShowForm(false)
       load()
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     }
   }
 
@@ -222,7 +223,7 @@ export default function Schedules() {
       await clientApi.deleteSchedule(id)
       load()
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     }
   }
 
@@ -231,7 +232,7 @@ export default function Schedules() {
       await clientApi.updateSchedule(id, { status })
       load()
     } catch (e) {
-      setError((e as Error).message)
+      setError(getErrorMessage(e))
     }
   }, [load])
 

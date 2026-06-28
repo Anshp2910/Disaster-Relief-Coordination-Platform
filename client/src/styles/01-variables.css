@@ -116,6 +116,16 @@
   --shadow-accent: 0 2px 8px rgba(37, 99, 235, 0.12), 0 4px 24px rgba(37, 99, 235, 0.08);
   --shadow-accent-lg: 0 4px 16px rgba(37, 99, 235, 0.15), 0 8px 32px rgba(37, 99, 235, 0.1);
   --shadow-danger: 0 2px 8px rgba(239, 68, 68, 0.12), 0 4px 24px rgba(239, 68, 68, 0.08);
+  --shadow-danger-sm: 0 2px 8px rgba(239, 68, 68, 0.12);
+  --shadow-danger-md: 0 4px 16px rgba(239, 68, 68, 0.15);
+  --shadow-danger-lg: 0 4px 24px rgba(239, 68, 68, 0.4);
+  --shadow-danger-xl: 0 6px 30px rgba(239, 68, 68, 0.5);
+  --shadow-warning-sm: 0 2px 8px rgba(245, 158, 11, 0.12);
+  --border-warning-subtle: 1px solid rgba(245, 158, 11, 0.2);
+  --border-danger-subtle: 1px solid rgba(239, 68, 68, 0.2);
+  --overlay-light: rgba(255, 255, 255, 0.4);
+  --overlay-dark: rgba(0, 0, 0, 0.5);
+  --dragover-bg: rgba(14, 165, 233, 0.06);
 
   --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-inset-lg: inset 0 2px 4px rgba(0, 0, 0, 0.06);
@@ -185,6 +195,8 @@
   --radius-2xl: 24px;
   --radius-3xl: 32px;
   --radius-full: 9999px;
+  --radius-4xs: 2px;
+  --radius-5xs: 1px;
 
   /* ── Enterprise Transitions ── */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -213,6 +225,11 @@
   --z-notification: 1100;
   --z-tooltip: 1200;
   --z-command-palette: 1300;
+  --z-skip-link: 999999;
+  --z-overlay-active: 9999;
+  --z-form-wrap: 40;
+  --z-form-open: 60;
+  --z-step-indicator: 2;
 
   /* ── Legacy Vars (backward compat) ── */
   --z-overlay: var(--z-above);
@@ -399,6 +416,16 @@
   --shadow-accent: 0 2px 8px rgba(96, 165, 250, 0.12), 0 4px 24px rgba(96, 165, 250, 0.08);
   --shadow-accent-lg: 0 4px 16px rgba(96, 165, 250, 0.15), 0 8px 32px rgba(96, 165, 250, 0.1);
   --shadow-danger: 0 2px 8px rgba(248, 113, 113, 0.12), 0 4px 24px rgba(248, 113, 113, 0.08);
+  --shadow-danger-sm: 0 2px 8px rgba(239, 68, 68, 0.25);
+  --shadow-danger-md: 0 4px 16px rgba(239, 68, 68, 0.3);
+  --shadow-danger-lg: 0 4px 24px rgba(239, 68, 68, 0.5);
+  --shadow-danger-xl: 0 6px 30px rgba(239, 68, 68, 0.6);
+  --shadow-warning-sm: 0 2px 8px rgba(245, 158, 11, 0.25);
+  --border-warning-subtle: 1px solid rgba(245, 158, 11, 0.35);
+  --border-danger-subtle: 1px solid rgba(239, 68, 68, 0.35);
+  --overlay-light: rgba(255, 255, 255, 0.15);
+  --overlay-dark: rgba(0, 0, 0, 0.7);
+  --dragover-bg: rgba(14, 165, 233, 0.1);
   --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-inset-lg: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 

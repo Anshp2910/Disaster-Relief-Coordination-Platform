@@ -11,6 +11,7 @@ dotenv.config({ path: resolve(__dirname, '../../.env') })
 import { createApp } from './app.js'
 import { connectDB } from './config/db.js'
 import { seedAdmin } from './seed.js'
+import { logger } from './utils/logger.js'
 
 const PORT = process.env.PORT || 5001
 const uploadsDir = resolve(__dirname, '../uploads')
@@ -34,7 +35,7 @@ async function start() {
         if (!origin || socketOrigins.includes(origin)) {
           callback(null, true)
         } else {
-          console.warn('[Socket.io CORS] Rejected origin:', origin)
+          logger.warn('[Socket.io CORS] Rejected origin', { origin })
           callback(new Error('Not allowed by CORS'), false)
         }
       },
@@ -59,18 +60,18 @@ async function start() {
   })
 
   io.on('connection', (socket) => {
-    console.log('[ws] client connected:', socket.id, 'userId:', socket.userId)
+    logger.info('[ws] client connected', { socketId: socket.id, userId: socket.userId })
     socket.on('chat:join', ({ requestId }) => {
       if (requestId && typeof requestId === 'string' && /^[a-f\d]{24}$/i.test(requestId)) {
         socket.join(`chat:${requestId}`)
-        console.log('[ws] joined chat room:', requestId)
+        logger.info('[ws] joined chat room', { requestId })
       }
     })
 
     socket.on('chat:leave', ({ requestId }) => {
       if (requestId && typeof requestId === 'string' && /^[a-f\d]{24}$/i.test(requestId)) {
         socket.leave(`chat:${requestId}`)
-        console.log('[ws] left chat room:', requestId)
+        logger.info('[ws] left chat room', { requestId })
       }
     })
 
@@ -80,21 +81,21 @@ async function start() {
       const radius = Number(radiusKm)
       if (Number.isFinite(latNum) && latNum >= -90 && latNum <= 90 && Number.isFinite(lngNum) && lngNum >= -180 && lngNum <= 180 && Number.isFinite(radius) && radius > 0 && radius <= 500) {
         socket.geofencing = { lat: latNum, lng: lngNum, radiusKm: radius }
-        console.log('[ws] subscribed geofencing:', latNum, lngNum, radius)
+        logger.info('[ws] subscribed geofencing', { lat: latNum, lng: lngNum, radius })
       }
     })
 
-    socket.on('disconnect', () => console.log('[ws] client disconnected:', socket.id))
+    socket.on('disconnect', () => logger.info('[ws] client disconnected', { socketId: socket.id }))
   })
 
   app.set('io', io)
 
   httpServer.listen(PORT, () => {
-    console.log(`[server] listening on port ${PORT}`)
+    logger.info(`[server] listening on port ${PORT}`)
   })
 }
 
 start().catch((err) => {
-  console.error('[server] failed to start:', err)
+  logger.error('[server] failed to start', { message: err.message, stack: err.stack })
   process.exit(1)
 })

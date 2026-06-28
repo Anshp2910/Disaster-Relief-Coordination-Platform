@@ -17,6 +17,7 @@ import { useSocket } from '../hooks/useSocket'
 import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface Item {
   _id: string
@@ -90,7 +91,7 @@ export default function Dashboard() {
       setTotalPages(data.pages || 1)
       setTotal(data.total || 0)
     } catch (e) {
-      setError((e as Error).message || t('dashboard.failedToLoad'))
+      setError(getErrorMessage(e) || t('dashboard.failedToLoad'))
     } finally {
       setLoading(false)
     }
@@ -276,7 +277,7 @@ function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
     const ok = await confirm({ message: t('dashboard.deleteConfirm'), confirmText: t('dashboard.delete'), danger: true })
     if (!ok) return
     setDeleting(true)
-    try { await clientApi.deleteRequest(id); onChanged() } catch (e) { toast.error((e as Error).message || 'Failed to delete') } finally { setDeleting(false) }
+    try { await clientApi.deleteRequest(id); onChanged() } catch (e) { toast.error(getErrorMessage(e) || 'Failed to delete') } finally { setDeleting(false) }
   }
 
   function edit(e: React.MouseEvent) { e.stopPropagation(); navigate(`/requests/${id}/edit`) }

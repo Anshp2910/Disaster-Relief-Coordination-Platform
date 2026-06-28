@@ -6,6 +6,7 @@ import { clientApi } from '../api/client'
 import { useToast } from './Toast'
 import { useConfirm } from '../hooks/useConfirm'
 import useReducedMotion from '../hooks/useReducedMotion'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 export function SosFab() {
   const { t } = useTranslation()
@@ -37,15 +38,14 @@ export function SosFab() {
       timerRef.current = setInterval(() => {
         setCooldown((c) => {
           if (c <= 1) {
-            clearInterval(timerRef.current!)
+            if (timerRef.current) clearInterval(timerRef.current)
             return 0
           }
           return c - 1
         })
       }, 1000)
     } catch (e) {
-      const err = e as Error
-      toast.error(t('sos.broadcastFailed', { error: err.message }))
+      toast.error(t('sos.broadcastFailed', { error: getErrorMessage(e) }))
     } finally {
       setLoading(false)
     }
@@ -59,7 +59,7 @@ export function SosFab() {
         disabled={loading || cooldown > 0}
         aria-label={cooldown > 0 ? `SOS cooldown ${cooldown}s` : 'Emergency SOS alert'}
         onMouseEnter={() => setShowLabel(true)}
-        onMouseLeave={() => { setShowLabel(false); clearTimeout(hideLabelRef.current!) }}
+        onMouseLeave={() => { setShowLabel(false); if (hideLabelRef.current) clearTimeout(hideLabelRef.current) }}
         onFocus={() => setShowLabel(true)}
         onBlur={() => { hideLabelRef.current = setTimeout(() => setShowLabel(false), 200) }}
         whileHover={reduced ? {} : { scale: 1.08 }}

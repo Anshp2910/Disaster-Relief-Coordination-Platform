@@ -43,21 +43,24 @@ if ('serviceWorker' in navigator) {
   })
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ErrorBoundary>
-    <React.StrictMode>
-      <I18nextProvider i18n={i18n}>          <HashRouter future={routerFuture}>
-          <ThemeProvider>
-            <AuthProvider>
-              <ToastProvider>
-                <VersionChecker />
-                <WebVitalsReporter />
-                <App />
-              </ToastProvider>
-            </AuthProvider>
-          </ThemeProvider>
-        </HashRouter>
-      </I18nextProvider>
-    </React.StrictMode>
-  </ErrorBoundary>,
-)
+const root = document.getElementById('root')
+if (root) {
+  ReactDOM.createRoot(root).render(
+    <ErrorBoundary>
+      <React.StrictMode>
+        <I18nextProvider i18n={i18n}>          <HashRouter future={routerFuture}>
+            <ThemeProvider>
+              <AuthProvider>
+                <ToastProvider>
+                  <VersionChecker />
+                  <WebVitalsReporter />
+                  <App />
+                </ToastProvider>
+              </AuthProvider>
+            </ThemeProvider>
+          </HashRouter>
+        </I18nextProvider>
+      </React.StrictMode>
+    </ErrorBoundary>,
+  )
+}

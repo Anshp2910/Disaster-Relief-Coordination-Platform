@@ -151,7 +151,7 @@ authRouter.post('/login', validate('login'), async (req, res) => {
       user: { id: user._id, email: user.email, role: user.role, displayName: user.displayName },
     })
   } catch (err) {
-    console.error('[auth] login error:', err.message)
+    logger.error('[auth] login error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -173,7 +173,7 @@ authRouter.post('/forgot-password', async (req, res) => {
 
     return res.json({ ok: true })
   } catch (err) {
-    console.error('[auth] forgot-password error:', err.message)
+    logger.error('[auth] forgot-password error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })
@@ -193,7 +193,7 @@ authRouter.post('/reset-password', async (req, res) => {
 
     return res.json({ ok: true })
   } catch (err) {
-    console.error('[auth] reset-password error:', err.message)
+    logger.error('[auth] reset-password error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
   }
 })

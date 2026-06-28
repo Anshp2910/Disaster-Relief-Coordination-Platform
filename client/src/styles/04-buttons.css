@@ -118,7 +118,7 @@ button.btn,
 }
 .btn-danger:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 24px rgba(239, 68, 68, 0.4);
+  box-shadow: var(--shadow-danger-lg);
 }
 .btn-danger:active:not(:disabled) {
   transform: translateY(0) scale(0.98);
@@ -256,7 +256,7 @@ button.btn,
 .btn-deescalate {
   background: var(--warning-soft);
   color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: var(--border-warning-subtle);
   padding: var(--space-2xs) var(--space-md);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);

@@ -5,6 +5,17 @@
   "header": {
     "selectLanguage": "Select Language"
   },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "goHome": "Go to home",
+    "refreshPage": "Refresh Page",
+    "technicalDetails": "Technical Details"
+  },
+  "pageLoadError": {
+    "message": "Something went wrong loading this page.",
+    "reload": "Reload"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "mapView": "Map View",
@@ -23,7 +34,23 @@
     "geofencing": "Geofencing",
     "navigation": "Navigation",
     "settings": "Settings",
-    "logoutConfirm": "Are you sure you want to logout?"
+    "logoutConfirm": "Are you sure you want to logout?",
+    "openCommandPalette": "Open command palette",
+    "commandPaletteHint": "Command palette (Ctrl+K)",
+    "toggleTheme": "Toggle theme",
+    "togglePremiumTheme": "Toggle premium theme",
+    "premiumThemeHint": "Premium theme (Alt+N)",
+    "emergencyModeHint": "Emergency mode (Alt+E)",
+    "disablePremiumTheme": "Disable premium theme",
+    "activatePremiumTheme": "Activate premium theme",
+    "disableEmergencyMode": "Disable emergency mode",
+    "activateEmergencyMode": "Activate emergency mode",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "mobileNavigation": "Mobile navigation",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "switchTo": "Switch to {{mode}} mode"
   },
   "auth": {
     "appName": "DisasterRelief",
@@ -93,6 +120,7 @@
     "rateLimited": "Too many requests. Please wait a moment and try again."
   },
   "dashboard": {
+    "filters": "Filters",
     "title": "Disaster Relief Requests",
     "totalRequests": "total requests",
     "open": "open",
@@ -188,6 +216,7 @@
     "cancel": "Cancel"
   },
   "requestDetail": {
+    "statusPriorityBadges": "Status and priority badges",
     "files": "Files",
     "noFiles": "No files uploaded yet",
     "uploadFiles": "+ Upload Files",
@@ -540,9 +569,17 @@
     "wind": "Wind",
     "precipitation": "Precip"
   },
+  "zoneHeatMap": {
+    "radius": "Radius:",
+    "affected": "Affected:",
+    "openRequests": "Open requests:",
+    "resources": "Resources:",
+    "units": "units"
+  },
   "map": {
     "title": "Map View",
-    "noRequestsDesc": "No request locations to display on the map. Try adjusting your filters or zoom out to see more area."
+    "noRequestsDesc": "No request locations to display on the map. Try adjusting your filters or zoom out to see more area.",
+    "selectLocation": "Map for selecting location"
   },
   "public": {
     "title": "Disaster Relief Status",
@@ -569,7 +606,8 @@
     "searchPlaceholder": "Search incidents...",
     "search": "Search",
     "type": "Type",
-    "requests": "Requests",
+    "requests": "Requests:",
+    "resources": "Resources:",
     "open": "open",
     "resourcesNearby": "Resources nearby",
     "update": "Update",
@@ -591,7 +629,6 @@
     "start": "Start",
     "end": "End",
     "shift": "Shift",
-    "skills": "Skills",
     "notesOptional": "Notes (optional)",
     "update": "Update",
     "create": "Create",
@@ -601,9 +638,13 @@
     "completeButton": "Complete",
     "allZones": "All Zones",
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "zone": "Zone:",
+    "skills": "Skills:"
   },
   "bulkImport": {
+    "selectAll": "Select all",
+    "dataPreview": "Data preview",
     "title": "Bulk Import & CSV Export",
     "requestsTab": "Requests",
     "resourcesTab": "Resources",
@@ -658,6 +699,7 @@
     "noMatch": "No escalated requests match your search"
   },
   "geofencing": {
+    "autoRefresh": "Monitoring — auto-refreshes every 30s",
     "title": "Geofencing Alerts",
     "subtitle": "Click map to set center, then check area",
     "radiusLabel": "Radius (km):",
@@ -727,6 +769,8 @@
     "uploadAvatar": "Upload avatar photo"
   },
   "footer": {
+    "privacy": "Privacy",
+    "terms": "Terms",
     "quickLinks": "Quick Links",
     "contact": "Contact",
     "about": "About",
