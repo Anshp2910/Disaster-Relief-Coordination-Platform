@@ -34,8 +34,8 @@
   .gov-navbar-user-name { display: none; }
   .gov-navbar-lang { display: none; }
   .gov-navbar-divider { display: none; }
-  .gov-navbar-inner { height: 52px; padding: 0 var(--space-md); }
-  .gov-navbar-bottom-inner { flex-direction: column; gap: var(--space-xs); text-align: center; padding: var(--space-md) var(--space-md); }
+  .gov-navbar-inner { height: 52px; padding: 0 var(--space-md); margin: 0 var(--space-md); }
+  .gov-navbar-bottom-inner { flex-direction: column; gap: var(--space-xs); text-align: center; padding: var(--space-md) var(--space-md); margin: 0 var(--space-md); }
 
   .bento-grid { grid-template-columns: 1fr; }
   .grid-2, .grid-3, .grid-4-responsive { grid-template-columns: 1fr; }
@@ -56,7 +56,7 @@
 @media (max-width: 480px) {
   .container { padding: 0 var(--space-sm); }
   .gov-main { padding-top: 48px; }
-  .gov-navbar-inner { height: 48px; padding: 0 var(--space-sm); gap: var(--space-4xs); }
+  .gov-navbar-inner { height: 48px; padding: 0 var(--space-sm); gap: var(--space-4xs); margin: 0 var(--space-xsml); }
   .kpi-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xs); }
   .kpi-card { padding: var(--space-md); }
   .bento-kpi-value { font-size: var(--text-2xl); }
