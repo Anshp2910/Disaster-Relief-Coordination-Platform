@@ -19,7 +19,7 @@ const ResourceSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock'],
+      enum: ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock', 'Deployed', 'Maintenance'],
       default: 'Available',
     },
     allocatedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Request', default: null },

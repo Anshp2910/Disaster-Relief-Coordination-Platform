@@ -51,7 +51,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImp
       return res.status(400).json({ error: 'No rows to import' })
     }
 
-    const validCategories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
+    const validCategories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other']
     const validStatuses = ['Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
     const validPriorities = ['Critical', 'High', 'Medium', 'Low']
 
@@ -124,7 +124,7 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkIm
     }
 
     const validCategories = ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Rescue', 'Equipment', 'Other']
-    const validStatuses = ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock']
+    const validStatuses = ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock', 'Deployed', 'Maintenance']
 
     const imported = []
     const errors = []
