@@ -32,6 +32,15 @@ body {
   transition: background var(--duration-slower) var(--ease-out),
   color var(--duration-slow) var(--ease-out),
   background-image var(--duration-slower) var(--ease-out);
+  animation: bg-shift 20s var(--ease-in-out) infinite;
+}
+[data-theme="dark"] body,
+[data-theme="dark"] .gov-layout {
+  animation-name: bg-shift-dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, .gov-layout { animation: none !important; }
 }
 
 img {

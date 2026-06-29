@@ -20,6 +20,35 @@
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes shimmer-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
+/* ── Creative Ambient ── */
+@keyframes bg-shift {
+  0% { background-position: 50% -20%, 80% 80%, 0% 0%; }
+  33% { background-position: 45% -18%, 75% 85%, 0% 0%; }
+  66% { background-position: 55% -22%, 85% 75%, 0% 0%; }
+  100% { background-position: 50% -20%, 80% 80%, 0% 0%; }
+}
+@keyframes bg-shift-dark {
+  0% { background-position: 50% -20%, 80% 80%, 0% 0%; }
+  33% { background-position: 48% -18%, 76% 82%, 0% 0%; }
+  66% { background-position: 52% -22%, 84% 78%, 0% 0%; }
+  100% { background-position: 50% -20%, 80% 80%, 0% 0%; }
+}
+@keyframes card-glow {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(37, 99, 235, 0.06); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+@keyframes accent-bar-slide {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes value-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* ── Data Animate Attribute ── */
 [data-animate] { animation: fadeInUp var(--duration-slow) var(--ease-out) both; }
 [data-animate="fade"] { animation-name: fadeIn; }
