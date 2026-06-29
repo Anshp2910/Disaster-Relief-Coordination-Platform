@@ -33,8 +33,7 @@
   gap: var(--space-xs);
   padding: 0 var(--space-lg);
   height: 52px;
-  max-width: 1344px;
-  margin: 0 auto;
+  margin: 0 var(--space-2xl);
 }
 
 /* ── Brand ── */
@@ -369,8 +368,7 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--space-md) var(--space-lg);
-  max-width: 1344px;
-  margin: 0 auto;
+  margin: 0 var(--space-2xl);
   font-size: var(--text-xs);
   color: var(--text-muted);
   line-height: var(--leading-relaxed);
