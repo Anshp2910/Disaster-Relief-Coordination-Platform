@@ -62,7 +62,7 @@ export default function MapOverview() {
       setItems(data.items || [])
       setLoading(false)
     } catch (e) {
-      setError(getErrorMessage(e) || 'Failed to load request data')
+      setError(getErrorMessage(e) || t('map.failedToLoad'))
       setLoading(false)
     }
   }, [])
@@ -172,7 +172,7 @@ export default function MapOverview() {
               key={f.key}
               onClick={() => setFilterStatus(f.key)}
               className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
-              aria-label={`Filter by status: ${f.label}`}
+              aria-label={t('map.filterByStatus') + ': ' + f.label}
             >
               {f.label}
             </button>
@@ -186,7 +186,7 @@ export default function MapOverview() {
               onClick={() => setFilterPriority(p)}
               className={`filter-pill text-xs ${filterPriority === p ? 'active' : ''}`}
               style={p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : undefined}
-              aria-label={`Filter by priority: ${p === 'All' ? 'All' : p}`}
+              aria-label={`${t('map.filterByPriority')}: ${p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}`}
             >
               {p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}
             </button>
@@ -199,7 +199,7 @@ export default function MapOverview() {
               key={c}
               onClick={() => setFilterCategory(c)}
               className={`filter-pill text-xs ${filterCategory === c ? 'active' : ''}`}
-              aria-label={`Filter by category: ${c === 'All' ? 'All' : c}`}
+              aria-label={`${t('map.filterByCategory')}: ${c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}`}
             >
               {c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}
             </button>
@@ -214,7 +214,7 @@ export default function MapOverview() {
           </div>
         )}
 
-        <div ref={mapRef} className="map-container-full w-full" aria-label="Map overview of requests" />
+        <div ref={mapRef} className="map-container-full w-full" aria-label={t('map.mapAriaLabel')} />
 
         {!loading && error && (
           <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
@@ -223,7 +223,7 @@ export default function MapOverview() {
         )}
 
         {!loading && !error && items.length === 0 && (
-          <EmptyState icon='🗺️' title={t('dashboard.noRequests')} description={t('map.noRequestsDesc') || 'No request locations to display'} />
+          <EmptyState icon='🗺️' title={t('dashboard.noRequests')} description={t('map.noRequestsDesc')} />
         )}
       </div>
 

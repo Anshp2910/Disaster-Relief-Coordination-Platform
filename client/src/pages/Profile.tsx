@@ -281,7 +281,7 @@ export default function Profile() {
 
           <RippleBtn type="submit" className="text-13 flex items-center gap-xs" disabled={loading}>
             <Save size={16} aria-hidden="true" />
-            {loading ? '...' : t('profile.updateProfile')}
+            {loading ? t('common.sending') : t('profile.updateProfile')}
           </RippleBtn>
         </form>
       </motion.div>
@@ -360,7 +360,7 @@ export default function Profile() {
           </div>
 
           <RippleBtn type="submit" className="text-13" disabled={loading}>
-            {loading ? '...' : t('profile.updatePassword')}
+            {loading ? t('common.sending') : t('profile.updatePassword')}
           </RippleBtn>
         </form>
       </motion.div>

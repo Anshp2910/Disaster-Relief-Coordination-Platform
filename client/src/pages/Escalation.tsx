@@ -230,7 +230,7 @@ export default function Escalation() {
               </label>
             </div>
           </div>
-          <button type="submit" className="sf-btn sf-btn-next" aria-label="Escalate request">
+          <button type="submit" className="sf-btn sf-btn-next" aria-label={t('escalation.escalateRequest')}>
             <ArrowUp size={16} />
             {t('escalation.escalateRequest')}
           </button>
@@ -258,7 +258,7 @@ export default function Escalation() {
                   {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                 </div>
                 <div className="mt-xs text-13">{item.escalationReason}</div>
-                <div className="small muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || 'Unknown'}</div>
+                <div className="small muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || t('common.unknown')}</div>
               </div>
               <button
                 onClick={() => handleDeescalate(item._id)}

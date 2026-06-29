@@ -360,7 +360,7 @@ export default function Geofencing() {
             'var(--gov-blue)',
             'var(--accent-soft)',
             t('geofencing.zonesInArea'),
-            (z) => <>{'name' in z ? z.name : ''} <span className="text-muted">({'distanceKm' in z ? z.distanceKm : ''} km)</span></>,
+            (z) => <>{'name' in z ? z.name : ''} <span className="text-muted">({'distanceKm' in z ? z.distanceKm : ''} {t('zones.km')})</span></>,
             <Target size={24} />
           )}
           {renderResultSection(
@@ -368,7 +368,7 @@ export default function Geofencing() {
             'var(--gov-danger)',
             'var(--danger-soft)',
             t('geofencing.requestsNearby'),
-            (r) => <>{'title' in r ? r.title : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} km)</span></>,
+            (r) => <>{'title' in r ? r.title : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} {t('zones.km')})</span></>,
             <Activity size={24} />
           )}
           {renderResultSection(
@@ -376,7 +376,7 @@ export default function Geofencing() {
             'var(--gov-green)',
             'var(--success-soft)',
             t('geofencing.resourcesNearby'),
-            (r) => <>{'name' in r ? r.name : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} km)</span></>,
+            (r) => <>{'name' in r ? r.name : ''} <span className="text-muted">({'distanceKm' in r ? r.distanceKm : ''} {t('zones.km')})</span></>,
             <Package size={24} />
           )}
         </motion.div>
@@ -390,13 +390,13 @@ export default function Geofencing() {
           transition={{ delay: 0.2, duration: 0.3 }}
         >
           <div className="text-base text-semi mb-sm">{t('geofencing.checkHistory') || 'Check History'}</div>
-          <DataTable
+            <DataTable
             columns={[
-              { id: 'time', header: 'Time', accessor: (e) => formatTime(e.timestamp), sortable: true },
-              { id: 'radius', header: 'Radius (km)', accessor: 'radius', sortable: true },
-              { id: 'zones', header: 'Zones', accessor: 'zonesCount', sortable: true },
-              { id: 'requests', header: 'Requests', accessor: 'requestsCount', sortable: true },
-              { id: 'resources', header: 'Resources', accessor: 'resourcesCount', sortable: true },
+              { id: 'time', header: t('geofencing.columnTime'), accessor: (e) => formatTime(e.timestamp), sortable: true },
+              { id: 'radius', header: t('geofencing.columnRadius'), accessor: 'radius', sortable: true },
+              { id: 'zones', header: t('geofencing.columnZones'), accessor: 'zonesCount', sortable: true },
+              { id: 'requests', header: t('geofencing.columnRequests'), accessor: 'requestsCount', sortable: true },
+              { id: 'resources', header: t('geofencing.columnResources'), accessor: 'resourcesCount', sortable: true },
             ]}
             data={[...checkHistory].reverse()}
             keyExtractor={(entry: CheckHistoryEntry) => entry.timestamp.getTime()}

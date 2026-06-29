@@ -595,7 +595,13 @@
     "refreshWeather": "Refresh",
     "humidity": "Humidity",
     "wind": "Wind",
-    "precipitation": "Precip"
+    "precipitation": "Precip",
+    "sidepanelAffected": "Affected",
+    "sidepanelOpenRequests": "Open requests",
+    "feelsLike": "feels",
+    "gust": "gust",
+    "kmh": "km/h",
+    "dailyTotal": "24h total"
   },
   "zoneHeatMap": {
     "radius": "Radius:",
@@ -607,7 +613,12 @@
   "map": {
     "title": "Map View",
     "noRequestsDesc": "No request locations to display on the map. Try adjusting your filters or zoom out to see more area.",
-    "selectLocation": "Map for selecting location"
+    "selectLocation": "Map for selecting location",
+    "filterByStatus": "Filter by status",
+    "filterByPriority": "Filter by priority",
+    "filterByCategory": "Filter by category",
+    "mapAriaLabel": "Map overview of requests",
+    "failedToLoad": "Failed to load request data"
   },
   "public": {
     "title": "Disaster Relief Status",
@@ -706,12 +717,20 @@
     "systemField": "System Field",
     "ignoreColumn": "— Ignore —",
     "confirmMapping": "Confirm Mapping",
-    "selectRow": "Select row {{number}}",
-    "editRow": "Edit row {{number}}",
+    "selectRow": "Select row {{num}}",
+    "editRow": "Edit row {{num}}",
     "doneEditing": "Done editing",
     "previousPage": "Previous page",
     "nextPage": "Next page",
-    "rowError": "Row {{row}}: {{errors}}"
+    "rowError": "Row {{row}}: {{errors}}",
+    "uploadCSV": "Upload CSV file",
+    "columnDisplay": "column",
+    "columnDisplay_plural": "columns",
+    "willBeIgnored": "will be ignored. Assign a system field or they will be skipped.",
+    "mapColumnToField": "Map column \"{{column}}\" to system field",
+    "rowNumber": "#",
+    "editField": "Edit {{field}}",
+    "rowNum": "Row {{row}}"
   },
   "escalation": {
     "title": "Request Escalation Pipeline",
@@ -744,7 +763,12 @@
     "radiusSlider": "Radius slider",
     "geofencingMap": "Geofencing map",
     "startMonitoring": "Start Monitoring",
-    "stopMonitoring": "Stop Monitoring"
+    "stopMonitoring": "Stop Monitoring",
+    "columnTime": "Time",
+    "columnRadius": "Radius (km)",
+    "columnZones": "Zones",
+    "columnRequests": "Requests",
+    "columnResources": "Resources"
   },
   "chat": {
     "title": "Chat",
@@ -898,6 +922,7 @@
     "typeCommand": "Type a command or page name\u2026",
     "searchCommands": "Search commands",
     "noResultsFor": "No results for \"{{query}}\"",
-    "adminBadge": "Admin"
+    "adminBadge": "Admin",
+    "sending": "Sending..."
   }
 }

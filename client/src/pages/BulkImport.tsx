@@ -324,7 +324,7 @@ export default function BulkImport() {
                 </div>
                 <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
                 <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
-                <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label="Upload CSV file" />
+                <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label={t('bulkImport.uploadCSV')} />
                 <RippleBtn onClick={() => document.getElementById('csv-upload')?.click()} className="cursor-pointer inline-block text-13 p-sm">
                   {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
                 </RippleBtn>
@@ -346,7 +346,7 @@ export default function BulkImport() {
                 <div className="mb p-sm rounded-sm bg-warning-soft">
                   <span className="text-13 text-semi flex items-center gap-xs text-warning">
                     <AlertTriangle size={14} />
-                    {unmatchedCount} column{unmatchedCount > 1 ? 's' : ''} will be ignored. Assign a system field or they will be skipped.
+                    {unmatchedCount} {t('bulkImport.columnDisplay', { count: unmatchedCount })} {t('bulkImport.willBeIgnored')}
                   </span>
                   <ul className="mt-xs mb-0 text-sm text-warning">
                     {columnMaps.filter((m) => m.systemCol === '').map((m) => (
@@ -372,7 +372,7 @@ export default function BulkImport() {
                           value={m.systemCol}
                           onChange={(e) => updateColumnMap(m.csvCol, e.target.value)}
                           className="rounded-sm border-gov text-sm w-100 p-xs"
-                          aria-label={`Map column "${m.csvCol}" to system field`}
+                          aria-label={t('bulkImport.mapColumnToField', { column: m.csvCol })}
                         >
                           <option value="">{t('bulkImport.ignoreColumn')}</option>
                           {systemFields.map((f) => (
@@ -411,13 +411,13 @@ export default function BulkImport() {
               </div>
 
               <div className="overflow-x-auto rounded-sm border-gov">
-                <div className="w-full text-sm dt-inline-table" role="grid" aria-label="Data preview">
+                <div className="w-full text-sm dt-inline-table" role="grid" aria-label={t('bulkImport.dataPreview')}>
                   <div className="dt-inline-row dt-inline-header" role="row">
                     <div className="dt-inline-cell text-center dt-inline-shrink" role="columnheader">
-                      <label htmlFor="bulk-selectall" className="sr-only">Select all</label>
-                      <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title="Select all" aria-label="Select all rows" />
+                      <label htmlFor="bulk-selectall" className="sr-only">{t('bulkImport.selectAll')}</label>
+                      <input id="bulk-selectall" type="checkbox" checked={selected.size === preview.length} onChange={toggleSelectAll} title={t('bulkImport.selectAll')} aria-label={t('bulkImport.selectAll')} />
                     </div>
-                    <div className="dt-inline-cell text-center dt-inline-shrink" role="columnheader">#</div>
+                      <div className="dt-inline-cell text-center dt-inline-shrink" role="columnheader">{t('bulkImport.rowNumber')}</div>
                     {headers.map((h) => (
                       <div key={h} className="dt-inline-cell text-nowrap" role="columnheader">{h}</div>
                     ))}
@@ -437,7 +437,7 @@ export default function BulkImport() {
                       role="row"
                     >
                       <div className="dt-inline-cell text-center dt-inline-shrink" role="gridcell">
-                        <input type="checkbox" checked={isSelected} onChange={() => toggleRow(rowId)} aria-label={`Select row ${rowOffset + idx + 1}`} />
+                        <input type="checkbox" checked={isSelected} onChange={() => toggleRow(rowId)} aria-label={t('bulkImport.selectRow', { num: rowOffset + idx + 1 })} />
                       </div>
                       <div className="dt-inline-cell text-center dt-inline-shrink text-muted" role="gridcell">{rowOffset + idx + 1}</div>
                       {headers.map((h) => (
@@ -447,7 +447,7 @@ export default function BulkImport() {
                               value={row[h] as string || ''}
                               onChange={(e) => updateCell(rowId, h, e.target.value)}
                               className="w-full text-sm border-gov rounded-sm p-xs"
-                              aria-label={`Edit ${h}`}
+                              aria-label={t('bulkImport.editField', { field: h })}
                             />
                           ) : (
                             (row[h] as string) || <span className="text-muted">-</span>
@@ -458,7 +458,7 @@ export default function BulkImport() {
                         <button
                           onClick={() => setEditingRow(isEditing ? null : rowId)}
                           className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
-                          aria-label={isEditing ? 'Done editing' : `Edit row ${rowOffset + idx + 1}`}
+                          aria-label={isEditing ? t('bulkImport.doneEditing') : t('bulkImport.editRow', { num: rowOffset + idx + 1 })}
                         >
                           {isEditing ? t('bulkImport.done') : t('bulkImport.edit')}
                         </button>
@@ -478,18 +478,18 @@ export default function BulkImport() {
                       disabled={previewPage <= 1}
                       onClick={() => setPreviewPage((p) => Math.max(1, p - 1))}
                       className="text-sm p-xs border-gov rounded-sm cursor-pointer flex items-center gap-xs"
-                      aria-label="Previous page"
+                      aria-label={t('dashboard.previous')}
                     >
-                      <ChevronLeft size={14} /> {t('dashboard.previous') || 'Previous'}
+                      <ChevronLeft size={14} /> {t('dashboard.previous')}
                     </button>
                     <span className="text-sm p-xs">{previewPage} / {totalPages}</span>
                     <button
                       disabled={previewPage >= totalPages}
                       onClick={() => setPreviewPage((p) => Math.min(totalPages, p + 1))}
                       className="text-sm p-xs border-gov rounded-sm cursor-pointer flex items-center gap-xs"
-                      aria-label="Next page"
+                      aria-label={t('dashboard.next')}
                     >
-                      {t('dashboard.next') || 'Next'} <ChevronRight size={14} />
+                      {t('dashboard.next')} <ChevronRight size={14} />
                     </button>
                   </div>
                 )
@@ -514,7 +514,7 @@ export default function BulkImport() {
                     {t('bulkImport.rowsHadErrors', { count: (result.errors as Array<Record<string, unknown>>).length })}
                   </div>
                   {(result.errors as Array<Record<string, unknown>>).slice(0, 10).map((e: Record<string, unknown>, i: number) => (
-                    <div key={i} className="text-sm text-muted mt-xs">Row {e.row as string}: {(e.errors as string[]).join(', ')}</div>
+                    <div key={i} className="text-sm text-muted mt-xs">{t('bulkImport.rowNum', { row: e.row })}: {(e.errors as string[]).join(', ')}</div>
                   ))}
                 </div>
               )}

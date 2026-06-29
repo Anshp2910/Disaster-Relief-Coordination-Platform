@@ -93,20 +93,20 @@ function buildPopup(zone: Zone, color: { fill: string }, t: (key: string) => str
         ${DISASTER_ICONS[zone.disasterType || ''] || ''} ${escapeHtml(zone.name || '')}
       </div>
       <div style="font-size:var(--text-xs);margin-bottom:var(--space-2xs)">
-        <span style="color:${color.fill};font-weight:600">${escapeHtml(zone.severity || '')}</span> severity
+        <span style="color:${color.fill};font-weight:600">${escapeHtml(zone.severity || '')}</span> ${t('zones.severityLabel')}
         &middot; ${escapeHtml(zone.disasterType || '')}
       </div>
-      <div style="font-size:var(--text-xs);margin-bottom:var(--space-3xs)">Radius: ${zone.radiusKm} km</div>
+      <div style="font-size:var(--text-xs);margin-bottom:var(--space-3xs)">${t('zones.radiusLabel')} ${zone.radiusKm} ${t('zones.km')}</div>
       ${(zone.affectedPopulation ?? 0) > 0
-        ? `<div style="font-size:var(--text-xs);margin-bottom:var(--space-3xs)">Affected: ${zone.affectedPopulation?.toLocaleString()}</div>`
+        ? `<div style="font-size:var(--text-xs);margin-bottom:var(--space-3xs)">${t('zones.popupAffected')}: ${zone.affectedPopulation?.toLocaleString()}</div>`
         : ''
       }
       <hr style="margin:var(--space-2xs) 0;border:none;border-top:1px solid var(--border-light)"/>
       <div style="font-size:var(--text-xs)">
-        <div>Open requests: <strong style="color:var(--red-500)">${zone.openRequests}</strong></div>
-        <div>Resources: <strong>${zone.totalResources}</strong> units</div>
+        <div>${t('zones.popupRequests')}: <strong style="color:var(--red-500)">${zone.openRequests}</strong></div>
+        <div>${t('zones.popupResources')}: <strong>${zone.totalResources}</strong> ${t('zones.units')}</div>
         <div style="margin-top:var(--space-3xs)">
-          Coverage: <span style="background:${coverageColor};color:var(--text-on-accent);padding:var(--space-px) var(--space-2xs);border-radius:var(--radius-2xs);font-size:var(--text-3xs)">${escapeHtml(zone.coverageStatus || '')}</span>
+          ${t('zones.popupCoverage')}: <span style="background:${coverageColor};color:var(--text-on-accent);padding:var(--space-px) var(--space-2xs);border-radius:var(--radius-2xs);font-size:var(--text-3xs)">${escapeHtml(zone.coverageStatus || '')}</span>
         </div>
       </div>
       <div style="margin-top:var(--space-xs)">
@@ -323,18 +323,18 @@ export default function ZoneHeatMap() {
       <motion.div className="container" variants={containerVariants} initial="hidden" animate="visible">
       <PageHeader
         title={t('zones.title')}
-        subtitle={`${zones.length} zones \u00B7 ${totalOpen} open requests \u00B7 ${totalGap} coverage gaps \u00B7 ${totalAffected.toLocaleString()} affected`}
+        subtitle={`${zones.length} ${t('zones.zonesCount')} \u00B7 ${totalOpen} ${t('zones.openRequests')} \u00B7 ${totalGap} ${t('zones.coverageGaps')} \u00B7 ${totalAffected.toLocaleString()} ${t('zones.affected')}`}
         actions={
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <RippleBtn className="" onClick={openCreate} aria-label="Add zone">
+              <RippleBtn className="" onClick={openCreate} aria-label={t('zones.addZone')}>
                 <Plus size={16} />
                 <span className="ml-xs">{t('zones.addZone')}</span>
               </RippleBtn>
             )}
             <button className="btn-secondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
               <Thermometer size={16} />
-              <span className="ml-xs">{weatherLoading ? '...' : (t('zones.weather') || 'Weather')}</span>
+              <span className="ml-xs">{weatherLoading ? t('common.loading') : (t('zones.weather') || 'Weather')}</span>
             </button>
           </div>
         }
@@ -349,22 +349,22 @@ export default function ZoneHeatMap() {
         filters={[
           {
             key: 'status',
-            label: 'Status',
-            options: STATUS_OPTIONS.map((s) => ({ key: s, label: s })),
+            label: t('zones.statusHeader'),
+            options: STATUS_OPTIONS.map((s) => ({ key: s, label: s === 'All' ? t('dashboard.filterAll') : s })),
             value: filterStatus,
             onChange: setFilterStatus,
           },
           {
             key: 'severity',
-            label: 'Severity',
-            options: SEVERITY_OPTIONS.map((s) => ({ key: s, label: s })),
+            label: t('zones.severityHeader'),
+            options: SEVERITY_OPTIONS.map((s) => ({ key: s, label: s === 'All' ? t('dashboard.filterAll') : s })),
             value: filterSeverity,
             onChange: setFilterSeverity,
           },
           {
             key: 'disaster',
-            label: 'Disaster Type',
-            options: DISASTER_OPTIONS.map((d) => ({ key: d, label: d })),
+            label: t('zones.disasterHeader'),
+            options: DISASTER_OPTIONS.map((d) => ({ key: d, label: d === 'All' ? t('dashboard.filterAll') : d })),
             value: filterDisaster,
             onChange: setFilterDisaster,
           },
@@ -395,14 +395,14 @@ export default function ZoneHeatMap() {
               {Object.entries(SEVERITY_COLORS).map(([sev, c]) => (
                 <div key={sev} className="gap-row-xs text-sm flex items-center gap-xs">
                   <div className="w-3 h-3 rounded-sm" style={{ background: c.fill, border: `2px solid ${c.stroke}` }} />
-                  <span>{sev}</span>
+                  <span>{t('priorities.' + sev)}</span>
                 </div>
               ))}
               <span className="text-sm text-muted">&middot;</span>
-              {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
+                {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
                 <div key={cov} className="gap-row-xs text-sm flex items-center gap-xs">
                   <div className="w-3 h-3 rounded-sm" style={{ background: c }} />
-                  <span>{cov}</span>
+                  <span>{t('zones.' + cov.toLowerCase())}</span>
                 </div>
               ))}
             </div>
@@ -440,12 +440,12 @@ export default function ZoneHeatMap() {
                 {(selectedZone.affectedPopulation ?? 0) > 0 && (
                   <div className="flex items-center gap-xs">
                     <Users size={14} />
-                    <span>Affected: <strong>{selectedZone.affectedPopulation?.toLocaleString()}</strong></span>
+                    <span>{t('zones.sidepanelAffected')}: <strong>{selectedZone.affectedPopulation?.toLocaleString()}</strong></span>
                   </div>
                 )}
                 <div className="flex items-center gap-xs">
                   <Activity size={14} />
-                  <span>Open requests: <strong className="text-red">{selectedZone.openRequests}</strong></span>
+                  <span>{t('zones.sidepanelOpenRequests')}: <strong className="text-red">{selectedZone.openRequests}</strong></span>
                 </div>
                 <div className="flex items-center gap-xs">
                   <MapPin size={14} />
@@ -487,16 +487,16 @@ export default function ZoneHeatMap() {
               <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
               <div className="text-sm text-muted mb-sm flex items-center gap-xs">
                 <Activity size={14} />
-                {weather.conditions} {weather.feelsLike != null ? `(feels ${weather.feelsLike}°C)` : ''}
+                {weather.conditions} {weather.feelsLike != null ? `(${t('zones.feelsLike')} ${weather.feelsLike}°C)` : ''}
               </div>
               <div className="text-sm grid-2 gap-8">
                 {weather.humidity != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.humidity')}</span><span>{weather.humidity}%</span></>}
-                {weather.windSpeed != null && <><span className="text-muted flex items-center gap-xs"><Wind size={14} /> {t('zones.wind')}</span><span>{weather.windSpeed} km/h{weather.windGusts ? ` (gust ${weather.windGusts})` : ''}</span></>}
+                {weather.windSpeed != null && <><span className="text-muted flex items-center gap-xs"><Wind size={14} /> {t('zones.wind')}</span><span>{weather.windSpeed} {t('zones.kmh')}{weather.windGusts ? ` (${t('zones.gust')} ${weather.windGusts})` : ''}</span></>}
                 {weather.precipitation != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.precipitation')}</span><span>{weather.precipitation} mm</span></>}
-                {weather.dailyPrecipitation != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> 24h total</span><span>{weather.dailyPrecipitation} mm</span></>}
+                {weather.dailyPrecipitation != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.dailyTotal')}</span><span>{weather.dailyPrecipitation} mm</span></>}
               </div>
               <button onClick={fetchWeather} className="text-xs mt-sm p-xs" disabled={weatherLoading}>
-                {weatherLoading ? '...' : t('zones.refreshWeather') || 'Refresh'}
+                {weatherLoading ? t('common.loading') : t('zones.refreshWeather') || 'Refresh'}
               </button>
             </div>
           )}

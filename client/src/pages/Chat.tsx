@@ -33,7 +33,7 @@ interface ChatProps {
 }
 
 export default function Chat({ requestId, onClose }: ChatProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user: currentUser } = useAuth()
   const { socket } = useSocket()
   const bottomRef = useRef<HTMLDivElement | null>(null)
@@ -222,7 +222,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   }
 
   function formatTime(ts: string) {
-    return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return new Date(ts).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })
   }
 
   function handleScroll() {
@@ -332,7 +332,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
         {hasTyping && (
           <div className="flex items-center text-xs text-muted typing-indicator">
-            <span>{typingNames.length === 1 ? t('chat.typingSingle', { name: typingNames[0].name }) : t('chat.typingMultiple', { names: typingNames.map((n) => n.name).join(', ') })}</span>
+            <span>{typingNames.length === 1 ? t('chat.typingSingle', { name: typingNames[0].name }) : t('chat.typingMultiple', { names: new Intl.ListFormat(i18n.language, { style: 'long', type: 'conjunction' }).format(typingNames.map((n) => n.name)) })}</span>
             <span className="typing-dots"><span>.</span><span>.</span><span>.</span></span>
           </div>
         )}
@@ -393,7 +393,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         </div>
         <span className="text-xs text-muted self-center">{text.length}/2000</span>
         <RippleBtn type="submit" className="text-xs p-sm flex items-center gap-xs" style={{ height: 44, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
-          {sending ? '...' : <><Send size={14} /> {t('chat.send')}</>}
+          {sending ? t('common.sending') : <><Send size={14} /> {t('chat.send')}</>}
         </RippleBtn>
       </form>
     </div>
