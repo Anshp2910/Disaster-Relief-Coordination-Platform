@@ -75,7 +75,7 @@ export function createApp() {
         workerSrc: ["'self'"],
         formAction: ["'self'"],
         frameSrc: ["'self'"],
-        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? true : null,
+        ...(process.env.NODE_ENV === 'production' && { upgradeInsecureRequests: [] }),
       },
     },
   }))
