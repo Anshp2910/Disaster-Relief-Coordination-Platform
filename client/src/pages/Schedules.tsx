@@ -76,8 +76,8 @@ const SKILL_OPTIONS = ['Medical', 'Rescue', 'Logistics', 'Communication', 'Shelt
 const SHIFT_OPTIONS = ['Morning', 'Afternoon', 'Night', 'Full Day']
 const STATUS_FILTER_OPTIONS = ['All', 'Scheduled', 'Active', 'Completed', 'Cancelled']
 
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('en-IN', {
+function formatDate(d: string, locale: string) {
+  return new Date(d).toLocaleDateString(locale, {
     weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
   })
 }
@@ -104,7 +104,7 @@ const DEFAULT_FORM: ScheduleForm = {
 }
 
 export default function Schedules() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [items, setItems] = useState<ScheduleItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -318,7 +318,7 @@ export default function Schedules() {
           {
             key: 'status',
             label: t('schedules.status') || 'Status',
-            options: STATUS_FILTER_OPTIONS.map((s) => ({ key: s, label: s })),
+            options: STATUS_FILTER_OPTIONS.map((s) => ({ key: s, label: s === 'All' ? t('dashboard.filterAll') : s })),
             value: filterStatus,
             onChange: (v) => { setFilterStatus(v); setPage(1) },
           },
@@ -390,9 +390,9 @@ export default function Schedules() {
             </button>
             <span className="text-sm text-bold flex items-center gap-xs">
               <Calendar size={14} />
-              {weekStart.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+              {weekStart.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
               {' — '}
-              {weekEnd.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+              {weekEnd.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
             <button onClick={() => setWeekOffset((p) => p + 1)} className="text-sm flex items-center gap-xs" aria-label={t('common.next')}>
               {t('common.next')} <ChevronRight size={16} />
@@ -408,7 +408,7 @@ export default function Schedules() {
                     {day.toLocaleDateString(undefined, { weekday: 'short' })}
                   </div>
                   <div className="text-xs" style={{ textAlign: 'center', color: 'var(--gov-muted)' }}>
-                    {day.getDate()} {day.toLocaleDateString('en-IN', { month: 'short' })}
+                    {day.getDate()} {day.toLocaleDateString(i18n.language, { month: 'short' })}
                   </div>
                   {daySchedules.length > 0 && (
                     <div className="text-xs" style={{ textAlign: 'center', margin: 'var(--space-3xs) 0' }}>
@@ -442,7 +442,7 @@ export default function Schedules() {
                         {selectedDaySchedule?._id === s._id && (
                           <div className="mt-xs text-xs p-xs bg-subtle rounded-sm border-gov">
                             <div><strong>{(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}</strong> — {s.shift}</div>
-                            <div className="muted">{s.startDate ? formatDate(s.startDate) : ''}</div>
+                            <div className="muted">{s.startDate ? formatDate(s.startDate, i18n.language) : ''}</div>
                             {s.zoneId && <div>{t('schedules.zone')} {(typeof s.zoneId === 'object' && s.zoneId) ? s.zoneId.name : t('common.unknown')}</div>}
                             {s.skills && s.skills.length > 0 && <div>Skills: {s.skills.join(', ')}</div>}
                             {s.notes && <div className="muted">{s.notes}</div>}
@@ -486,7 +486,7 @@ export default function Schedules() {
                       </div>
 
                       <div className="text-base text-muted">
-                        {item.startDate ? formatDate(item.startDate) : ''} &rarr; {item.endDate ? formatDate(item.endDate) : ''}
+                        {item.startDate ? formatDate(item.startDate, i18n.language) : ''} &rarr; {item.endDate ? formatDate(item.endDate, i18n.language) : ''}
                       </div>
 
                       {item.zoneId && (
