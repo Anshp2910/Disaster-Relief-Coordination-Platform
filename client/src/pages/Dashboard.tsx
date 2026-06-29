@@ -14,7 +14,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
 import { useSocket } from '../hooks/useSocket'
-import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS } from '../utils/constants'
+import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, CATEGORY_OPTIONS } from '../utils/constants'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
@@ -125,20 +125,7 @@ export default function Dashboard() {
 
   const categoryOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
-    { key: 'Medical', label: t('categories.Medical') },
-    { key: 'Food', label: t('categories.Food') },
-    { key: 'Shelter', label: t('categories.Shelter') },
-    { key: 'Water', label: t('categories.Water') },
-    { key: 'Rescue', label: t('categories.Rescue') },
-    { key: 'Supplies', label: t('categories.Supplies') },
-    { key: 'Healthcare', label: t('categories.Healthcare') },
-    { key: 'Sanitation', label: t('categories.Sanitation') },
-    { key: 'Clothing', label: t('categories.Clothing') },
-    { key: 'Transportation', label: t('categories.Transportation') },
-    { key: 'Communication', label: t('categories.Communication') },
-    { key: 'Power', label: t('categories.Power') },
-    { key: 'Infrastructure', label: t('categories.Infrastructure') },
-    { key: 'Other', label: t('categories.Other') },
+    ...CATEGORY_OPTIONS.map((c) => ({ key: c, label: t(`categories.${c}`) })),
   ], [t])
 
   const sortOptions = useMemo(() => [

@@ -273,11 +273,11 @@ export default function Schedules() {
   }, [weekStart])
 
   const weekSchedules = useMemo(() => {
-    return items.filter((item) => {
-      if (!item.startDate) return false
-      const d = new Date(item.startDate)
-      return d >= weekStart && d <= weekEnd
-    })
+      return items.filter((item) => {
+        if (!item.startDate) return false
+        const d = new Date(item.startDate)
+        return d >= weekStart && d <= weekEnd
+      }, [items, weekStart, weekEnd])
   }, [items, weekStart, weekEnd])
 
   const schedulesByDay = useMemo(() => {
@@ -399,13 +399,13 @@ export default function Schedules() {
             </button>
           </div>
           <div className="week-grid mt-sm" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 'var(--space-xs)' }}>
-            {weekDays.map((day, idx) => {
+             {weekDays.map((day) => {
               const key = day.toDateString()
               const daySchedules = schedulesByDay[key] || []
               return (
                 <motion.div key={key} variants={itemVariants} className="card p-xs" style={{ minHeight: 120 }}>
                   <div className="text-xs text-bold" style={{ textAlign: 'center' }}>
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][idx]}
+                    {day.toLocaleDateString(undefined, { weekday: 'short' })}
                   </div>
                   <div className="text-xs" style={{ textAlign: 'center', color: 'var(--gov-muted)' }}>
                     {day.getDate()} {day.toLocaleDateString('en-IN', { month: 'short' })}
@@ -437,13 +437,13 @@ export default function Schedules() {
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : 'Volunteer'}
+                           {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}
                         </div>
                         {selectedDaySchedule?._id === s._id && (
                           <div className="mt-xs text-xs p-xs bg-subtle rounded-sm border-gov">
-                            <div><strong>{(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : 'Volunteer'}</strong> — {s.shift}</div>
+                            <div><strong>{(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}</strong> — {s.shift}</div>
                             <div className="muted">{s.startDate ? formatDate(s.startDate) : ''}</div>
-                            {s.zoneId && <div>Zone: {(typeof s.zoneId === 'object' && s.zoneId) ? s.zoneId.name : 'Unknown'}</div>}
+                            {s.zoneId && <div>{t('schedules.zone')} {(typeof s.zoneId === 'object' && s.zoneId) ? s.zoneId.name : t('common.unknown')}</div>}
                             {s.skills && s.skills.length > 0 && <div>Skills: {s.skills.join(', ')}</div>}
                             {s.notes && <div className="muted">{s.notes}</div>}
                           </div>
@@ -474,7 +474,7 @@ export default function Schedules() {
                       <div className="flex flex-gap-sm flex-wrap mb-xs">
                         <span className="text-bold text-base flex items-center gap-xs">
                           <User size={16} className="text-muted" />
-                          {(typeof item.userId === 'object' && item.userId) ? item.userId.displayName : 'Volunteer'}
+                          {(typeof item.userId === 'object' && item.userId) ? item.userId.displayName : t('schedules.volunteer')}
                         </span>
                         <span className="status-badge flex items-center gap-xs" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>
                           <Clock size={14} /> {item.shift}
@@ -492,7 +492,7 @@ export default function Schedules() {
                       {item.zoneId && (
                         <div className="small muted mt-xs flex items-center gap-xs">
                           <MapPin size={14} />
-                          <span>Zone: {(typeof item.zoneId === 'object' && item.zoneId) ? item.zoneId.name : 'Unknown'}</span>
+                          <span>{t('schedules.zone')} {(typeof item.zoneId === 'object' && item.zoneId) ? item.zoneId.name : t('common.unknown')}</span>
                         </div>
                       )}
 

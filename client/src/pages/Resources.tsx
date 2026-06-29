@@ -74,14 +74,14 @@ export default function Resources() {
     return (
       <DataCard
         key={s._id}
-        title={s._id}
+        title={t(`categories.${s._id}`) || s._id}
         value={`${s.totalQty} units`}
         subtitle={`${s.count} items`}
         icon={<Package size={18} />}
         color={catColors.text}
       />
     )
-  }), [summary])
+  }), [summary, t])
 
   const [showAllocModal, setShowAllocModal] = useState<ResourceItem | null>(null)
   const [allocQty, setAllocQty] = useState('')
@@ -507,7 +507,7 @@ export default function Resources() {
                 <div className="flex-1">
                   <div className="flex flex-gap-sm flex-wrap">
                     <span className="text-bold text-lg">{r.name}</span>
-                    <Badge label={r.category || 'Other'} colors={CATEGORY_COLORS} colorKey={r.category} />
+                    <Badge label={t(`categories.${r.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={r.category} />
                     <Badge label={r.status || 'Available'} colors={RESOURCE_STATUS_COLORS} colorKey={r.status} />
                   </div>
                   <div className="mt-xs text-base">
