@@ -464,6 +464,7 @@
     "Communication": "Communication",
     "Power": "Power",
     "Infrastructure": "Infrastructure",
+    "Equipment": "Equipment",
     "Other": "Other"
   },
   "priorities": {
