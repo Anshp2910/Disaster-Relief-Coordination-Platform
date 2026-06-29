@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavBar } from './NavBar'
-import { CommandPalette } from './CommandPalette'
 import { SosFab } from './SosFab'
 import { useAuth } from '../context/AuthContext'
 
@@ -11,7 +10,7 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   const { t } = useTranslation()
-  const { isAdmin, isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth()
 
   return (
     <div className="gov-layout">
@@ -19,7 +18,6 @@ function Layout({ children }: LayoutProps) {
         {t('common.skipToContent')}
       </a>
       <NavBar />
-      <CommandPalette isAdmin={isAdmin} />
       {isAuthenticated && <SosFab />}
       <main className="gov-main" id="main-content" role="main" aria-label={t('layout.mainContent')}>
         {children}

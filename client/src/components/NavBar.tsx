@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import {
-  Sun, Moon, Search, User, LogOut, AlertTriangle, Zap,
+  Sun, Moon, User, LogOut, AlertTriangle, Zap,
   LayoutDashboard, Map, Package, MapPin, PlusSquare,
-  Shield, Menu, X
+  Shield, Menu, X, Calendar, Crosshair, Upload, TrendingUp
 } from 'lucide-react'
 import NotificationBell from './NotificationBell'
 
@@ -42,7 +42,11 @@ const NAV_LINKS: NavLink[] = [
   { path: '/resources', labelKey: 'nav.resources', fallback: 'Resources', icon: <Package size={16} /> },
   { path: '/zones', labelKey: 'nav.zones', fallback: 'Zones', icon: <MapPin size={16} /> },
   { path: '/incidents', labelKey: 'nav.incidents', fallback: 'Incidents', icon: <AlertTriangle size={16} /> },
+  { path: '/schedules', labelKey: 'nav.schedules', fallback: 'Schedules', icon: <Calendar size={16} /> },
+  { path: '/geofencing', labelKey: 'nav.geofencing', fallback: 'Geofencing', icon: <Crosshair size={16} /> },
   { path: '/requests/new', labelKey: 'nav.newRequest', fallback: 'New Request', icon: <PlusSquare size={16} /> },
+  { path: '/escalation', labelKey: 'nav.escalation', fallback: 'Escalation', icon: <TrendingUp size={16} />, admin: true },
+  { path: '/bulk', labelKey: 'nav.bulkImport', fallback: 'Bulk Import', icon: <Upload size={16} />, admin: true },
   { path: '/admin', labelKey: 'nav.admin', fallback: 'Admin', icon: <Shield size={16} />, admin: true },
 ]
 
@@ -128,15 +132,6 @@ export function NavBar() {
             <>
               {/* Tools group */}
               <div className="gov-navbar-btn-group">
-                <button
-                  className="gov-navbar-tool-btn"
-                  onClick={() => window.dispatchEvent(new CustomEvent('toggle-cmd-palette'))}
-                  aria-label={t('nav.openCommandPalette')}
-                  title={t('nav.commandPaletteHint')}
-                >
-                  <Search size={14} />
-                </button>
-
                 <div className="gov-navbar-lang">
                   <select
                     value={i18n.language}

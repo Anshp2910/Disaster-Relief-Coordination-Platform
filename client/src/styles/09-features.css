@@ -5,38 +5,7 @@
 /* ── 1. Map Styles ── */
 .mapBox { min-height: 360px; height: 40vh; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-light); transition: all var(--duration-normal) var(--ease-out); }
 
-/* ── 3. Command Palette ── */
-.cmd-palette-overlay {
-  position: fixed; inset: 0; z-index: var(--z-command-palette); background: var(--overlay-bg);
-  backdrop-filter: blur(var(--glass-blur)); display: flex; align-items: flex-start;
-  justify-content: center; padding-top: 12vh; animation: fadeIn var(--duration-fast) var(--ease-out);
-}
-.cmd-palette {
-  width: 100%; max-width: 560px; background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-xl); box-shadow: var(--shadow-xl), var(--glow-blue);
-  overflow: hidden; animation: scaleIn var(--duration-normal) var(--ease-out);
-}
-.cmd-input-wrapper { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--border); }
-.cmd-input-icon { flex-shrink: 0; color: var(--text-muted); }
-.cmd-input { flex: 1; border: none; background: none; color: var(--text); font-size: var(--text-lg); outline: none; font-family: var(--font); padding: 0; width: 100%; }
-.cmd-input::placeholder { color: var(--text-muted); }
-.cmd-shortcut-hint { font-size: var(--text-3xs); color: var(--text-muted); padding: var(--space-4xs) var(--space-xs); border: 1px solid var(--border); border-radius: var(--radius-sm); flex-shrink: 0; }
-.cmd-list { max-height: 360px; overflow-y: auto; padding: var(--space-xs) 0; }
-.cmd-list::-webkit-scrollbar { width: 4px; }
-.cmd-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-2xs); }
-.cmd-empty { padding: var(--space-2xl) var(--space-lg); text-align: center; color: var(--text-muted); font-size: var(--text-sm); }
-.cmd-item {
-  display: flex; align-items: center; gap: var(--space-md); padding: var(--space-s) var(--space-lg);
-  cursor: pointer; transition: background var(--duration-fast) var(--ease-out); border: none;
-  background: none; width: 100%; text-align: left; color: var(--text); font-size: var(--text-base);
-  font-family: var(--font); line-height: var(--leading-snug);
-}
-.cmd-item:hover, .cmd-item.highlighted { background: var(--accent-soft); color: var(--text); }
-.cmd-item-icon { width: 20px; text-align: center; flex-shrink: 0; color: var(--text-muted); }
-.cmd-item-label { flex: 1; min-width: 0; }
-.cmd-item-badge { font-size: var(--text-3xs); padding: var(--space-px) var(--space-2xs); border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); font-weight: var(--font-weight-semibold); flex-shrink: 0; }
-
-/* ── 4. Chat UI ── */
+/* ── 3. Chat UI ── */
 .typing-indicator { display: flex; align-items: center; gap: var(--space-4xs); padding: var(--space-3xs) var(--space-xsml); font-style: italic; animation: fadeIn var(--duration-normal) var(--ease-out); }
 .typing-dots { display: inline-flex; gap: var(--space-px); }
 .typing-dots span { animation: typingDot 1.4s infinite; font-weight: var(--font-weight-bold); font-size: var(--text-sm); line-height: var(--leading-none); color: var(--text-muted); }

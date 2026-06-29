@@ -98,12 +98,6 @@
   .modal-card { max-width: calc(100vw - var(--space-md)); margin: var(--space-sm); }
 }
 
-/* ── Command Palette Responsive ── */
-@media (max-width: 480px) {
-  .cmd-palette { max-width: calc(100vw - var(--space-md)); margin: var(--space-sm); border-radius: var(--radius-md); }
-  .cmd-palette-overlay { padding-top: 5vh; }
-}
-
 /* ── SOS FAB Responsive ── */
 @media (max-width: 480px) {
   .sos-fab { bottom: var(--space-md); right: var(--space-md); }
