@@ -321,7 +321,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   }, [safeUsers])
 
   const renderTop = (
-    <motion.div className="flex flex-gap-sm text-sm text-muted mb-md px-md" variants={itemVariants}>
+    <motion.div className="flex flex-gap-sm text-sm mb-md px-md" variants={itemVariants}>
       <span className="govt-badge govt-badge-blue">
         <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer')}{roleCounts.volunteer !== 1 ? 's' : ''}
       </span>
@@ -391,7 +391,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
 
   return (
     <section aria-label={t('admin.userManagementLabel')}>
-      <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
         <DataTable
           columns={columns}
           data={safeUsers}
@@ -502,7 +502,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
 
   return (
     <section aria-label={t('admin.requestManagementLabel')}>
-      <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
         <DataTable
           columns={columns}
           data={safeRequests}
