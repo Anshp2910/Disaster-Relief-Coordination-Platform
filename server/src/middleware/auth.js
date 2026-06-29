@@ -11,7 +11,7 @@ export async function requireAuth(req, res, next) {
 
     let payload
     try {
-      payload = jwt.verify(token, getJwtSecret())
+      payload = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] })
     } catch (jwtErr) {
       logger.warn('[auth] JWT verify failed', { name: jwtErr.name, message: jwtErr.message })
       return res.status(401).json({ error: 'Token expired or invalid', code: 'INVALID_TOKEN' })

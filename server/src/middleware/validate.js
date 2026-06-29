@@ -42,7 +42,7 @@ const schemas = {
     lat: Joi.number().min(-90).max(90).required(),
     lng: Joi.number().min(-180).max(180).required(),
     status: Joi.string().valid('Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled'),
-    category: Joi.string().valid('Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other'),
+    category: Joi.string().valid('Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other'),
     priority: Joi.string().valid('Critical', 'High', 'Medium', 'Low'),
     peopleCount: Joi.number().integer().min(1).max(10000),
   }),
@@ -54,7 +54,7 @@ const schemas = {
     lat: Joi.number().min(-90).max(90),
     lng: Joi.number().min(-180).max(180),
     status: Joi.string().valid('Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled'),
-    category: Joi.string().valid('Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other'),
+    category: Joi.string().valid('Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other'),
     priority: Joi.string().valid('Critical', 'High', 'Medium', 'Low'),
     peopleCount: Joi.number().integer().min(1).max(10000),
   }).min(1),
@@ -65,7 +65,7 @@ const schemas = {
 
   createResource: Joi.object({
     name: Joi.string().min(1).max(200).required().trim(),
-    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other').required(),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other').required(),
     quantity: Joi.number().min(0).required(),
     unit: Joi.string().min(1).max(50).required().trim(),
     locationName: Joi.string().min(1).max(500).required().trim(),
@@ -76,14 +76,14 @@ const schemas = {
 
   updateResource: Joi.object({
     name: Joi.string().min(1).max(200).trim(),
-    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other'),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other'),
     quantity: Joi.number().min(0),
     unit: Joi.string().min(1).max(50).trim(),
     locationName: Joi.string().min(1).max(500).trim(),
     lat: Joi.number().min(-90).max(90),
     lng: Joi.number().min(-180).max(180),
     notes: Joi.string().max(2000).trim(),
-    status: Joi.string().valid('Available', 'Low', 'Depleted', 'Reserved'),
+    status: Joi.string().valid('Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock', 'Deployed', 'Maintenance'),
   }).min(1),
 
   allocateResource: Joi.object({
@@ -231,7 +231,7 @@ const querySchemas = {
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(1000).default(20),
     status: Joi.string().valid('Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled', 'All'),
-    category: Joi.string().valid('Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other', 'All'),
+    category: Joi.string().valid('Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other', 'All'),
     priority: Joi.string().valid('Critical', 'High', 'Medium', 'Low', 'All'),
     search: Joi.string().max(200).trim().allow(''),
     sort: Joi.string().valid('-createdAt', 'createdAt', '-priority', 'priority', '-status', 'status', 'title', '-title'),
@@ -240,8 +240,8 @@ const querySchemas = {
   resourcesList: Joi.object({
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(20),
-    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other', 'All'),
-    status: Joi.string().valid('Available', 'Low', 'Depleted', 'Reserved', 'All'),
+    category: Joi.string().valid('Food', 'Water', 'Medical', 'Shelter', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other', 'All'),
+    status: Joi.string().valid('Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock', 'Deployed', 'Maintenance', 'All'),
     search: Joi.string().max(200).trim().allow(''),
   }),
 

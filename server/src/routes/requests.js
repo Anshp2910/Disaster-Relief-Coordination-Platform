@@ -58,7 +58,7 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
     const skip = (pageNum - 1) * limitNum
     const [items, total] = await Promise.all([
       Request.find(filter)
-        .select('title description locationName lat lng status category priority peopleCount files.url files.filename files.mimetype createdAt createdBy claimedBy escalated matchedResources')
+        .select('title description locationName lat lng status category priority peopleCount files.url files.filename files.mimetype createdAt createdBy claimedBy escalated')
         .sort(sortStr)
         .skip(skip)
         .limit(limitNum)
@@ -195,7 +195,7 @@ requestsRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, r
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
 
-    const isOwner = item.createdBy.toString() === req.user._id.toString()
+    const isOwner = item.createdBy?.toString() === req.user._id?.toString()
     const isAdmin = req.user.role === 'admin'
     if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
 
@@ -335,7 +335,7 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, validateObjectId(
     const comment = item.comments.id(commentId)
     if (!comment) return res.status(404).json({ error: 'Comment not found' })
 
-    const isAuthor = comment.createdBy.toString() === req.user._id.toString()
+    const isAuthor = comment.createdBy?.toString() === req.user._id?.toString()
     const isAdmin = req.user.role === 'admin'
     if (!isAuthor && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
 

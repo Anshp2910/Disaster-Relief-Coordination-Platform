@@ -291,7 +291,7 @@ export async function seedDemo() {
     }
   }
 
-  logger.info('[demo] done: ${count} requests, 30 resources, zones and incidents seeded')
+  logger.info(`[demo] done: ${count} requests, 30 resources, zones and incidents seeded`)
 }
 
 async function main() {

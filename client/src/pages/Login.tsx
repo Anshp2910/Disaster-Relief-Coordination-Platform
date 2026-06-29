@@ -56,7 +56,7 @@ export default function Login() {
   const { login } = useAuth()
 
   function handleSocialLogin(provider: 'google' | 'github') {
-    const API_BASE: string = (import.meta as Record<string, any>).env?.VITE_API_BASE_URL || ''
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
     window.location.href = `${API_BASE}/api/auth/${provider}`
   }
 

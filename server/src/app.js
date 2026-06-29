@@ -1,4 +1,5 @@
 import 'express-async-errors'
+import mongoose from 'mongoose'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -74,7 +75,7 @@ export function createApp() {
         workerSrc: ["'self'"],
         formAction: ["'self'"],
         frameSrc: ["'self'"],
-        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? true : null,
       },
     },
   }))
@@ -101,9 +102,11 @@ export function createApp() {
     }),
   )
   app.use(express.json({ limit: '10mb' }))
-app.use(sanitizeBody)
-app.use('/uploads', async (req, res, next) => {
-    const token = req.query.token || req.headers.authorization?.slice(7)
+  app.use(sanitizeBody)
+  app.use('/uploads', async (req, res, next) => {
+    const auth = req.headers.authorization || ''
+    const bearerToken = auth.startsWith('Bearer ') ? auth.slice(7) : null
+    const token = req.query.token || bearerToken
     if (!token) return res.status(401).json({ error: 'Authentication required' })
     try {
       const { default: jwt } = await import('jsonwebtoken')
@@ -114,9 +117,12 @@ app.use('/uploads', async (req, res, next) => {
     }
   }, express.static(path.join(__dirname, '../uploads')))
 
-  const BUILD_VERSION = process.env.BUILD_VERSION || process.env.npm_package_version || Date.now()
+  const BUILD_VERSION = process.env.BUILD_VERSION || process.env.npm_package_version || ''
   const COMMIT_SHA = process.env.COMMIT_SHA || ''
-  app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }))
+  app.get('/health', (req, res) => {
+    const dbOk = mongoose && mongoose.connection.readyState === 1
+    res.json({ ok: dbOk, uptime: process.uptime(), db: dbOk ? 'connected' : 'disconnected' })
+  })
   app.get('/api/version', (req, res) => res.json({ version: BUILD_VERSION, commitSha: COMMIT_SHA, node: process.version, env: process.env.NODE_ENV || 'development' }))
 
   const clientErrorLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, message: { error: 'Too many error reports' } })

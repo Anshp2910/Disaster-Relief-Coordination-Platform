@@ -34,7 +34,7 @@ export default function SocialCallback() {
     safeSetItem('csrfToken', csrf)
 
     // Fetch user info from /me endpoint, then store and redirect
-    const API_BASE: string = (import.meta as Record<string, any>).env?.VITE_API_BASE_URL || ''
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
     fetch(`${API_BASE}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },

@@ -176,17 +176,19 @@ authRouter.post('/reset-password', validate('resetPassword'), async (req, res) =
     const { token, password } = req.body || {}
     if (!token || !password) return res.status(400).json({ error: 'Token and password required' })
 
+    let user = null
     try {
-      const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: new Date() } })
-      if (user) {
-        await user.setPassword(password)
-        user.resetPasswordToken = undefined
-        user.resetPasswordExpires = undefined
-        await user.save()
-        return res.json({ ok: true })
-      }
+      user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: new Date() } })
     } catch {
       logger.warn('[auth] MongoDB unavailable for reset — checking in-memory store')
+    }
+
+    if (user) {
+      await user.setPassword(password)
+      user.resetPasswordToken = undefined
+      user.resetPasswordExpires = undefined
+      await user.save()
+      return res.json({ ok: true })
     }
 
     const entry = resetTokens.get(token)
@@ -195,7 +197,20 @@ authRouter.post('/reset-password', validate('resetPassword'), async (req, res) =
       return res.status(400).json({ error: 'Invalid or expired reset token' })
     }
     resetTokens.delete(token)
-    return res.json({ ok: true })
+
+    try {
+      const fallbackUser = await User.findOne({ email: entry.email })
+      if (fallbackUser) {
+        await fallbackUser.setPassword(password)
+        await fallbackUser.save()
+        return res.json({ ok: true })
+      }
+    } catch {
+      logger.warn('[auth] MongoDB still unavailable — cannot reset password')
+      return res.status(503).json({ error: 'Password reset unavailable, please try again later' })
+    }
+
+    return res.status(400).json({ error: 'Invalid or expired reset token' })
   } catch (err) {
     logger.error('[auth] reset-password error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })
