@@ -24,13 +24,13 @@ function Layout({ children }: LayoutProps) {
       </main>
       <footer className="gov-navbar-bottom">
         <div className="gov-navbar-bottom-inner">
-          <span>&copy; {new Date().getFullYear()} Disaster Relief Coordination Platform</span>
+          <span>&copy; {new Date().getFullYear()} {t('footer.appName')}</span>
           <span className="gov-navbar-bottom-links">
             <button type="button" className="link-as-button" onClick={(e) => e.preventDefault()}>{t('footer.privacy')}</button>
             <span className="gov-navbar-bottom-dot">&middot;</span>
             <button type="button" className="link-as-button" onClick={(e) => e.preventDefault()}>{t('footer.terms')}</button>
             <span className="gov-navbar-bottom-dot">&middot;</span>
-            <span>{t('footer.emergencyHelpline')}: 112</span>
+            <span>{t('footer.emergencyHelpline')}: {t('footer.emergencyNumber')}</span>
           </span>
         </div>
       </footer>

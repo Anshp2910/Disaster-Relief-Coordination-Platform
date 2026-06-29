@@ -75,8 +75,8 @@ export default function Resources() {
       <DataCard
         key={s._id}
         title={t(`categories.${s._id}`) || s._id}
-        value={`${s.totalQty} units`}
-        subtitle={`${s.count} items`}
+        value={`${s.totalQty} ${t('resources.units')}`}
+        subtitle={`${s.count} ${t('resources.items')}`}
         icon={<Package size={18} />}
         color={catColors.text}
       />
@@ -340,14 +340,14 @@ export default function Resources() {
           {
             key: 'category',
             label: t('resources.category') || 'Category',
-            options: CATEGORIES.map((c) => ({ key: c, label: c })),
+            options: CATEGORIES.map((c) => ({ key: c, label: c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`) })),
             value: filterCategory,
             onChange: (v) => { setFilterCategory(v); setPage(1) },
           },
           {
             key: 'status',
             label: t('resources.status') || 'Status',
-            options: STATUSES.map((s) => ({ key: s, label: s })),
+            options: STATUSES.map((s) => ({ key: s, label: s === 'All' ? t('dashboard.filterAll') : s })),
             value: filterStatus,
             onChange: (v) => { setFilterStatus(v); setPage(1) },
           },
@@ -611,7 +611,7 @@ export default function Resources() {
         {showAllocModal && (
           <>
             <div className="text-base mb">
-              <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} available
+              <strong>{showAllocModal.name}</strong> — {showAllocModal.quantity} {showAllocModal.unit} {t('resources.available')}
             </div>
             <form onSubmit={handleAllocate}>
               <div className="ff-group">

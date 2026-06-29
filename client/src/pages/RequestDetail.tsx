@@ -279,12 +279,12 @@ export default function RequestDetail() {
 
   async function handleDeleteFile(fileId: string) {
     if (!id) return
-    const ok = await confirm({ message: 'Delete this file?', danger: true })
+    const ok = await confirm({ message: t('requestDetail.deleteFileConfirm'), danger: true })
     if (!ok) return
     try {
       const data = await clientApi.deleteFile(id, fileId) as { files: FileItem[] }
       setItem((prev) => ({ ...prev!, files: data.files }))
-      toast.success('File deleted')
+      toast.success(t('requestDetail.fileDeleted'))
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -510,7 +510,7 @@ export default function RequestDetail() {
               {t('requestDetail.suggestedResources') || 'Suggested Resources'} ({matches.length})
             </h3>
             <div className="text-sm text-muted-extra mb-xs">
-              Auto-matched by category and proximity
+              {t('requestDetail.autoMatched')}
             </div>
             <div className="flex-col flex-gap-sm">
               {matches.map((m) => (
@@ -518,13 +518,13 @@ export default function RequestDetail() {
                   <div className="flex-1 min-w-0">
                     <div className="text-semi">{m.name}</div>
                     <div className="text-sm text-muted-extra mt-xs">
-                      {m.quantity} {m.unit} available
-                      {m.distanceKm != null && <span> - {m.distanceKm} km away</span>}
+                      {m.quantity} {m.unit} {t('requestDetail.available')}
+                      {m.distanceKm != null && <span> &mdash; {m.distanceKm} {t('requestDetail.kmAway')}</span>}
                       {m.categoryMatch && <span className="govt-badge govt-badge-green ml-sm text-10 flex-center gap-xs"><CheckCircle size={10} /> {t('matching.exactMatch')}</span>}
                     </div>
                   </div>
                   <RippleBtn onClick={() => quickAllocate(m)} className="text-xs flex-shrink-0 p-xs">
-                    Quick Allocate
+                    {t('requestDetail.quickAllocate')}
                   </RippleBtn>
                 </div>
               ))}
@@ -677,7 +677,7 @@ export default function RequestDetail() {
                     {[1, 2, 3, 4, 5].map((s) => (
                       <span key={s} className="text-base" style={{ color: s <= (f.rating ?? 0) ? 'var(--gov-saffron)' : 'var(--gov-border)' }}>★</span>
                     ))}
-                    <span className="small muted ml-sm">by {f.submittedBy?.displayName || 'User'}</span>
+                    <span className="small muted ml-sm">{t('requestDetail.by')} {f.submittedBy?.displayName || t('common.unknown')}</span>
                   </div>
                   {f.comment && <div>{f.comment}</div>}
                   {f.deliveryConfirmed && (

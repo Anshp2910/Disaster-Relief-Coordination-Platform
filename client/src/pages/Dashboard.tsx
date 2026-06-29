@@ -41,15 +41,15 @@ interface OwnerActionsProps {
   onChanged: () => void
 }
 
-function getGreeting(): string {
+function getGreeting(t: (k: string) => string): string {
   const h = new Date().getHours()
-  if (h < 12) return 'Good Morning'
-  if (h < 18) return 'Good Afternoon'
-  return 'Good Evening'
+  if (h < 12) return t('greeting.morning')
+  if (h < 18) return t('greeting.afternoon')
+  return t('greeting.evening')
 }
 
-function formatDate(): string {
-  return new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+function formatDate(i18nLng: string): string {
+  return new Date().toLocaleDateString(i18nLng, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 const containerVariants = createStagger(0.05)
@@ -69,14 +69,14 @@ export default function Dashboard() {
   const [total, setTotal] = useState(0)
 
   const navigate = useNavigate()
-  const { t } = useTranslation()
-  const [greeting] = useState(getGreeting)
-  const [currentDate] = useState(formatDate)
+  const { t, i18n } = useTranslation()
+  const greeting = getGreeting(t)
+  const currentDate = formatDate(i18n.language)
 
   const { user: currentUser } = useAuth()
   const { connected } = useSocket()
 
-  const displayName = currentUser?.displayName || currentUser?.email || 'User'
+  const displayName = currentUser?.displayName || currentUser?.email || t('common.unknown')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -265,7 +265,7 @@ function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
     const ok = await confirm({ message: t('dashboard.deleteConfirm'), confirmText: t('dashboard.delete'), danger: true })
     if (!ok) return
     setDeleting(true)
-    try { await clientApi.deleteRequest(id); onChanged() } catch (e) { toast.error(getErrorMessage(e) || 'Failed to delete') } finally { setDeleting(false) }
+    try { await clientApi.deleteRequest(id); onChanged() } catch (e) { toast.error(getErrorMessage(e) || t('dashboard.failedToDelete')) } finally { setDeleting(false) }
   }
 
   function edit(e: React.MouseEvent) { e.stopPropagation(); navigate(`/requests/${id}/edit`) }

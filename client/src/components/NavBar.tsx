@@ -140,7 +140,7 @@ export function NavBar() {
                     aria-label={t('header.selectLanguage')}
                   >
                     {LANGUAGES.map((l) => (
-                      <option key={l.code} value={l.code}>{l.code.toUpperCase()}</option>
+                      <option key={l.code} value={l.code}>{l.label}</option>
                     ))}
                   </select>
                 </div>
@@ -247,7 +247,7 @@ export function NavBar() {
                 aria-label={t('header.selectLanguage')}
               >
                 {LANGUAGES.map((l) => (
-                  <option key={l.code} value={l.code}>{l.code.toUpperCase()}</option>
+                  <option key={l.code} value={l.code}>{l.label}</option>
                 ))}
               </select>
             </div>

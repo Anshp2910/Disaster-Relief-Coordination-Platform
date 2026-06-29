@@ -65,18 +65,18 @@ const containerVariants = createStagger(0.05)
 const itemVariants = createListItem(12, 0.3)
 const fadeUp = createListItem(16, 0.3)
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: string, locale: string): string {
   const d = new Date(dateStr)
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return `${months[d.getMonth()]} ${String(d.getDate()).padStart(2, '0')}`
+  return d.toLocaleDateString(locale, { month: 'short', day: '2-digit' })
 }
 
 function DailyRequestsChart({ data }: { data?: DailyRequest[] }) {
+  const { i18n } = useTranslation()
   const safeData = Array.isArray(data) ? data : []
   if (!safeData.length) return null
 
   const chartData = safeData.map((d) => ({
-    date: formatDate(d.date || ''),
+    date: formatDate(d.date || '', i18n.language),
     count: typeof d.count === 'number' ? d.count : 0,
   }))
 
@@ -323,13 +323,13 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   const renderTop = (
     <motion.div className="flex flex-gap-sm text-sm mb-md px-md" variants={itemVariants}>
       <span className="govt-badge govt-badge-blue">
-        <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer')}{roleCounts.volunteer !== 1 ? 's' : ''}
+        <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer', { count: roleCounts.volunteer })}
       </span>
       <span className="govt-badge govt-badge-saffron">
         <Shield size={12} /> {roleCounts.ngo} {t('auth.ngo')}{roleCounts.ngo !== 1 ? 's' : ''}
       </span>
       <span className="govt-badge govt-badge-green">
-        <Shield size={12} /> {roleCounts.admin} {t('nav.admin')}{roleCounts.admin !== 1 ? 's' : ''}
+        <Shield size={12} /> {roleCounts.admin} {t('nav.admin', { count: roleCounts.admin })}
       </span>
     </motion.div>
   )

@@ -60,7 +60,7 @@ const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const containerVariants = createStagger(0.05)
 const itemVariants = createListItem(10, 0.3)
 
-function buildIncidentPopup(inc: Incident) {
+function buildIncidentPopup(inc: Incident, t: (k: string) => string) {
   const color = SEVERITY_COLORS[inc.severity || ''] || 'var(--text-muted)'
   const stats = inc.stats || {}
   return `
@@ -69,8 +69,8 @@ function buildIncidentPopup(inc: Incident) {
       <div style="font-size:var(--text-xs);margin-bottom:var(--space-2xs)">
         <span style="color:${color};font-weight:600">${escapeHtml(inc.severity || '')}</span> &middot; ${escapeHtml(inc.status || '')}
       </div>
-      <div style="font-size:var(--text-xs)">Requests: <strong>${stats.requestCount || 0}</strong> (${stats.openRequests || 0} open)</div>
-      <div style="font-size:var(--text-xs)">Resources: <strong>${stats.resourceCount || 0}</strong></div>
+      <div style="font-size:var(--text-xs)">${t('requestDetail.allocateResources')}: <strong>${stats.requestCount || 0}</strong> (${stats.openRequests || 0} ${t('incidents.open')})</div>
+      <div style="font-size:var(--text-xs)">${t('incidents.resources')}: <strong>${stats.resourceCount || 0}</strong></div>
     </div>
   `
 }
@@ -191,7 +191,7 @@ export default function Incidents() {
     incidents.forEach((inc) => {
       if (!inc.centerLat || !inc.centerLng) return
       const marker = L.marker([inc.centerLat, inc.centerLng], { icon: buildIncidentIcon(inc) }).addTo(map)
-      marker.bindPopup(buildIncidentPopup(inc))
+      marker.bindPopup(buildIncidentPopup(inc, t))
       marker.on('click', () => setSelectedIncident(inc))
       markersRef.current.push(marker)
     })

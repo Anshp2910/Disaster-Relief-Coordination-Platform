@@ -189,11 +189,11 @@ export default function Profile() {
         </h3>
         <div className="text-sm mb-sm flex items-center gap-xs">
           <Mail size={14} className="text-muted" aria-hidden="true" />
-          <span className="muted">{t('profile.email')}:</span> <strong>{user?.email}</strong>
+          <span className="muted">{t('profile.email')}</span> <strong>{user?.email}</strong>
         </div>
         <div className="text-sm mb-lg flex items-center gap-xs">
           <Shield size={14} className="text-muted" aria-hidden="true" />
-          <span className="muted">{t('profile.role')}:</span> <strong>{t(`auth.${user?.role}` as string) || user?.role}</strong>
+          <span className="muted">{t('profile.role')}</span> <strong>{t(`auth.${user?.role}` as string) || user?.role}</strong>
         </div>
 
         <form onSubmit={handleUpdateProfile}>

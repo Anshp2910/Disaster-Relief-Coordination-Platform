@@ -16,11 +16,17 @@
     "message": "Something went wrong loading this page.",
     "reload": "Reload"
   },
+  "greeting": {
+    "morning": "Good Morning",
+    "afternoon": "Good Afternoon",
+    "evening": "Good Evening"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "mapView": "Map View",
     "newRequest": "New Request",
     "admin": "Admin",
+    "admin_plural": "Admins",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -71,7 +77,9 @@
     "displayName": "Display name",
     "role": "Role",
     "volunteer": "Volunteer",
+    "volunteer_plural": "Volunteers",
     "ngo": "NGO",
+    "ngo_plural": "NGOs",
     "createAccount": "Create account",
     "creating": "Creating...",
     "hasAccount": "Already have an account?",
@@ -149,6 +157,7 @@
     "delete": "Delete",
     "deleting": "Deleting...",
     "deleteConfirm": "Delete this request?",
+    "failedToDelete": "Failed to delete",
     "claim": "Claim Request",
     "unclaim": "Release Request",
     "resourceInventory": "Resource Inventory",
@@ -258,7 +267,13 @@
     "feedbackSubmitted": "Feedback submitted",
     "filesUploaded": "Files uploaded",
     "commentDeleted": "Comment deleted",
-    "preview": "Preview"
+    "preview": "Preview",
+    "deleteFileConfirm": "Delete this file?",
+    "fileDeleted": "File deleted",
+    "autoMatched": "Auto-matched by category and proximity",
+    "quickAllocate": "Quick Allocate",
+    "by": "by",
+    "kmAway": "km away"
   },
   "kpi": {
     "totalRequests": "Total Requests",
@@ -496,6 +511,8 @@
     "notes": "Notes",
     "notesOptional": "Notes (optional)",
     "available": "Available",
+    "units": "units",
+    "items": "items",
     "low": "Low",
     "depleted": "Depleted",
     "reserved": "Reserved",
@@ -722,7 +739,12 @@
     "zonesInArea": "Zones in area",
     "requestsNearby": "Requests nearby",
     "resourcesNearby": "Resources nearby",
-    "checkHistory": "Check History"
+    "checkHistory": "Check History",
+    "useMyLocation": "Use My Location",
+    "radiusSlider": "Radius slider",
+    "geofencingMap": "Geofencing map",
+    "startMonitoring": "Start Monitoring",
+    "stopMonitoring": "Stop Monitoring"
   },
   "chat": {
     "title": "Chat",
@@ -783,6 +805,8 @@
     "uploadAvatar": "Upload avatar photo"
   },
   "footer": {
+    "appName": "Disaster Relief Coordination Platform",
+    "emergencyNumber": "112",
     "privacy": "Privacy",
     "terms": "Terms",
     "quickLinks": "Quick Links",

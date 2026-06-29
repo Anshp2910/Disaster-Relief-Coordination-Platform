@@ -282,7 +282,7 @@ export default function Geofencing() {
             max="500"
             className="w-160"
             style={{ accentColor: 'var(--gov-blue)' }}
-            aria-label="Radius slider"
+            aria-label={t('geofencing.radiusSlider')}
           />
           {position && (
             <span className="small muted flex items-center gap-xs">
@@ -294,8 +294,8 @@ export default function Geofencing() {
             onClick={useMyLocation}
             disabled={!navigator.geolocation}
             className="text-sm btn-pill flex items-center gap-xs"
-            title={t('geofencing.useMyLocation') || 'Use My Location'}
-            aria-label={t('geofencing.useMyLocation') || 'Use My Location'}
+            title={t('geofencing.useMyLocation')}
+            aria-label={t('geofencing.useMyLocation')}
           >
             <Crosshair size={16} />
           </button>
@@ -303,7 +303,7 @@ export default function Geofencing() {
             onClick={checkArea}
             disabled={loading || !position}
             className="text-sm p-sm flex items-center gap-xs"
-            aria-label={t('geofencing.checkArea')}
+            aria-label={t('geofencing.checkArea') || 'Check area'}
           >
             <Target size={16} />
             {loading ? t('geofencing.checking') : t('geofencing.checkArea')}
@@ -312,10 +312,10 @@ export default function Geofencing() {
             onClick={toggleMonitoring}
             disabled={!position}
             className={`text-sm p-sm flex items-center gap-xs ${monitoring ? 'btn-danger' : 'btn-pill'}`}
-            aria-label={monitoring ? 'Stop monitoring' : 'Start monitoring'}
+            aria-label={monitoring ? t('geofencing.stopMonitoring') : t('geofencing.startMonitoring')}
           >
             <Activity size={16} />
-            {monitoring ? 'Stop Monitoring' : 'Start Monitoring'}
+            {monitoring ? t('geofencing.stopMonitoring') : t('geofencing.startMonitoring')}
           </button>
         </motion.div>
 
@@ -334,7 +334,7 @@ export default function Geofencing() {
               }}
               aria-hidden="true"
             />
-            <span className="small muted text-12">Monitoring — auto-refreshes every 30s</span>
+            <span className="small muted text-12">{t('geofencing.autoRefresh')}</span>
           </motion.div>
         )}
       </motion.div>
@@ -345,7 +345,7 @@ export default function Geofencing() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.3 }}
       >
-        <div ref={mapRef} className="map-container-full map-container-60vh" aria-label="Geofencing map" />
+        <div ref={mapRef} className="map-container-full map-container-60vh" aria-label={t('geofencing.geofencingMap')} />
       </motion.div>
 
       {result && (
