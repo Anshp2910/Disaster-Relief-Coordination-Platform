@@ -14,7 +14,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
 import { useSocket } from '../hooks/useSocket'
-import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
+import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS } from '../utils/constants'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
@@ -228,7 +228,7 @@ export default function Dashboard() {
                             <div className="flex flex-gap-sm mt-sm flex-wrap">
                               <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
                               <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
-                              <span className="govt-badge govt-badge-blue">{t(`categories.${it.category || 'Other'}`)}</span>
+                              <Badge label={t(`categories.${it.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={it.category || 'Other'} />
                               {it.matchedResources && it.matchedResources.length > 0 && (
                                 <span className="govt-badge govt-badge-green" title={`${it.matchedResources.length} matched resources`}>
                                   {it.matchedResources.length} Match{it.matchedResources.length > 1 ? 'es' : ''}

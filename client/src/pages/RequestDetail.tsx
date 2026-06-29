@@ -14,7 +14,7 @@ import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import Chat from './Chat'
-import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
+import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS } from '../utils/constants'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
@@ -366,7 +366,7 @@ export default function RequestDetail() {
         <motion.div variants={itemVariants} className="flex flex-gap-xs mb-lg flex-wrap" role="group" aria-label="Status and priority badges">
           <Badge label={t(`statuses.${item.status}`)} colors={STATUS_COLORS} colorKey={item.status} />
           <Badge label={t(`priorities.${item.priority}`)} colors={PRIORITY_COLORS} colorKey={item.priority} />
-          <span className="govt-badge govt-badge-blue">{t(`categories.${item.category}`)}</span>
+          <Badge label={t(`categories.${item.category}`)} colors={CATEGORY_COLORS} colorKey={item.category} />
         </motion.div>
 
         <div className="grid-3-responsive gap-16">

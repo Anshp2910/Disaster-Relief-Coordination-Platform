@@ -284,7 +284,7 @@
   --cat-healthcare: #a78bfa;    --cat-sanitation: #14b8a6;
   --cat-clothing: #a78bfa;      --cat-transportation: #818cf8;
   --cat-communication: var(--blue-500); --cat-power: #eab308;
-  --cat-infrastructure: #64748b; --cat-other: var(--text-muted);
+  --cat-infrastructure: #64748b; --cat-equipment: #e11d48; --cat-other: var(--text-muted);
 
   /* ── Premium Glass ── */
   --glass-bg: rgba(255, 255, 255, 0.72);
@@ -494,5 +494,6 @@
   --cat-transportation: #a5b4fc;
   --cat-power: #fde047;
   --cat-infrastructure: #94a3b8;
+  --cat-equipment: #fb7185;
 
 }

@@ -13,7 +13,7 @@ import { useConfirm } from '../hooks/useConfirm'
 import { PageHeader, ErrorState, DataTable, PageTransition, AnimatedCounter } from '../components/ui'
 import type { ColumnDef } from '../components/ui/DataTable'
 import Badge from '../components/Badge'
-import { STATUS_COLORS, PRIORITY_COLORS } from '../utils/constants'
+import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS } from '../utils/constants'
 import { SkeletonList } from '../components/Skeleton'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
@@ -471,7 +471,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
       sortable: true,
       filterable: true,
       render: (_, r) => (
-        <span className="govt-badge govt-badge-blue">{t(`categories.${r.category || 'Other'}`)}</span>
+        <Badge label={t(`categories.${r.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={r.category || 'Other'} />
       ),
     },
     {

@@ -27,7 +27,7 @@ export const CATEGORY_COLORS: Record<string, { bg: string; border: string; text:
   'Communication': { bg: 'rgba(14,165,233,.1)', border: 'rgba(14,165,233,.25)', text: 'var(--cat-communication)' },
   'Power': { bg: 'rgba(234,179,8,.1)', border: 'rgba(234,179,8,.25)', text: 'var(--cat-power)' },
   'Infrastructure': { bg: 'rgba(100,116,139,.1)', border: 'rgba(100,116,139,.25)', text: 'var(--cat-infrastructure)' },
-  'Equipment': { bg: 'rgba(99,102,241,.1)', border: 'rgba(99,102,241,.25)', text: 'var(--cat-transportation)' },
+  'Equipment': { bg: 'rgba(225,29,72,.1)', border: 'rgba(225,29,72,.25)', text: 'var(--cat-equipment)' },
   'Other': { bg: 'rgba(156,163,175,.1)', border: 'rgba(156,163,175,.25)', text: 'var(--cat-other)' },
 }
 
