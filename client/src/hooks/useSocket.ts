@@ -119,6 +119,8 @@ export function useSocket() {
     function onRequestEscalated(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:escalated', title: 'Request Escalated', message: `"${d.title}" has been escalated`, requestId: d.requestId as string | undefined }); notifyRefreshListeners('request:escalated') }
     function onRequestDeleted(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:deleted', title: 'Request Deleted', message: 'A relief request has been deleted', requestId: d.id as string | undefined }); notifyRefreshListeners('request:deleted') }
 
+    window.addEventListener('authchange', onAuthChange)
+
     const s = (() => { connectSocket(); return socket })()
     if (!s) return
 
@@ -133,8 +135,6 @@ export function useSocket() {
     s.on('sos:alert', onSosAlert)
     s.on('request:escalated', onRequestEscalated)
     s.on('request:deleted', onRequestDeleted)
-
-    window.addEventListener('authchange', onAuthChange)
 
     return () => {
       s.off('connect', onConnect)

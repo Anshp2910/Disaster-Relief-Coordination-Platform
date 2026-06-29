@@ -7,7 +7,6 @@ import compression from 'compression'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
-import dotenv from 'dotenv'
 
 import { authRouter } from './routes/auth.js'
 import { requestsRouter } from './routes/requests.js'
@@ -29,8 +28,6 @@ import { sanitizeBody } from './middleware/sanitize.js'
 import { rateLimitUser } from './middleware/rateLimitUser.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import { logger } from './utils/logger.js'
-
-dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -109,8 +106,8 @@ app.use('/uploads', async (req, res, next) => {
     const token = req.query.token || req.headers.authorization?.slice(7)
     if (!token) return res.status(401).json({ error: 'Authentication required' })
     try {
-      const jwt = await import('jsonwebtoken')
-      jwt.default.verify(token, getJwtSecret())
+      const { default: jwt } = await import('jsonwebtoken')
+      jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] })
       next()
     } catch {
       return res.status(401).json({ error: 'Invalid or expired token' })

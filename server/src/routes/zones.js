@@ -22,14 +22,12 @@ zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (
     }
 
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
-    const [items, total] = await Promise.all([
+    const [paginatedItems, total] = await Promise.all([
       Zone.find(filter).sort({ updatedAt: -1 }).skip(skip).limit(Number(limit)).populate('createdBy', 'displayName email').lean(),
       Zone.countDocuments(filter),
     ])
 
-    const activeZones = await Zone.find({ status: { $in: ['Active', 'Monitoring'] } }).lean()
-
-    const zonesWithStats = await Promise.all(activeZones.map(async (zone) => {
+    const zonesWithStats = await Promise.all(paginatedItems.map(async (zone) => {
       const radiusMeters = (zone.radiusKm || 10) * 1000
       const center = zone.location?.coordinates?.length === 2 ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
 

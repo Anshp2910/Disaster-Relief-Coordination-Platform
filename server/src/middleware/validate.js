@@ -219,6 +219,11 @@ const schemas = {
       ).required(),
     })).required(),
   }),
+
+  resetPassword: Joi.object({
+    token: Joi.string().required(),
+    password: Joi.string().min(8).max(128).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/).required().messages({ 'string.pattern.base': 'Password must be at least 8 characters with uppercase, lowercase, digit, and special character' }),
+  }),
 }
 
 const querySchemas = {

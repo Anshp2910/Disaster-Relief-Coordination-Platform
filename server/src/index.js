@@ -32,7 +32,7 @@ async function start() {
   const io = new Server(httpServer, {
     cors: {
       origin: (origin, callback) => {
-        if (!origin || socketOrigins.includes(origin)) {
+        if (origin && socketOrigins.includes(origin)) {
           callback(null, true)
         } else {
           logger.warn('[Socket.io CORS] Rejected origin', { origin })
@@ -50,7 +50,7 @@ async function start() {
     const token = socket.handshake.auth?.token || socket.handshake.query?.token
     if (!token) return next(new Error('Authentication required'))
     try {
-      const decoded = jwt.verify(token, getJwtSecret())
+      const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] })
       socket.userId = decoded.sub
       socket.userRole = decoded.role
       next()

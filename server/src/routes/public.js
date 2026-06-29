@@ -24,7 +24,7 @@ router.get('/overview', async (req, res) => {
       Resource.countDocuments({ status: 'Reserved' }),
       Zone.countDocuments(),
       Incident.countDocuments({ status: { $ne: 'Resolved' } }),
-      SosAlert.countDocuments({ resolved: false }),
+      SosAlert.countDocuments({ status: { $ne: 'resolved' } }),
       Request.aggregate([
         { $group: { _id: '$status', count: { $sum: 1 } } },
       ]),

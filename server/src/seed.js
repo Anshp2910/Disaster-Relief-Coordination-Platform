@@ -14,16 +14,14 @@ export async function seedAdmin() {
   try {
     const existing = await User.findOne({ email: email.toLowerCase().trim() })
 
-    if (existing) {
-      if (existing.role !== 'admin') {
-        existing.role = 'admin'
-        await existing.save()
-        logger.info('[seed] promoted existing user to admin')
-      } else {
-        logger.info('[seed] admin user already exists')
-      }
-      return
+  if (existing) {
+    if (existing.role === 'admin') {
+      logger.info('[seed] admin user already exists')
+    } else {
+      logger.info('[seed] admin user with a different role exists, not overwriting')
     }
+    return
+  }
 
     const user = new User({
       email: email.toLowerCase().trim(),

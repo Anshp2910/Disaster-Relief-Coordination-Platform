@@ -34,57 +34,12 @@ function getLoginKey(email) {
   return email.toLowerCase().trim()
 }
 
-function checkLockout(email) {
-  const key = getLoginKey(email)
-  const record = loginAttempts.get(key)
-  if (!record) return false
-  if (Date.now() - record.windowStart > LOCKOUT_WINDOW) {
-    loginAttempts.delete(key)
-    return false
-  }
-  if (record.count >= MAX_ATTEMPTS) return true
-  return false
-}
-
-function recordAttempt(email, success) {
-  const key = getLoginKey(email)
-  if (success) {
-    loginAttempts.delete(key)
-    return
-  }
-  const now = Date.now()
-  const record = loginAttempts.get(key)
-  if (!record || now - record.windowStart > LOCKOUT_WINDOW) {
-    loginAttempts.set(key, { count: 1, windowStart: now })
-  } else {
-    record.count++
-  }
-}
-
 const csrfTokens = new Map()
 
 function generateCsrfToken(userId) {
   const token = crypto.randomBytes(32).toString('hex')
   csrfTokens.set(userId.toString(), token)
   return token
-}
-
-export function requireCsrf(req, res, next) {
-  if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) return next()
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return next()
-  try {
-    const payload = jwt.verify(authHeader.slice(7), getJwtSecret())
-    const userId = payload.sub
-    const headerToken = req.headers['x-csrf-token']
-    const storedToken = csrfTokens.get(userId)
-    if (!headerToken || !storedToken || headerToken !== storedToken) {
-      return res.status(403).json({ error: 'Invalid CSRF token' })
-    }
-  } catch {
-    return next()
-  }
-  return next()
 }
 
 export function checkAndRecordAttempt(email) {
@@ -120,7 +75,7 @@ authRouter.post('/register', validate('register'), async (req, res) => {
     await user.save()
 
     const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), {
-      expiresIn: '7d',
+      expiresIn: '24h',
     })
 
     return res.status(201).json({
@@ -216,7 +171,7 @@ authRouter.post('/forgot-password', async (req, res) => {
   }
 })
 
-authRouter.post('/reset-password', async (req, res) => {
+authRouter.post('/reset-password', validate('resetPassword'), async (req, res) => {
   try {
     const { token, password } = req.body || {}
     if (!token || !password) return res.status(400).json({ error: 'Token and password required' })

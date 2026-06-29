@@ -49,14 +49,15 @@ async function apiFetch<T = Record<string, unknown>>(path: string, { method = 'G
 
     const data: Record<string, unknown> = await res.json().catch(() => ({}))
     if (!res.ok) {
-      if (res.status === 401 && auth) {
-        safeRemoveItem('token')
-        safeRemoveItem('user')
-        if (!redirectingToLogin && !window.location.hash.startsWith('#/login') && !window.location.hash.startsWith('#/register')) {
-          redirectingToLogin = true
-          window.location.hash = '#/login'
-        }
-      }
+  if (res.status === 401 && auth) {
+    safeRemoveItem('token')
+    safeRemoveItem('user')
+    if (!redirectingToLogin && !window.location.hash.startsWith('#/login') && !window.location.hash.startsWith('#/register')) {
+      redirectingToLogin = true
+      window.location.hash = '#/login'
+      setTimeout(() => { redirectingToLogin = false }, 5000)
+    }
+  }
       const msg = (data?.error as string) || `Request failed with status ${res.status}`
       throw new Error(msg)
     }
