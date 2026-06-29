@@ -1,19 +1,19 @@
 export function safeGetItem(key: string): string | null {
-  try { return localStorage.getItem(key) } catch { return null }
+  try { return localStorage.getItem(key) } catch { return null } /* eslint-disable-line no-empty */
 }
 
 export function safeSetItem(key: string, value: string): void {
-  try { localStorage.setItem(key, value) } catch {}
+  try { localStorage.setItem(key, value) } catch { /* ignore */ }
 }
 
 export function safeRemoveItem(key: string): void {
-  try { localStorage.removeItem(key) } catch {}
+  try { localStorage.removeItem(key) } catch { /* ignore */ }
 }
 
 export function parseUser(): unknown {
   try {
     return JSON.parse(safeGetItem('user') || 'null')
   } catch {
-    return null
+    return null /* eslint-disable-line no-empty */
   }
 }

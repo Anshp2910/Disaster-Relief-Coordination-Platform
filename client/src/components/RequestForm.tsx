@@ -171,7 +171,7 @@ export default function RequestForm({
   useEffect(() => {
     const raw = safeGetItem(draftKeyRef.current)
     if (raw && !initialData) {
-      try { const draft = JSON.parse(raw); if (draft && draft.title) setShowRestore(true) } catch {}
+      try { const draft = JSON.parse(raw); if (draft && draft.title) setShowRestore(true) } catch { /* ignore */ }
     }
   }, [])
 
@@ -181,7 +181,7 @@ export default function RequestForm({
       try {
         const draft = JSON.parse(raw)
         dispatch({ type: 'LOAD_DRAFT', state: draft })
-      } catch {}
+      } catch { /* ignore */ }
       setShowRestore(false)
     }
   }
@@ -500,6 +500,9 @@ export default function RequestForm({
                         <div
                           key={String(s.place_id ?? '') || i}
                           onClick={() => pickSuggestion(s)}
+                          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickSuggestion(s) } }}
+                          role="button"
+                          tabIndex={0}
                           className="suggestion-item"
                           style={{
                             borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-light)' : 'none',

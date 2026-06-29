@@ -52,7 +52,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       } else {
         fetch('/api/log', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => {})
       }
-    } catch (_) { console.error('[ErrorBoundary] Failed to log error to server') }
+    } catch { console.error('[ErrorBoundary] Failed to log error to server') }
   }
 
   render(): ReactNode {

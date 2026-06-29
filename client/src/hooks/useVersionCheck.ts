@@ -9,8 +9,6 @@ export function useVersionCheck(): void {
   const versionRef = useRef<string | null>(null)
 
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval> | undefined
-
     async function check() {
       try {
         const ctrl = new AbortController()
@@ -38,9 +36,8 @@ export function useVersionCheck(): void {
       }
     }
 
-    const POLL_INTERVAL = 120000
     check()
-    timer = setInterval(check, POLL_INTERVAL)
+    const timer = setInterval(check, 120000)
 
     function onVisibilityChange() {
       if (document.visibilityState === 'visible') {

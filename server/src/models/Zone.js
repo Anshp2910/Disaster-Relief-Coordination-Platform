@@ -38,6 +38,12 @@ const ZoneSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
+ZoneSchema.pre('save', function syncLocation() {
+  if (this.centerLat != null && this.centerLng != null) {
+    this.location = { type: 'Point', coordinates: [this.centerLng, this.centerLat] }
+  }
+})
+
 ZoneSchema.index({ location: '2dsphere' })
 ZoneSchema.index({ centerLat: 1, centerLng: 1 })
 ZoneSchema.index({ severity: 1, status: 1 })

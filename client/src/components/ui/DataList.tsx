@@ -29,9 +29,9 @@ function DataList<T>({
   renderItem, page, totalPages, onPageChange,
   keyExtractor, skeletonCount = 4, skeletonLines = 3,
 }: DataListProps<T>) {
+  const { t } = useTranslation()
   if (error) return <ErrorState message={error} onRetry={onRetry} />
   if (loading) return <SkeletonList count={skeletonCount} lines={skeletonLines} />
-  const { t } = useTranslation()
   if (items.length === 0) return <EmptyState icon={emptyIcon || '📋'} title={emptyTitle || t('dataList.noItems')} description={emptyDescription} />
 
   return (

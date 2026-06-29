@@ -2,7 +2,8 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Search, AlertTriangle, ArrowUp, ArrowDown } from 'lucide-react'
-import { PageHeader, ErrorState, DataList, FilterBar, PageTransition } from '../components/ui'
+import { PageHeader, ErrorState, FilterBar, PageTransition } from '../components/ui'
+import DataList from '../components/ui/DataList'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
@@ -196,6 +197,8 @@ export default function Escalation() {
                           role="option"
                           aria-selected={idx === reqActiveIndex}
                           onClick={() => selectRequest(r)}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); selectRequest(r) } }}
+                          tabIndex={0}
                           onMouseEnter={() => setReqActiveIndex(idx)}
                           className={`ms-option ${idx === reqActiveIndex ? 'ms-option-active' : ''}`}
                         >

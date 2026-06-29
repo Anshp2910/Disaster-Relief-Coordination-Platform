@@ -11,6 +11,7 @@ import { escapeHtml } from '../utils/escapeHtml'
 import { useDebounce } from '../hooks/useDebounce'
 import { formatDate } from '../utils/formatDate'
 
+// eslint-disable-next-line no-unused-vars
 function wrap(ui) {
   return render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>)
 }

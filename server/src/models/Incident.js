@@ -42,6 +42,12 @@ const IncidentSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
+IncidentSchema.pre('save', function syncLocation() {
+  if (this.centerLat != null && this.centerLng != null) {
+    this.location = { type: 'Point', coordinates: [this.centerLng, this.centerLat] }
+  }
+})
+
 IncidentSchema.pre('save', function capAuditLog() {
   if (this.auditLog && this.auditLog.length > 100) {
     this.auditLog = this.auditLog.slice(this.auditLog.length - 100)

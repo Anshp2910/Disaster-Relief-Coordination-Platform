@@ -18,7 +18,7 @@ export function initLeafletMap(container: HTMLElement, { center = DEFAULT_CENTER
   if (onClick) map.on('click', onClick)
 
   const invalidate = () => {
-    try { map.invalidateSize() } catch (_) {}
+    try { map.invalidateSize() } catch { /* ignore */ }
   }
 
   requestAnimationFrame(() => {

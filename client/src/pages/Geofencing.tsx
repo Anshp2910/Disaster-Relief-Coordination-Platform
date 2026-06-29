@@ -190,7 +190,7 @@ export default function Geofencing() {
       ;(result.resources || []).forEach((r) => {
         if (r.lat && r.lng) addMarker(r.lat, r.lng, `<b>Resource:</b> ${escapeHtml(r.name || '')}<br>${r.distanceKm} km away`, 'var(--gov-green)')
       })
-    } catch (e) {
+    } catch {
       // quiet
     }
   }, [position, radius, result])

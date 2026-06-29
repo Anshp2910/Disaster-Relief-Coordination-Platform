@@ -123,7 +123,13 @@ export default function ModernSelect({
         aria-controls="ms-listbox"
         aria-activedescendant={activeIdx >= 0 ? `ms-option-${activeIdx}` : undefined}
       >
-        <div className="ms-trigger" onClick={() => { if (!disabled) setOpen(p => !p) }}>
+        <div
+          className="ms-trigger"
+          onClick={() => { if (!disabled) setOpen(p => !p) }}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!disabled) setOpen(p => !p) } }}
+          role="button"
+          tabIndex={0}
+        >
           <div className="ms-value">
             {selected ? <span className="ms-selected">{selected.label}</span> : <span className="ms-placeholder">{placeholder}</span>}
           </div>
@@ -175,8 +181,10 @@ export default function ModernSelect({
                       id={`ms-option-${idx}`}
                       className={`ms-option ${opt.value === value ? 'ms-option-active' : ''} ${idx === activeIdx ? 'ms-option-hover' : ''} ${opt.disabled ? 'ms-option-disabled' : ''}`}
                       onClick={() => { if (!opt.disabled) { onChange(opt.value); setOpen(false); setSearch('') } }}
+                      onKeyDown={e => { if (e.key === 'Enter' && !opt.disabled) { onChange(opt.value); setOpen(false); setSearch('') } }}
                       onMouseEnter={() => setActiveIdx(idx)}
                       role="option"
+                      tabIndex={0}
                       aria-selected={opt.value === value}
                     >
                       {opt.icon && <span className="ms-option-icon">{opt.icon}</span>}

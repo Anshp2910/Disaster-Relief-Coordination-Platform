@@ -10,7 +10,7 @@ export function reportWebVitals(onPerfEntry?: (metric: unknown) => void): void {
         m.getFCP(onPerfEntry)
         m.getLCP(onPerfEntry)
         m.getTTFB(onPerfEntry)
-      } catch (_) {}
-    }).catch(() => {})
+      } catch { /* ignore */ }
+    }).catch(() => { /* ignore */ })
   }
 }

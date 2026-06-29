@@ -2,9 +2,11 @@ import js from '@eslint/js'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import reactHooks from 'eslint-plugin-react-hooks'
 import globalsObj from 'globals'
+import tsEslint from 'typescript-eslint'
 
 export default [
   js.configs.recommended,
+  ...tsEslint.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 'latest',
@@ -20,7 +22,9 @@ export default [
     },
     rules: {
       // Base rules
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', ignoreRestSiblings: true }],
+      '@typescript-eslint/no-explicit-any': 'off',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
 
@@ -64,5 +68,13 @@ export default [
   },
   {
     ignores: ['dist/**', 'node_modules/**', 'public/**', 'e2e/**'],
+  },
+  {
+    files: ['src/__tests__/a11y.test.jsx'],
+    languageOptions: {
+      globals: {
+        ...globalsObj.node,
+      },
+    },
   },
 ]

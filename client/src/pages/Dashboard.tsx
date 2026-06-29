@@ -211,7 +211,7 @@ export default function Dashboard() {
               </select>
             </div>
           </nav>
-          <section aria-label={t('dashboard.title')} role="region" aria-live="polite">
+          <section aria-label={t('dashboard.title')} aria-live="polite">
             {loading ? (
               <SkeletonList count={4} lines={3} />
             ) : (

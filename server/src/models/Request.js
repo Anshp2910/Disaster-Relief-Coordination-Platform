@@ -65,6 +65,12 @@ const RequestSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
+RequestSchema.pre('save', function syncLocation() {
+  if (this.lat != null && this.lng != null) {
+    this.location = { type: 'Point', coordinates: [this.lng, this.lat] }
+  }
+})
+
 RequestSchema.index({ location: '2dsphere' })
 RequestSchema.index({ status: 1 })
 RequestSchema.index({ category: 1 })

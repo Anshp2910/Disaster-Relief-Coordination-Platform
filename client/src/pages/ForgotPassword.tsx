@@ -90,7 +90,7 @@ export default function ForgotPassword() {
 
           <motion.div className="auth-field" variants={item}>
             <label htmlFor="email">{t('auth.email')}</label>
-            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus disabled={loading} />
+            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} />
           </motion.div>
 
           <motion.button disabled={loading} type="submit" className="auth-submit" variants={item}>

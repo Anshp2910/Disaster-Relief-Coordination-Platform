@@ -111,9 +111,10 @@ export default function DatePicker({
         onKeyDown={e => { if (e.key === 'Enter') setOpen(p => !p) }}
         role="combobox"
         aria-expanded={open}
+        aria-controls="dp-calendar"
         aria-label={label}
       >
-        <div className="dp-trigger" onClick={() => setOpen(p => !p)}>
+        <div className="dp-trigger" onClick={() => setOpen(p => !p)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(p => !p) } }} role="button" tabIndex={0}>
           <CalendarDays size={15} className="dp-icon" />
           <span className={`dp-value ${value ? '' : 'dp-placeholder'}`}>
             {value ? formatDisplay(new Date(value)) : t('datePicker.selectDate')}
@@ -133,6 +134,7 @@ export default function DatePicker({
           {open && (
             <motion.div
               className="dp-calendar"
+              id="dp-calendar"
               initial={reduced ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.95 }}
               animate={{ opacity: 1, y: 0, scaleY: 1 }}
               exit={reduced ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.95 }}
@@ -151,9 +153,13 @@ export default function DatePicker({
                   <div
                     key={i}
                     className={`dp-day ${day === null ? 'dp-day-empty' : ''} ${day !== null && isToday(day) ? 'dp-day-today' : ''} ${day !== null && isSelected(day) ? 'dp-day-selected' : ''} ${day !== null && isDisabled(day) ? 'dp-day-disabled' : ''}`}
-                    onClick={() => { if (day !== null && !isDisabled(day)) selectDate(day) }}
-                    role="gridcell"
-                     aria-label={day ? `${t(`datePicker.${MONTH_KEYS[month]}`)} ${day}, ${year}` : undefined}
+                    {...day !== null ? {
+                      onClick: () => { if (!isDisabled(day)) selectDate(day) },
+                      onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' && !isDisabled(day)) { e.preventDefault(); selectDate(day) } },
+                      role: 'gridcell',
+                    } : { role: 'presentation' }}
+                    tabIndex={day !== null && !isDisabled(day) ? 0 : -1}
+                    aria-label={day ? `${t(`datePicker.${MONTH_KEYS[month]}`)} ${day}, ${year}` : undefined}
                     aria-disabled={day !== null && isDisabled(day)}
                   >
                     {day ?? ''}

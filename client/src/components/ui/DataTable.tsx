@@ -357,7 +357,13 @@ function DataTable<T>({
             <div className={`dt-thead ${stickyHeader ? 'dt-sticky' : ''}`} role="rowgroup">
               <div className="dt-tr dt-tr-header" role="row">
                 {bulkActions && (
-                  <div className="dt-th dt-th-shrink" role="columnheader" onClick={selectAll}>
+                  <div
+                    className="dt-th dt-th-shrink"
+                    role="columnheader"
+                    onClick={selectAll}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); selectAll() } }}
+                    tabIndex={0}
+                  >
                     {selected.size === paged.length ? <CheckSquare size={16} /> : <Square size={16} />}
                   </div>
                 )}
@@ -404,7 +410,7 @@ function DataTable<T>({
                     onKeyDown={e => { if (e.key === 'Enter' && onRowClick) onRowClick(row) }}
                   >
                     {bulkActions && (
-                      <div className="dt-td dt-td-shrink" role="gridcell" onClick={e => e.stopPropagation()}>
+                      <div className="dt-td dt-td-shrink" role="gridcell" onClick={e => e.stopPropagation()} onKeyDown={e => { if (e.key === 'Enter') e.stopPropagation() }} tabIndex={0}>
                         <button
                           className="dt-check-btn"
                           onClick={() => toggleSelect(rowId)}

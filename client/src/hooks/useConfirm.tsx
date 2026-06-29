@@ -55,13 +55,14 @@ export function useConfirm() {
 
   const ConfirmDialog = state.open
     ? createPortal(
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
         <div className="modal-overlay" ref={trapRef} role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message" onKeyDown={handleKeyDown}>
           <div className="modal-card text-center">
             <div className="modal-icon">{state.danger ? '\u26A0' : '?'}</div>
             <h2 id="confirm-title" className="modal-title">{state.title}</h2>
             <p id="confirm-message" className="modal-desc">{state.message}</p>
             <div className="modal-actions mt">
-              <button onClick={handleCancel} className="btn-secondary" autoFocus>{state.cancelText}</button>
+              <button onClick={handleCancel} className="btn-secondary">{state.cancelText}</button>
               <RippleBtn onClick={handleConfirm} className={state.danger ? 'btn-danger' : ''}>{state.confirmText}</RippleBtn>
             </div>
           </div>
