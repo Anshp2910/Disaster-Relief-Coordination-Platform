@@ -139,6 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [logout, refreshAuthToken])
 
   useEffect(() => {
+    if (!user) return
     const interval = setInterval(() => {
       const expiry = parseTokenExpiry()
       if (!expiry) return
@@ -147,7 +148,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (msUntilExpiry < 300000) refreshAuthToken()
     }, 60000)
     return () => clearInterval(interval)
-  }, [logout, refreshAuthToken])
+  }, [logout, refreshAuthToken, user])
 
   return (
     <AuthContext.Provider value={{ user, token, isAuthenticated, isAdmin, login, logout, updateUser, idleWarning, resetIdleTimer }}>

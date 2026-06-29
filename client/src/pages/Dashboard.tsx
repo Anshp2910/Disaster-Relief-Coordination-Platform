@@ -269,7 +269,8 @@ function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
   const { user } = useAuth()
   const [deleting, setDeleting] = useState(false)
   const { confirm, ConfirmDialog } = useConfirm()
-  const isOwner = user?.id && item.createdBy && item.createdBy._id ? item.createdBy._id === user.id : user?.id && String(item.createdBy) === String(user.id)
+  const ownerId = item.createdBy?._id || (item.createdBy as Record<string, string | undefined>)?.id
+  const isOwner = !!(user?.id && ownerId && String(ownerId) === String(user.id))
   const canEdit = isOwner || user?.role === 'admin'
 
   async function del(e: React.MouseEvent) {

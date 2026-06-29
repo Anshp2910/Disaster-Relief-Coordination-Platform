@@ -146,12 +146,13 @@ function DataTable<T>({
   }, [])
 
   const toggleSort = useCallback((colId: string) => {
-    setSortColumn(prev => {
-      if (prev !== colId) { setSortDirection('asc'); return colId }
-      setSortDirection(prevDir => prevDir === 'asc' ? 'desc' : prevDir === 'desc' ? null : 'asc')
-      return colId
-    })
-  }, [])
+    if (sortColumn !== colId) {
+      setSortColumn(colId)
+      setSortDirection('asc')
+    } else {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc')
+    }
+  }, [sortColumn])
 
   const getFilterValues = useCallback((colId: string) => {
     const col = rawColumns.find(c => c.id === colId)

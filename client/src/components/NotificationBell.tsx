@@ -105,7 +105,7 @@ export default function NotificationBell() {
         {hasUnreadUrgent ? <BellRing size={18} /> : <Bell size={18} />}
         {unreadCount > 0 && (
           <span className={`notification-badge${hasUnreadUrgent ? ' notification-badge-urgent' : ''}`}>
-            {unreadCount > 9 ? '9+' : unreadCount}
+            {unreadCount > 30 ? '30+' : unreadCount}
           </span>
         )}
       </button>

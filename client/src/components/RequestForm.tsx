@@ -143,9 +143,9 @@ export default function RequestForm({
   const mapRef = useRef<HTMLDivElement | null>(null)
   const mapInstance = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
-  const draftKeyRef = useRef(DRAFT_PREFIX + (initialData?._id || 'new'))
+  const [draftKey, setDraftKey] = useState(DRAFT_PREFIX + (initialData?._id || 'new'))
   useEffect(() => {
-    draftKeyRef.current = DRAFT_PREFIX + (initialData?._id || 'new')
+    setDraftKey(DRAFT_PREFIX + (initialData?._id || 'new'))
   }, [initialData?._id])
   const [currentStep, setCurrentStep] = useState(0)
   const [showRestore, setShowRestore] = useState(false)
@@ -156,9 +156,14 @@ export default function RequestForm({
   const [error, setError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
   const [locating, setLocating] = useState(false)
+  const nominatimControllerRef = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+    return () => { nominatimControllerRef.current?.abort() }
+  }, [])
 
   const { status: autoSaveStatus } = useAutoSave({
-    key: draftKeyRef.current,
+    key: draftKey,
     data: { ...form, status: form.status },
     delay: 1500,
     enabled: true,
@@ -169,14 +174,14 @@ export default function RequestForm({
   }
 
   useEffect(() => {
-    const raw = safeGetItem(draftKeyRef.current)
+    const raw = safeGetItem(draftKey)
     if (raw && !initialData) {
       try { const draft = JSON.parse(raw); if (draft && draft.title) setShowRestore(true) } catch { /* ignore */ }
     }
   }, [])
 
   function restoreDraft() {
-    const raw = safeGetItem(draftKeyRef.current)
+    const raw = safeGetItem(draftKey)
     if (raw) {
       try {
         const draft = JSON.parse(raw)
@@ -187,7 +192,7 @@ export default function RequestForm({
   }
 
   function dismissRestore() {
-    safeRemoveItem(draftKeyRef.current)
+    safeRemoveItem(draftKey)
     setShowRestore(false)
   }
 
@@ -223,9 +228,17 @@ export default function RequestForm({
     if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize)
 
     if (initialData?.lat != null && initialData?.lng != null) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         placeMarker(Number(initialData.lat), Number(initialData.lng))
       }, 150)
+      return () => {
+        window.removeEventListener('resize', onResize)
+        if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize)
+        clearTimeout(timeoutId)
+        cleanupLeafletMap(map)
+        mapInstance.current = null
+        markerRef.current = null
+      }
     }
 
     return () => {
@@ -243,12 +256,16 @@ export default function RequestForm({
       return
     }
     setLocating(true)
+    nominatimControllerRef.current?.abort()
+    const controller = new AbortController()
+    nominatimControllerRef.current = controller
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords
         placeMarker(latitude, longitude)
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`, {
           headers: { 'Accept-Language': 'en' },
+          signal: controller.signal,
         })
           .then((r) => r.json())
           .then((data) => {
@@ -269,10 +286,13 @@ export default function RequestForm({
     if (!searchText.trim()) return
     setSearching(true)
     setSuggestions([])
+    nominatimControllerRef.current?.abort()
+    const controller = new AbortController()
+    nominatimControllerRef.current = controller
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchText)}&limit=5`,
-        { headers: { 'Accept-Language': 'en' } }
+        { headers: { 'Accept-Language': 'en' }, signal: controller.signal }
       )
       setSuggestions(await res.json())
     } catch {
@@ -312,7 +332,7 @@ export default function RequestForm({
         data.status = form.status
       }
       await onSubmit(data)
-      safeRemoveItem(draftKeyRef.current)
+      safeRemoveItem(draftKey)
     } catch (err) {
       setError(getErrorMessage(err) || 'Failed to submit')
     } finally {

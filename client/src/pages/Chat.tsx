@@ -377,6 +377,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <div className="ff-group flex-1 m-0">
           <div className={`ff-wrap ${text ? 'ff-focused' : ''}`} style={{ minHeight: 36 }}>
             <input
+              id="chat-input"
               ref={inputRef}
               value={text}
               onChange={handleInputChange}

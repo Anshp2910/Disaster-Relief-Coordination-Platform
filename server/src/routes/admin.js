@@ -98,8 +98,8 @@ adminRouter.delete('/users/:id', validateObjectId('id'), async (req, res) => {
 
     await Promise.all([
       ChatMessage.deleteMany({ sender: id }),
-      Request.updateMany({ createdBy: id }, { $unset: { createdBy: '' } }),
-      Request.updateMany({ claimedBy: id }, { $unset: { claimedBy: '' } }),
+      Request.updateMany({ createdBy: id }, { $set: { createdBy: null } }),
+      Request.updateMany({ claimedBy: id }, { $set: { claimedBy: null } }),
     ])
     await user.deleteOne()
     return res.json({ deleted: true })

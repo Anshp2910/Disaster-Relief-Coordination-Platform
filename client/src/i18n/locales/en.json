@@ -650,7 +650,10 @@
     "from": "From",
     "to": "To",
     "zone": "Zone:",
-    "skills": "Skills:"
+    "skills": "Skills:",
+    "viewToggle": "View mode",
+    "listView": "List",
+    "weekView": "Week"
   },
   "bulkImport": {
     "selectAll": "Select all",

@@ -78,10 +78,12 @@ resourcesRouter.put('/:id', requireAuth, validateObjectId('id'), validate('updat
     const isAdmin = req.user.role === 'admin'
     if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
 
-    const { name, category, quantity, unit, locationName, lat, lng, notes } = req.body
+    const { name, category, quantity, unit, locationName, lat, lng, notes, status } = req.body
     if (name !== undefined) resource.name = name
+    if (status !== undefined) resource.status = status
     if (category !== undefined) resource.category = category
     if (quantity !== undefined) {
+      if (typeof quantity !== 'number' || isNaN(quantity)) return res.status(400).json({ error: 'Invalid quantity' })
       if (quantity < 0) return res.status(400).json({ error: 'Quantity must be non-negative' })
       resource.quantity = quantity
       if (quantity === 0) resource.status = 'Depleted'
@@ -145,24 +147,31 @@ resourcesRouter.post('/:id/allocate', requireAuth, validateObjectId('id'), valid
     const isAdmin = req.user.role === 'admin'
     if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
 
-    if (resource.quantity < allocQuantity) return res.status(400).json({ error: 'Insufficient quantity' })
-
     const request = await Request.findById(requestId).lean()
     if (!request) return res.status(404).json({ error: 'Request not found' })
 
-    resource.quantity -= allocQuantity
-    resource.allocatedQuantity += allocQuantity
-    resource.allocatedTo = requestId
-    resource.status = resource.quantity === 0 ? 'Depleted' : resource.quantity <= 10 ? 'Low' : resource.status
-    resource.updatedBy = req.user._id
+    const updated = await Resource.findOneAndUpdate(
+      { _id: req.params.id, quantity: { $gte: allocQuantity }, allocatedTo: null },
+      { $inc: { quantity: -allocQuantity }, $set: { allocatedTo: requestId, allocatedQuantity: allocQuantity, updatedBy: req.user._id } },
+      { new: true },
+    )
+    if (!updated) {
+      const existing = await Resource.findById(req.params.id).lean()
+      if (!existing) return res.status(404).json({ error: 'Resource not found' })
+      if (existing.quantity < allocQuantity) return res.status(400).json({ error: 'Insufficient quantity' })
+      if (existing.allocatedTo) return res.status(400).json({ error: 'Resource already allocated' })
+      return res.status(400).json({ error: 'Allocation failed' })
+    }
 
-    await resource.save()
+    if (updated.quantity === 0) updated.status = 'Depleted'
+    else if (updated.quantity <= 10) updated.status = 'Low'
+    await updated.save()
 
     const io = req.app.get('io')
     if (io) {
       try {
         io.emit('resource:allocated', {
-          resource: { _id: resource._id, name: resource.name },
+          resource: { _id: updated._id, name: updated.name },
           requestId,
           allocQuantity,
         })
@@ -171,7 +180,7 @@ resourcesRouter.post('/:id/allocate', requireAuth, validateObjectId('id'), valid
       }
     }
 
-    return res.json({ item: resource })
+    return res.json({ item: updated })
   } catch (err) {
     logger.error('[resources] allocate error', { message: err.message })
     res.status(500).json({ error: 'Server error' })

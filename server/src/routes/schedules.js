@@ -14,8 +14,8 @@ schedulesRouter.get('/', requireAuth, validateQuery(querySchemas.schedulesList),
     if (userId) filter.userId = userId
     if (zoneId) filter.zoneId = zoneId
     if (status && status !== 'All') filter.status = status
-    if (startDate) filter.endDate = { $gte: new Date(startDate) }
-    if (endDate) filter.startDate = { $lte: new Date(endDate) }
+    if (startDate) filter.startDate = { $gte: new Date(startDate) }
+    if (endDate) filter.endDate = { $lte: new Date(endDate) }
 
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
     const [items, total] = await Promise.all([

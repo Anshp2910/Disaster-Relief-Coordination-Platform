@@ -79,6 +79,11 @@ async function exportCSV(path: string, filename: string): Promise<void> {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
+  if (res.status === 401) {
+    safeRemoveItem('token'); safeRemoveItem('user')
+    window.location.hash = '#/login'
+    throw new Error('Session expired')
+  }
   if (!res.ok) throw new Error('Export failed')
   const blob = await res.blob()
   const url = URL.createObjectURL(blob)

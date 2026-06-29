@@ -211,7 +211,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         return res.redirect(`${CLIENT_URL}/#/login?error=google-auth-failed`)
       }
       const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
-      const { csrfToken } = generateCsrfToken(user._id)
+      const csrfToken = generateCsrfToken(user._id)
       res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
     })(req, res, next)
   })
@@ -225,7 +225,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
         return res.redirect(`${CLIENT_URL}/#/login?error=github-auth-failed`)
       }
       const token = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), { expiresIn: '24h' })
-      const { csrfToken } = generateCsrfToken(user._id)
+      const csrfToken = generateCsrfToken(user._id)
       res.redirect(`${CLIENT_URL}/#/social-callback?token=${encodeURIComponent(token)}&csrf=${encodeURIComponent(csrfToken)}`)
     })(req, res, next)
   })

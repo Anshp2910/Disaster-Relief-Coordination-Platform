@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { RippleBtn } from '../components/ui'
 import useFocusTrap from './useFocusTrap'
@@ -52,6 +52,10 @@ export function useConfirm() {
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') handleCancel()
   }, [handleCancel])
+
+  useEffect(() => {
+    return () => { resolveRef.current?.(false); resolveRef.current = null }
+  }, [state.open])
 
   const ConfirmDialog = state.open
     ? createPortal(

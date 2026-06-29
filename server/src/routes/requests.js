@@ -52,7 +52,7 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
       ]
     }
 
-    const pageNum = page || 1
+    const pageNum = Math.max(1, Number(req.query.page) || 1)
     const limitNum = limit || 20
     const sortStr = sort || '-createdAt'
     const skip = (pageNum - 1) * limitNum
@@ -142,7 +142,7 @@ requestsRouter.put('/:id', requireAuth, validateObjectId('id'), validate('update
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
 
-    const isOwner = item.createdBy.toString() === req.user._id.toString()
+    const isOwner = item.createdBy?.toString() === req.user._id?.toString()
     const isAdmin = req.user.role === 'admin'
     if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
 
@@ -220,20 +220,25 @@ requestsRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, r
 requestsRouter.post('/:id/claim', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
+
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
     if (['Resolved', 'Fulfilled'].includes(item.status)) {
       return res.status(400).json({ error: 'Cannot claim a completed request' })
     }
-    if (item.claimedBy) return res.status(400).json({ error: 'Already claimed' })
 
-    item.claimedBy = req.user._id
-    item.claimedAt = new Date()
-    if (item.status === 'Open') item.status = 'In Progress'
-    item.auditLog.push({ action: 'claimed', by: req.user._id })
-    await item.save()
+    const updated = await Request.findOneAndUpdate(
+      { _id: id, claimedBy: null },
+      { $set: { claimedBy: req.user._id, claimedAt: new Date() } },
+      { new: true },
+    )
+    if (!updated) return res.status(400).json({ error: 'Already claimed' })
 
-    const populated = await item.populate('createdBy', 'displayName email role')
+    if (updated.status === 'Open') updated.status = 'In Progress'
+    updated.auditLog.push({ action: 'claimed', by: req.user._id })
+    await updated.save()
+
+    const populated = await updated.populate('createdBy', 'displayName email role')
     await populated.populate('claimedBy', 'displayName email role')
 
     const io = req.app.get('io')
@@ -257,6 +262,7 @@ requestsRouter.post('/:id/unclaim', requireAuth, validateObjectId('id'), async (
     const { id } = req.params
     const item = await Request.findById(id)
     if (!item) return res.status(404).json({ error: 'Not found' })
+    if (['Resolved', 'Fulfilled'].includes(item.status)) return res.status(400).json({ error: 'Cannot unclaim a completed request' })
 
     const isClaimer = item.claimedBy && item.claimedBy.toString() === req.user._id.toString()
     const isAdmin = req.user.role === 'admin'
@@ -343,16 +349,18 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, validateObjectId(
   }
 })
 
-requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), upload.array('files', 5), async (req, res) => {
+requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), async (req, res, next) => {
+  const { id } = req.params
+  const item = await Request.findById(id)
+  if (!item) return res.status(404).json({ error: 'Not found' })
+
+  if (item.createdBy?.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Not authorized' })
+  }
+  req._item = item
+  next()
+}, upload.array('files', 5), async (req, res) => {
   try {
-    const { id } = req.params
-    const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
-
-    if (item.createdBy?.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Not authorized' })
-    }
-
     const multerFiles = req.files || []
     if (multerFiles.length === 0) {
       return res.status(400).json({ error: 'No files uploaded' })
@@ -365,20 +373,20 @@ requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), upload.ar
       uploadedBy: req.user._id,
     }))
 
-    item.files.push(...newFiles)
-    item.auditLog.push({ action: 'filesUploaded', by: req.user._id, details: `${newFiles.length} file(s)` })
-    await item.save()
+    req._item.files.push(...newFiles)
+    req._item.auditLog.push({ action: 'filesUploaded', by: req.user._id, details: `${newFiles.length} file(s)` })
+    await req._item.save()
 
     const io = req.app.get('io')
     if (io) {
       try {
-        io.emit('request:updated', { item: { _id: id, files: item.files } })
+        io.emit('request:updated', { item: { _id: req._item._id, files: req._item.files } })
       } catch (err) {
         logger.error('[ws] emit request:updated error', { message: err.message })
       }
     }
 
-    return res.json({ files: item.files })
+    return res.json({ files: req._item.files })
   } catch (err) {
     logger.error('[requests] file upload error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })

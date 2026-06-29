@@ -26,6 +26,7 @@ interface FileItem {
   filename?: string
   mimetype?: string
   uploadedAt?: string
+  uploadedBy?: string
 }
 
 interface CommentItem {
@@ -460,8 +461,8 @@ export default function RequestDetail() {
                     <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm text-accent-blue" aria-label={`${t('requestDetail.open')} ${f.filename}`}>
                       <Download size={14} />
                     </a>
-                    {(currentUser?._id === (f as Record<string, unknown>).uploadedBy || currentUser?.role === 'admin') && (
-                      <button onClick={() => handleDeleteFile(f._id!)} className="text-xs p-xs text-danger" aria-label={`${t('common.delete')} ${f.filename}`}><Trash2 size={14} /></button>
+                    {(f.uploadedBy && (currentUser?._id === f.uploadedBy || currentUser?.role === 'admin')) && (
+                      <button onClick={() => handleDeleteFile(f._id ?? '')} className="text-xs p-xs text-danger" aria-label={`${t('common.delete')} ${f.filename}`}><Trash2 size={14} /></button>
                     )}
                   </div>
                 ))}

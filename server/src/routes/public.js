@@ -21,7 +21,7 @@ router.get('/overview', async (req, res) => {
     ] = await Promise.all([
       Request.countDocuments({ status: { $nin: ['Resolved', 'Closed'] } }),
       Resource.countDocuments(),
-      Resource.countDocuments({ status: 'Reserved' }),
+      Resource.countDocuments({ status: 'Deployed' }),
       Zone.countDocuments(),
       Incident.countDocuments({ status: { $ne: 'Resolved' } }),
       SosAlert.countDocuments({ status: { $ne: 'resolved' } }),

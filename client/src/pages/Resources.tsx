@@ -10,6 +10,7 @@ import { useDebounce } from '../hooks/useDebounce'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useConfirm } from '../hooks/useConfirm'
+import { getErrorMessage } from '../utils/getErrorMessage'
 import { CATEGORY_COLORS, RESOURCE_STATUS_COLORS, CATEGORY_OPTIONS, RESOURCE_STATUS_OPTIONS } from '../utils/constants'
 
 interface ResourceItem {
@@ -109,7 +110,7 @@ export default function Resources() {
       setTotal(data.total || 0)
       setSummary(data.summary || [])
     } catch (err) {
-      setError((err as Error).message)
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -152,7 +153,7 @@ export default function Resources() {
       setShowForm(false)
       load()
     } catch (err) {
-      setError((err as Error).message)
+      setError(getErrorMessage(err))
     }
   }
 
@@ -163,7 +164,7 @@ export default function Resources() {
       await clientApi.deleteResource(id)
       load()
     } catch (err) {
-      setError((err as Error).message)
+      setError(getErrorMessage(err))
     }
   }
 
@@ -179,7 +180,7 @@ export default function Resources() {
       load()
       toast.success(t('resources.resourceAllocated'))
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     } finally {
       setAllocating(false)
     }
@@ -198,7 +199,7 @@ export default function Resources() {
       await clientApi.deallocateResource(id, { deallocQuantity: deallocQty })
       load()
     } catch (err) {
-      toast.error((err as Error).message)
+      toast.error(getErrorMessage(err))
     }
   }
 
@@ -257,7 +258,7 @@ export default function Resources() {
         await clientApi.updateResource(id, payload)
         toast.success(`${t('resources.updated') || 'Updated'} ${id.slice(-6)}`)
       } catch (err) {
-        toast.error(`${id.slice(-6)}: ${(err as Error).message}`)
+        toast.error(`${id.slice(-6)}: ${getErrorMessage(err)}`)
       }
       setBulkProgress((prev) => ({ ...prev, current: prev.current + 1 }))
     }

@@ -10,8 +10,6 @@ interface ThemeContextType {
   toggleEmergency: () => void
   isHighContrast: boolean
   setIsHighContrast: (value: boolean) => void
-  isSocketConnected: boolean
-  setIsSocketConnected: (value: boolean) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -29,10 +27,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     try { return localStorage.getItem('highContrastMode') === 'true' } catch (e) { console.warn('Failed to read high contrast mode:', (e as Error).message); return false }
   })
 
-  const [isSocketConnected, setIsSocketConnected] = useState<boolean>(() => {
-    try { return localStorage.getItem('socketConnected') === 'true' } catch (e) { console.warn('Failed to read socket connected:', (e as Error).message); return false }
-  })
-
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     document.documentElement.classList.toggle('emergency-mode', isEmergency)
@@ -41,9 +35,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('theme', theme) 
       localStorage.setItem('emergencyMode', isEmergency.toString())
       localStorage.setItem('highContrastMode', isHighContrast.toString())
-      localStorage.setItem('socketConnected', isSocketConnected.toString())
     } catch (e) { console.warn('Failed to save settings:', (e as Error).message) }
-  }, [theme, isEmergency, isHighContrast, isSocketConnected])
+  }, [theme, isEmergency, isHighContrast])
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
@@ -55,16 +48,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const toggleEmergency = useCallback(() => {
-    setIsEmergency(prev => {
-      const newValue = !prev
-      try { localStorage.setItem('emergencyMode', newValue.toString()) } catch (e) { console.warn('Failed to save emergency mode:', (e as Error).message) }
-      return newValue
-    })
+    setIsEmergency(prev => !prev)
   }, [])
 
   const isPremium = theme === 'neon';
     return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, setIsEmergency, toggleEmergency, isHighContrast, setIsHighContrast, isSocketConnected, setIsSocketConnected }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, setIsEmergency, toggleEmergency, isHighContrast, setIsHighContrast }}>
       {children}
     </ThemeContext.Provider>
   )

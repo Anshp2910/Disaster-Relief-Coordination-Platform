@@ -10,7 +10,6 @@ import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect, RippleBtn, Page
 import { SkeletonList } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useSocket, registerRefreshListener } from '../hooks/useSocket'
-import { useToast } from '../components/Toast'
 import { useDebounce } from '../hooks/useDebounce'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useConfirm } from '../hooks/useConfirm'
@@ -116,8 +115,6 @@ export default function Incidents() {
 
   const { user: currentUser } = useAuth()
   const { socket } = useSocket()
-  const toast = useToast()
-
   const load = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -166,7 +163,7 @@ export default function Incidents() {
       socket.off('incident:updated', onIncidentUpdated)
       socket.off('incident:deleted', onIncidentDeleted)
     }
-  }, [socket, load, toast])
+  }, [socket, load])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return

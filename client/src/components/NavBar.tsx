@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
-import { useSocket } from '../hooks/useSocket'
 import {
   Sun, Moon, Search, User, LogOut, AlertTriangle, Zap,
   LayoutDashboard, Map, Package, MapPin, PlusSquare,
@@ -54,7 +53,6 @@ export function NavBar() {
   const { t, i18n } = useTranslation()
   const { user: currentUser, isAuthenticated, isAdmin, logout: authLogout } = useAuth()
   const { theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, toggleEmergency } = useTheme()
-  const { socket } = useSocket()
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -200,7 +198,6 @@ export function NavBar() {
                 </button>
                 <button
                   onClick={() => {
-                    if (socket?.connected) socket.disconnect()
                     authLogout()
                     navigate('/login')
                   }}

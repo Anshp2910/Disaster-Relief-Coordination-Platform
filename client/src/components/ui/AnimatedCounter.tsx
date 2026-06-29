@@ -19,6 +19,7 @@ const AnimatedCounter = memo(function AnimatedCounter({
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true })
   const [displayed, setDisplayed] = useState(from)
+  const rafRef = useRef<number>()
 
   useEffect(() => {
     if (!inView) return
@@ -31,10 +32,11 @@ const AnimatedCounter = memo(function AnimatedCounter({
       const progress = Math.min(elapsed / duration, 1)
       const eased = 1 - Math.pow(1 - progress, 3)
       setDisplayed(from + range * eased)
-      if (progress < 1) requestAnimationFrame(tick)
+      if (progress < 1) rafRef.current = requestAnimationFrame(tick)
     }
 
-    requestAnimationFrame(tick)
+    rafRef.current = requestAnimationFrame(tick)
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
   }, [inView, from, to, duration, reduced])
 
   const final = reduced ? to : displayed

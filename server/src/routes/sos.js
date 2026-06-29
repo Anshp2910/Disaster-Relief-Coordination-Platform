@@ -12,8 +12,8 @@ sosRouter.post('/broadcast', requireAuth, validate('sosAlert'), async (req, res)
 
     const alert = await SosAlert.create({
       message: message || 'SOS Emergency Alert',
-      lat: lat || null,
-      lng: lng || null,
+      lat: lat ?? null,
+      lng: lng ?? null,
       zoneId: zoneId || null,
       userId: req.user._id,
       userName: req.user.displayName,

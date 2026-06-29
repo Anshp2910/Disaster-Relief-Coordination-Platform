@@ -104,6 +104,7 @@ export function useSocket() {
       const token = safeGetItem('token')
       if (token) {
         connectSocket()
+        if (socket) registerSocketHandlers(socket)
       } else {
         disconnectSocket()
         setConnected(false)
@@ -119,35 +120,44 @@ export function useSocket() {
     function onRequestEscalated(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:escalated', title: 'Request Escalated', message: `"${d.title}" has been escalated`, requestId: d.requestId as string | undefined }); notifyRefreshListeners('request:escalated') }
     function onRequestDeleted(data: unknown) { const d = data as Record<string, unknown>; addNotification({ type: 'request:deleted', title: 'Request Deleted', message: 'A relief request has been deleted', requestId: d.id as string | undefined }); notifyRefreshListeners('request:deleted') }
 
+    const registeredSockets = new Set<Socket>()
+
+    function registerSocketHandlers(s: Socket) {
+      if (registeredSockets.has(s)) return
+      registeredSockets.add(s)
+      s.on('connect', onConnect)
+      s.on('disconnect', onDisconnect)
+      s.on('connect_error', onConnectError)
+      s.on('request:created', onRequestCreated)
+      s.on('request:updated', onRequestUpdated)
+      s.on('request:commented', onRequestCommented)
+      s.on('resource:allocated', onResourceAllocated)
+      s.on('resource:created', onResourceCreated)
+      s.on('sos:alert', onSosAlert)
+      s.on('request:escalated', onRequestEscalated)
+      s.on('request:deleted', onRequestDeleted)
+    }
+
     window.addEventListener('authchange', onAuthChange)
 
     const s = (() => { connectSocket(); return socket })()
-    if (!s) return
-
-    s.on('connect', onConnect)
-    s.on('disconnect', onDisconnect)
-    s.on('connect_error', onConnectError)
-    s.on('request:created', onRequestCreated)
-    s.on('request:updated', onRequestUpdated)
-    s.on('request:commented', onRequestCommented)
-    s.on('resource:allocated', onResourceAllocated)
-    s.on('resource:created', onResourceCreated)
-    s.on('sos:alert', onSosAlert)
-    s.on('request:escalated', onRequestEscalated)
-    s.on('request:deleted', onRequestDeleted)
+    if (s) registerSocketHandlers(s)
 
     return () => {
-      s.off('connect', onConnect)
-      s.off('disconnect', onDisconnect)
-      s.off('connect_error', onConnectError)
-      s.off('request:created', onRequestCreated)
-      s.off('request:updated', onRequestUpdated)
-      s.off('request:commented', onRequestCommented)
-      s.off('resource:allocated', onResourceAllocated)
-      s.off('resource:created', onResourceCreated)
-      s.off('sos:alert', onSosAlert)
-      s.off('request:escalated', onRequestEscalated)
-      s.off('request:deleted', onRequestDeleted)
+      if (s) {
+        registeredSockets.delete(s)
+        s.off('connect', onConnect)
+        s.off('disconnect', onDisconnect)
+        s.off('connect_error', onConnectError)
+        s.off('request:created', onRequestCreated)
+        s.off('request:updated', onRequestUpdated)
+        s.off('request:commented', onRequestCommented)
+        s.off('resource:allocated', onResourceAllocated)
+        s.off('resource:created', onResourceCreated)
+        s.off('sos:alert', onSosAlert)
+        s.off('request:escalated', onRequestEscalated)
+        s.off('request:deleted', onRequestDeleted)
+      }
       window.removeEventListener('authchange', onAuthChange)
     }
   }, [addNotification])

@@ -17,13 +17,17 @@ const localeMap: Record<string, () => Promise<{ default: Record<string, unknown>
   ur: () => import('./locales/ur.json'),
 }
 
+const loadingLocales = new Set<string>()
 const loadLocale = async (lng: string) => {
-  if (lng === 'en' || !localeMap[lng]) return
+  if (lng === 'en' || !localeMap[lng] || loadingLocales.has(lng)) return
+  loadingLocales.add(lng)
   try {
     const mod = await localeMap[lng]()
     i18n.addResourceBundle(lng, 'translation', mod.default)
   } catch (err) {
     console.warn(`Failed to load locale "${lng}":`, (err as Error).message)
+  } finally {
+    loadingLocales.delete(lng)
   }
 }
 

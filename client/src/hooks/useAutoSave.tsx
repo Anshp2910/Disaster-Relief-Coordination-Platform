@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CloudOff, CheckCircle, Loader2 } from 'lucide-react'
+import { safeRemoveItem } from '../utils/storage'
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
 
@@ -53,7 +54,7 @@ export function useAutoSave({ key, data, delay = 1500, onSave, enabled = true }:
   }, [key])
 
   const clear = useCallback(() => {
-    localStorage.removeItem(key)
+    safeRemoveItem(key)
     setStatus('idle')
   }, [key])
 
