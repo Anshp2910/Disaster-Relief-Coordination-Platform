@@ -15,7 +15,7 @@ export async function connectDB(retries = MAX_RETRIES) {
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      await mongoose.connect(mongoUri)
+      await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 })
       logger.info('[db] connected')
       return
     } catch (err) {
