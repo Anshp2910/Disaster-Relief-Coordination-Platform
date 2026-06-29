@@ -110,6 +110,7 @@
 }
 
 /* ── Map Responsive ── */
+.map-container-full { min-height: 65vh; }
 @media (max-width: 768px) {
   .mapBox { min-height: 260px; height: 35vh; }
   .map-container-full { min-height: 50vh; }
