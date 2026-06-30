@@ -105,7 +105,7 @@ export function createApp() {
   app.use(express.json({ limit: '10mb' }))
   app.use(sanitizeBody)
   // CSRF: generate token only on GET (safe) requests to avoid invalidating tokens on POST
-  app.get('*', generateCsrfToken)
+  app.get('/api/*', generateCsrfToken)
   app.use(validateCsrf)
   app.use('/uploads', async (req, res, next) => {
     const auth = req.headers.authorization || ''

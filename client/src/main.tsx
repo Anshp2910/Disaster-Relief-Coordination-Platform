@@ -19,47 +19,49 @@ import './styles/index.css'
 
 function UpdateBanner() {
   const { hasUpdate, applyUpdate } = useVersionCheck()
-  if (!hasUpdate) return null
   return (
-    <div
-      role="alert"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 99999,
-        background: 'var(--accent, #3b82f6)',
-        color: '#fff',
-        padding: '8px 16px',
-        textAlign: 'center',
-        fontSize: 14,
-        fontWeight: 600,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 12,
-        cursor: 'pointer',
-      }}
-      onClick={applyUpdate}
-    >
-      <span>A new version is available</span>
-      <button
-        onClick={(e) => { e.stopPropagation(); applyUpdate() }}
+    hasUpdate ? (
+      <div
+        role="alert"
+        aria-live="polite"
         style={{
-          background: '#fff',
-          color: 'var(--accent, #3b82f6)',
-          border: 'none',
-          borderRadius: 4,
-          padding: '4px 12px',
-          fontWeight: 700,
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 99999,
+          background: 'var(--accent, #3b82f6)',
+          color: '#fff',
+          padding: '8px 16px',
+          textAlign: 'center',
+          fontSize: 14,
+          fontWeight: 600,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 12,
           cursor: 'pointer',
-          fontSize: 13,
         }}
+        onClick={applyUpdate}
       >
-        Refresh now
-      </button>
-    </div>
+        <span>A new version is available</span>
+        <button
+          onClick={(e) => { e.stopPropagation(); applyUpdate() }}
+          style={{
+            background: '#fff',
+            color: 'var(--accent, #3b82f6)',
+            border: 'none',
+            borderRadius: 4,
+            padding: '4px 12px',
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
+        >
+          Refresh now
+        </button>
+      </div>
+    ) : null
   )
 }
 

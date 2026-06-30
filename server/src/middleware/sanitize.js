@@ -35,11 +35,13 @@ function stripDangerous(str) {
   // Decode HTML entities repeatedly to catch double-encoding
   // e.g. &amp;#60; → &#60; → < → caught by pattern
   let result = str
+  let iterations = 0
   let decoded = decodeHtmlEntities(result)
-  // Loop until no more decoding occurs (handles triple-encoding etc.)
-  while (decoded !== result) {
+  // Loop until no more decoding occurs, max 5 iterations to prevent abuse
+  while (decoded !== result && iterations < 5) {
     result = decoded
     decoded = decodeHtmlEntities(result)
+    iterations++
   }
   for (const { regex, replacement } of DANGEROUS_PATTERNS) {
     result = result.replace(regex, replacement)
