@@ -21,7 +21,27 @@
     "bulkImport": "மொத்த இறக்குமதி",
     "escalation": "அதிகரிப்பு",
     "geofencing": "ஜியோஃபென்சிங்",
-    "logoutConfirm": "நிச்சயமாக வெளியேற விரும்புகிறீர்களா?"
+    "logoutConfirm": "நிச்சயமாக வெளியேற விரும்புகிறீர்களா?",
+    "admin_plural": "Admins",
+    "navigation": "Navigation",
+    "mainNavigation": "Main navigation",
+    "settings": "Settings",
+    "openCommandPalette": "Open command palette",
+    "commandPaletteHint": "Command palette (Ctrl+K)",
+    "toggleTheme": "Toggle theme",
+    "togglePremiumTheme": "Toggle premium theme",
+    "premiumThemeHint": "Premium theme (Alt+N)",
+    "emergencyModeHint": "Emergency mode (Alt+E)",
+    "disablePremiumTheme": "Disable premium theme",
+    "activatePremiumTheme": "Activate premium theme",
+    "disableEmergencyMode": "Disable emergency mode",
+    "activateEmergencyMode": "Activate emergency mode",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "mobileNavigation": "Mobile navigation",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "switchTo": "Switch to {{mode}} mode"
   },
   "auth": {
     "appName": "பேரிடர் நிவாரணம்",
@@ -90,7 +110,11 @@
     "hidePassword": "Hide password",
     "rateLimited": "Too many requests. Please wait a moment and try again.",
     "directResetLink": "🔗 Direct reset link (email not sent):",
-    "previewUrl": "📬 View email:"
+    "previewUrl": "📬 View email:",
+    "volunteer_plural": "Volunteers",
+    "ngo_plural": "NGOs",
+    "signingIn": "Signing you in...",
+    "redirecting": "Please wait while we redirect you."
   },
   "dashboard": {
     "title": "பேரிடர் நிவாரண கோரிக்கைகள்",
@@ -137,7 +161,10 @@
     "latestRequest": "Latest Request",
     "noActivity": "No recent activity",
     "activityWaiting": "Waiting for live updates...",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "filters": "Filters",
+    "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
+    "failedToDelete": "Failed to delete"
   },
   "createRequest": {
     "title": "பேரிடர் நிவாரண கோரிக்கையை உருவாக்கவும்",
@@ -163,7 +190,15 @@
     "cancel": "ரத்து செய்",
     "locationError": "வரைபடத்தில் கிளிக் செய்து அல்லது தேடுவதன் மூலம் இருப்பிடத்தைத் தேர்ந்தெடுக்கவும்.",
     "geolocationNotSupported": "புவிஇருப்பிடத்தை உங்கள் உலாவி ஆதரிக்கவில்லை.",
-    "unableToRetrieve": "உங்கள் இருப்பிடத்தை மீட்டெடுக்க முடியவில்லை."
+    "unableToRetrieve": "உங்கள் இருப்பிடத்தை மீட்டெடுக்க முடியவில்லை.",
+    "draftFound": "You have an unsaved draft",
+    "restore": "Restore",
+    "dismiss": "Dismiss",
+    "review": "Review your request",
+    "peopleLabel": "People affected:",
+    "locationLabel": "Location:",
+    "coordinatesLabel": "Coordinates:",
+    "locationRequired": "Please select a location on the map before submitting."
   },
   "editRequest": {
     "title": "கோரிக்கையைத் திருத்தவும்",
@@ -214,7 +249,19 @@
     "feedbackSubmitted": "கருத்து சமர்ப்பிக்கப்பட்டது",
     "filesUploaded": "கோப்புகள் பதி���ேற்றப்பட்டன",
     "commentDeleted": "கருத்து நீக்கப்பட்டது",
-    "preview": "முன்னோட்டம்"
+    "preview": "முன்னோட்டம்",
+    "statusPriorityBadges": "Status and priority badges",
+    "deleteFileConfirm": "Delete this file?",
+    "fileDeleted": "File deleted",
+    "autoMatched": "Auto-matched by category and proximity",
+    "quickAllocate": "Quick Allocate",
+    "by": "by",
+    "kmAway": "km away",
+    "deleted": "Request deleted",
+    "pageTitle": "Request Detail",
+    "star": "star",
+    "stars": "stars",
+    "suggestedResources": "Suggested Resources"
   },
   "admin": {
     "title": "நிர்வாக டாஷ்போர்டு",
@@ -285,7 +332,8 @@
     "Communication": "ஆடை",
     "Power": "போக்குவரத்து",
     "Infrastructure": "தொடர்பு",
-    "Other": "சக்தி"
+    "Other": "சக்தி",
+    "Equipment": "Equipment"
   },
   "priorities": {
     "Critical": "உள்கட்டமைப்பு",
@@ -340,7 +388,21 @@
     "allocated": "ஒதுக்க வேண்டிய அளவு",
     "deallocatedConfirm": "ஒதுக்கப்பட்டது",
     "nothingToDeallocate": "இந்த ஆதாரத்தை ஒதுக்கவா?",
-    "resourceAllocated": "வளம் ஒதுக்கப்பட்டது"
+    "resourceAllocated": "வளம் ஒதுக்கப்பட்டது",
+    "units": "units",
+    "items": "items",
+    "noResourcesDesc": "No resources match your filters.",
+    "exitSelectMode": "Exit Select",
+    "selectMode": "Select Mode",
+    "bulkEdit": "Bulk Edit",
+    "noChanges": "No changes selected",
+    "updated": "Updated",
+    "editSelected": "Edit Selected",
+    "exportSelected": "Export Selected",
+    "apply": "Apply",
+    "select": "Select",
+    "bulkActions": "Bulk actions",
+    "selectAll": "Select All"
   },
   "zones": {
     "title": "ஒதுக்குவதற்கு எதுவும் இல்லை",
@@ -393,7 +455,24 @@
     "refreshWeather": "புதுப்பிக்கவும்",
     "humidity": "ஈரப்பதம்",
     "wind": "காற்று",
-    "precipitation": "மழைப்பொழிவு"
+    "precipitation": "மழைப்பொழிவு",
+    "noZonesDesc": "No disaster zones defined yet",
+    "status": "Status",
+    "sidepanelAffected": "Affected",
+    "sidepanelOpenRequests": "Open requests",
+    "feelsLike": "feels",
+    "gust": "gust",
+    "kmh": "km/h",
+    "dailyTotal": "24h total",
+    "disasterHeader": "Disaster Type",
+    "popupAffected": "Affected",
+    "popupCoverage": "Coverage",
+    "popupRequests": "Open Requests",
+    "popupResources": "Resources",
+    "severityHeader": "Severity",
+    "severityLabel": "Severity",
+    "statusHeader": "Status",
+    "zonesCount": "zones"
   },
   "public": {
     "title": "பேரிடர் நிவாரண நிலை",
@@ -424,7 +503,17 @@
     "update": "ஏற்றுமதி CSV",
     "create": "புதுப்பிக்கவும்",
     "cancel": "ரத்து செய்",
-    "deleteConfirm": "இந்த சம்பவத்தை நீக்கவா?"
+    "deleteConfirm": "இந்த சம்பவத்தை நீக்கவா?",
+    "noIncidents": "No incidents found",
+    "noIncidentsDesc": "No incidents match your filters",
+    "resources": "Resources:",
+    "affectedPopulation": "Affected population",
+    "descriptionPlaceholder": "Description",
+    "disasterType": "Disaster Type",
+    "latitude": "Center Latitude",
+    "longitude": "Center Longitude",
+    "severity": "Severity",
+    "status": "Status"
   },
   "schedules": {
     "title": "தன்னார்வத் திட்டமிடல்",
@@ -450,7 +539,15 @@
     "completeButton": "நிறைவு",
     "allZones": "அனைத்து மண்டலங்களும்",
     "from": "இருந்து",
-    "to": "செய்ய"
+    "to": "செய்ய",
+    "zone": "Zone:",
+    "viewToggle": "View mode",
+    "listView": "List",
+    "weekView": "Week",
+    "createFirst": "Create your first schedule",
+    "endDateBeforeStart": "End date must be after start date",
+    "searchPlaceholder": "Search schedules...",
+    "status": "Status"
   },
   "bulkImport": {
     "title": "மொத்த இறக்குமதி & CSV ஏற்றுமதி",
@@ -488,7 +585,17 @@
     "doneEditing": "Done editing",
     "previousPage": "Previous page",
     "nextPage": "Next page",
-    "rowError": "Row {{row}}: {{errors}}"
+    "rowError": "Row {{row}}: {{errors}}",
+    "selectAll": "Select all",
+    "dataPreview": "Data preview",
+    "uploadCSV": "Upload CSV file",
+    "columnDisplay": "column",
+    "columnDisplay_plural": "columns",
+    "willBeIgnored": "will be ignored. Assign a system field or they will be skipped.",
+    "mapColumnToField": "Map column \"{{column}}\" to system field",
+    "rowNumber": "#",
+    "editField": "Edit {{field}}",
+    "rowNum": "Row {{row}}"
   },
   "escalation": {
     "title": "CSV இல் தலைப்பு வரிசையும் குறைந்தது ஒரு தரவு வரிசையும் இருக்க வேண்டும்",
@@ -504,7 +611,8 @@
     "deEscalateConfirm": "டி-எஸ்கலேட்",
     "selectRequest": "இந்தக் கோரிக்கையை அதிகரிக்கவா?",
     "searchPlaceholder": "கோரிக்கையைத் தேர்ந்தெடுக்கவும்...",
-    "noMatch": "தலைப்பு, காரணம் அல்லது பயனர் மூலம் தேடவும்..."
+    "noMatch": "தலைப்பு, காரணம் அல்லது பயனர் மூலம் தேடவும்...",
+    "searchRequest": "Search for a request..."
   },
   "geofencing": {
     "title": "உங்கள் தேடலுடன் பொருந்திய கோரிக்கைகள் எதுவும் இல்லை",
@@ -514,7 +622,19 @@
     "checkArea": "சரிபார்க்கிறது...",
     "zonesInArea": "பகு���ியை சரிபார்க்கவும்",
     "requestsNearby": "பகுதியில் மண்டலங்கள்",
-    "resourcesNearby": "அருகிலுள்ள வளங்கள்"
+    "resourcesNearby": "அருகிலுள்ள வளங்கள்",
+    "autoRefresh": "Monitoring — auto-refreshes every 30s",
+    "checkHistory": "Check History",
+    "useMyLocation": "Use My Location",
+    "radiusSlider": "Radius slider",
+    "geofencingMap": "Geofencing map",
+    "startMonitoring": "Start Monitoring",
+    "stopMonitoring": "Stop Monitoring",
+    "columnTime": "Time",
+    "columnRadius": "Radius (km)",
+    "columnZones": "Zones",
+    "columnRequests": "Requests",
+    "columnResources": "Resources"
   },
   "chat": {
     "title": "அருகிலுள்ள கோரிக்கைகள்",
@@ -530,7 +650,8 @@
     "scrollToBottom": "Scroll to bottom",
     "attachFile": "Attach file",
     "failedToLoad": "Failed to load messages",
-    "userFallback": "User"
+    "userFallback": "User",
+    "fileTypeNotAllowed": "File type not allowed"
   },
   "profile": {
     "title": "அனுப்பு",
@@ -589,7 +710,11 @@
     "connectingVolunteers": "இந்தியா முழுவதும் பேரிடர் நிவாரண முயற்சிகளை ஒருங்கிணைப்பதற்கான ஒரு தளம்",
     "builtFor": "தேசிய பேரிடர் மேலாண்மைக்காக கட்டப்பட்டது",
     "copyright": "© 2026 பேரிடர் நிவாரண ஒருங்கிணைப்பு தளம் | ",
-    "lastUpdated": "இந்திய அரசின் முன்முயற்சி"
+    "lastUpdated": "இந்திய அரசின் முன்முயற்சி",
+    "appName": "Disaster Relief Coordination Platform",
+    "emergencyNumber": "112",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "notifications": {
     "title": "கடைசியாகப் புதுப்பிக்கப்பட்டது: ஜூன் 2026",
@@ -624,7 +749,8 @@
     "user": "பயனர்",
     "broadcastSuccess": "SOS இருந்து",
     "broadcastFailed": "SOS எச்சரிக்கை ஒளிபரப்பப்பட்டது!",
-    "noActiveAlerts": "No active SOS alerts"
+    "noActiveAlerts": "No active SOS alerts",
+    "trigger": "SOS"
   },
   "common": {
     "loading": "உருவாக்கு",
@@ -664,7 +790,11 @@
     "typeCommand": "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள் - சில அம்சங்கள் கிடைக்காமல் போகலாம்",
     "searchCommands": "கட்டளை தட்டு",
     "noResultsFor": "கட்டளை அல்லது பக்கத்தின் பெயரை உள்ளிடவும்...",
-    "adminBadge": "நிர்வாகி"
+    "adminBadge": "நிர்வாகி",
+    "sending": "Sending...",
+    "back": "Back",
+    "noChange": "— No change —",
+    "noResults": "No matching requests"
   },
   "weekdays": {
     "sunday": "ஞாயிறு",
@@ -674,5 +804,177 @@
     "thursday": "வியாழன்",
     "friday": "வெள்ளி",
     "saturday": "சனி"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "goHome": "Go to home",
+    "refreshPage": "Refresh Page",
+    "technicalDetails": "Technical Details"
+  },
+  "pageLoadError": {
+    "message": "Something went wrong loading this page.",
+    "reload": "Reload"
+  },
+  "greeting": {
+    "morning": "Good Morning",
+    "afternoon": "Good Afternoon",
+    "evening": "Good Evening"
+  },
+  "layout": {
+    "mainContent": "Main content"
+  },
+  "kpi": {
+    "totalRequests": "Total Requests",
+    "open": "Open",
+    "resolved": "Resolved",
+    "critical": "Critical",
+    "volunteers": "Volunteers",
+    "live": "Live"
+  },
+  "risk": {
+    "title": "Disaster Risk",
+    "critical": "Critical",
+    "high": "High",
+    "moderate": "Moderate",
+    "low": "Low",
+    "unknown": "Unknown"
+  },
+  "weather": {
+    "title": "Weather",
+    "unavailable": "Weather unavailable",
+    "humidity": "Humidity",
+    "wind": "Wind"
+  },
+  "requestsChart": {
+    "title": "Requests Over Time",
+    "noData": "No request data available"
+  },
+  "idleWarning": {
+    "title": "Session Expiring",
+    "description": "You've been inactive. For security, your session will expire in:",
+    "stayLoggedIn": "Stay Logged In",
+    "seconds": "{{count}}s"
+  },
+  "errorState": {
+    "retry": "Retry"
+  },
+  "dataTable": {
+    "label": "Data table",
+    "searchPlaceholder": "Search...",
+    "noData": "No data",
+    "deleteSelected": "Delete selected",
+    "loadingData": "Loading data...",
+    "clear": "Clear",
+    "clearFilters": "Clear filters",
+    "rowsCount": "{{count}} rows",
+    "selectedCount": "{{count}} selected",
+    "rowsPerPage": "Rows per page:",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageInfo": "{{start}}–{{end}} of {{total}}",
+    "noOptionsFound": "No options found",
+    "searchOptions": "Search options",
+    "selectRow": "Select row",
+    "deselectRow": "Deselect row",
+    "filterBy": "Filter by {{name}}",
+    "exportCSV": "Export CSV",
+    "columns": "Columns",
+    "clearSearch": "Clear search",
+    "clearAllFilters": "Clear all filters"
+  },
+  "dataList": {
+    "noItems": "No items"
+  },
+  "pagination": {
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page {{page}}"
+  },
+  "stepForm": {
+    "next": "Next",
+    "back": "Back",
+    "complete": "Complete",
+    "processing": "Processing...",
+    "stepOf": "Step {{current}} of {{total}}",
+    "stepDetails": "Details",
+    "stepDetailsDesc": "Basic information",
+    "stepLocation": "Location",
+    "stepLocationDesc": "Set crisis location",
+    "stepReview": "Review",
+    "stepReviewDesc": "Confirm & submit"
+  },
+  "imageUploader": {
+    "dropHere": "Drop image here",
+    "dropOrClick": "Drop an image or click to browse",
+    "hint": "PNG, JPG, WEBP up to {{maxSize}}MB",
+    "fileTooLarge": "File too large. Max {{maxSize}}MB.",
+    "notAnImage": "Please select an image file.",
+    "uploadImage": "Upload image",
+    "removeImage": "Remove image",
+    "previewImageAlt": "Preview image"
+  },
+  "datePicker": {
+    "selectDate": "Select date...",
+    "clearDate": "Clear date",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December",
+    "sunday": "Su",
+    "monday": "Mo",
+    "tuesday": "Tu",
+    "wednesday": "We",
+    "thursday": "Th",
+    "friday": "Fr",
+    "saturday": "Sa"
+  },
+  "activityFeed": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago",
+    "newCount": "{{count}} new"
+  },
+  "taskList": {
+    "title": "Upcoming Tasks",
+    "openCount": "{{count}} open",
+    "noOpenTasks": "No open tasks",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
+  "notificationBell": {
+    "alerts": "Alerts",
+    "escalations": "Escalations",
+    "updates": "Updates"
+  },
+  "zoneHeatMap": {
+    "radius": "Radius:",
+    "affected": "Affected:",
+    "openRequests": "Open requests:",
+    "resources": "Resources:",
+    "units": "units"
+  },
+  "map": {
+    "title": "Map View",
+    "noRequestsDesc": "No request locations to display on the map. Try adjusting your filters or zoom out to see more area.",
+    "selectLocation": "Map for selecting location",
+    "filterByStatus": "Filter by status",
+    "filterByPriority": "Filter by priority",
+    "filterByCategory": "Filter by category",
+    "mapAriaLabel": "Map overview of requests",
+    "failedToLoad": "Failed to load request data"
   }
 }

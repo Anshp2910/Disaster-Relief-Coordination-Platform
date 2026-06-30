@@ -21,7 +21,27 @@
     "bulkImport": "थोक आयात",
     "escalation": "वृद्धि",
     "geofencing": "जियोफेंसिंग",
-    "logoutConfirm": "क्या आप वाकई लॉगआउट करना चाहते हैं?"
+    "logoutConfirm": "क्या आप वाकई लॉगआउट करना चाहते हैं?",
+    "admin_plural": "Admins",
+    "navigation": "Navigation",
+    "mainNavigation": "Main navigation",
+    "settings": "Settings",
+    "openCommandPalette": "Open command palette",
+    "commandPaletteHint": "Command palette (Ctrl+K)",
+    "toggleTheme": "Toggle theme",
+    "togglePremiumTheme": "Toggle premium theme",
+    "premiumThemeHint": "Premium theme (Alt+N)",
+    "emergencyModeHint": "Emergency mode (Alt+E)",
+    "disablePremiumTheme": "Disable premium theme",
+    "activatePremiumTheme": "Activate premium theme",
+    "disableEmergencyMode": "Disable emergency mode",
+    "activateEmergencyMode": "Activate emergency mode",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "mobileNavigation": "Mobile navigation",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "switchTo": "Switch to {{mode}} mode"
   },
   "auth": {
     "appName": "आपदा राहत",
@@ -90,7 +110,11 @@
     "hidePassword": "Hide password",
     "rateLimited": "Too many requests. Please wait a moment and try again.",
     "directResetLink": "🔗 Direct reset link (email not sent):",
-    "previewUrl": "📬 View email:"
+    "previewUrl": "📬 View email:",
+    "volunteer_plural": "Volunteers",
+    "ngo_plural": "NGOs",
+    "signingIn": "Signing you in...",
+    "redirecting": "Please wait while we redirect you."
   },
   "dashboard": {
     "title": "आपदा राहत अनुरोध",
@@ -137,7 +161,10 @@
     "latestRequest": "Latest Request",
     "noActivity": "No recent activity",
     "activityWaiting": "Waiting for live updates...",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "filters": "Filters",
+    "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
+    "failedToDelete": "Failed to delete"
   },
   "createRequest": {
     "title": "क्या आप वाकई इस अनुरोध का दावा रद्द करना चाहते हैं?",
@@ -163,7 +190,15 @@
     "cancel": "पहले एक स्थान च���नें",
     "locationError": "रद्द करें",
     "geolocationNotSupported": "कृपया मानचित्र पर क्लिक करके या खोज कर एक स्थान चुनें।",
-    "unableToRetrieve": "जियोलोकेशन आपके ब्राउज़र द्वारा समर्थित नहीं है."
+    "unableToRetrieve": "जियोलोकेशन आपके ब्राउज़र द्वारा समर्थित नहीं है.",
+    "draftFound": "You have an unsaved draft",
+    "restore": "Restore",
+    "dismiss": "Dismiss",
+    "review": "Review your request",
+    "peopleLabel": "People affected:",
+    "locationLabel": "Location:",
+    "coordinatesLabel": "Coordinates:",
+    "locationRequired": "Please select a location on the map before submitting."
   },
   "editRequest": {
     "title": "आपका स्थान पुनः प्राप्त करने में असमर्थ.",
@@ -214,7 +249,19 @@
     "feedbackSubmitted": "अनुरोध लावारिस",
     "filesUploaded": "प्रतिक्रिया प्रस्तुत की गई",
     "commentDeleted": "फ़ाइलें अपलोड की गईं",
-    "preview": "टिप्पणी हटा दी गई"
+    "preview": "टिप्पणी हटा दी गई",
+    "statusPriorityBadges": "Status and priority badges",
+    "deleteFileConfirm": "Delete this file?",
+    "fileDeleted": "File deleted",
+    "autoMatched": "Auto-matched by category and proximity",
+    "quickAllocate": "Quick Allocate",
+    "by": "by",
+    "kmAway": "km away",
+    "deleted": "Request deleted",
+    "pageTitle": "Request Detail",
+    "star": "star",
+    "stars": "stars",
+    "suggestedResources": "Suggested Resources"
   },
   "admin": {
     "title": "पूर्वावलोकन",
@@ -285,7 +332,8 @@
     "Communication": "स्वच्छता",
     "Power": "वस्त्र",
     "Infrastructure": "परिवहन",
-    "Other": "संचार"
+    "Other": "संचार",
+    "Equipment": "Equipment"
   },
   "priorities": {
     "Critical": "शक्ति",
@@ -340,7 +388,21 @@
     "allocated": "आवंटित",
     "deallocatedConfirm": "इस संसाधन का आवंटन रद्द करें?",
     "nothingToDeallocate": "आवंटन रद्द करने के लिए कुछ भी नहीं",
-    "resourceAllocated": "संसाधन सफलतापूर्वक आवंटित किया गया"
+    "resourceAllocated": "संसाधन सफलतापूर्वक आवंटित किया गया",
+    "units": "units",
+    "items": "items",
+    "noResourcesDesc": "No resources match your filters.",
+    "exitSelectMode": "Exit Select",
+    "selectMode": "Select Mode",
+    "bulkEdit": "Bulk Edit",
+    "noChanges": "No changes selected",
+    "updated": "Updated",
+    "editSelected": "Edit Selected",
+    "exportSelected": "Export Selected",
+    "apply": "Apply",
+    "select": "Select",
+    "bulkActions": "Bulk actions",
+    "selectAll": "Select All"
   },
   "zones": {
     "title": "आपदा क्षेत्र ताप मानचित्र",
@@ -393,7 +455,24 @@
     "refreshWeather": "ताज़ा करें",
     "humidity": "आर्द्रता",
     "wind": "हवा",
-    "precipitation": "वर्षा"
+    "precipitation": "वर्षा",
+    "noZonesDesc": "No disaster zones defined yet",
+    "status": "Status",
+    "sidepanelAffected": "Affected",
+    "sidepanelOpenRequests": "Open requests",
+    "feelsLike": "feels",
+    "gust": "gust",
+    "kmh": "km/h",
+    "dailyTotal": "24h total",
+    "disasterHeader": "Disaster Type",
+    "popupAffected": "Affected",
+    "popupCoverage": "Coverage",
+    "popupRequests": "Open Requests",
+    "popupResources": "Resources",
+    "severityHeader": "Severity",
+    "severityLabel": "Severity",
+    "statusHeader": "Status",
+    "zonesCount": "zones"
   },
   "public": {
     "title": "आपदा राहत स्थिति",
@@ -424,7 +503,17 @@
     "update": "अद्यतन करें",
     "create": "बनाएँ",
     "cancel": "पहले एक स्थान च���नें",
-    "deleteConfirm": "यह घटना हटाएं?"
+    "deleteConfirm": "यह घटना हटाएं?",
+    "noIncidents": "No incidents found",
+    "noIncidentsDesc": "No incidents match your filters",
+    "resources": "Resources:",
+    "affectedPopulation": "Affected population",
+    "descriptionPlaceholder": "Description",
+    "disasterType": "Disaster Type",
+    "latitude": "Center Latitude",
+    "longitude": "Center Longitude",
+    "severity": "Severity",
+    "status": "Status"
   },
   "schedules": {
     "title": "स्वयंसेवक शेड्यूलिंग",
@@ -450,7 +539,15 @@
     "completeButton": "पूर्ण",
     "allZones": "सभी जोन",
     "from": "से",
-    "to": "को"
+    "to": "को",
+    "zone": "Zone:",
+    "viewToggle": "View mode",
+    "listView": "List",
+    "weekView": "Week",
+    "createFirst": "Create your first schedule",
+    "endDateBeforeStart": "End date must be after start date",
+    "searchPlaceholder": "Search schedules...",
+    "status": "Status"
   },
   "bulkImport": {
     "title": "थोक आयात और सीएसवी निर्यात",
@@ -488,7 +585,17 @@
     "doneEditing": "Done editing",
     "previousPage": "Previous page",
     "nextPage": "Next page",
-    "rowError": "Row {{row}}: {{errors}}"
+    "rowError": "Row {{row}}: {{errors}}",
+    "selectAll": "Select all",
+    "dataPreview": "Data preview",
+    "uploadCSV": "Upload CSV file",
+    "columnDisplay": "column",
+    "columnDisplay_plural": "columns",
+    "willBeIgnored": "will be ignored. Assign a system field or they will be skipped.",
+    "mapColumnToField": "Map column \"{{column}}\" to system field",
+    "rowNumber": "#",
+    "editField": "Edit {{field}}",
+    "rowNum": "Row {{row}}"
   },
   "escalation": {
     "title": "सीएसवी में एक हेडर पंक्ति और कम से कम एक डेटा पंक्ति होनी चाहिए",
@@ -504,7 +611,8 @@
     "deEscalateConfirm": "तनाव कम करें",
     "selectRequest": "इस अनुरोध को कम करें?",
     "searchPlaceholder": "एक अनुरोध चुनें...",
-    "noMatch": "शीर्षक, कारण या उपयोगकर्ता के आधार पर खोजें..."
+    "noMatch": "शीर्षक, कारण या उपयोगकर्ता के आधार पर खोजें...",
+    "searchRequest": "Search for a request..."
   },
   "geofencing": {
     "title": "कोई भी उन्नत अनुरोध आपकी खोज से मेल नहीं खाता",
@@ -514,7 +622,19 @@
     "checkArea": "जाँच हो रही है...",
     "zonesInArea": "क्षेत्र की जाँच करें",
     "requestsNearby": "क्षेत्र में जोन",
-    "resourcesNearby": "पास में संसाधन"
+    "resourcesNearby": "पास में संसाधन",
+    "autoRefresh": "Monitoring — auto-refreshes every 30s",
+    "checkHistory": "Check History",
+    "useMyLocation": "Use My Location",
+    "radiusSlider": "Radius slider",
+    "geofencingMap": "Geofencing map",
+    "startMonitoring": "Start Monitoring",
+    "stopMonitoring": "Stop Monitoring",
+    "columnTime": "Time",
+    "columnRadius": "Radius (km)",
+    "columnZones": "Zones",
+    "columnRequests": "Requests",
+    "columnResources": "Resources"
   },
   "chat": {
     "title": "आस-पास अनुरोध",
@@ -530,7 +650,8 @@
     "scrollToBottom": "Scroll to bottom",
     "attachFile": "Attach file",
     "failedToLoad": "Failed to load messages",
-    "userFallback": "User"
+    "userFallback": "User",
+    "fileTypeNotAllowed": "File type not allowed"
   },
   "profile": {
     "title": "भेजें",
@@ -589,7 +710,11 @@
     "connectingVolunteers": "पूरे भारत में आपदा राहत प्रयासों के समन्वय के लिए एक म���च",
     "builtFor": "स्वयंसेवकों, गैर सरकारी संगठनों और एजेंसियों को जोड़ना",
     "copyright": "राष्ट्रीय आपदा प्रबंधन के लिए बनाया गया",
-    "lastUpdated": "© 2026 आपदा राहत समन्वय मंच | "
+    "lastUpdated": "© 2026 आपदा राहत समन्वय मंच | ",
+    "appName": "Disaster Relief Coordination Platform",
+    "emergencyNumber": "112",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "notifications": {
     "title": "भारत सरकार की पहल",
@@ -624,7 +749,8 @@
     "user": "कोई भी उपयोगकर्ता आपकी खोज से मेल नहीं खाता",
     "broadcastSuccess": "सभी कनेक्टेड उपयोगकर्ताओं को एसओएस आपातकालीन अलर्ट भेजें?",
     "broadcastFailed": "एसओएस से",
-    "noActiveAlerts": "No active SOS alerts"
+    "noActiveAlerts": "No active SOS alerts",
+    "trigger": "SOS"
   },
   "common": {
     "loading": "लोड हो रहा है...",
@@ -664,7 +790,11 @@
     "typeCommand": "एक कमांड या पेज का नाम टाइप करें...",
     "searchCommands": "आदेश खोजें",
     "noResultsFor": "\"{{query}}\" के लिए कोई परिणाम नहीं",
-    "adminBadge": "व्यवस्थापक"
+    "adminBadge": "व्यवस्थापक",
+    "sending": "Sending...",
+    "back": "Back",
+    "noChange": "— No change —",
+    "noResults": "No matching requests"
   },
   "weekdays": {
     "sunday": "रविवार",
@@ -674,5 +804,177 @@
     "thursday": "गुरुवार",
     "friday": "शुक्रवार",
     "saturday": "शनिवार"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "goHome": "Go to home",
+    "refreshPage": "Refresh Page",
+    "technicalDetails": "Technical Details"
+  },
+  "pageLoadError": {
+    "message": "Something went wrong loading this page.",
+    "reload": "Reload"
+  },
+  "greeting": {
+    "morning": "Good Morning",
+    "afternoon": "Good Afternoon",
+    "evening": "Good Evening"
+  },
+  "layout": {
+    "mainContent": "Main content"
+  },
+  "kpi": {
+    "totalRequests": "Total Requests",
+    "open": "Open",
+    "resolved": "Resolved",
+    "critical": "Critical",
+    "volunteers": "Volunteers",
+    "live": "Live"
+  },
+  "risk": {
+    "title": "Disaster Risk",
+    "critical": "Critical",
+    "high": "High",
+    "moderate": "Moderate",
+    "low": "Low",
+    "unknown": "Unknown"
+  },
+  "weather": {
+    "title": "Weather",
+    "unavailable": "Weather unavailable",
+    "humidity": "Humidity",
+    "wind": "Wind"
+  },
+  "requestsChart": {
+    "title": "Requests Over Time",
+    "noData": "No request data available"
+  },
+  "idleWarning": {
+    "title": "Session Expiring",
+    "description": "You've been inactive. For security, your session will expire in:",
+    "stayLoggedIn": "Stay Logged In",
+    "seconds": "{{count}}s"
+  },
+  "errorState": {
+    "retry": "Retry"
+  },
+  "dataTable": {
+    "label": "Data table",
+    "searchPlaceholder": "Search...",
+    "noData": "No data",
+    "deleteSelected": "Delete selected",
+    "loadingData": "Loading data...",
+    "clear": "Clear",
+    "clearFilters": "Clear filters",
+    "rowsCount": "{{count}} rows",
+    "selectedCount": "{{count}} selected",
+    "rowsPerPage": "Rows per page:",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageInfo": "{{start}}–{{end}} of {{total}}",
+    "noOptionsFound": "No options found",
+    "searchOptions": "Search options",
+    "selectRow": "Select row",
+    "deselectRow": "Deselect row",
+    "filterBy": "Filter by {{name}}",
+    "exportCSV": "Export CSV",
+    "columns": "Columns",
+    "clearSearch": "Clear search",
+    "clearAllFilters": "Clear all filters"
+  },
+  "dataList": {
+    "noItems": "No items"
+  },
+  "pagination": {
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page {{page}}"
+  },
+  "stepForm": {
+    "next": "Next",
+    "back": "Back",
+    "complete": "Complete",
+    "processing": "Processing...",
+    "stepOf": "Step {{current}} of {{total}}",
+    "stepDetails": "Details",
+    "stepDetailsDesc": "Basic information",
+    "stepLocation": "Location",
+    "stepLocationDesc": "Set crisis location",
+    "stepReview": "Review",
+    "stepReviewDesc": "Confirm & submit"
+  },
+  "imageUploader": {
+    "dropHere": "Drop image here",
+    "dropOrClick": "Drop an image or click to browse",
+    "hint": "PNG, JPG, WEBP up to {{maxSize}}MB",
+    "fileTooLarge": "File too large. Max {{maxSize}}MB.",
+    "notAnImage": "Please select an image file.",
+    "uploadImage": "Upload image",
+    "removeImage": "Remove image",
+    "previewImageAlt": "Preview image"
+  },
+  "datePicker": {
+    "selectDate": "Select date...",
+    "clearDate": "Clear date",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December",
+    "sunday": "Su",
+    "monday": "Mo",
+    "tuesday": "Tu",
+    "wednesday": "We",
+    "thursday": "Th",
+    "friday": "Fr",
+    "saturday": "Sa"
+  },
+  "activityFeed": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago",
+    "newCount": "{{count}} new"
+  },
+  "taskList": {
+    "title": "Upcoming Tasks",
+    "openCount": "{{count}} open",
+    "noOpenTasks": "No open tasks",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
+  "notificationBell": {
+    "alerts": "Alerts",
+    "escalations": "Escalations",
+    "updates": "Updates"
+  },
+  "zoneHeatMap": {
+    "radius": "Radius:",
+    "affected": "Affected:",
+    "openRequests": "Open requests:",
+    "resources": "Resources:",
+    "units": "units"
+  },
+  "map": {
+    "title": "Map View",
+    "noRequestsDesc": "No request locations to display on the map. Try adjusting your filters or zoom out to see more area.",
+    "selectLocation": "Map for selecting location",
+    "filterByStatus": "Filter by status",
+    "filterByPriority": "Filter by priority",
+    "filterByCategory": "Filter by category",
+    "mapAriaLabel": "Map overview of requests",
+    "failedToLoad": "Failed to load request data"
   }
 }

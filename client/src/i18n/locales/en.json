@@ -271,7 +271,12 @@
     "autoMatched": "Auto-matched by category and proximity",
     "quickAllocate": "Quick Allocate",
     "by": "by",
-    "kmAway": "km away"
+    "kmAway": "km away",
+    "deleted": "Request deleted",
+    "pageTitle": "Request Detail",
+    "star": "star",
+    "stars": "stars",
+    "suggestedResources": "Suggested Resources"
   },
   "kpi": {
     "totalRequests": "Total Requests",
@@ -360,7 +365,8 @@
     "fileTooLarge": "File too large. Max {{maxSize}}MB.",
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
-    "removeImage": "Remove image"
+    "removeImage": "Remove image",
+    "previewImageAlt": "Preview image"
   },
   "datePicker": {
     "selectDate": "Select date...",
@@ -545,7 +551,9 @@
     "editSelected": "Edit Selected",
     "exportSelected": "Export Selected",
     "apply": "Apply",
-    "select": "Select"
+    "select": "Select",
+    "bulkActions": "Bulk actions",
+    "selectAll": "Select All"
   },
   "zones": {
     "title": "Disaster Zone Heat Map",
@@ -606,7 +614,16 @@
     "feelsLike": "feels",
     "gust": "gust",
     "kmh": "km/h",
-    "dailyTotal": "24h total"
+    "dailyTotal": "24h total",
+    "disasterHeader": "Disaster Type",
+    "popupAffected": "Affected",
+    "popupCoverage": "Coverage",
+    "popupRequests": "Open Requests",
+    "popupResources": "Resources",
+    "severityHeader": "Severity",
+    "severityLabel": "Severity",
+    "statusHeader": "Status",
+    "zonesCount": "zones"
   },
   "zoneHeatMap": {
     "radius": "Radius:",
@@ -657,7 +674,14 @@
     "update": "Update",
     "create": "Create",
     "cancel": "Cancel",
-    "deleteConfirm": "Delete this incident?"
+    "deleteConfirm": "Delete this incident?",
+    "affectedPopulation": "Affected population",
+    "descriptionPlaceholder": "Description",
+    "disasterType": "Disaster Type",
+    "latitude": "Center Latitude",
+    "longitude": "Center Longitude",
+    "severity": "Severity",
+    "status": "Status"
   },
   "schedules": {
     "title": "Volunteer Scheduling",
@@ -687,7 +711,11 @@
     "skills": "Skills:",
     "viewToggle": "View mode",
     "listView": "List",
-    "weekView": "Week"
+    "weekView": "Week",
+    "createFirst": "Create your first schedule",
+    "endDateBeforeStart": "End date must be after start date",
+    "searchPlaceholder": "Search schedules...",
+    "status": "Status"
   },
   "bulkImport": {
     "selectAll": "Select all",
@@ -751,7 +779,8 @@
     "deEscalateConfirm": "De-escalate this request?",
     "selectRequest": "Select a request...",
     "searchPlaceholder": "Search by title, reason, or user...",
-    "noMatch": "No escalated requests match your search"
+    "noMatch": "No escalated requests match your search",
+    "searchRequest": "Search for a request..."
   },
   "geofencing": {
     "autoRefresh": "Monitoring — auto-refreshes every 30s",
@@ -789,7 +818,8 @@
     "scrollToBottom": "Scroll to bottom",
     "attachFile": "Attach file",
     "failedToLoad": "Failed to load messages",
-    "userFallback": "User"
+    "userFallback": "User",
+    "fileTypeNotAllowed": "File type not allowed"
   },
   "profile": {
     "title": "My Profile",
@@ -887,7 +917,8 @@
     "user": "User",
     "broadcastSuccess": "SOS alert broadcasted!",
     "broadcastFailed": "Failed: {{error}}",
-    "noActiveAlerts": "No active SOS alerts"
+    "noActiveAlerts": "No active SOS alerts",
+    "trigger": "SOS"
   },
   "common": {
     "loading": "Loading...",
@@ -929,7 +960,9 @@
     "noResultsFor": "No results for \"{{query}}\"",
     "adminBadge": "Admin",
     "sending": "Sending...",
-    "back": "Back"
+    "back": "Back",
+    "noChange": "— No change —",
+    "noResults": "No matching requests"
   },
   "weekdays": {
     "sunday": "Sunday",
