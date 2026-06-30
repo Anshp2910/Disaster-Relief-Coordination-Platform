@@ -178,11 +178,11 @@ export default function Register() {
 
             {/* Form */}
             <motion.form onSubmit={onSubmit} variants={item}>
-              {error && <div className="error-text">{error}</div>}
+              {error && <div className="error-text" id="register-error" role="alert">{error}</div>}
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">
-                  <input id="reg-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} className="auth-input" placeholder=" " />
+                  <input id="reg-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} className="auth-input" placeholder=" " aria-describedby={error ? 'register-error' : undefined} />
                   <label htmlFor="reg-name" className="auth-label">{t('auth.fullName')}</label>
                   <User size={16} className="auth-input-icon" aria-hidden="true" />
                 </div>
@@ -190,7 +190,7 @@ export default function Register() {
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">
-                  <input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={128} className="auth-input" placeholder=" " />
+                  <input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={128} className="auth-input" placeholder=" " aria-describedby={error ? 'register-error' : undefined} />
                   <label htmlFor="reg-email" className="auth-label">{t('auth.email')}</label>
                   <Mail size={16} className="auth-input-icon" aria-hidden="true" />
                 </div>
@@ -198,7 +198,7 @@ export default function Register() {
 
               <motion.div className="auth-field" variants={item}>
                 <div className="auth-input-wrap">
-                  <input id="reg-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required maxLength={128} className="auth-input" placeholder=" " />
+                  <input id="reg-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} maxLength={128} className="auth-input" placeholder=" " aria-describedby={error ? 'register-error' : undefined} />
                   <label htmlFor="reg-password" className="auth-label">{t('auth.password')}</label>
                   <button type="button" className="auth-pw-toggle" onClick={() => setShowPassword(!showPassword)}                     aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={0}>
                     {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}

@@ -205,6 +205,7 @@ export default function Profile() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 required
+                maxLength={50}
                 className={`ff-input ${displayName ? 'ff-input-filled' : ''}`}
                 placeholder={t('auth.displayName')}
               />
@@ -221,6 +222,7 @@ export default function Profile() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                maxLength={20}
                 className={`ff-input ${phone ? 'ff-input-filled' : ''}`}
                 placeholder={t('profile.phonePlaceholder')}
               />
@@ -322,6 +324,8 @@ export default function Profile() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
+                minLength={8}
+                maxLength={128}
                 className={`ff-input ${newPassword ? 'ff-input-filled' : ''}`}
                 placeholder={t('profile.newPassword')}
               />
@@ -350,6 +354,8 @@ export default function Profile() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
+                minLength={8}
+                maxLength={128}
                 className={`ff-input ${confirmPassword ? 'ff-input-filled' : ''}`}
                 placeholder={t('profile.confirmPassword')}
               />

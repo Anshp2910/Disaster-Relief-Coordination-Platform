@@ -28,6 +28,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
               value={form.name}
               onChange={onFormChange('name')}
               required
+              maxLength={100}
               className={`ff-input ${form.name ? 'ff-input-filled' : ''}`}
               placeholder={t('zones.zoneNamePlaceholder')}
             />
@@ -143,6 +144,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
               value={form.description}
               onChange={onFormChange('description')}
               rows={2}
+              maxLength={2000}
               className="ff-input ff-textarea"
               placeholder={t('zones.description')}
             />
@@ -159,6 +161,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
               value={form.notes}
               onChange={onFormChange('notes')}
               rows={2}
+              maxLength={2000}
               className="ff-input ff-textarea"
               placeholder={t('zones.notes')}
             />

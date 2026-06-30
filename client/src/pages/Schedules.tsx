@@ -201,6 +201,10 @@ export default function Schedules() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    if (form.startDate && form.endDate && new Date(form.endDate) < new Date(form.startDate)) {
+      setError(t('schedules.endDateBeforeStart') || 'End date must be after start date')
+      return
+    }
     try {
       const payload: Record<string, unknown> = { ...form }
       if (!payload.zoneId) delete payload.zoneId

@@ -546,6 +546,7 @@ export default function RequestDetail() {
                   type="text"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
+                  required
                   maxLength={2000}
                   className={`ff-input ${comment ? 'ff-input-filled' : ''}`}
                   placeholder={t('requestDetail.addComment')}
@@ -652,6 +653,7 @@ export default function RequestDetail() {
                     value={feedbackComment}
                     onChange={(e) => setFeedbackComment(e.target.value)}
                     rows={2}
+                    maxLength={2000}
                     className="ff-input ff-textarea"
                     placeholder={t('requestDetail.feedbackPlaceholder')}
                   />

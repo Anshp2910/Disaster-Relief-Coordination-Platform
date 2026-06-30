@@ -67,12 +67,12 @@ export default function ResetPassword() {
           <motion.h1 className="auth-title" variants={item}>{t('auth.resetPassword')}</motion.h1>
           <motion.p className="auth-subtitle" variants={item}>{t('auth.enterNewPassword')}</motion.p>
 
-          {error && <motion.div className="auth-error" variants={item}>{error}</motion.div>}
+          {error && <motion.div className="auth-error" id="reset-error" role="alert" variants={item}>{error}</motion.div>}
 
           <motion.div className="auth-field" variants={item}>
             <label htmlFor="password">{t('auth.newPassword')}</label>
             <div className="auth-password-wrap">
-              <input id="password" type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required disabled={loading} minLength={8} />
+              <input id="password" type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required disabled={loading} minLength={8} aria-describedby={error ? 'reset-error' : undefined} />
               <button type="button" className="auth-password-toggle" onClick={() => setShow(!show)} aria-label={show ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={-1}>
                 {show ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -81,7 +81,12 @@ export default function ResetPassword() {
 
           <motion.div className="auth-field" variants={item}>
             <label htmlFor="confirm">{t('auth.confirmPassword')}</label>
-            <input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required disabled={loading} minLength={8} />
+            <div className="auth-password-wrap">
+              <input id="confirm" type={show ? 'text' : 'password'} value={confirm} onChange={(e) => setConfirm(e.target.value)} required disabled={loading} minLength={8} aria-describedby={error ? 'reset-error' : undefined} />
+              <button type="button" className="auth-password-toggle" onClick={() => setShow(!show)} aria-label={show ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={-1}>
+                {show ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </motion.div>
 
           <motion.button disabled={loading} type="submit" className="auth-submit" variants={item}>

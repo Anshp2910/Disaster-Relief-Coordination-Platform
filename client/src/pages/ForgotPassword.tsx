@@ -86,11 +86,11 @@ export default function ForgotPassword() {
           <motion.h1 className="auth-title" variants={item}>{t('auth.forgotPassword')}</motion.h1>
           <motion.p className="auth-subtitle" variants={item}>{t('auth.enterEmailReset')}</motion.p>
 
-          {error && <motion.div className="auth-error" variants={item}>{error}</motion.div>}
+          {error && <motion.div className="auth-error" id="forgot-error" role="alert" variants={item}>{error}</motion.div>}
 
           <motion.div className="auth-field" variants={item}>
             <label htmlFor="email">{t('auth.email')}</label>
-            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} />
+            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} aria-describedby={error ? 'forgot-error' : undefined} />
           </motion.div>
 
           <motion.button disabled={loading} type="submit" className="auth-submit" variants={item}>

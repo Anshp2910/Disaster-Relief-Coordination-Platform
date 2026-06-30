@@ -212,8 +212,9 @@ export default function Login() {
                     required
                     className="auth-input"
                     placeholder=" "
-                    aria-describedby={error ? "login-error" : undefined}
-                    aria-invalid={error ? "true" : "false"}
+                    aria-describedby={error ? 'login-error' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
+                    minLength={8}
                   />
                   <label htmlFor="login-password" className="auth-label">{t('auth.password')}</label>
                   <button

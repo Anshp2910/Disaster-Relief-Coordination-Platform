@@ -407,6 +407,7 @@ export default function Incidents() {
                 value={form.name}
                 onChange={updateForm('name')}
                 required
+                maxLength={100}
                 className={`ff-input ${form.name ? 'ff-input-filled' : ''}`}
                 placeholder={t('incidents.incidentName')}
               />
@@ -503,6 +504,7 @@ export default function Incidents() {
                 value={form.description}
                 onChange={updateForm('description')}
                 rows={3}
+                maxLength={5000}
                 className="ff-input ff-textarea"
                 placeholder={t('incidents.descriptionPlaceholder') || 'Description'}
               />
