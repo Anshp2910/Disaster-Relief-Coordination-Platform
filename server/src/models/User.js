@@ -20,13 +20,10 @@ const UserSchema = new mongoose.Schema(
     },
     resetPasswordToken: { type: String, default: undefined },
     resetPasswordExpires: { type: Date, default: undefined },
-    csrfToken: { type: String, default: undefined },
-    csrfExpires: { type: Date, default: undefined },
   },
   { timestamps: true },
 )
 
-UserSchema.index({ csrfExpires: 1 })
 UserSchema.index({ resetPasswordExpires: 1 }, { expireAfterSeconds: 0 })
 UserSchema.index({ email: 1, provider: 1 })
 
