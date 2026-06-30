@@ -24,10 +24,10 @@ export default function useFocusTrap(active: boolean): RefObject<HTMLDivElement>
       const lst = f[f.length - 1]
       if (e.shiftKey && document.activeElement === fst) {
         e.preventDefault()
-        lst.focus()
+        lst!.focus()
       } else if (!e.shiftKey && document.activeElement === lst) {
         e.preventDefault()
-        fst.focus()
+        fst!.focus()
       }
     }
 

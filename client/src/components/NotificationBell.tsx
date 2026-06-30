@@ -80,7 +80,7 @@ export default function NotificationBell() {
     return Object.entries(NOTIF_TIERS)
       .filter(([key]) => groups[key]?.length)
       .sort((a, b) => a[1].order - b[1].order)
-      .map(([key, config]) => ({ ...config, key, items: groups[key] }))
+      .map(([key, config]) => ({ ...config, key, items: groups[key] ?? [] }))
   }, [notifications, NOTIF_TIERS])
 
   const hasUnreadUrgent = notifications.some((n) => !n.read && n.type === 'sos:alert')

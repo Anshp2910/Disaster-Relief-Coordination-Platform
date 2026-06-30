@@ -154,7 +154,7 @@ export default function BulkImport() {
 
       if (rows.length < 2) throw new Error(t('bulkImport.csvMustHaveRows'))
 
-      const h = rows[0].map((c) => c.trim())
+      const h = rows[0]!.map((c) => c.trim())
       const dataRows = rows.slice(1).filter((row) => row.some((v) => v.trim() !== ''))
 
       if (dataRows.length === 0) throw new Error(t('bulkImport.csvNoDataRows'))
@@ -200,7 +200,7 @@ export default function BulkImport() {
     const mappedData = rawData.map((vals) => {
       const row: Record<string, unknown> = {}
       cleanHeaders.forEach((col, i) => {
-        row[col] = vals[cleanColIndices[i]]?.trim() || ''
+        row[col] = vals[cleanColIndices[i]!]?.trim() || ''
       })
       row._rowId = Date.now() + Math.random()
       return row

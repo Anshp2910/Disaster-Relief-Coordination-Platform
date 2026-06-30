@@ -315,7 +315,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   const roleCounts = useMemo(() => {
     const counts: Record<string, number> = { volunteer: 0, ngo: 0, admin: 0 }
     safeUsers.forEach((u) => {
-      if (counts[u.role] !== undefined) counts[u.role]++
+      if (counts[u.role] !== undefined) counts[u.role]!++
     })
     return counts
   }, [safeUsers])

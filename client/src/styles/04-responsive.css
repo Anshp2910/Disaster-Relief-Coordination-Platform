@@ -68,7 +68,19 @@
   
   /* Stack all filters */
   .dt-toolbar { flex-direction: column; align-items: stretch; }
+  .dt-toolbar-left, .dt-toolbar-right { width: 100%; }
   .dt-search-input { width: 100%; }
+  .dt-search-wrap { flex: 1; }
+  .dt-filters { width: 100%; }
+  .dt-filter-select { flex: 1; min-width: 0; }
+  .dt-count { display: none; }
+
+  /* FilterBar stacks on mobile */
+  .search-input-wrapper { max-width: 100% !important; flex: 1 1 100% !important; }
+  .filter-group { flex: 1 1 calc(50% - var(--space-xs)); min-width: 120px; }
+
+  /* Zone side panels stack below map */
+  .w-320, .w-280 { width: 100% !important; max-width: 100% !important; flex-shrink: 1 !important; }
 }
 
 @media (max-width: 360px) {

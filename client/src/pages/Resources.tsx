@@ -78,7 +78,7 @@ export default function Resources() {
         value={`${s.totalQty} ${t('resources.units')}`}
         subtitle={`${s.count} ${t('resources.items')}`}
         icon={<Package size={18} />}
-        color={catColors.text}
+        color={catColors!.text}
       />
     )
   }), [summary, t])

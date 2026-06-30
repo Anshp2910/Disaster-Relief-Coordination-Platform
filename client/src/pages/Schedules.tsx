@@ -416,7 +416,7 @@ export default function Schedules() {
                     </div>
                   )}
                   {daySchedules.map((s) => {
-                    const shiftC = SHIFT_COLORS[s.shift || 'Full Day'] || SHIFT_COLORS['Full Day']
+                    const shiftC = SHIFT_COLORS[s.shift || 'Full Day'] ?? SHIFT_COLORS['Full Day']!
                     return (
                       <div key={s._id} className="mb-xs">
                         <div
@@ -465,8 +465,8 @@ export default function Schedules() {
             emptyDescription={t('schedules.createFirst') || 'Create your first schedule'}
             keyExtractor={(item: ScheduleItem) => item._id}
             renderItem={(item: ScheduleItem) => {
-              const shiftC = SHIFT_COLORS[item.shift || 'Full Day'] || SHIFT_COLORS['Full Day']
-              const statusC = STATUS_COLORS[item.status || 'Scheduled'] || STATUS_COLORS.Scheduled
+              const shiftC = SHIFT_COLORS[item.shift || 'Full Day'] ?? SHIFT_COLORS['Full Day']!
+              const statusC = STATUS_COLORS[item.status || 'Scheduled'] ?? STATUS_COLORS.Scheduled!
               return (
                 <div className="listCard">
                   <div className="flex flex-between flex-gap-sm">
@@ -513,7 +513,7 @@ export default function Schedules() {
                         expectedStatus="Scheduled"
                         nextStatus="Active"
                         label={t('schedules.startButton')}
-                        color={STATUS_COLORS.Active}
+                        color={STATUS_COLORS.Active!}
                         scheduleId={item._id}
                         onStatusChange={handleStatusChange}
                       />
@@ -522,7 +522,7 @@ export default function Schedules() {
                         expectedStatus="Active"
                         nextStatus="Completed"
                         label={t('schedules.completeButton')}
-                        color={STATUS_COLORS.Completed}
+                        color={STATUS_COLORS.Completed!}
                         scheduleId={item._id}
                         onStatusChange={handleStatusChange}
                       />

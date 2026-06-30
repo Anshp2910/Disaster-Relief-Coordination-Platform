@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import useReducedMotion from '../../hooks/useReducedMotion'
@@ -14,11 +14,13 @@ interface ModalProps {
 export default function Modal({ open, onClose, title, children, maxWidth = 500 }: ModalProps) {
   const reduced = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
+  const [announce, setAnnounce] = useState('')
 
   useEffect(() => {
     if (!open) return
     const prev = document.activeElement as HTMLElement
     ref.current?.focus()
+    setAnnounce(title || 'Dialog opened')
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
       if (e.key === 'Tab' && ref.current) {
@@ -26,13 +28,19 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
         if (focusable.length === 0) return
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last!.focus() }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first!.focus() }
       }
     }
     document.addEventListener('keydown', handleKey)
-    return () => { document.removeEventListener('keydown', handleKey); prev?.focus() }
-  }, [open, onClose])
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', handleKey)
+      document.body.style.overflow = ''
+      prev?.focus()
+      setAnnounce('')
+    }
+  }, [open, onClose, title])
 
   return (
     <AnimatePresence>
@@ -67,6 +75,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
             )}
             {children}
           </motion.div>
+          <div aria-live="polite" aria-atomic="true" className="sr-only">{announce}</div>
         </motion.div>
       )}
     </AnimatePresence>

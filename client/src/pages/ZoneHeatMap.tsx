@@ -2,11 +2,11 @@ import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
-import { MapPin, Thermometer, Plus, Edit, Trash2, Users, Activity, AlertTriangle, Droplets, Wind } from 'lucide-react'
+import { Thermometer, Plus } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
+import { PageHeader, ErrorState, FilterBar, PageTransition, RippleBtn } from '../components/ui'
 import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
@@ -15,75 +15,19 @@ import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
-
-interface Zone {
-  _id: string
-  name?: string
-  description?: string
-  severity?: string
-  status?: string
-  disasterType?: string
-  centerLat?: number
-  centerLng?: number
-  radiusKm?: number
-  affectedPopulation?: number
-  openRequests?: number
-  totalResources?: number
-  coverageStatus?: string
-  notes?: string
-  stats?: {
-    openRequests?: number
-  }
-}
-
-interface WeatherData {
-  temperature?: number
-  conditions?: string
-  feelsLike?: number
-  humidity?: number
-  windSpeed?: number
-  windGusts?: number
-  precipitation?: number
-  dailyPrecipitation?: number
-}
-
-interface ZoneForm {
-  name: string
-  description: string
-  centerLat: string
-  centerLng: string
-  radiusKm: string
-  severity: string
-  status: string
-  disasterType: string
-  affectedPopulation: string
-  notes: string
-}
-
-const SEVERITY_COLORS: Record<string, { fill: string; stroke: string; weight: number }> = {
-  Critical: { fill: 'var(--severity-critical)', stroke: 'var(--severity-critical-stroke)', weight: 0.6 },
-  High: { fill: 'var(--severity-high)', stroke: 'var(--severity-high-stroke)', weight: 0.5 },
-  Medium: { fill: 'var(--severity-medium)', stroke: 'var(--severity-medium-stroke)', weight: 0.4 },
-  Low: { fill: 'var(--severity-low)', stroke: 'var(--severity-low-stroke)', weight: 0.3 },
-}
-
-const DISASTER_ICONS: Record<string, string> = {
-  Flood: '\u{1F327}', Earthquake: '\u{1F30A}', Cyclone: '\u{1F300}', Drought: '\u2600', Fire: '\u{1F525}', Landslide: '\u26F0', Other: '\u{1F4CC}',
-}
-
-const COVERAGE_COLORS: Record<string, string> = {
-  Covered: 'var(--coverage-covered)',
-  Partial: 'var(--coverage-partial)',
-  Gap: 'var(--coverage-gap)',
-}
-
-
-const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
-const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
-const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
-
-const containerVariants = createStagger(0.05)
-const itemVariants = createListItem(10, 0.3)
+import { ZoneDetailSidebar, WeatherCard, ZoneFormModal, MapLegend } from '../components/zones'
+import {
+  type Zone,
+  type WeatherData,
+  type ZoneForm,
+  SEVERITY_COLORS,
+  DISASTER_ICONS,
+  COVERAGE_COLORS,
+  SEVERITY_OPTIONS,
+  DISASTER_OPTIONS,
+  STATUS_OPTIONS,
+  DEFAULT_FORM,
+} from '../components/zones'
 
 function buildPopup(zone: Zone, color: { fill: string }, t: (key: string) => string) {
   const coverageColor = COVERAGE_COLORS[zone.coverageStatus || ''] || 'var(--text-muted)'
@@ -116,10 +60,8 @@ function buildPopup(zone: Zone, color: { fill: string }, t: (key: string) => str
   `
 }
 
-const DEFAULT_FORM: ZoneForm = {
-  name: '', description: '', centerLat: '20.5937', centerLng: '78.9629', radiusKm: '10',
-  severity: 'Medium', status: 'Active', disasterType: 'Other', affectedPopulation: '', notes: '',
-}
+const containerVariants = createStagger(0.05)
+const itemVariants = createListItem(10, 0.3)
 
 export default function ZoneHeatMap() {
   const { t } = useTranslation()
@@ -208,17 +150,17 @@ export default function ZoneHeatMap() {
     circlesRef.current = []
 
     zones.forEach((zone) => {
-      const color = SEVERITY_COLORS[zone.severity || 'Medium'] || SEVERITY_COLORS.Medium
+      const color = SEVERITY_COLORS[zone.severity || 'Medium'] || SEVERITY_COLORS.Medium!
       if (!zone.centerLat || !zone.centerLng) return
       const circle = L.circle([zone.centerLat, zone.centerLng], {
         radius: (zone.radiusKm || 0) * 1000,
-        fillColor: color.fill,
-        fillOpacity: color.weight,
-        color: color.stroke,
+        fillColor: color!.fill,
+        fillOpacity: color!.weight,
+        color: color!.stroke,
         weight: 2,
       }).addTo(map)
 
-      circle.bindPopup(buildPopup(zone, color, t))
+      circle.bindPopup(buildPopup(zone, color!, t))
       circle.on('click', () => setSelectedZone(zone))
       circlesRef.current.push(circle)
     })
@@ -248,7 +190,7 @@ export default function ZoneHeatMap() {
       map.off('popupopen', onPopupOpen)
       map.off('popupclose', onPopupClose)
     }
-  }, [zones])
+  }, [zones, t])
 
   function openCreate() {
     setEditZone(null)
@@ -317,6 +259,7 @@ export default function ZoneHeatMap() {
   const totalAffected = useMemo(() => zones.reduce((s, z) => s + (z.affectedPopulation || 0), 0), [zones])
 
   const updateForm = (field: keyof ZoneForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
+  const updateSelect = (field: keyof ZoneForm) => (v: string) => setForm((prev) => ({ ...prev, [field]: v }))
 
   return (
     <PageTransition>
@@ -391,280 +334,39 @@ export default function ZoneHeatMap() {
               <div ref={mapRef} className="map-container-full h-65vh w-full" />
             </div>
 
-            <div className="flex flex-gap-lg mt-sm flex-wrap">
-              {Object.entries(SEVERITY_COLORS).map(([sev, c]) => (
-                <div key={sev} className="gap-row-xs text-sm flex items-center gap-xs">
-                  <div className="w-3 h-3 rounded-sm" style={{ background: c.fill, border: `2px solid ${c.stroke}` }} />
-                  <span>{t('priorities.' + sev)}</span>
-                </div>
-              ))}
-              <span className="text-sm text-muted">&middot;</span>
-                {Object.entries(COVERAGE_COLORS).map(([cov, c]) => (
-                <div key={cov} className="gap-row-xs text-sm flex items-center gap-xs">
-                  <div className="w-3 h-3 rounded-sm" style={{ background: c }} />
-                  <span>{t('zones.' + cov.toLowerCase())}</span>
-                </div>
-              ))}
-            </div>
+            <MapLegend />
           </div>
 
           {selectedZone && (
-            <div className="card flex-shrink-0 w-320">
-              <div className="flex flex-between mb-sm">
-                <div>
-                  <h3 className="m-0 text-lg flex items-center gap-xs">
-                    <MapPin size={16} />
-                    {selectedZone.name}
-                  </h3>
-                  <div className="text-sm mt-xs text-muted">
-                    {selectedZone.disasterType} &middot; {selectedZone.status}
-                  </div>
-                </div>
-                <button onClick={() => setSelectedZone(null)} className="bg-none border-none cursor-pointer text-xl p-0" aria-label={t('common.close')}>&times;</button>
-              </div>
-
-              <div className="flex flex-gap-xs mb-sm flex-wrap">
-                <span className="severity-badge" data-severity={selectedZone.severity}>
-                  {selectedZone.severity}
-                </span>
-                <span className="coverage-badge" data-coverage={selectedZone.coverageStatus}>
-                  {selectedZone.coverageStatus} coverage
-                </span>
-              </div>
-
-              <div className="text-base">
-                <div className="flex items-center gap-xs">
-                  <MapPin size={14} />
-                  <span>{t('zones.radiusLabel')} <strong>{selectedZone.radiusKm} {t('zones.km')}</strong></span>
-                </div>
-                {(selectedZone.affectedPopulation ?? 0) > 0 && (
-                  <div className="flex items-center gap-xs">
-                    <Users size={14} />
-                    <span>{t('zones.sidepanelAffected')}: <strong>{selectedZone.affectedPopulation?.toLocaleString()}</strong></span>
-                  </div>
-                )}
-                <div className="flex items-center gap-xs">
-                  <Activity size={14} />
-                  <span>{t('zones.sidepanelOpenRequests')}: <strong className="text-red">{selectedZone.openRequests}</strong></span>
-                </div>
-                <div className="flex items-center gap-xs">
-                  <MapPin size={14} />
-                  <span>{t('zones.totalResources')}: <strong>{selectedZone.totalResources}</strong> {t('zones.units')}</span>
-                </div>
-              </div>
-
-              {selectedZone.stats && (selectedZone.stats.openRequests ?? 0) > 0 && (
-                <div className="mt-md rounded-sm text-sm p-sm bg-warning-soft flex items-center gap-xs">
-                  <AlertTriangle size={14} />
-                  <span><strong className="text-red">{t('zones.coverageGap')}</strong> {selectedZone.stats.openRequests} {t('zones.requestsWithNoResources')}</span>
-                </div>
-              )}
-
-              {currentUser?.role === 'admin' && (
-                <div className="flex flex-gap-sm mt-md">
-                  <button onClick={() => openEdit(selectedZone)} className="btn-ghost btn-sm" aria-label={t('common.edit')}>
-                    <Edit size={14} />
-                    {t('common.edit')}
-                  </button>
-                  <button onClick={() => handleDelete(selectedZone._id)} className="btn-danger text-sm p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
-                    <Trash2 size={14} />
-                    {t('common.delete')}
-                  </button>
-                </div>
-              )}
-            </div>
+            <ZoneDetailSidebar
+              zone={selectedZone}
+              onClose={() => setSelectedZone(null)}
+              onEdit={openEdit}
+              onDelete={handleDelete}
+            />
           )}
 
           {weather && (
-            <div className="card flex-shrink-0 w-280">
-              <div className="flex flex-between mb-sm">
-                <h4 className="m-0 text-sm text-accent-blue flex items-center gap-xs">
-                  <Thermometer size={14} />
-                  {t('zones.weather')}
-                </h4>
-                <button onClick={() => setWeather(null)} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}>&times;</button>
-              </div>
-              <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
-              <div className="text-sm text-muted mb-sm flex items-center gap-xs">
-                <Activity size={14} />
-                {weather.conditions} {weather.feelsLike != null ? `(${t('zones.feelsLike')} ${weather.feelsLike}°C)` : ''}
-              </div>
-              <div className="text-sm grid-2 gap-8">
-                {weather.humidity != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.humidity')}</span><span>{weather.humidity}%</span></>}
-                {weather.windSpeed != null && <><span className="text-muted flex items-center gap-xs"><Wind size={14} /> {t('zones.wind')}</span><span>{weather.windSpeed} {t('zones.kmh')}{weather.windGusts ? ` (${t('zones.gust')} ${weather.windGusts})` : ''}</span></>}
-                {weather.precipitation != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.precipitation')}</span><span>{weather.precipitation} mm</span></>}
-                {weather.dailyPrecipitation != null && <><span className="text-muted flex items-center gap-xs"><Droplets size={14} /> {t('zones.dailyTotal')}</span><span>{weather.dailyPrecipitation} mm</span></>}
-              </div>
-              <button onClick={fetchWeather} className="text-xs mt-sm p-xs" disabled={weatherLoading}>
-                {weatherLoading ? t('common.loading') : t('zones.refreshWeather') || 'Refresh'}
-              </button>
-            </div>
+            <WeatherCard
+              weather={weather}
+              loading={weatherLoading}
+              onRefresh={fetchWeather}
+              onClose={() => setWeather(null)}
+            />
           )}
         </motion.div>
       </motion.div>
 
-      <Modal
+      <ZoneFormModal
         open={showForm}
+        editZone={editZone}
+        form={form}
+        saving={saving}
+        onFormChange={updateForm}
+        onSelectChange={updateSelect}
+        onSubmit={handleSubmit}
         onClose={() => setShowForm(false)}
-        title={editZone ? t('zones.editZoneTitle') : t('zones.addZoneTitle')}
-      >
-        <form onSubmit={handleSubmit}>
-          <div className="ff-group">
-            <div className={`ff-wrap ${form.name ? 'ff-focused' : ''}`}>
-              <input
-                id="zone-name"
-                type="text"
-                value={form.name}
-                onChange={updateForm('name')}
-                required
-                className={`ff-input ${form.name ? 'ff-input-filled' : ''}`}
-                placeholder={t('zones.zoneNamePlaceholder')}
-              />
-              <label htmlFor="zone-name" className={`ff-label ${form.name ? 'ff-label-float' : ''}`}>
-                {t('zones.zoneNamePlaceholder')}
-              </label>
-            </div>
-          </div>
-
-          <div className="flex flex-gap-sm">
-            <div className="ff-group flex-1">
-              <ModernSelect
-                label={t('zones.disasterType') || 'Disaster type'}
-                options={Object.keys(DISASTER_ICONS).map((d) => ({ label: d, value: d }))}
-                value={form.disasterType}
-                onChange={(v) => setForm((prev) => ({ ...prev, disasterType: v }))}
-              />
-            </div>
-            <div className="ff-group flex-1">
-              <ModernSelect
-                label={t('zones.severity') || 'Severity'}
-                options={Object.keys(SEVERITY_COLORS).map((s) => ({ label: s, value: s }))}
-                value={form.severity}
-                onChange={(v) => setForm((prev) => ({ ...prev, severity: v }))}
-              />
-            </div>
-            <div className="ff-group flex-1">
-              <ModernSelect
-                label={t('zones.status') || 'Status'}
-                options={['Active', 'Monitoring', 'Resolved', 'Closed'].map((s) => ({ label: s, value: s }))}
-                value={form.status}
-                onChange={(v) => setForm((prev) => ({ ...prev, status: v }))}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-gap-sm">
-            <div className="ff-group flex-1">
-              <div className={`ff-wrap ${form.centerLat ? 'ff-focused' : ''}`}>
-                <input
-                  id="zone-centerlat"
-                  type="number"
-                  step="any"
-                  value={form.centerLat}
-                  onChange={updateForm('centerLat')}
-                  required
-                  className={`ff-input ${form.centerLat ? 'ff-input-filled' : ''}`}
-                  placeholder={t('zones.centerLat')}
-                />
-                <label htmlFor="zone-centerlat" className={`ff-label ${form.centerLat ? 'ff-label-float' : ''}`}>
-                  {t('zones.centerLat')}
-                </label>
-              </div>
-            </div>
-            <div className="ff-group flex-1">
-              <div className={`ff-wrap ${form.centerLng ? 'ff-focused' : ''}`}>
-                <input
-                  id="zone-centerlng"
-                  type="number"
-                  step="any"
-                  value={form.centerLng}
-                  onChange={updateForm('centerLng')}
-                  required
-                  className={`ff-input ${form.centerLng ? 'ff-input-filled' : ''}`}
-                  placeholder={t('zones.centerLng')}
-                />
-                <label htmlFor="zone-centerlng" className={`ff-label ${form.centerLng ? 'ff-label-float' : ''}`}>
-                  {t('zones.centerLng')}
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-gap-sm">
-            <div className="ff-group flex-1">
-              <div className={`ff-wrap ${form.radiusKm ? 'ff-focused' : ''}`}>
-                <input
-                  id="zone-radius"
-                  type="number"
-                  value={form.radiusKm}
-                  onChange={updateForm('radiusKm')}
-                  required
-                  min="1"
-                  className={`ff-input ${form.radiusKm ? 'ff-input-filled' : ''}`}
-                  placeholder={t('zones.radiusKm')}
-                />
-                <label htmlFor="zone-radius" className={`ff-label ${form.radiusKm ? 'ff-label-float' : ''}`}>
-                  {t('zones.radiusKm')}
-                </label>
-              </div>
-            </div>
-            <div className="ff-group flex-1">
-              <div className={`ff-wrap ${form.affectedPopulation ? 'ff-focused' : ''}`}>
-                <input
-                  id="zone-population"
-                  type="number"
-                  value={form.affectedPopulation}
-                  onChange={updateForm('affectedPopulation')}
-                  className={`ff-input ${form.affectedPopulation ? 'ff-input-filled' : ''}`}
-                  placeholder={t('zones.affectedPopulationPlaceholder')}
-                />
-                <label htmlFor="zone-population" className={`ff-label ${form.affectedPopulation ? 'ff-label-float' : ''}`}>
-                  {t('zones.affectedPopulationPlaceholder')}
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="ff-group">
-            <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
-              <textarea
-                id="zone-description"
-                value={form.description}
-                onChange={updateForm('description')}
-                rows={2}
-                className="ff-input ff-textarea"
-                placeholder={t('zones.description')}
-              />
-              <label htmlFor="zone-description" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
-                {t('zones.description')}
-              </label>
-            </div>
-          </div>
-
-          <div className="ff-group">
-            <div className={`ff-wrap ${form.notes ? 'ff-focused' : ''}`}>
-              <textarea
-                id="zone-notes"
-                value={form.notes}
-                onChange={updateForm('notes')}
-                rows={2}
-                className="ff-input ff-textarea"
-                placeholder={t('zones.notes')}
-              />
-              <label htmlFor="zone-notes" className={`ff-label ff-label-with-icon ${form.notes ? 'ff-label-float' : ''}`}>
-                {t('zones.notes')}
-              </label>
-            </div>
-          </div>
-
-          <div className="flex flex-gap-sm mt">
-            <RippleBtn type="submit" className="" disabled={saving} aria-label={t('common.submit')}>
-              {saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}
-            </RippleBtn>
-            <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
-          </div>
-        </form>
-      </Modal>
+      />
       {ConfirmDialog}
     </motion.div>
     </PageTransition>

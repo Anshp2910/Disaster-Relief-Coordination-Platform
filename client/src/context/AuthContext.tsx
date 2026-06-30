@@ -37,7 +37,7 @@ function parseTokenExpiry(): number | null {
   try {
     const token = safeGetItem('token')
     if (!token) return null
-    const payload = JSON.parse(atob(token.split('.')[1]))
+    const payload = JSON.parse(atob(token.split('.')[1]!))
     return payload.exp ? payload.exp * 1000 : null
   } catch {
     return null

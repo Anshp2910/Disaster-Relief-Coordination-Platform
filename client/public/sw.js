@@ -1,62 +1,179 @@
-const CACHE_VERSION = 'v11'
+const CACHE_VERSION = 'v12'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
+const OFFLINE_QUEUE = 'disaster-relief-offline-queue'
 const MAX_DYNAMIC_CACHE = 50
 const MAX_API_CACHE = 30
 const FETCH_TIMEOUT = 10000
 
-self.addEventListener('install', () => {})
+/* ── App shell assets to precache on install ───────────────────── */
+const APP_SHELL = [
+  '/',
+  '/index.html',
+  '/icon-192.svg',
+  '/icon-512.svg',
+  '/manifest.json',
+  '/theme-init.js',
+]
 
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'CLEAR_CACHE') {
-    caches.keys().then((keys) => {
-      return Promise.all(keys.map((k) => caches.delete(k)))
-    }).then(() => {
-      clients.matchAll({ type: 'window' }).then((windowClients) => {
-        windowClients.forEach((client) => client.postMessage({ type: 'CACHE_CLEARED' }))
-      })
-    })
-  }
-})
-
-self.addEventListener('activate', (event) => {
+/* ── Install: precache app shell ────────────────────────────────── */
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((k) => k !== STATIC_CACHE && k !== DYNAMIC_CACHE && k !== API_CACHE)
-          .map((k) => caches.delete(k))
-      )
-    )
+    caches.open(STATIC_CACHE)
+      .then((cache) => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
   )
 })
 
+/* ── Message handler ────────────────────────────────────────────── */
+self.addEventListener('message', (event) => {
+  const { data } = event
+  if (!data) return
+
+  switch (data.type) {
+    case 'CLEAR_CACHE':
+      caches.keys().then((keys) =>
+        Promise.all(keys.map((k) => caches.delete(k)))
+      ).then(() => {
+        clients.matchAll({ type: 'window' }).then((windowClients) => {
+          windowClients.forEach((client) => client.postMessage({ type: 'CACHE_CLEARED' }))
+        })
+      })
+      break
+
+    case 'SKIP_WAITING':
+      self.skipWaiting()
+      break
+
+    case 'QUEUE_OFFLINE_REQUEST': {
+      // Store failed POST/PUT/DELETE for background replay
+      const payload = data.payload || {}
+      event.waitUntil(
+        caches.open(OFFLINE_QUEUE).then((cache) => {
+          const meta = {
+            url: payload.url || '',
+            method: payload.method || 'POST',
+            body: payload.body || null,
+            headers: payload.headers || { 'Content-Type': 'application/json' },
+          }
+          const key = `offline-${Date.now()}-${Math.random()}`
+          return cache.put(
+            new Request(key),
+            new Response(JSON.stringify(meta), { status: 503 })
+          )
+        })
+      )
+      break
+    }
+
+    case 'REPLAY_OFFLINE_QUEUE':
+      event.waitUntil(replayOfflineQueue())
+      break
+  }
+})
+
+/* ── Activate: clean old caches, notify clients ─────────────────── */
+self.addEventListener('activate', (event) => {
+  const validCaches = new Set([STATIC_CACHE, DYNAMIC_CACHE, API_CACHE, OFFLINE_QUEUE])
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.filter((k) => !validCaches.has(k)).map((k) => caches.delete(k))
+      )
+    ).then(() => self.clients.claim())
+     .then(() => self.clients.matchAll({ type: 'window' }))
+     .then((windowClients) => {
+       windowClients.forEach((client) => client.postMessage({ type: 'SW_ACTIVATED', version: CACHE_VERSION }))
+     })
+  )
+})
+
+/* ── Fetch: routing strategies ──────────────────────────────────── */
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
+  // Skip cross-origin and non-GET
   if (url.origin !== self.location.origin) return
 
-  if (request.mode === 'navigate') return
-
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(networkFirstStrategy(request, API_CACHE, MAX_API_CACHE))
+  // Navigation requests (SPA) — network-first with offline fallback to cached index.html
+  if (request.mode === 'navigate') {
+    event.respondWith(navigationStrategy(request))
     return
   }
 
+  // API requests — network-first with stale-while-revalidate for GET, queue for POST/PUT/DELETE
+  if (url.pathname.startsWith('/api/')) {
+    if (request.method === 'GET') {
+      event.respondWith(networkFirstStrategy(request, API_CACHE, MAX_API_CACHE))
+    } else {
+      event.respondWith(mutatingRequestStrategy(request))
+    }
+    return
+  }
+
+  // Uploads — cache-first
   if (url.pathname.startsWith('/uploads/')) {
     event.respondWith(cacheFirstStrategy(request, DYNAMIC_CACHE))
     return
   }
 
-  if (url.pathname.match(/\.(js|css|woff2?|ttf|eot|svg|png|jpg|gif|webp)$/)) {
+  // Static assets — cache-first with network fallback
+  if (url.pathname.match(/\.(js|css|woff2?|ttf|eot|svg|png|jpg|gif|webp|ico)$/)) {
     event.respondWith(cacheFirstStrategy(request, STATIC_CACHE))
     return
   }
 
+  // Everything else — network-first
   event.respondWith(networkFirstStrategy(request, DYNAMIC_CACHE))
 })
+
+/* ── Strategies ─────────────────────────────────────────────────── */
+
+/**
+ * SPA navigation: try network, fall back to cached index.html.
+ * This ensures all hash routes work offline after first visit.
+ */
+function navigationStrategy(request) {
+  return fetchWithTimeout(request, FETCH_TIMEOUT)
+    .then((response) => {
+      if (response && response.status === 200) {
+        const clone = response.clone()
+        caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone))
+      }
+      return response
+    })
+    .catch(() => caches.match('/index.html'))
+}
+
+/**
+ * POST/PUT/DELETE: try network, queue for background replay on failure.
+ */
+function mutatingRequestStrategy(request) {
+  return fetchWithTimeout(request, FETCH_TIMEOUT)
+    .then((response) => {
+      // On success, notify clients to replay any queued requests
+      if (response && response.ok) {
+        self.clients.matchAll({ type: 'window' }).then((clients) => {
+          clients.forEach((c) => c.postMessage({ type: 'REPLAY_OFFLINE_QUEUE' }))
+        })
+      }
+      return response
+    })
+    .catch(() => {
+      // Queue for background sync
+      return caches.open(OFFLINE_QUEUE).then((cache) => {
+        const clone = request.clone()
+        return cache.put(clone, new Response('queued', { status: 503 }))
+      }).then(() => new Response(
+        JSON.stringify({ error: 'offline', message: 'Request queued for sync' }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
+      ))
+    })
+}
+
+/* ── Shared utilities ───────────────────────────────────────────── */
 
 function fetchWithTimeout(request, timeout) {
   const controller = new AbortController()
@@ -104,6 +221,34 @@ function cacheFirstStrategy(request, cacheName) {
   })
 }
 
+/* ── Background replay of queued offline requests ───────────────── */
+async function replayOfflineQueue() {
+  const cache = await caches.open(OFFLINE_QUEUE)
+  const keys = await cache.keys()
+  for (const req of keys) {
+    try {
+      const cachedRes = await cache.match(req)
+      if (!cachedRes) continue
+
+      const meta = await cachedRes.json()
+      if (!meta.url) { await cache.delete(req); continue }
+
+      const replayReq = new Request(meta.url, {
+        method: meta.method || 'POST',
+        headers: meta.headers || { 'Content-Type': 'application/json' },
+        body: meta.body || undefined,
+      })
+      const response = await fetch(replayReq)
+      if (response.ok) {
+        await cache.delete(req)
+      }
+    } catch {
+      // Will retry on next sync
+    }
+  }
+}
+
+/* ── Push notifications ─────────────────────────────────────────── */
 self.addEventListener('push', (event) => {
   const data = event.data?.json() || { title: 'Disaster Relief', body: 'New update available' }
   event.waitUntil(

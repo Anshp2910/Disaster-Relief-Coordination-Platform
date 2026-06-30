@@ -52,7 +52,7 @@ export default function ImageUploader({
     e.preventDefault()
     setDragOver(false)
     const file = e.dataTransfer.files[0]
-    handleFile(file)
+    handleFile(file ?? null)
   }
 
   function handleDragOver(e: DragEvent) { e.preventDefault(); setDragOver(true) }

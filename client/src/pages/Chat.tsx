@@ -9,6 +9,13 @@ import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { escapeHtml } from '../utils/escapeHtml'
+
+const ALLOWED_MIME_TYPES = ['image/', 'application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+
+function isAllowedMime(file: File): boolean {
+  return ALLOWED_MIME_TYPES.some(t => file.type.startsWith(t) || file.type === t)
+}
 
 interface Message {
   _id: string
@@ -199,7 +206,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       return
     }
 
-    const msg = text.trim()
+    const msg = escapeHtml(text.trim())
     setText('')
     setSending(true)
     try {
@@ -241,7 +248,14 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (file) setSelectedFile(file)
+    if (file) {
+      if (!isAllowedMime(file)) {
+        toast.error(t('chat.fileTypeNotAllowed'))
+        if (e.target) e.target.value = ''
+        return
+      }
+      setSelectedFile(file)
+    }
     if (e.target) e.target.value = ''
   }
 
@@ -292,7 +306,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
               >
                 <div className="flex flex-center">
                   <div className="text-xs text-muted bg-accent-soft rounded-xl p-xs">
-                    {m.text}
+                    {escapeHtml(m.text)}
                   </div>
                 </div>
               </motion.div>
@@ -320,8 +334,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                   padding: 'var(--space-2xs) var(--space-xsml)',
                   borderRadius: isMe ? 'var(--radius-md) var(--radius-md) var(--radius-2xs) var(--radius-md)' : 'var(--radius-md) var(--radius-md) var(--radius-md) var(--radius-2xs)',
                 }}>
-                  {m.text}
-                </div>
+                  {escapeHtml(m.text)}
                 <div className={`text-xs text-muted mt-xs ${isMe ? 'text-right' : ''}`}>
                   {formatTime(m.createdAt)}
                 </div>
@@ -332,7 +345,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
         {hasTyping && (
           <div className="flex items-center text-xs text-muted typing-indicator">
-            <span>{typingNames.length === 1 ? t('chat.typingSingle', { name: typingNames[0].name }) : t('chat.typingMultiple', { names: new Intl.ListFormat(i18n.language, { style: 'long', type: 'conjunction' }).format(typingNames.map((n) => n.name)) })}</span>
+            <span>{typingNames.length === 1 ? t('chat.typingSingle', { name: typingNames[0]!.name }) : t('chat.typingMultiple', { names: new Intl.ListFormat(i18n.language, { style: 'long', type: 'conjunction' }).format(typingNames.map((n) => n.name)) })}</span>
             <span className="typing-dots"><span>.</span><span>.</span><span>.</span></span>
           </div>
         )}

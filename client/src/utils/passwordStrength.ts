@@ -13,5 +13,5 @@ export function evaluatePasswordStrength(password: string): PasswordStrength | n
   if (/[!@#$%^&*]/.test(password)) score++
   const classes: PasswordStrength['className'][] = ['weak', 'weak', 'weak', 'medium', 'strong', 'very-strong']
   const labelKeys = ['profile.passwordWeak', 'profile.passwordWeak', 'profile.passwordWeak', 'profile.passwordMedium', 'profile.passwordStrong', 'profile.passwordVeryStrong']
-  return { className: classes[score], labelKey: labelKeys[score] }
+  return { className: classes[score]!, labelKey: labelKeys[score]! }
 }
