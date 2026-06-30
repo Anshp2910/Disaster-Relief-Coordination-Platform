@@ -335,6 +335,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                   borderRadius: isMe ? 'var(--radius-md) var(--radius-md) var(--radius-2xs) var(--radius-md)' : 'var(--radius-md) var(--radius-md) var(--radius-md) var(--radius-2xs)',
                 }}>
                   {escapeHtml(m.text)}
+                </div>
                 <div className={`text-xs text-muted mt-xs ${isMe ? 'text-right' : ''}`}>
                   {formatTime(m.createdAt)}
                 </div>
