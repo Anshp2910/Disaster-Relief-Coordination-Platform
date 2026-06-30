@@ -7,6 +7,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://disaster-relief-coordination-platform-l6mk.onrender.com/api/:path*"
+    },
+    {
+      "source": "/socket.io/:path*",
+      "destination": "https://disaster-relief-coordination-platform-l6mk.onrender.com/socket.io/:path*"
     }
   ],
   "headers": [

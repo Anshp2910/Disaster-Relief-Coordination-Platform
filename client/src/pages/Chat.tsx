@@ -42,7 +42,6 @@ interface ChatProps {
 export default function Chat({ requestId, onClose }: ChatProps) {
   const { t, i18n } = useTranslation()
   const { user: currentUser } = useAuth()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const { socket } = useSocket()
   const bottomRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -92,6 +91,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     } finally {
       setLoading(false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestId])
 
   useEffect(() => {
@@ -101,7 +101,6 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   useEffect(() => {
     if (!socket) return
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     function onConnect() {
       socket?.emit('chat:join', { requestId })
     }
@@ -162,6 +161,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     }
   }, [])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleTyping = useCallback(() => {
     if (!socket) return
     const now = Date.now()

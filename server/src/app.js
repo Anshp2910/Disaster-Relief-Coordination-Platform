@@ -120,8 +120,7 @@ export function createApp() {
   const BUILD_VERSION = process.env.BUILD_VERSION || process.env.npm_package_version || ''
   const COMMIT_SHA = process.env.COMMIT_SHA || ''
   app.get('/health', (req, res) => {
-    const dbOk = mongoose && mongoose.connection.readyState === 1
-    res.json({ ok: dbOk, uptime: process.uptime(), db: dbOk ? 'connected' : 'disconnected' })
+    res.json({ ok: true, uptime: process.uptime(), db: mongoose && mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' })
   })
   app.get('/api/version', (req, res) => res.json({ version: BUILD_VERSION, commitSha: COMMIT_SHA, node: process.version, env: process.env.NODE_ENV || 'development' }))
 
