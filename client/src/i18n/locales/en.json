@@ -131,7 +131,9 @@
     "hidePassword": "Hide password",
     "rateLimited": "Too many requests. Please wait a moment and try again.",
     "directResetLink": "🔗 Direct reset link (email not sent):",
-    "previewUrl": "📬 View email:"
+    "previewUrl": "📬 View email:",
+    "signingIn": "Signing you in...",
+    "redirecting": "Please wait while we redirect you."
   },
   "dashboard": {
     "filters": "Filters",
@@ -540,7 +542,15 @@
     "allocated": "allocated",
     "deallocatedConfirm": "Deallocate this resource?",
     "nothingToDeallocate": "Nothing to deallocate",
-    "resourceAllocated": "Resource allocated"
+    "resourceAllocated": "Resource allocated",
+    "bulkEdit": "Bulk Edit",
+    "noChanges": "No changes selected",
+    "updated": "Updated",
+    "editSelected": "Edit Selected",
+    "exportSelected": "Export Selected",
+    "apply": "Apply",
+    "select": "Select",
+    "deallocate": "Deallocate"
   },
   "zones": {
     "title": "Disaster Zone Heat Map",
@@ -923,6 +933,7 @@
     "searchCommands": "Search commands",
     "noResultsFor": "No results for \"{{query}}\"",
     "adminBadge": "Admin",
-    "sending": "Sending..."
+    "sending": "Sending...",
+    "back": "Back"
   }
 }

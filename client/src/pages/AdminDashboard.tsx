@@ -602,7 +602,6 @@ export default function AdminDashboard() {
     try {
       if (format === 'csv') {
         await clientApi.adminExportRequests('csv')
-        toast.success(t('admin.exportSuccess') || 'Export downloaded successfully')
       } else {
         const resp = await clientApi.adminExportRequests('json') as unknown as { items?: Record<string, unknown>[]; total?: number }
         const data = resp?.items || resp || []
@@ -613,8 +612,8 @@ export default function AdminDashboard() {
         a.download = 'requests-export.json'
         a.click()
         URL.revokeObjectURL(url)
-        toast.success(t('admin.exportSuccess') || 'Export downloaded successfully')
       }
+      toast.success(t('admin.exportSuccess') || 'Export downloaded successfully')
     } catch (e) {
       toast.error(getErrorMessage(e) || t('admin.exportFailed'))
     }

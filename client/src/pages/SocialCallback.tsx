@@ -16,7 +16,6 @@ export default function SocialCallback() {
     processed.current = true
 
     const token = searchParams.get('token')
-    const csrf = searchParams.get('csrf')
     const error = searchParams.get('error')
 
     if (error) {
@@ -24,14 +23,13 @@ export default function SocialCallback() {
       return
     }
 
-    if (!token || !csrf) {
+    if (!token) {
       navigate('/login?error=invalid-callback', { replace: true })
       return
     }
 
-    // Store the auth token and csrf token
+    // Store the auth token
     safeSetItem('token', token)
-    safeSetItem('csrfToken', csrf)
 
     // Fetch user info from /me endpoint, then store and redirect
     const API_BASE = import.meta.env.VITE_API_BASE_URL || ''

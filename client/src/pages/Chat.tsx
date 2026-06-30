@@ -263,7 +263,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   const hasTyping = typingNames.length > 0
 
   return (
-    <PageTransition>
+    <>
       <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
       <div className="flex flex-between flex-center p-sm border-bottom">
         <h3 className="m-0 text-sm text-accent-blue">{t('chat.title')}</h3>
@@ -409,8 +409,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <RippleBtn type="submit" className="text-xs p-sm flex items-center gap-xs" style={{ height: 44, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
           {sending ? t('common.sending') : <><Send size={14} /> {t('chat.send')}</>}
         </RippleBtn>
-      </form>
-    </div>
-    </PageTransition>
+      </form>      </div>
+    </>
   )
 }

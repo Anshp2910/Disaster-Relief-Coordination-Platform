@@ -92,9 +92,9 @@ export default function EditRequest() {
         <button
           onClick={() => navigate('/dashboard')}
           className="mb btn-ghost btn-sm flex items-center gap-xs"
-          aria-label="Go back to dashboard"
+          aria-label={t('admin.backToDashboard')}
         >
-          <ArrowLeft size={16} /> Back
+          <ArrowLeft size={16} /> {t('common.back') || 'Back'}
         </button>
         <RequestForm
         initialData={loadedRequest as Record<string, unknown> | undefined}

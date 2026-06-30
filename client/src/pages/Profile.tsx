@@ -95,8 +95,7 @@ export default function Profile() {
       updateUser(data.user)
       toast.success(t('profile.profileUpdated'))
     } catch (err) {
-      const e = err as Error
-      toast.error(e.message)
+      toast.error(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -116,8 +115,7 @@ export default function Profile() {
       setNewPassword('')
       setConfirmPassword('')
     } catch (err) {
-      const e = err as Error
-      toast.error(e.message)
+      toast.error(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

@@ -59,7 +59,7 @@ const fadeUp = createListItem(16, 0.3)
 export default function Dashboard() {
   const [items, setItems] = useState<Item[]>([])
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState('All')
   const [filterPriority, setFilterPriority] = useState('All')
   const [filterCategory, setFilterCategory] = useState('All')

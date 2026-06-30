@@ -305,7 +305,7 @@ export default function Resources() {
           <>
             <RippleBtn
               onClick={toggleSelectMode}
-              className={`text-sm p-xs ${selectMode ? '' : ''}`}
+              className="text-sm p-xs"
               aria-label={t('resources.selectMode') || 'Select Mode'}
               aria-pressed={selectMode}
             >
