@@ -281,7 +281,7 @@ export default function Schedules() {
         if (!item.startDate) return false
         const d = new Date(item.startDate)
         return d >= weekStart && d <= weekEnd
-      }, [items, weekStart, weekEnd])
+      })
   }, [items, weekStart, weekEnd])
 
   const schedulesByDay = useMemo(() => {
@@ -346,23 +346,23 @@ export default function Schedules() {
         ]}
       />
 
-      <div className="flex flex-gap-sm mt-sm flex-wrap gap-row-sm">
-        <div className="gap-row-xs text-sm">
-          <span className="text-muted">{t('schedules.from')}:</span>
+      <div className="schedule-date-filter">
+        <div className="date-field">
+          <span>{t('schedules.from')}:</span>
           <label htmlFor="sch-datefrom" className="sr-only">{t('schedules.from')}</label>
           <input id="sch-datefrom" type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} />
         </div>
-        <div className="gap-row-xs text-sm">
-          <span className="text-muted">{t('schedules.to')}:</span>
+        <div className="date-field">
+          <span>{t('schedules.to')}:</span>
           <label htmlFor="sch-dateto" className="sr-only">{t('schedules.to')}</label>
           <input id="sch-dateto" type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} />
         </div>
       </div>
 
-      <div className="flex flex-gap-sm mt-sm" role="group" aria-label={t('schedules.viewToggle') || 'View mode'}>
+      <div className="schedule-view-toggle" role="group" aria-label={t('schedules.viewToggle') || 'View mode'}>
         <button
           onClick={() => setViewMode('list')}
-          className={`filter-pill flex items-center gap-xs ${viewMode === 'list' ? 'active' : ''}`}
+          className={viewMode === 'list' ? 'active' : ''}
           aria-pressed={viewMode === 'list'}
           aria-label={t('schedules.listView') || 'List view'}
         >
@@ -371,7 +371,7 @@ export default function Schedules() {
         </button>
         <button
           onClick={() => setViewMode('week')}
-          className={`filter-pill flex items-center gap-xs ${viewMode === 'week' ? 'active' : ''}`}
+          className={viewMode === 'week' ? 'active' : ''}
           aria-pressed={viewMode === 'week'}
           aria-label={t('schedules.weekView') || 'Week view'}
         >
@@ -388,35 +388,35 @@ export default function Schedules() {
           initial="hidden"
           animate="visible"
         >
-          <div className="flex flex-between flex-gap-sm mt-md">
-            <button onClick={() => setWeekOffset((p) => p - 1)} className="text-sm flex items-center gap-xs" aria-label={t('common.previous')}>
+          <div className="week-nav">
+            <button onClick={() => setWeekOffset((p) => p - 1)} className="week-nav-btn" aria-label={t('common.previous')}>
               <ChevronLeft size={16} /> {t('common.previous')}
             </button>
-            <span className="text-sm text-bold flex items-center gap-xs">
+            <span className="week-nav-label">
               <Calendar size={14} />
               {weekStart.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
               {' — '}
               {weekEnd.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
-            <button onClick={() => setWeekOffset((p) => p + 1)} className="text-sm flex items-center gap-xs" aria-label={t('common.next')}>
+            <button onClick={() => setWeekOffset((p) => p + 1)} className="week-nav-btn" aria-label={t('common.next')}>
               {t('common.next')} <ChevronRight size={16} />
             </button>
           </div>
-          <div className="week-grid mt-sm" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 'var(--space-xs)' }}>
+          <div className="week-grid mt-sm">
              {weekDays.map((day) => {
               const key = day.toDateString()
               const daySchedules = schedulesByDay[key] || []
               return (
-                <motion.div key={key} variants={itemVariants} className="card p-xs" style={{ minHeight: 120 }}>
-                  <div className="text-xs text-bold" style={{ textAlign: 'center' }}>
-                    {day.toLocaleDateString(undefined, { weekday: 'short' })}
+                <motion.div key={key} variants={itemVariants} className="card p-xs">
+                  <div className="week-grid-day-header">
+                    {day.toLocaleDateString(i18n.language, { weekday: 'short' })}
                   </div>
-                  <div className="text-xs" style={{ textAlign: 'center', color: 'var(--gov-muted)' }}>
+                  <div className="week-grid-day-date">
                     {day.getDate()} {day.toLocaleDateString(i18n.language, { month: 'short' })}
                   </div>
                   {daySchedules.length > 0 && (
-                    <div className="text-xs" style={{ textAlign: 'center', margin: 'var(--space-3xs) 0' }}>
-                      {daySchedules.length} schedule{daySchedules.length > 1 ? 's' : ''}
+                    <div className="week-grid-day-count">
+                      {daySchedules.length}
                     </div>
                   )}
                   {daySchedules.map((s) => {
@@ -428,23 +428,18 @@ export default function Schedules() {
                           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedDaySchedule(selectedDaySchedule?._id === s._id ? null : s) } }}
                           role="button"
                           tabIndex={0}
-                          className="text-xs"
+                          className="week-grid-schedule-item"
                           style={{
                             background: shiftC.bg,
                             color: shiftC.text,
                             border: `1px solid ${shiftC.border}`,
-                            borderRadius: 'var(--radius-2xs)',
-                            padding: 'var(--space-4xs) var(--space-3xs)',
-                            cursor: 'pointer',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
                           }}
+                          title={(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}
                         >
                            {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}
                         </div>
                         {selectedDaySchedule?._id === s._id && (
-                          <div className="mt-xs text-xs p-xs bg-subtle rounded-sm border-gov">
+                          <div className="week-grid-detail-card">
                             <div><strong>{(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}</strong> — {s.shift}</div>
                             <div className="muted">{s.startDate ? formatDate(s.startDate, i18n.language) : ''}</div>
                             {s.zoneId && <div>{t('schedules.zone')} {(typeof s.zoneId === 'object' && s.zoneId) ? s.zoneId.name : t('common.unknown')}</div>}
