@@ -20,7 +20,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
     if (!open) return
     const prev = document.activeElement as HTMLElement
     ref.current?.focus()
-    setAnnounce(title || 'Dialog opened')
+    setAnnounce('Dialog opened')
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
       if (e.key === 'Tab' && ref.current) {
@@ -75,7 +75,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
             )}
             {children}
           </motion.div>
-          <div aria-live="polite" aria-atomic="true" className="sr-only">{announce}</div>
+          <div aria-live="polite" aria-atomic="true" className="sr-only">{announce === 'Dialog opened' ? announce : ''}</div>
         </motion.div>
       )}
     </AnimatePresence>

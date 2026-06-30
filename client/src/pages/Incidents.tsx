@@ -195,7 +195,7 @@ export default function Incidents() {
       marker.on('click', () => setSelectedIncident(inc))
       markersRef.current.push(marker)
     })
-  }, [incidents])
+  }, [incidents, t])
 
   function openCreate() {
     setEditIncident(null)

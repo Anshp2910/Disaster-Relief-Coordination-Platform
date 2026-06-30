@@ -3,18 +3,13 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 const routerFuture = { v7_startTransition: true, v7_relativeSplatPath: true }
-import { I18nextProvider } from 'react-i18next'
-import i18n from '../i18n'
 import { SkeletonLine, SkeletonCard, SkeletonList, SkeletonMap } from '../components/Skeleton'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { escapeHtml } from '../utils/escapeHtml'
 import { useDebounce } from '../hooks/useDebounce'
 import { formatDate } from '../utils/formatDate'
 
-// eslint-disable-next-line no-unused-vars
-function wrap(ui) {
-  return render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>)
-}
+
 
 describe('Skeleton components', () => {
   it('SkeletonLine renders', () => {

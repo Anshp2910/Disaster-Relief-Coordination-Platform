@@ -584,7 +584,7 @@ export default function AdminDashboard() {
     } catch (e) {
       toast.error(getErrorMessage(e) || t('admin.deleteUserFailed'))
     }
-  }, [toast, t])
+  }, [toast, t, delConfirm])
 
   const deleteRequest = useCallback(async (requestId: string) => {
     const ok = await delConfirm.confirm({ message: t('admin.deleteRequestConfirm'), danger: true })
@@ -596,7 +596,7 @@ export default function AdminDashboard() {
     } catch (e) {
       toast.error(getErrorMessage(e) || t('admin.deleteRequestFailed'))
     }
-  }, [toast, t])
+  }, [toast, t, delConfirm])
 
   async function handleExport(format: string) {
     try {

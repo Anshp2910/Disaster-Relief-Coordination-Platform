@@ -40,9 +40,7 @@ function UpdateBanner() {
           alignItems: 'center',
           justifyContent: 'center',
           gap: 12,
-          cursor: 'pointer',
         }}
-        onClick={applyUpdate}
       >
         <span>A new version is available</span>
         <button

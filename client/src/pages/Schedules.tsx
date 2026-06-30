@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { createStagger, createListItem } from '../utils/animations'
+import { createListItem } from '../utils/animations'
 import { Calendar, Plus, Edit, Trash2, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
 import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
 import DataList from '../components/ui/DataList'
@@ -82,7 +82,6 @@ function formatDate(d: string, locale: string) {
   })
 }
 
-const containerVariants = createStagger(0.05)
 const itemVariants = createListItem(12, 0.3)
 
 const StatusButton = memo(function StatusButton({ currentStatus, expectedStatus, nextStatus, label, color, scheduleId, onStatusChange }: StatusButtonProps) {
@@ -170,6 +169,7 @@ export default function Schedules() {
   }
 
   useEffect(() => { load() }, [load])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { loadDropdowns() }, [])
 
   useAutoRefresh(load, { interval: 20000 })

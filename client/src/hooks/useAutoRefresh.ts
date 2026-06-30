@@ -24,17 +24,17 @@ export function useAutoRefresh(refreshFn: () => void, { interval = 20000, enable
     }
   }
 
-  function startPoll() {
+  const startPoll = useCallback(() => {
     if (!enabled) return
     clearPoll()
     intervalRef.current = setInterval(refresh, interval)
-  }
+  }, [enabled, interval, refresh])
 
   useEffect(() => {
     if (!enabled) return
     startPoll()
     return clearPoll
-  }, [interval, enabled, refresh])
+  }, [interval, enabled, refresh, startPoll])
 
   useEffect(() => {
     if (!enabled) return
@@ -68,7 +68,7 @@ export function useAutoRefresh(refreshFn: () => void, { interval = 20000, enable
       window.removeEventListener('focus', onFocus)
       window.removeEventListener('blur', onBlur)
     }
-  }, [enabled, interval, refresh])
+  }, [enabled, interval, refresh, startPoll])
 
   return { refresh }
 }

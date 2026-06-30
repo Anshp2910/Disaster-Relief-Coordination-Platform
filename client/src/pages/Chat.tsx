@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Send, Paperclip, User, ChevronLeft } from 'lucide-react'
-import { RippleBtn, PageTransition } from '../components/ui'
+import { RippleBtn } from '../components/ui'
 import { useSocket } from '../hooks/useSocket'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
@@ -42,6 +42,7 @@ interface ChatProps {
 export default function Chat({ requestId, onClose }: ChatProps) {
   const { t, i18n } = useTranslation()
   const { user: currentUser } = useAuth()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const { socket } = useSocket()
   const bottomRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -100,6 +101,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   useEffect(() => {
     if (!socket) return
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     function onConnect() {
       socket?.emit('chat:join', { requestId })
     }
@@ -152,7 +154,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       socket.off('chat:message', onMessage)
       socket.off('chat:typing', onTyping)
     }
-  }, [socket, requestId, currentUser?.id])
+  }, [socket, requestId, currentUser?.id, t])
 
   useEffect(() => {
     return () => {

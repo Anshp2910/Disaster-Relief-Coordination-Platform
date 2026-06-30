@@ -1,5 +1,5 @@
 export function safeGetItem(key: string): string | null {
-  try { return localStorage.getItem(key) } catch { return null } /* eslint-disable-line no-empty */
+  try { return localStorage.getItem(key) } catch { return null }
 }
 
 export function safeSetItem(key: string, value: string): void {
@@ -14,6 +14,6 @@ export function parseUser(): unknown {
   try {
     return JSON.parse(safeGetItem('user') || 'null')
   } catch {
-    return null /* eslint-disable-line no-empty */
+    return null
   }
 }
