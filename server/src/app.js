@@ -28,7 +28,6 @@ import { getEnv, getJwtSecret } from './config/env.js'
 import { sanitizeBody } from './middleware/sanitize.js'
 import { rateLimitUser } from './middleware/rateLimitUser.js'
 import { requestLogger } from './middleware/requestLogger.js'
-import { generateCsrfToken, validateCsrf } from './middleware/csrf.js'
 import { logger } from './utils/logger.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -104,9 +103,6 @@ export function createApp() {
   )
   app.use(express.json({ limit: '10mb' }))
   app.use(sanitizeBody)
-  // CSRF: generate token only on GET (safe) requests to avoid invalidating tokens on POST
-  app.get('/api/*', generateCsrfToken)
-  app.use(validateCsrf)
   app.use('/uploads', async (req, res, next) => {
     const auth = req.headers.authorization || ''
     const bearerToken = auth.startsWith('Bearer ') ? auth.slice(7) : null
