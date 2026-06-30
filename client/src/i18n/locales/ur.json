@@ -21,7 +21,8 @@
     "bulkImport": "بلک امپورٹ",
     "escalation": "ایسکلیشن",
     "geofencing": "جیو فینسنگ",
-    "logoutConfirm": "کیا آپ لاگ آؤٹ کرنا چاہتے ہیں؟"},
+    "logoutConfirm": "کیا آپ لاگ آؤٹ کرنا چاہتے ہیں؟"
+  },
   "auth": {
     "email": "ای میل",
     "password": "پاس ورڈ",
@@ -664,4 +665,14 @@
     "broadcastSuccess": "SOS alert broadcasted!",
     "broadcastFailed": "Failed: {{error}}",
     "noActiveAlerts": "No active SOS alerts"
-  }}
+  },
+  "weekdays": {
+    "sunday": "اتوار",
+    "monday": "پیر",
+    "tuesday": "منگل",
+    "wednesday": "بدھ",
+    "thursday": "جمعرات",
+    "friday": "جمعہ",
+    "saturday": "ہفتہ"
+  }
+}

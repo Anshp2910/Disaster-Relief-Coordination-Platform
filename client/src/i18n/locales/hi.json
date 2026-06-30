@@ -665,4 +665,14 @@
     "searchCommands": "आदेश खोजें",
     "noResultsFor": "\"{{query}}\" के लिए कोई परिणाम नहीं",
     "adminBadge": "व्यवस्थापक"
-  }}
+  },
+  "weekdays": {
+    "sunday": "रविवार",
+    "monday": "सोमवार",
+    "tuesday": "मंगलवार",
+    "wednesday": "बुधवार",
+    "thursday": "गुरुवार",
+    "friday": "शुक्रवार",
+    "saturday": "शनिवार"
+  }
+}

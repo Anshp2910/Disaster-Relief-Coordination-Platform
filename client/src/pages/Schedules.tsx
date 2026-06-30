@@ -90,7 +90,7 @@ const StatusButton = memo(function StatusButton({ currentStatus, expectedStatus,
   return (
     <button
       onClick={() => onStatusChange(scheduleId, nextStatus)}
-      className="skill-pill" style={{ background: color.bg, color: color.text, borderColor: color.border }}
+      className="btn-pill" style={{ background: color.bg, color: color.text, borderColor: color.border }}
       aria-label={label}
     >
       <CheckCircle size={14} />
@@ -346,48 +346,46 @@ export default function Schedules() {
         ]}
       />
 
-      <div className="schedule-date-filter">
-        <div className="date-field">
-          <span>{t('schedules.from')}:</span>
-          <label htmlFor="sch-datefrom" className="sr-only">{t('schedules.from')}</label>
-          <input id="sch-datefrom" type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} />
+      <div className="schedule-extra-controls">
+        <div className="schedule-date-range">
+          <div className="date-field">
+            <span>{t('schedules.from')}:</span>
+            <label htmlFor="sch-datefrom" className="sr-only">{t('schedules.from')}</label>
+            <input id="sch-datefrom" type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} />
+          </div>
+          <div className="date-field">
+            <span>{t('schedules.to')}:</span>
+            <label htmlFor="sch-dateto" className="sr-only">{t('schedules.to')}</label>
+            <input id="sch-dateto" type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} />
+          </div>
         </div>
-        <div className="date-field">
-          <span>{t('schedules.to')}:</span>
-          <label htmlFor="sch-dateto" className="sr-only">{t('schedules.to')}</label>
-          <input id="sch-dateto" type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} />
-        </div>
-      </div>
 
-      <div className="schedule-view-toggle" role="group" aria-label={t('schedules.viewToggle') || 'View mode'}>
-        <button
-          onClick={() => setViewMode('list')}
-          className={viewMode === 'list' ? 'active' : ''}
-          aria-pressed={viewMode === 'list'}
-          aria-label={t('schedules.listView') || 'List view'}
-        >
-          <List size={16} />
-          <span>{t('schedules.listView') || 'List'}</span>
-        </button>
-        <button
-          onClick={() => setViewMode('week')}
-          className={viewMode === 'week' ? 'active' : ''}
-          aria-pressed={viewMode === 'week'}
-          aria-label={t('schedules.weekView') || 'Week view'}
-        >
-          <Grid3X3 size={16} />
-          <span>{t('schedules.weekView') || 'Week'}</span>
-        </button>
+        <div className="schedule-view-toggle" role="group" aria-label={t('schedules.viewToggle') || 'View mode'}>
+          <button
+            onClick={() => setViewMode('list')}
+            className={viewMode === 'list' ? 'active' : ''}
+            aria-pressed={viewMode === 'list'}
+            aria-label={t('schedules.listView') || 'List view'}
+          >
+            <List size={16} />
+            <span>{t('schedules.listView') || 'List'}</span>
+          </button>
+          <button
+            onClick={() => setViewMode('week')}
+            className={viewMode === 'week' ? 'active' : ''}
+            aria-pressed={viewMode === 'week'}
+            aria-label={t('schedules.weekView') || 'Week view'}
+          >
+            <Grid3X3 size={16} />
+            <span>{t('schedules.weekView') || 'Week'}</span>
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <SkeletonList count={4} lines={3} />
       ) : viewMode === 'week' ? (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        <div className="schedule-week-container">
           <div className="week-nav">
             <button onClick={() => setWeekOffset((p) => p - 1)} className="week-nav-btn" aria-label={t('common.previous')}>
               <ChevronLeft size={16} /> {t('common.previous')}
@@ -402,12 +400,12 @@ export default function Schedules() {
               {t('common.next')} <ChevronRight size={16} />
             </button>
           </div>
-          <div className="week-grid mt-sm">
+          <div className="week-grid">
              {weekDays.map((day) => {
               const key = day.toDateString()
               const daySchedules = schedulesByDay[key] || []
               return (
-                <motion.div key={key} variants={itemVariants} className="card p-xs">
+                <motion.div key={key} variants={itemVariants} className="week-grid-day-card">
                   <div className="week-grid-day-header">
                     {day.toLocaleDateString(i18n.language, { weekday: 'short' })}
                   </div>
@@ -434,9 +432,10 @@ export default function Schedules() {
                             color: shiftC.text,
                             border: `1px solid ${shiftC.border}`,
                           }}
-                          title={(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}
+                          title={`${(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')} — ${s.shift}`}
                         >
-                           {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}
+                          <span className="sch-shift-dot" style={{ background: shiftC.text }} />
+                          {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}
                         </div>
                         {selectedDaySchedule?._id === s._id && (
                           <div className="week-grid-detail-card">
@@ -454,7 +453,7 @@ export default function Schedules() {
               )
             })}
           </div>
-        </motion.div>
+        </div>
       ) : (
         <section aria-label={t('nav.schedules') || 'Schedules'}>
           <DataList
@@ -467,71 +466,67 @@ export default function Schedules() {
               const shiftC = SHIFT_COLORS[item.shift || 'Full Day'] ?? SHIFT_COLORS['Full Day']!
               const statusC = STATUS_COLORS[item.status || 'Scheduled'] ?? STATUS_COLORS.Scheduled!
               return (
-                <div className="listCard">
-                  <div className="flex flex-between flex-gap-sm">
-                    <div className="flex-1">
-                      <div className="flex flex-gap-sm flex-wrap mb-xs">
-                        <span className="text-bold text-base flex items-center gap-xs">
-                          <User size={16} className="text-muted" />
-                          {(typeof item.userId === 'object' && item.userId) ? item.userId.displayName : t('schedules.volunteer')}
-                        </span>
-                        <span className="status-badge flex items-center gap-xs" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>
-                          <Clock size={14} /> {item.shift}
-                        </span>
-                        <span className="status-badge flex items-center gap-xs" style={{ background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>
-                          {item.status === 'Cancelled' ? <XCircle size={14} /> : <CheckCircle size={14} />}
-                          {item.status}
-                        </span>
-                      </div>
+                <div className="listCard" style={{ cursor: 'default' }}>
+                  <div className="flex flex-gap-sm flex-wrap">
+                    <span className="text-bold text-base flex items-center gap-xs">
+                      <User size={16} className="text-muted" />
+                      {(typeof item.userId === 'object' && item.userId) ? item.userId.displayName : t('schedules.volunteer')}
+                    </span>
+                    <span className="status-badge flex items-center gap-xs" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}>
+                      <Clock size={14} /> {item.shift}
+                    </span>
+                    <span className="status-badge flex items-center gap-xs" style={{ background: statusC.bg, color: statusC.text, border: `1px solid ${statusC.border}` }}>
+                      {item.status === 'Cancelled' ? <XCircle size={14} /> : <CheckCircle size={14} />}
+                      {item.status}
+                    </span>
+                  </div>
 
-                      <div className="text-base text-muted">
-                        {item.startDate ? formatDate(item.startDate, i18n.language) : ''} &rarr; {item.endDate ? formatDate(item.endDate, i18n.language) : ''}
-                      </div>
+                  <div className="text-sm text-muted mt-xs">
+                    {item.startDate ? formatDate(item.startDate, i18n.language) : ''} &rarr; {item.endDate ? formatDate(item.endDate, i18n.language) : ''}
+                  </div>
 
-                      {item.zoneId && (
-                        <div className="small muted mt-xs flex items-center gap-xs">
-                          <MapPin size={14} />
-                          <span>{t('schedules.zone')} {(typeof item.zoneId === 'object' && item.zoneId) ? item.zoneId.name : t('common.unknown')}</span>
-                        </div>
-                      )}
-
-                      {item.skills && item.skills.length > 0 && (
-                        <div className="flex flex-gap-xs mt-xs flex-wrap">
-                          {item.skills.map((s) => (
-                            <span key={s} className="text-xs p-xs" style={{ borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
-                          ))}
-                        </div>
-                      )}
-
-                      {item.notes && <div className="small muted mt-xs">{item.notes}</div>}
+                  {item.zoneId && (
+                    <div className="text-xs muted mt-xs flex items-center gap-xs">
+                      <MapPin size={12} />
+                      <span>{t('schedules.zone')} {(typeof item.zoneId === 'object' && item.zoneId) ? item.zoneId.name : t('common.unknown')}</span>
                     </div>
+                  )}
 
-                    <div className="flex flex-col flex-gap-xs">
-                      <StatusButton
-                        currentStatus={item.status || 'Scheduled'}
-                        expectedStatus="Scheduled"
-                        nextStatus="Active"
-                        label={t('schedules.startButton')}
-                        color={STATUS_COLORS.Active!}
-                        scheduleId={item._id}
-                        onStatusChange={handleStatusChange}
-                      />
-                      <StatusButton
-                        currentStatus={item.status || 'Scheduled'}
-                        expectedStatus="Active"
-                        nextStatus="Completed"
-                        label={t('schedules.completeButton')}
-                        color={STATUS_COLORS.Completed!}
-                        scheduleId={item._id}
-                        onStatusChange={handleStatusChange}
-                      />
-                      <button onClick={() => openEdit(item)} className="btn-ghost btn-sm" aria-label={t('common.edit')}>
-                        <Edit size={14} /> {t('common.edit')}
-                      </button>
-                      <button onClick={() => handleDelete(item._id)} className="btn-danger text-xs p-xs flex items-center gap-xs" aria-label={t('common.delete')}>
-                        <Trash2 size={14} /> {t('common.delete')}
-                      </button>
+                  {item.skills && item.skills.length > 0 && (
+                    <div className="flex flex-gap-xs mt-xs flex-wrap">
+                      {item.skills.map((s) => (
+                        <span key={s} className="text-xs p-xs" style={{ borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
+                      ))}
                     </div>
+                  )}
+
+                  {item.notes && <div className="text-xs muted mt-xs">{item.notes}</div>}
+
+                  <div className="flex flex-wrap gap-xs mt-sm">
+                    <StatusButton
+                      currentStatus={item.status || 'Scheduled'}
+                      expectedStatus="Scheduled"
+                      nextStatus="Active"
+                      label={t('schedules.startButton')}
+                      color={STATUS_COLORS.Active!}
+                      scheduleId={item._id}
+                      onStatusChange={handleStatusChange}
+                    />
+                    <StatusButton
+                      currentStatus={item.status || 'Scheduled'}
+                      expectedStatus="Active"
+                      nextStatus="Completed"
+                      label={t('schedules.completeButton')}
+                      color={STATUS_COLORS.Completed!}
+                      scheduleId={item._id}
+                      onStatusChange={handleStatusChange}
+                    />
+                    <button onClick={() => openEdit(item)} className="btn-ghost btn-sm" aria-label={t('common.edit')}>
+                      <Edit size={14} /> {t('common.edit')}
+                    </button>
+                    <button onClick={() => handleDelete(item._id)} className="btn-danger btn-sm" aria-label={t('common.delete')}>
+                      <Trash2 size={14} /> {t('common.delete')}
+                    </button>
                   </div>
                 </div>
               )

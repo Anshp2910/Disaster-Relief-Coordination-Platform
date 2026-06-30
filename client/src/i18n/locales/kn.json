@@ -18,7 +18,8 @@
     "bulkImport": "ಬಲ್ಕ್ ಆಮದು",
     "escalation": "ಎಸ್ಕಲೇಶನ್",
     "geofencing": "ಜಿಯೋಫೆನ್ಸಿಂಗ್",
-    "logoutConfirm": "Are you sure you want to logout?"},
+    "logoutConfirm": "Are you sure you want to logout?"
+  },
   "auth": {
     "appName": "ಅಪಘಾತ ನಿವಾರಣೆ",
     "slogan": "ಅತ್ಯಂತ ಅಗತ್ಯವಿದ್ದಾಗ ಸಹಾಯವನ್ನು ಸಮನ್ವಯಗೊಳಿಸುವುದು",
@@ -664,4 +665,14 @@
     "description": "The page you are looking for doesn't exist or has been moved.",
     "goHome": "Go to Dashboard",
     "goBack": "Go Back"
-  }}
+  },
+  "weekdays": {
+    "sunday": "ಭಾನುವಾರ",
+    "monday": "ಸೋಮವಾರ",
+    "tuesday": "ಮಂಗಳವಾರ",
+    "wednesday": "ಬುಧವಾರ",
+    "thursday": "ಗುರುವಾರ",
+    "friday": "ಶುಕ್ರವಾರ",
+    "saturday": "ಶನಿವಾರ"
+  }
+}
