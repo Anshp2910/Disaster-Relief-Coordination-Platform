@@ -30,7 +30,39 @@ export function useAutoSave({ key, data, delay = 1500, onSave, enabled = true }:
     setStatus('saving')
     timerRef.current = setTimeout(async () => {
       try {
-        localStorage.setItem(key, JSON.stringify(data))
+        const serialized = JSON.stringify(data)
+        // Check approximate size before writing (localStorage typically limited to 5-10MB)
+        if (serialized.length > 4_000_000) {
+          console.warn(`[useAutoSave] Data too large for localStorage (${Math.round(serialized.length / 1024)}KB)`)  
+          if (mountedRef.current) setStatus('error')
+          return
+        }
+        try {
+          localStorage.setItem(key, serialized)
+        } catch (storageErr) {
+          if (storageErr instanceof DOMException && storageErr.name === 'QuotaExceededError') {
+            console.warn('[useAutoSave] localStorage quota exceeded — clearing old entries')
+            // Try to free space by removing the oldest localStorage entries
+            try {
+              const keysToRemove: string[] = []
+              for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i)
+                if (k && k !== key && !k.startsWith('token') && !k.startsWith('user')) {
+                  keysToRemove.push(k)
+                }
+              }
+              // Remove oldest half of non-essential entries
+              const toRemove = keysToRemove.slice(0, Math.ceil(keysToRemove.length / 2))
+              toRemove.forEach((k) => localStorage.removeItem(k))
+              localStorage.setItem(key, serialized) // Retry after cleanup
+            } catch {
+              if (mountedRef.current) setStatus('error')
+              return
+            }
+          } else {
+            throw storageErr
+          }
+        }
         if (onSave) await onSave(data)
         if (mountedRef.current) setStatus('saved')
       } catch {

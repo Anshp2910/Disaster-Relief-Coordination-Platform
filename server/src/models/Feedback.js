@@ -14,5 +14,6 @@ const FeedbackSchema = new mongoose.Schema(
 )
 
 FeedbackSchema.index({ requestId: 1 })
+FeedbackSchema.index({ requestId: 1, submittedBy: 1 }, { unique: true, sparse: true })
 
 export const Feedback = mongoose.model('Feedback', FeedbackSchema)

@@ -71,10 +71,19 @@ RequestSchema.pre('save', function syncLocation() {
   }
 })
 
+RequestSchema.pre('save', function capAuditLog() {
+  if (this.auditLog && this.auditLog.length > 100) {
+    this.auditLog = this.auditLog.slice(this.auditLog.length - 100)
+  }
+})
+
 RequestSchema.index({ location: '2dsphere' })
 RequestSchema.index({ status: 1 })
 RequestSchema.index({ category: 1 })
 RequestSchema.index({ createdAt: -1 })
 RequestSchema.index({ title: 'text', description: 'text', locationName: 'text' })
+RequestSchema.index({ createdBy: 1, createdAt: -1 })
+RequestSchema.index({ claimedBy: 1 })
+RequestSchema.index({ escalated: 1, createdAt: -1 })
 
 export const Request = mongoose.model('Request', RequestSchema)

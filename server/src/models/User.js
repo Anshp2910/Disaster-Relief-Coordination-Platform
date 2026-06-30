@@ -27,6 +27,8 @@ const UserSchema = new mongoose.Schema(
 )
 
 UserSchema.index({ csrfExpires: 1 })
+UserSchema.index({ resetPasswordExpires: 1 }, { expireAfterSeconds: 0 })
+UserSchema.index({ email: 1, provider: 1 })
 
 UserSchema.methods.setPassword = async function setPassword(password) {
   this.passwordHash = await bcrypt.hash(password, SALT_ROUNDS)

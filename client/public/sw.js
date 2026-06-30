@@ -1,8 +1,9 @@
-const CACHE_VERSION = 'v12'
+const CACHE_VERSION = 'v13'
 const STATIC_CACHE = `disaster-relief-static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `disaster-relief-dynamic-${CACHE_VERSION}`
 const API_CACHE = `disaster-relief-api-${CACHE_VERSION}`
 const OFFLINE_QUEUE = 'disaster-relief-offline-queue'
+const MAX_STATIC_CACHE = 100
 const MAX_DYNAMIC_CACHE = 50
 const MAX_API_CACHE = 30
 const FETCH_TIMEOUT = 10000
@@ -15,6 +16,8 @@ const APP_SHELL = [
   '/icon-512.svg',
   '/manifest.json',
   '/theme-init.js',
+  '/robots.txt',
+  '/sitemap.xml',
 ]
 
 /* ── Install: precache app shell ────────────────────────────────── */
@@ -121,7 +124,7 @@ self.addEventListener('fetch', (event) => {
 
   // Static assets — cache-first with network fallback
   if (url.pathname.match(/\.(js|css|woff2?|ttf|eot|svg|png|jpg|gif|webp|ico)$/)) {
-    event.respondWith(cacheFirstStrategy(request, STATIC_CACHE))
+    event.respondWith(cacheFirstStrategy(request, STATIC_CACHE, MAX_STATIC_CACHE))
     return
   }
 
@@ -206,14 +209,17 @@ function networkFirstStrategy(request, cacheName, maxItems) {
     .catch(() => caches.match(request))
 }
 
-function cacheFirstStrategy(request, cacheName) {
+function cacheFirstStrategy(request, cacheName, maxItems) {
   return caches.match(request).then((cached) => {
     if (cached) return cached
     return fetchWithTimeout(request, FETCH_TIMEOUT)
       .then((response) => {
         if (response && response.status === 200) {
           const clone = response.clone()
-          caches.open(cacheName).then((cache) => cache.put(request, clone))
+          caches.open(cacheName).then((cache) => {
+            cache.put(request, clone)
+            if (maxItems) limitCache(cacheName, maxItems)
+          })
         }
         return response
       })

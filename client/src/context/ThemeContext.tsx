@@ -51,8 +51,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setIsEmergency(prev => !prev)
   }, [])
 
-  const isPremium = theme === 'neon';
-    return (
+  const isPremium = theme === 'neon'
+
+  return (
     <ThemeContext.Provider value={{ theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, setIsEmergency, toggleEmergency, isHighContrast, setIsHighContrast }}>
       {children}
     </ThemeContext.Provider>
