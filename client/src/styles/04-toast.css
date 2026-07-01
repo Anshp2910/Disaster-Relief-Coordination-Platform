@@ -219,7 +219,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
-  z-index: var(--z-modal);
+  z-index: calc(var(--z-modal) + 1);
   animation: slideUp var(--duration-normal) var(--ease-out);
   box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
 }

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Plus, RefreshCw, MessageSquare, ArrowRight, Package, AlertTriangle, Trash2, Bell, Inbox } from 'lucide-react'
 import { useSocket } from '../hooks/useSocket'
 
 interface NotificationItem {
@@ -18,15 +19,15 @@ interface ActivityFeedProps {
   compact?: boolean
 }
 
-const ICONS: Record<string, { icon: string; label: string }> = {
-  'request:created': { icon: '+', label: 'New Request' },
-  'request:updated': { icon: '*', label: 'Updated' },
-  'request:commented': { icon: '>', label: 'Comment' },
-  'resource:allocated': { icon: '=', label: 'Allocated' },
-  'resource:created': { icon: '#', label: 'Resource' },
-  'request:escalated': { icon: '^', label: 'Escalated' },
-  'request:deleted': { icon: '-', label: 'Deleted' },
-  'sos:alert': { icon: '!', label: 'SOS' },
+const ICONS: Record<string, { icon: ReactNode; label: string }> = {
+  'request:created': { icon: <Plus size={14} />, label: 'New Request' },
+  'request:updated': { icon: <RefreshCw size={14} />, label: 'Updated' },
+  'request:commented': { icon: <MessageSquare size={14} />, label: 'Comment' },
+  'resource:allocated': { icon: <ArrowRight size={14} />, label: 'Allocated' },
+  'resource:created': { icon: <Package size={14} />, label: 'Resource' },
+  'request:escalated': { icon: <AlertTriangle size={14} />, label: 'Escalated' },
+  'request:deleted': { icon: <Trash2 size={14} />, label: 'Deleted' },
+  'sos:alert': { icon: <Bell size={14} />, label: 'SOS' },
 }
 
 export default function ActivityFeed({ limit = 20, compact = false }: ActivityFeedProps) {
@@ -48,7 +49,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
   if (items.length === 0) {
     return (
       <div className="activity-feed activity-feed--empty">
-        <div className="activity-empty-icon">~</div>
+        <div className="activity-empty-icon"><Inbox size={24} /></div>
         <div className="activity-empty-text">{t('dashboard.noActivity') || 'No recent activity'}</div>
         <div className="activity-empty-sub">{t('dashboard.activityWaiting') || 'Waiting for live updates...'}</div>
       </div>
@@ -65,7 +66,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
       )}
       <div className={`activity-list ${compact ? 'activity-list--compact' : ''}`}>
         {items.map((n) => {
-          const meta = ICONS[n.type] || { icon: '?', label: n.type }
+          const meta = ICONS[n.type] || { icon: <Bell size={14} />, label: n.type }
           return (
             <button
               key={n.id}

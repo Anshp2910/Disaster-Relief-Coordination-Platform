@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Send, Paperclip, User, ChevronLeft } from 'lucide-react'
+import { Send, Paperclip, User, ChevronLeft, ArrowDown, X } from 'lucide-react'
 import { RippleBtn } from '../components/ui'
 import { useSocket } from '../hooks/useSocket'
 import { SkeletonList } from '../components/Skeleton'
@@ -361,7 +361,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           className="scroll-to-bottom-btn"
           aria-label={t('chat.scrollToBottom')}
         >
-          ↓
+          <ArrowDown size={16} />
         </button>
       )}
 
@@ -369,7 +369,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <div className="flex flex-gap-sm p-xs border-top bg-accent-soft items-center">
           <Paperclip size={14} aria-hidden="true" />
           <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedFile.name}</span>
-          <button onClick={() => setSelectedFile(null)} className="bg-none border-none cursor-pointer text-xs text-muted">&times;</button>
+          <button onClick={() => setSelectedFile(null)} className="bg-none border-none cursor-pointer" aria-label={t('common.close')}><X size={14} /></button>
         </div>
       )}
 

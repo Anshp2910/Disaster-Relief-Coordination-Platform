@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import useReducedMotion from '../../hooks/useReducedMotion'
 
 interface ModalProps {
@@ -12,6 +13,7 @@ interface ModalProps {
 }
 
 export default function Modal({ open, onClose, title, children, maxWidth = 500 }: ModalProps) {
+  const { t } = useTranslation()
   const reduced = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
   const [announce, setAnnounce] = useState('')
@@ -70,7 +72,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
             {title && (
               <div className="flex-between mb-md">
                 <h3 id="modal-title" style={{ margin: 0 }}>{title}</h3>
-                <button onClick={onClose} className="icon-btn" aria-label="Close"><X size={18} aria-hidden="true" /></button>
+                <button onClick={onClose} className="icon-btn" aria-label={t('common.close')}><X size={18} aria-hidden="true" /></button>
               </div>
             )}
             {children}

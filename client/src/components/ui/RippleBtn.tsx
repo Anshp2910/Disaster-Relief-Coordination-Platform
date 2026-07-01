@@ -1,4 +1,4 @@
-import { useState, useCallback, type ReactNode, type MouseEvent } from 'react'
+import { useState, useCallback, useRef, useEffect, type ReactNode, type MouseEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import useReducedMotion from '../../hooks/useReducedMotion'
 
@@ -24,6 +24,15 @@ export default function RippleBtn({
 }: RippleBtnProps) {
   const reduced = useReducedMotion()
   const [ripples, setRipples] = useState<Ripple[]>([])
+  const timeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
+
+  useEffect(() => {
+    const set = timeoutsRef.current
+    return () => {
+      set.forEach(clearTimeout)
+      set.clear()
+    }
+  }, [])
 
   const handleClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     if (reduced) { onClick?.(e); return }
@@ -33,7 +42,11 @@ export default function RippleBtn({
     const y = e.clientY - rect.top - size / 2
     const id = Date.now()
     setRipples((prev) => [...prev, { id, x, y, size }])
-    setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 600)
+    const tid = setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== id))
+      timeoutsRef.current.delete(tid)
+    }, 600)
+    timeoutsRef.current.add(tid)
     onClick?.(e)
   }, [reduced, onClick])
 

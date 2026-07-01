@@ -21,13 +21,13 @@ export default function useFocusTrap(active: boolean): RefObject<HTMLDivElement>
       const f = focusable()
       if (f.length === 0) return
       const fst = f[0]
-      const lst = f[f.length - 1]
+      const lst = f.length > 1 ? f[f.length - 1] : fst
       if (e.shiftKey && document.activeElement === fst) {
         e.preventDefault()
-        lst!.focus()
+        lst?.focus()
       } else if (!e.shiftKey && document.activeElement === lst) {
         e.preventDefault()
-        fst!.focus()
+        fst?.focus()
       }
     }
 

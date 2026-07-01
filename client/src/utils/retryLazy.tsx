@@ -1,11 +1,11 @@
-import { lazy, ComponentType } from 'react'
+import { lazy, type ComponentType } from 'react'
 
-function PageLoadError() {
+function PageLoadError(_props: Record<string, unknown>) {
   return (
     <div className="flex-center min-h-60vh" style={{ flexDirection: 'column', gap: 'var(--space-xsml)' }}>
-      <p className="text-muted">Something went wrong loading this page.</p>
+      <p className="text-muted">{'Something went wrong loading this page.'}</p>
       <button className="btn-primary btn-sm" onClick={() => window.location.reload()}>
-        Reload
+        {'Reload'}
       </button>
     </div>
   )
@@ -14,7 +14,7 @@ function PageLoadError() {
 export function retryLazy<T extends ComponentType<unknown>>(importFn: () => Promise<{ default: T }>) {
   return lazy(() =>
     importFn().catch(() => {
-      return { default: PageLoadError as unknown as T }
+      return { default: PageLoadError as T }
     })
   )
 }

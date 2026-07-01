@@ -26,9 +26,9 @@ function Layout({ children }: LayoutProps) {
         <div className="gov-navbar-bottom-inner">
           <span>&copy; {new Date().getFullYear()} {t('footer.appName')}</span>
           <span className="gov-navbar-bottom-links">
-            <button type="button" className="link-as-button" onClick={(e) => e.preventDefault()}>{t('footer.privacy')}</button>
+            <button type="button" className="link-as-button">{t('footer.privacy')}</button>
             <span className="gov-navbar-bottom-dot">&middot;</span>
-            <button type="button" className="link-as-button" onClick={(e) => e.preventDefault()}>{t('footer.terms')}</button>
+            <button type="button" className="link-as-button">{t('footer.terms')}</button>
             <span className="gov-navbar-bottom-dot">&middot;</span>
             <span>{t('footer.emergencyHelpline')}: {t('footer.emergencyNumber')}</span>
           </span>

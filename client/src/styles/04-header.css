@@ -311,6 +311,7 @@
   border-top: 1px solid var(--glass-border);
   padding: var(--space-xs) var(--space-md) var(--space-sm);
   background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   backdrop-filter: blur(var(--glass-blur));
   max-height: calc(100vh - 52px);
   overflow-y: auto;

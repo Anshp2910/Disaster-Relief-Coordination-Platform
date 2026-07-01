@@ -29,6 +29,8 @@ export function initLeafletMap(container: HTMLElement, { center = DEFAULT_CENTER
   })
 
   if (window.ResizeObserver) {
+    const existing = (map as unknown as Record<string, unknown>).__resizeObserver as ResizeObserver | undefined
+    if (existing) existing.disconnect()
     const ro = new ResizeObserver(() => invalidate())
     ro.observe(container)
     ;(map as unknown as Record<string, unknown>).__resizeObserver = ro

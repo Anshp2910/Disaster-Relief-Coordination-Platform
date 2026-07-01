@@ -68,7 +68,7 @@ interface FormTouched {
   [key: string]: boolean
 }
 
-export function useFormValidation(_initialValues: Record<string, unknown> = {}) {
+export function useFormValidation() {
   const [errors, setErrors] = useState<FormErrors>({})
   const [touched, setTouched] = useState<FormTouched>({})
 

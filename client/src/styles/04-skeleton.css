@@ -20,7 +20,7 @@
   border-radius: inherit;
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: sk-shimmer 1.2s ease-in-out infinite;
+  animation: sk-shimmer var(--sk-shimmer-speed, 1.5s) var(--ease-in-out) infinite;
   mask-image: linear-gradient(90deg, transparent 10%, black 50%, transparent 90%);
   -webkit-mask-image: linear-gradient(90deg, transparent 10%, black 50%, transparent 90%);
 }

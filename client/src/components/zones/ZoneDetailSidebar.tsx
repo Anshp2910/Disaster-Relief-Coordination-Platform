@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { MapPin, Users, Activity, AlertTriangle, Edit, Trash2 } from 'lucide-react'
+import { MapPin, Users, Activity, AlertTriangle, Edit, Trash2, X } from 'lucide-react'
 import type { Zone } from './zoneConstants'
 import { useAuth } from '../../context/AuthContext'
 
@@ -26,7 +26,7 @@ export default function ZoneDetailSidebar({ zone, onClose, onEdit, onDelete }: Z
             {zone.disasterType} &middot; {zone.status}
           </div>
         </div>
-        <button onClick={onClose} className="bg-none border-none cursor-pointer text-xl p-0" aria-label={t('common.close')}>&times;</button>
+        <button onClick={onClose} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}><X size={18} /></button>
       </div>
 
       <div className="flex flex-gap-xs mb-sm flex-wrap">

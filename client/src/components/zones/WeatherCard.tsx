@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Thermometer, Activity, Droplets, Wind } from 'lucide-react'
+import { Thermometer, Activity, Droplets, Wind, X } from 'lucide-react'
 import type { WeatherData } from './zoneConstants'
 
 interface WeatherCardProps {
@@ -19,7 +19,7 @@ export default function WeatherCard({ weather, loading, onRefresh, onClose }: We
           <Thermometer size={14} />
           {t('zones.weather')}
         </h4>
-        <button onClick={onClose} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}>&times;</button>
+        <button onClick={onClose} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}><X size={14} /></button>
       </div>
       <div className="text-lg text-bold">{weather.temperature != null ? `${weather.temperature}°C` : '--'}</div>
       <div className="text-sm text-muted mb-sm flex items-center gap-xs">

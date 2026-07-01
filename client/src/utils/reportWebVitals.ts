@@ -1,15 +1,14 @@
-type WebVitalsModule = Record<string, (fn: (metric: unknown) => void) => void>
+import type { Metric } from 'web-vitals'
 
-export function reportWebVitals(onPerfEntry?: (metric: unknown) => void): void {
+export function reportWebVitals(onPerfEntry?: (metric: Metric) => void): void {
   if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then((mod) => {
-      const m = mod as unknown as WebVitalsModule
+    import('web-vitals').then((m) => {
       try {
-        m.getCLS?.(onPerfEntry)
-        m.getFID?.(onPerfEntry)
-        m.getFCP?.(onPerfEntry)
-        m.getLCP?.(onPerfEntry)
-        m.getTTFB?.(onPerfEntry)
+        m.onCLS(onPerfEntry)
+        m.onINP(onPerfEntry)
+        m.onFCP(onPerfEntry)
+        m.onLCP(onPerfEntry)
+        m.onTTFB(onPerfEntry)
       } catch { /* ignore */ }
     }).catch(() => { /* ignore */ })
   }

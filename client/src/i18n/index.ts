@@ -25,7 +25,7 @@ const loadLocale = async (lng: string) => {
     const mod = await localeMap[lng]()
     i18n.addResourceBundle(lng, 'translation', mod.default)
   } catch (err) {
-    console.warn(`Failed to load locale "${lng}":`, (err as Error).message)
+    console.warn(`Failed to load locale "${lng}":`, err instanceof Error ? err.message : String(err))
   } finally {
     loadingLocales.delete(lng)
   }
@@ -41,7 +41,7 @@ i18n.use(initReactI18next).init({
 })
 
 if (savedLang !== 'en') {
-  loadLocale(savedLang)
+  loadLocale(savedLang).then(() => i18n.changeLanguage(savedLang)).catch(() => {})
 }
 
 const origChangeLanguage = i18n.changeLanguage.bind(i18n)

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
-import { AlertTriangle, Plus, Edit, Trash2, MapPin, User, Activity } from 'lucide-react'
+import { AlertTriangle, Plus, Edit, Trash2, MapPin, User, Activity, X } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
@@ -334,7 +334,7 @@ export default function Incidents() {
                     <AlertTriangle size={16} />
                     {selectedIncident.name}
                   </h3>
-                  <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer text-xl" aria-label={t('common.close')}>&times;</button>
+                  <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer" aria-label={t('common.close')}><X size={18} /></button>
                 </div>
 
                 <div className="flex flex-gap-sm mb-sm flex-wrap">

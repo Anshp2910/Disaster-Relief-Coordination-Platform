@@ -178,8 +178,7 @@ export default function RequestForm({
     if (raw && !initialData) {
       try { const draft = JSON.parse(raw); if (draft && draft.title) setShowRestore(true) } catch { /* ignore */ }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [draftKey, initialData])
 
   function restoreDraft() {
     const raw = safeGetItem(draftKey)

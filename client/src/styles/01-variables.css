@@ -63,8 +63,8 @@
 
   --text: #0b0f1a;
   --text-secondary: #475569;
-  --text-tertiary: #475569;
-  --text-muted: #4b5e78;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
   --text-disabled: #cbd5e1;
   --text-on-accent: #ffffff;
 
@@ -185,7 +185,7 @@
   --space-3xl: 96px;
   --space-4xl: 128px;
 
-  --navbar-height: 60px;
+  --navbar-height: 52px;
 
   /* ── Radius ── */
   --radius-2xs: 4px;

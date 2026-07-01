@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import { Clock } from 'lucide-react'
 import { RippleBtn } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import useFocusTrap from '../hooks/useFocusTrap'
@@ -25,7 +26,7 @@ export default function IdleWarningModal() {
   return createPortal(
     <div className="modal-overlay" ref={trapRef} role="alertdialog" aria-modal="true">
       <div className="modal-card text-center">
-        <div className="modal-icon">&#9200;</div>
+        <div className="modal-icon"><Clock size={24} /></div>
         <h2 className="modal-title">
           {t('idleWarning.title')}
         </h2>

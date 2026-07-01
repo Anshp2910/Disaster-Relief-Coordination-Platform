@@ -105,7 +105,7 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
                 {task.priority && (
                   <Badge
                     label={task.priority}
-                    colors={PRIORITY_COLORS as unknown as Record<string, { bg: string; border: string; text: string }>}
+                    colors={PRIORITY_COLORS}
                     colorKey={task.priority}
                   />
                 )}

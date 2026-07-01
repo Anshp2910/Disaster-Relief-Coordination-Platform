@@ -95,7 +95,7 @@
 .ff-label-error { color: var(--danger); }
 
 /* ── ModernSelect ── */
-.ms-wrap { cursor: pointer; user-select: none; position: relative; z-index: var(--z-sticky); }
+.ms-wrap { cursor: pointer; user-select: none; position: relative; z-index: var(--z-form-wrap); }
 .ms-open { z-index: var(--z-form-open); }
 .ms-disabled { opacity: 0.5; cursor: not-allowed; }
 .ms-trigger { display: flex; align-items: center; justify-content: space-between; padding: var(--input-pad-y) var(--space-xsml) var(--space-2xs); min-height: 56px; gap: var(--space-xs); }
@@ -139,7 +139,7 @@
 
 /* ── DatePicker ── */
 .dp-wrap { cursor: pointer; user-select: none; position: relative; z-index: var(--z-form-wrap); }
-.dp-open { z-index: var(--z-sticky); }
+.dp-open { z-index: var(--z-form-open); }
 .dp-trigger { display: flex; align-items: center; padding: var(--input-pad-y) var(--space-xsml) var(--space-2xs); min-height: 56px; gap: var(--space-xs); }
 .dp-icon { color: var(--text-muted); flex-shrink: 0; }
 .dp-value { flex: 1; font-size: var(--text-sm); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-top: 8px; }

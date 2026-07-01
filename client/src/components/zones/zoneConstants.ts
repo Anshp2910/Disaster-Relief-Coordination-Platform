@@ -50,7 +50,7 @@ export const SEVERITY_COLORS: Record<string, { fill: string; stroke: string; wei
 }
 
 export const DISASTER_ICONS: Record<string, string> = {
-  Flood: '\u{1F327}', Earthquake: '\u{1F30A}', Cyclone: '\u{1F300}', Drought: '\u2600', Fire: '\u{1F525}', Landslide: '\u26F0', Other: '\u{1F4CC}',
+  Flood: '[~]', Earthquake: '[/]', Cyclone: '[O]', Drought: '(sun)', Fire: '[F]', Landslide: '[^]', Other: '[.]',
 }
 
 export const COVERAGE_COLORS: Record<string, string> = {

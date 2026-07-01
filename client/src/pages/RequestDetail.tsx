@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
-import { ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2 } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2, Star } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
@@ -640,8 +640,8 @@ export default function RequestDetail() {
                 <div className="ff-label-text mb-xs">{t('requestDetail.rating')}</div>
                 <div className="flex flex-gap-xs">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none text-xl cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--border)' }} aria-label={`${star} ${star === 1 ? t('requestDetail.star') || 'star' : t('requestDetail.stars') || 'stars'}`}>
-                      ★
+                    <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--border)' }} aria-label={`${star} ${star === 1 ? t('requestDetail.star') || 'star' : t('requestDetail.stars') || 'stars'}`}>
+                      <Star size={18} fill={star <= feedbackRating ? 'var(--gov-saffron)' : 'transparent'} />
                     </button>
                   ))}
                 </div>
@@ -677,7 +677,7 @@ export default function RequestDetail() {
                 <div key={f._id} className="text-sm p-sm bg-card rounded-sm">
                   <div className="flex flex-gap-xs mb-xs">
                     {[1, 2, 3, 4, 5].map((s) => (
-                      <span key={s} className="text-base" style={{ color: s <= (f.rating ?? 0) ? 'var(--gov-saffron)' : 'var(--gov-border)' }}>★</span>
+                      <span key={s} style={{ color: s <= (f.rating ?? 0) ? 'var(--gov-saffron)' : 'var(--border)' }}><Star size={14} fill={s <= (f.rating ?? 0) ? 'var(--gov-saffron)' : 'transparent'} /></span>
                     ))}
                     <span className="small muted ml-sm">{t('requestDetail.by')} {f.submittedBy?.displayName || t('common.unknown')}</span>
                   </div>

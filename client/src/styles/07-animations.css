@@ -162,11 +162,6 @@
   transform: scale(0);
 }
 
-/* ── Skeleton shimmer ── */
-.sk-line, .sk-circle, .sk-map, .sk-card .sk-line {
-  animation: shimmer 1.5s var(--ease-in-out) infinite;
-}
-
 /* ════════════════════════════════════════════════════════════════
    CREATIVE ENHANCEMENTS — Ribbons, Pulse Rings, Parallax, Noise,
    Severity Gradients, Morphing Icons, Staggered Entrance
