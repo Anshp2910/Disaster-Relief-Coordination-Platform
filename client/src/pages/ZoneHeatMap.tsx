@@ -325,7 +325,7 @@ export default function ZoneHeatMap() {
               )}
               {!loading && zones.length === 0 && (
                 <EmptyState
-                  icon=' '
+                  icon={<Thermometer size={32} />}
                   title={t('zones.noZones')}
                   description={t('zones.noZonesDesc') || 'No disaster zones defined yet'}
                   action={currentUser?.role === 'admin' ? { onClick: openCreate, label: t('zones.createZone') } : undefined}

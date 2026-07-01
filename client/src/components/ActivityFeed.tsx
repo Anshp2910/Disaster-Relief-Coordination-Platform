@@ -19,14 +19,14 @@ interface ActivityFeedProps {
 }
 
 const ICONS: Record<string, { icon: string; label: string }> = {
-  'request:created': { icon: '➕', label: 'New Request' },
-  'request:updated': { icon: '🔄', label: 'Updated' },
-  'request:commented': { icon: '💬', label: 'Comment' },
-  'resource:allocated': { icon: '📦', label: 'Allocated' },
-  'resource:created': { icon: '📋', label: 'Resource' },
-  'request:escalated': { icon: '🔺', label: 'Escalated' },
-  'request:deleted': { icon: '🗑️', label: 'Deleted' },
-  'sos:alert': { icon: '🚨', label: 'SOS' },
+  'request:created': { icon: '+', label: 'New Request' },
+  'request:updated': { icon: '*', label: 'Updated' },
+  'request:commented': { icon: '>', label: 'Comment' },
+  'resource:allocated': { icon: '=', label: 'Allocated' },
+  'resource:created': { icon: '#', label: 'Resource' },
+  'request:escalated': { icon: '^', label: 'Escalated' },
+  'request:deleted': { icon: '-', label: 'Deleted' },
+  'sos:alert': { icon: '!', label: 'SOS' },
 }
 
 export default function ActivityFeed({ limit = 20, compact = false }: ActivityFeedProps) {
@@ -48,7 +48,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
   if (items.length === 0) {
     return (
       <div className="activity-feed activity-feed--empty">
-        <div className="activity-empty-icon">📡</div>
+        <div className="activity-empty-icon">~</div>
         <div className="activity-empty-text">{t('dashboard.noActivity') || 'No recent activity'}</div>
         <div className="activity-empty-sub">{t('dashboard.activityWaiting') || 'Waiting for live updates...'}</div>
       </div>
@@ -65,7 +65,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
       )}
       <div className={`activity-list ${compact ? 'activity-list--compact' : ''}`}>
         {items.map((n) => {
-          const meta = ICONS[n.type] || { icon: '🔔', label: n.type }
+          const meta = ICONS[n.type] || { icon: '?', label: n.type }
           return (
             <button
               key={n.id}

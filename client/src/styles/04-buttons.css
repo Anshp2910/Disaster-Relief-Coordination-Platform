@@ -257,7 +257,7 @@ button.btn,
 .btn-deescalate {
   background: var(--warning-soft);
   color: var(--warning);
-  border: var(--border-warning-subtle);
+  border: 1px solid var(--border-warning-subtle);
   padding: var(--space-2xs) var(--space-md);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);

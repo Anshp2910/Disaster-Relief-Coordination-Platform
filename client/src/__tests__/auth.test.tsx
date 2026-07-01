@@ -43,12 +43,30 @@ vi.mock('../components/Toast', () => ({
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
-    form: ({ children, ...props }: any) => <form {...props}>{children}</form>,
-    h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
-    h2: ({ children, ...props }: any) => <h2 {...props}>{children}</h2>,
-    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+    div: ({ children, ...props }: any) => {
+      const { whileHover, whileTap, whileFocus, whileInView, initial, animate, exit, transition, variants, layout, layoutId, ...safe } = props
+      return <div {...safe}>{children}</div>
+    },
+    button: ({ children, ...props }: any) => {
+      const { whileHover, whileTap, whileFocus, whileInView, initial, animate, exit, transition, variants, layout, layoutId, ...safe } = props
+      return <button {...safe}>{children}</button>
+    },
+    form: ({ children, ...props }: any) => {
+      const { whileHover, whileTap, whileFocus, whileInView, initial, animate, exit, transition, variants, layout, layoutId, ...safe } = props
+      return <form {...safe}>{children}</form>
+    },
+    h1: ({ children, ...props }: any) => {
+      const { whileHover, whileTap, whileFocus, whileInView, initial, animate, exit, transition, variants, layout, layoutId, ...safe } = props
+      return <h1 {...safe}>{children}</h1>
+    },
+    h2: ({ children, ...props }: any) => {
+      const { whileHover, whileTap, whileFocus, whileInView, initial, animate, exit, transition, variants, layout, layoutId, ...safe } = props
+      return <h2 {...safe}>{children}</h2>
+    },
+    p: ({ children, ...props }: any) => {
+      const { whileHover, whileTap, whileFocus, whileInView, initial, animate, exit, transition, variants, layout, layoutId, ...safe } = props
+      return <p {...safe}>{children}</p>
+    },
   },
   AnimatePresence: ({ children }: any) => children,
 }))

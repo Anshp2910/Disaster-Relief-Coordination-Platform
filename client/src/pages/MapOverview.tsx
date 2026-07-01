@@ -225,7 +225,7 @@ export default function MapOverview() {
         )}
 
         {!loading && !error && items.length === 0 && (
-          <EmptyState icon='🗺️' title={t('dashboard.noRequests')} description={t('map.noRequestsDesc')} />
+          <EmptyState icon={<MapPin size={32} />} title={t('dashboard.noRequests')} description={t('map.noRequestsDesc')} />
         )}
       </div>
 

@@ -46,7 +46,7 @@ interface IncidentForm {
 }
 
 const DISASTER_ICONS: Record<string, string> = {
-  Flood: '\u{1F327}', Earthquake: '\u{1F30A}', Cyclone: '\u{1F300}', Drought: '\u2600', Fire: '\u{1F525}', Landslide: '\u26F0', Other: '\u{1F4CC}',
+  Flood: 'FL', Earthquake: 'EQ', Cyclone: 'CY', Drought: 'DR', Fire: 'FR', Landslide: 'LS', Other: 'OT',
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
@@ -317,7 +317,7 @@ export default function Incidents() {
           </motion.div>
         ) : incidents.length === 0 ? (
           <motion.div variants={itemVariants} key="empty">
-            <EmptyState icon=' ' title={t('incidents.noIncidents') || 'No incidents found'} description={t('incidents.noIncidentsDesc') || 'No incidents match your filters'} />
+            <EmptyState icon={<AlertTriangle size={32} />} title={t('incidents.noIncidents') || 'No incidents found'} description={t('incidents.noIncidentsDesc') || 'No incidents match your filters'} />
           </motion.div>
         ) : (
           <motion.div className="flex flex-wrap gap-12" variants={itemVariants} key="content">

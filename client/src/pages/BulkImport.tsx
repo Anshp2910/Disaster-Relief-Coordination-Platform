@@ -308,10 +308,10 @@ export default function BulkImport() {
           {step === 'upload' && (
             <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
               <div className="flex flex-gap-sm mb-lg">
-                <button onClick={downloadTemplate} className="rounded-sm cursor-pointer p-sm border-gov bg-gov-white text-13 flex items-center gap-xs" aria-label={t('bulkImport.downloadTemplate')}>
+                <RippleBtn onClick={downloadTemplate} className="btn-ghost btn-sm" aria-label={t('bulkImport.downloadTemplate')}>
                   <Download size={16} />
                   {t('bulkImport.downloadTemplate')}
-                </button>
+                </RippleBtn>
                 <RippleBtn onClick={exportData} className="text-13 p-sm flex items-center gap-xs" aria-label={t('bulkImport.exportCSV')}>
                   <Download size={16} />
                   {t('bulkImport.exportCSV')}

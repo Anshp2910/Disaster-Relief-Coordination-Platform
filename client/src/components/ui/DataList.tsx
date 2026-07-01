@@ -1,6 +1,7 @@
 import { memo, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import { Inbox } from 'lucide-react'
 import Pagination from './Pagination'
 import ErrorState from './ErrorState'
 import { SkeletonList } from '../Skeleton'
@@ -32,7 +33,7 @@ function DataList<T>({
   const { t } = useTranslation()
   if (error) return <ErrorState message={error} onRetry={onRetry} />
   if (loading) return <SkeletonList count={skeletonCount} lines={skeletonLines} />
-  if (items.length === 0) return <EmptyState icon={emptyIcon || '📋'} title={emptyTitle || t('dataList.noItems')} description={emptyDescription} />
+  if (items.length === 0) return <EmptyState icon={emptyIcon || <Inbox size={32} />} title={emptyTitle || t('dataList.noItems')} description={emptyDescription} />
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { RippleBtn } from '../components/ui'
 
@@ -7,7 +8,7 @@ interface EmptyStateAction {
 }
 
 interface EmptyStateProps {
-  icon?: string
+  icon?: ReactNode
   title: string
   description?: string
   action?: EmptyStateAction
@@ -15,7 +16,7 @@ interface EmptyStateProps {
   className?: string
 }
 
-export default function EmptyState({ icon = '📋', title, description, action, compact = false, className = '' }: EmptyStateProps) {
+export default function EmptyState({ icon, title, description, action, compact = false, className = '' }: EmptyStateProps) {
   return (
     <motion.div
       className={`empty-state ${compact ? 'empty-state--compact' : ''} ${className}`.trim()}

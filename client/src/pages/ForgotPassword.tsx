@@ -57,13 +57,13 @@ export default function ForgotPassword() {
             <motion.p className="auth-subtitle" variants={item}>{t('auth.resetLinkSent')}</motion.p>
             {previewUrl && (
               <motion.div className="auth-field" variants={item} style={{ width: '100%' }}>
-                <label htmlFor="previewUrl">{t('auth.previewUrl') || '📬 View email:'}</label>
+                <label htmlFor="previewUrl">{t('auth.previewUrl') || 'View email:'}</label>
                 <a id="previewUrl" href={previewUrl} target="_blank" rel="noopener noreferrer" className="auth-link" style={{ fontSize: 'var(--text-xs)', wordBreak: 'break-all', display: 'block' }}>{previewUrl}</a>
               </motion.div>
             )}
             {resetUrl && !previewUrl && (
               <motion.div className="auth-field" variants={item} style={{ width: '100%' }}>
-                <label htmlFor="resetUrl">{t('auth.directResetLink') || '🔗 Direct reset link (email not sent):'}</label>
+                <label htmlFor="resetUrl">{t('auth.directResetLink') || 'Direct reset link (email not sent):'}</label>
                 <input id="resetUrl" type="text" readOnly value={resetUrl} onClick={(e) => (e.target as HTMLInputElement).select()} style={{ fontSize: 'var(--text-xs)', wordBreak: 'break-all' }} />
               </motion.div>
             )}
@@ -89,8 +89,11 @@ export default function ForgotPassword() {
           {error && <motion.div className="auth-error" id="forgot-error" role="alert" variants={item}>{error}</motion.div>}
 
           <motion.div className="auth-field" variants={item}>
-            <label htmlFor="email">{t('auth.email')}</label>
-            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} aria-describedby={error ? 'forgot-error' : undefined} />
+            <div className="auth-input-wrap">
+              <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} className="auth-input" placeholder=" " aria-describedby={error ? 'forgot-error' : undefined} />
+              <label htmlFor="email" className="auth-label">{t('auth.email')}</label>
+              <Mail size={16} className="auth-input-icon" aria-hidden="true" />
+            </div>
           </motion.div>
 
           <motion.button disabled={loading} type="submit" className="auth-submit" variants={item}>

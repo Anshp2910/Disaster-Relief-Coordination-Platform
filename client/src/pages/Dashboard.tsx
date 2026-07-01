@@ -6,6 +6,7 @@ import { createStagger, createListItem } from '../utils/animations'
 import { RippleBtn, PageTransition } from '../components/ui'
 import {
   Sun,
+  ClipboardList,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
@@ -205,7 +206,7 @@ export default function Dashboard() {
               <>
                 <motion.div className="gridGap mt-lg" variants={fadeUp}>
                   {items.length === 0 ? (
-                    <EmptyState icon="📋" title={t('dashboard.noRequests')} description={t('dashboard.noRequestsDesc') || 'No requests match your filters'} />
+                    <EmptyState icon={<ClipboardList size={32} />} title={t('dashboard.noRequests')} description={t('dashboard.noRequestsDesc') || 'No requests match your filters'} />
                   ) : (
                     items.map((it) => (
                       <motion.div key={it._id} className="listCard cursor-pointer" role="button" tabIndex={0} onClick={() => navigate(`/requests/${it._id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${it._id}`) } }} whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }}>

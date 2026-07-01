@@ -97,8 +97,16 @@
   font-size: var(--text-5xl);
   line-height: var(--leading-none);
   margin-bottom: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
   filter: grayscale(0.2);
   transition: filter var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+}
+.empty-state-icon > svg {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 .empty-state:hover .empty-state-icon {
   filter: grayscale(0);

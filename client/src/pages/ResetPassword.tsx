@@ -70,21 +70,21 @@ export default function ResetPassword() {
           {error && <motion.div className="auth-error" id="reset-error" role="alert" variants={item}>{error}</motion.div>}
 
           <motion.div className="auth-field" variants={item}>
-            <label htmlFor="password">{t('auth.newPassword')}</label>
-            <div className="auth-password-wrap">
-              <input id="password" type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required disabled={loading} minLength={8} aria-describedby={error ? 'reset-error' : undefined} />
-              <button type="button" className="auth-password-toggle" onClick={() => setShow(!show)} aria-label={show ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={-1}>
-                {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            <div className="auth-input-wrap">
+              <input id="password" type={show ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required disabled={loading} minLength={8} className="auth-input" placeholder=" " aria-describedby={error ? 'reset-error' : undefined} />
+              <label htmlFor="password" className="auth-label">{t('auth.newPassword')}</label>
+              <button type="button" className="auth-pw-toggle" onClick={() => setShow(!show)} aria-label={show ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={0}>
+                {show ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
               </button>
             </div>
           </motion.div>
 
           <motion.div className="auth-field" variants={item}>
-            <label htmlFor="confirm">{t('auth.confirmPassword')}</label>
-            <div className="auth-password-wrap">
-              <input id="confirm" type={show ? 'text' : 'password'} value={confirm} onChange={(e) => setConfirm(e.target.value)} required disabled={loading} minLength={8} aria-describedby={error ? 'reset-error' : undefined} />
-              <button type="button" className="auth-password-toggle" onClick={() => setShow(!show)} aria-label={show ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={-1}>
-                {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            <div className="auth-input-wrap">
+              <input id="confirm" type={show ? 'text' : 'password'} value={confirm} onChange={(e) => setConfirm(e.target.value)} required disabled={loading} minLength={8} className="auth-input" placeholder=" " aria-describedby={error ? 'reset-error' : undefined} />
+              <label htmlFor="confirm" className="auth-label">{t('auth.confirmPassword')}</label>
+              <button type="button" className="auth-pw-toggle" onClick={() => setShow(!show)} aria-label={show ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={0}>
+                {show ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
               </button>
             </div>
           </motion.div>
