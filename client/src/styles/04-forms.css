@@ -28,7 +28,7 @@ select:not(.lang-select):not(.tab):not(.gov-navbar-lang-select) {
   padding: var(--space-xs) var(--space-md);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-normal) var(--ease-spring);
   outline: none;
   line-height: var(--leading-normal);
   box-shadow: var(--shadow-inset);

@@ -29,8 +29,9 @@
 }
 
 @keyframes navbar-glow {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.5; }
+  0% { opacity: 0.25; transform: scaleX(0.95); }
+  50% { opacity: 0.55; transform: scaleX(1); }
+  100% { opacity: 0.25; transform: scaleX(0.95); }
 }
 
 .gov-navbar-inner {

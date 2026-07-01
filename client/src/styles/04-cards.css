@@ -2,7 +2,7 @@
    ENTERPRISE CARDS — Bento, KPI, activity, stats, tabs
    ================================================================ */
 
-/* ── Base Card (Glass-morphism) ── */
+/* ── Base Card (Glass-morphism, organic feel) ── */
 .card {
   background: var(--glass-bg);
   border-radius: var(--radius-lg);
@@ -11,9 +11,9 @@
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  transition: box-shadow var(--duration-normal) var(--ease-out),
+  transition: box-shadow var(--duration-normal) var(--ease-spring),
               border-color var(--duration-normal) var(--ease-out),
-              transform var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-spring),
               background var(--duration-normal) var(--ease-out);
   position: relative;
 }
@@ -22,7 +22,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, var(--accent-soft), transparent 40%);
+  background: linear-gradient(145deg, var(--accent-soft), transparent 45%);
   opacity: 0;
   transition: opacity var(--duration-slow) var(--ease-out);
   pointer-events: none;
@@ -30,10 +30,14 @@
 .card:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--border-hover);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   background: var(--glass-bg-strong);
 }
 .card:hover::before { opacity: 0.3; }
+.card:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: var(--duration-fast);
+}
 
 .listCard {
   background: var(--glass-bg);
@@ -43,10 +47,10 @@
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(calc(var(--glass-blur) * 0.6));
   -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.6));
-  transition: box-shadow var(--duration-normal) var(--ease-out),
+  transition: box-shadow var(--duration-normal) var(--ease-spring),
               border-color var(--duration-normal) var(--ease-out),
               background var(--duration-fast) var(--ease-out),
-              transform var(--duration-normal) var(--ease-out);
+              transform var(--duration-normal) var(--ease-spring);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -56,7 +60,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, var(--accent-soft), transparent 50%);
+  background: linear-gradient(145deg, var(--accent-soft), transparent 50%);
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-out);
   pointer-events: none;
@@ -65,9 +69,13 @@
   box-shadow: var(--shadow-md);
   border-color: var(--border-hover);
   background: var(--glass-bg-strong);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 .listCard:hover::after { opacity: 0.15; }
+.listCard:active {
+  transform: translateY(0) scale(0.99);
+  transition-duration: var(--duration-fast);
+}
 .listCard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ── Bento Grid ── */
@@ -84,9 +92,9 @@
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(calc(var(--glass-blur) * 0.8));
   -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.8));
-  transition: box-shadow var(--duration-normal) var(--ease-out),
+  transition: box-shadow var(--duration-normal) var(--ease-spring),
               border-color var(--duration-normal) var(--ease-out),
-              transform var(--duration-normal) var(--ease-out);
+              transform var(--duration-normal) var(--ease-spring);
   position: relative;
   overflow: hidden;
 }
@@ -99,7 +107,7 @@
   height: 3px;
   background: linear-gradient(90deg, var(--accent), var(--accent-indigo));
   opacity: 0;
-  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-spring);
   transform: translateX(-100%);
   z-index: 1;
 }
@@ -108,7 +116,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, var(--accent-soft), transparent 50%);
+  background: linear-gradient(145deg, var(--accent-soft), transparent 55%);
   opacity: 0;
   transition: opacity var(--duration-slow) var(--ease-out);
   pointer-events: none;
@@ -116,16 +124,17 @@
 .bento-card:hover {
   box-shadow: var(--shadow-lg);
   border-color: var(--border-accent);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 .bento-card:hover::before {
   opacity: 1;
   transform: translateX(0);
-  animation: accent-bar-slide 0.4s var(--ease-out) forwards;
+  animation: accent-bar-slide 0.45s var(--ease-spring) forwards;
 }
 .bento-card:hover::after { opacity: 0.5; }
 .bento-card:active {
-  transform: translateY(0) scale(0.99);
+  transform: translateY(0) scale(0.97);
+  transition-duration: var(--duration-fast);
 }
 .bento--wide { grid-column: span 2; }
 
@@ -339,9 +348,9 @@
 
 .pageTitle {
   font-size: var(--text-2xl);
-  font-weight: var(--font-weight-extrabold);
-  letter-spacing: var(--tracking-tight);
-  line-height: var(--leading-tight);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  line-height: 1.18;
   color: var(--text);
   margin: 0;
 }

@@ -29,10 +29,11 @@ body {
   background-attachment: fixed;
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background var(--duration-slower) var(--ease-out),
+  transition: background var(--duration-slow) var(--ease-out),
   color var(--duration-slow) var(--ease-out),
   background-image var(--duration-slower) var(--ease-out);
-  animation: bg-shift 20s var(--ease-in-out) infinite;
+  animation: bg-shift 22s var(--ease-in-out) infinite;
+  letter-spacing: 0.012em;
 }
 body::after {
   content: '';
@@ -70,7 +71,28 @@ a {
 }
 a:hover { color: var(--accent-hover); }
 
-h1, h2, h3, h4, h5, h6 {
+h1 {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.15;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+h2 {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.18;
+  color: var(--text);
+  letter-spacing: -0.018em;
+}
+h3 {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--text);
+  letter-spacing: -0.012em;
+}
+h4, h5, h6 {
   margin: 0;
   font-weight: var(--font-weight-semibold);
   line-height: var(--leading-tight);
@@ -160,14 +182,14 @@ hr {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
-  transition: box-shadow var(--duration-normal) var(--ease-out),
+  transition: box-shadow var(--duration-normal) var(--ease-spring),
   border-color var(--duration-normal) var(--ease-out),
-  transform var(--duration-normal) var(--ease-out);
+  transform var(--duration-normal) var(--ease-spring);
 }
 .professional-card:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--border-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 .professional-card:focus-visible {
   border-color: var(--accent);

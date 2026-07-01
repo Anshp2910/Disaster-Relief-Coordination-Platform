@@ -2,23 +2,28 @@
    ENTERPRISE ANIMATIONS — Keyframes, hover effects, ripple, markers
    ================================================================ */
 
-/* ── Entry Animations ── */
+/* ── Entry Animations (organic, bouncy feel) ── */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUpSpring { 0% { opacity: 0; transform: translateY(16px); } 70% { transform: translateY(-3px); } 100% { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes scaleInSpring { 0% { opacity: 0; transform: scale(0.9); } 60% { transform: scale(1.04); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-@keyframes badge-pop { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-@keyframes toastSlideIn { from { opacity: 0; transform: translateX(100%) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes badge-pop { 0% { transform: scale(0); } 55% { transform: scale(1.18); } 80% { transform: scale(0.94); } 100% { transform: scale(1); } }
+@keyframes toastSlideIn { 0% { opacity: 0; transform: translateX(100%) scale(0.9); } 60% { transform: translateX(-10px) scale(1.01); } 100% { opacity: 1; transform: translateX(0) scale(1); } }
 @keyframes toastSlideOut { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(100%) scale(0.9); } }
-@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-@keyframes pageSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes modalIn { 0% { opacity: 0; transform: scale(0.92) translateY(14px); } 65% { transform: scale(1.01) translateY(-2px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes pageSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pageSlideInSpring { 0% { opacity: 0; transform: translateY(14px); } 70% { transform: translateY(-3px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes shimmer-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.12); } 100% { transform: scale(1); } }
 
 /* ── Creative Ambient ── */
 @keyframes bg-shift {
@@ -49,26 +54,26 @@
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* ── Data Animate Attribute ── */
-[data-animate] { animation: fadeInUp var(--duration-slow) var(--ease-out) both; }
-[data-animate="fade"] { animation-name: fadeIn; }
-[data-animate="scale"] { animation-name: scaleIn; }
-[data-animate="slide-down"] { animation-name: slideDown; }
+/* ── Data Animate Attribute (organic feel) ── */
+[data-animate] { animation: fadeInUpSpring 0.55s var(--ease-spring) both; }
+[data-animate="fade"] { animation-name: fadeIn; animation-duration: 0.3s; animation-timing-function: var(--ease-out); }
+[data-animate="scale"] { animation-name: scaleInSpring; animation-duration: 0.5s; animation-timing-function: var(--ease-spring); }
+[data-animate="slide-down"] { animation-name: slideDown; animation-duration: 0.35s; animation-timing-function: var(--ease-out); }
 [data-animate="stagger"] > * {
   opacity: 0;
-  animation: fadeInUp 0.4s var(--ease-out) forwards;
+  animation: fadeInUpSpring 0.5s var(--ease-spring) forwards;
 }
-[data-animate="stagger"] > *:nth-child(1) { animation-delay: 0.05s; }
-[data-animate="stagger"] > *:nth-child(2) { animation-delay: 0.1s; }
-[data-animate="stagger"] > *:nth-child(3) { animation-delay: 0.15s; }
+[data-animate="stagger"] > *:nth-child(1) { animation-delay: 0.04s; }
+[data-animate="stagger"] > *:nth-child(2) { animation-delay: 0.08s; }
+[data-animate="stagger"] > *:nth-child(3) { animation-delay: 0.14s; }
 [data-animate="stagger"] > *:nth-child(4) { animation-delay: 0.2s; }
-[data-animate="stagger"] > *:nth-child(5) { animation-delay: 0.25s; }
-[data-animate="stagger"] > *:nth-child(6) { animation-delay: 0.3s; }
-[data-animate="stagger"] > *:nth-child(7) { animation-delay: 0.35s; }
-[data-animate="stagger"] > *:nth-child(8) { animation-delay: 0.4s; }
+[data-animate="stagger"] > *:nth-child(5) { animation-delay: 0.26s; }
+[data-animate="stagger"] > *:nth-child(6) { animation-delay: 0.32s; }
+[data-animate="stagger"] > *:nth-child(7) { animation-delay: 0.38s; }
+[data-animate="stagger"] > *:nth-child(8) { animation-delay: 0.44s; }
 
 /* ── Page Enter Animations ── */
-.page-enter { animation: pageSlideIn 0.35s var(--ease-out) both; }
+.page-enter { animation: pageSlideInSpring 0.5s var(--ease-spring) both; }
 .page-enter--d1 { animation-delay: 0.05s; }
 .page-enter--d2 { animation-delay: 0.1s; }
 .page-enter--d3 { animation-delay: 0.15s; }
@@ -102,7 +107,7 @@
   justify-content: center;
   min-height: 3rem;
   filter: grayscale(0.2);
-  transition: filter var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+  transition: filter var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-spring);
 }
 .empty-state-icon > svg {
   width: 2.5rem;
@@ -110,7 +115,11 @@
 }
 .empty-state:hover .empty-state-icon {
   filter: grayscale(0);
-  transform: scale(1.1) rotate(-3deg);
+  transform: scale(1.12) rotate(-4deg);
+}
+.empty-state:active .empty-state-icon {
+  transform: scale(0.95) rotate(0deg);
+  transition-duration: var(--duration-fast);
 }
 .empty-state-title {
   font-size: var(--text-xl);
@@ -151,9 +160,9 @@
   overflow: hidden;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-normal) var(--ease-spring);
 }
-.rp-btn:active { transform: scale(0.97); }
+.rp-btn:active { transform: scale(0.96); }
 .rp-ripple {
   position: absolute;
   border-radius: 50%;
@@ -266,7 +275,7 @@
 
 /* ── Parallax tilt on hover ── */
 .parallax-tilt {
-  transition: transform 0.3s var(--ease-out);
+  transition: transform 0.4s var(--ease-spring);
   transform-style: preserve-3d;
   perspective: 800px;
 }
@@ -274,8 +283,8 @@
 /* ── Staggered entrance (row-level, applied via motion) ── */
 .stagger-row {
   opacity: 0;
-  transform: translateY(8px);
-  animation: stagger-in 0.4s var(--ease-out) forwards;
+  transform: translateY(10px);
+  animation: stagger-in 0.45s var(--ease-spring) forwards;
 }
 @keyframes stagger-in {
   to { opacity: 1; transform: translateY(0); }
@@ -328,6 +337,7 @@
 }
 @keyframes hero-shift {
   0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(1.5%, -1.5%) scale(1.03); }
   100% { transform: translate(2%, -2%) scale(1.05); }
 }
 
