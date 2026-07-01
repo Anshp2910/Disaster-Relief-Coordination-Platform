@@ -120,6 +120,9 @@ input[type="file"]:focus {
 }
 
 /* ── Number Input Spinners ── */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   opacity: 0.5;

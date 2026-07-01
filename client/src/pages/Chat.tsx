@@ -161,7 +161,6 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     }
   }, [])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleTyping = useCallback(() => {
     if (!socket) return
     const now = Date.now()
@@ -172,7 +171,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     typingTimeoutRef.current = setTimeout(() => {
       socket.emit('chat:typing', { requestId, sender: { id: currentUser?.id, displayName: currentUser?.displayName || t('chat.userFallback') }, stop: true })
     }, 500)
-  }, [socket, requestId, currentUser?.id, currentUser?.displayName])
+  }, [socket, requestId, currentUser?.id, currentUser?.displayName, t])
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setText(e.target.value)

@@ -186,12 +186,12 @@ export default function Dashboard() {
               ))}
             </motion.div>
             <div className="flex flex-wrap flex-gap-sm mt-sm items-center">
-              <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov p-xs">
+              <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="filter-select">
                 {categoryOptions.map((c) => (
                   <option key={c.key} value={c.key}>{c.key === 'All' ? t('dashboard.allCategories') : c.label}</option>
                 ))}
               </select>
-              <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="rounded-sm text-sm border-gov p-xs">
+              <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="filter-select">
                 {sortOptions.map((s) => (
                   <option key={s.key} value={s.key}>{s.label}</option>
                 ))}

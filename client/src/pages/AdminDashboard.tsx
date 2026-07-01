@@ -310,7 +310,7 @@ interface UsersPanelProps {
 function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   const { t } = useTranslation()
 
-  const safeUsers = Array.isArray(users) ? users : []
+  const safeUsers = useMemo(() => Array.isArray(users) ? users : [], [users])
 
   const roleCounts = useMemo(() => {
     const counts: Record<string, number> = { volunteer: 0, ngo: 0, admin: 0 }

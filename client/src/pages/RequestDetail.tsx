@@ -485,7 +485,7 @@ export default function RequestDetail() {
             </h3>
             <form onSubmit={handleAllocate} className="flex flex-gap-sm flex-wrap">
               <label htmlFor="rd-resource" className="sr-only">{t('requestDetail.selectResource')}</label>
-              <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="flex-1 text-sm min-w-150">
+              <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="filter-select">
                 <option value="">{t('requestDetail.selectResource')}</option>
                 {resources.map((r) => (
                   <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>

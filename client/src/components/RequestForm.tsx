@@ -216,7 +216,7 @@ export default function RequestForm({
   useEffect(() => {
     if (loading || !initialData) return
     dispatch({ type: 'LOAD_INITIAL', state: initialData as Partial<FormState> })
-  }, [initialId, loading])
+  }, [initialId, initialData, loading])
 
   useEffect(() => {
     if (loading || currentStep !== 1 || mapInstance.current || !mapRef.current) return

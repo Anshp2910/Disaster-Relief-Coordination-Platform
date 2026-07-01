@@ -1,41 +1,28 @@
-import { Suspense, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import Layout from './components/Layout'
 import { useAuth } from './context/AuthContext'
-import { retryLazy } from './utils/retryLazy'
-
-const Login = retryLazy(() => import('./pages/Login'))
-const Register = retryLazy(() => import('./pages/Register'))
-const SocialCallback = retryLazy(() => import('./pages/SocialCallback'))
-const ForgotPassword = retryLazy(() => import('./pages/ForgotPassword'))
-const ResetPassword = retryLazy(() => import('./pages/ResetPassword'))
-const Dashboard = retryLazy(() => import('./pages/Dashboard'))
-const CreateRequest = retryLazy(() => import('./pages/CreateRequest'))
-const EditRequest = retryLazy(() => import('./pages/EditRequest'))
-const RequestDetail = retryLazy(() => import('./pages/RequestDetail'))
-const Profile = retryLazy(() => import('./pages/Profile'))
-const Resources = retryLazy(() => import('./pages/Resources'))
-const ZoneHeatMap = retryLazy(() => import('./pages/ZoneHeatMap'))
-const AdminDashboard = retryLazy(() => import('./pages/AdminDashboard'))
-const Incidents = retryLazy(() => import('./pages/Incidents'))
-const Schedules = retryLazy(() => import('./pages/Schedules'))
-const BulkImport = retryLazy(() => import('./pages/BulkImport'))
-const Escalation = retryLazy(() => import('./pages/Escalation'))
-const Geofencing = retryLazy(() => import('./pages/Geofencing'))
-const MapOverview = retryLazy(() => import('./pages/MapOverview'))
-const PublicStatus = retryLazy(() => import('./pages/PublicStatus'))
-const NotFound = retryLazy(() => import('./pages/NotFound'))
-
-function PageLoader() {
-  const { t } = useTranslation()
-  return (
-    <div className="flex-center min-h-60vh gap-12" role="status" aria-live="polite">
-      <div className="loading-spinner" />
-      <span className="text-14 text-muted">{t('common.loading')}</span>
-    </div>
-  )
-}
+import Login from './pages/Login'
+import Register from './pages/Register'
+import SocialCallback from './pages/SocialCallback'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import Dashboard from './pages/Dashboard'
+import CreateRequest from './pages/CreateRequest'
+import EditRequest from './pages/EditRequest'
+import RequestDetail from './pages/RequestDetail'
+import Profile from './pages/Profile'
+import Resources from './pages/Resources'
+import ZoneHeatMap from './pages/ZoneHeatMap'
+import AdminDashboard from './pages/AdminDashboard'
+import Incidents from './pages/Incidents'
+import Schedules from './pages/Schedules'
+import BulkImport from './pages/BulkImport'
+import Escalation from './pages/Escalation'
+import Geofencing from './pages/Geofencing'
+import MapOverview from './pages/MapOverview'
+import PublicStatus from './pages/PublicStatus'
+import NotFound from './pages/NotFound'
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth()
@@ -54,19 +41,17 @@ function RequireAdmin({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        {/* Auth routes with Layout (header + footer) */}
-        <Route path="/login" element={<Layout><Login /></Layout>} />
-        <Route path="/register" element={<Layout><Register /></Layout>} />
-        <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
-        <Route path="/reset-password" element={<Layout><ResetPassword /></Layout>} />
-        <Route path="/social-callback" element={<SocialCallback />} />
-        {/* Standard routes with Layout (header + footer) */}
-        <Route path="/*" element={
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
+    <Routes>
+      {/* Auth routes with Layout (header + footer) */}
+      <Route path="/login" element={<Layout><Login /></Layout>} />
+      <Route path="/register" element={<Layout><Register /></Layout>} />
+      <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
+      <Route path="/reset-password" element={<Layout><ResetPassword /></Layout>} />
+      <Route path="/social-callback" element={<SocialCallback />} />
+      {/* Standard routes with Layout (header + footer) */}
+      <Route path="/*" element={
+        <Layout>
+          <Routes>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/public" element={<PublicStatus />} />
                 <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
@@ -84,12 +69,10 @@ function App() {
                 <Route path="/escalation" element={<RequireAdmin><Escalation /></RequireAdmin>} />
                 <Route path="/geofencing" element={<RequireAuth><Geofencing /></RequireAuth>} />
                 <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
+            </Routes>
           </Layout>
         } />
-      </Routes>
-    </Suspense>
+    </Routes>
   )
 }
 

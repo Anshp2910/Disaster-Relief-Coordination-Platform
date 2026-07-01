@@ -216,6 +216,7 @@ export default function Escalation() {
           <div className="ff-group">
             <div className={`ff-wrap ${reason ? 'ff-focused' : ''}`}>
               <textarea
+                id="esc-reason"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 rows={2}
@@ -225,7 +226,7 @@ export default function Escalation() {
                 placeholder={t('escalation.reasonForEscalation')}
                 aria-label={t('escalation.reasonForEscalation')}
               />
-              <label className={`ff-label ff-label-with-icon ${reason ? 'ff-label-float' : ''}`}>
+              <label htmlFor="esc-reason" className={`ff-label ff-label-with-icon ${reason ? 'ff-label-float' : ''}`}>
                 {t('escalation.reasonForEscalation')}
               </label>
             </div>
@@ -262,7 +263,7 @@ export default function Escalation() {
               </div>
               <button
                 onClick={() => handleDeescalate(item._id)}
-                className="deescalate-btn flex items-center gap-xs"
+                className="btn-deescalate flex items-center gap-xs"
                 aria-label={`${t('escalation.deEscalate')} ${item.title}`}
               >
                 <ArrowDown size={14} />
