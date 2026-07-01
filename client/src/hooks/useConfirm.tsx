@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { AlertTriangle, HelpCircle } from 'lucide-react'
 import { RippleBtn } from '../components/ui'
 import useFocusTrap from './useFocusTrap'
 
@@ -62,7 +63,7 @@ export function useConfirm() {
         // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
         <div className="modal-overlay" ref={trapRef} role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message" onKeyDown={handleKeyDown}>
           <div className="modal-card text-center">
-            <div className="modal-icon">{state.danger ? '\u26A0' : '?'}</div>
+            <div className="modal-icon">{state.danger ? <AlertTriangle size={24} /> : <HelpCircle size={24} />}</div>
             <h2 id="confirm-title" className="modal-title">{state.title}</h2>
             <p id="confirm-message" className="modal-desc">{state.message}</p>
             <div className="modal-actions mt">

@@ -49,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => safeGetItem('token'))
   const [idleWarning, setIdleWarning] = useState(false)
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const refreshingRef = useRef(false)
 
   const isAuthenticated = !!token && !!user
   const isAdmin = user?.role === 'admin'
@@ -116,8 +117,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [idleWarning, logout])
 
   const refreshAuthToken = useCallback(async () => {
+    if (refreshingRef.current) return
+    refreshingRef.current = true
     const currentToken = safeGetItem('token')
-    if (!currentToken) return
+    if (!currentToken) { refreshingRef.current = false; return }
     try {
       const res = await clientApi.refreshToken(currentToken)
       const newToken = (res as { token: string }).token
@@ -128,6 +131,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     } catch {
       logout()
+    } finally {
+      refreshingRef.current = false
     }
   }, [logout])
 
@@ -150,10 +155,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval)
   }, [logout, refreshAuthToken, user])
 
+  const ctx = { user, token, isAuthenticated, isAdmin, login, logout, updateUser, idleWarning, resetIdleTimer }
+
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, isAdmin, login, logout, updateUser, idleWarning, resetIdleTimer }}>
+    <AuthContext.Provider value={ctx}>
       {children}
-      <IdleWarningModal />
+      {isAuthenticated && idleWarning && <IdleWarningModal />}
     </AuthContext.Provider>
   )
 }

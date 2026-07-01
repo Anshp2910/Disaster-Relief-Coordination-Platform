@@ -157,7 +157,10 @@ export function useSocket() {
         s.off('sos:alert', onSosAlert)
         s.off('request:escalated', onRequestEscalated)
         s.off('request:deleted', onRequestDeleted)
+        disconnectSocket()
       }
+      socket = null
+      setConnected(false)
       window.removeEventListener('authchange', onAuthChange)
     }
   }, [addNotification])

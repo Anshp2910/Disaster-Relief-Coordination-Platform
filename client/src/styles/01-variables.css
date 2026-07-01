@@ -221,6 +221,7 @@
   --z-above: 10;
   --z-dropdown: 100;
   --z-sticky: 50;
+  --z-emergency: 500;
   --z-modal-backdrop: 800;
   --z-modal: 900;
   --z-toast: 1000;

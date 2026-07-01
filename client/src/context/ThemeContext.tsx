@@ -16,15 +16,15 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark' | 'neon'>(() => {
-    try { return (localStorage.getItem('theme') as 'light' | 'dark' | 'neon') || 'dark' } catch (e) { console.warn('Failed to read theme:', (e as Error).message); return 'dark' }
+    try { return (localStorage.getItem('theme') as 'light' | 'dark' | 'neon') || 'dark' } catch (e) { console.warn('Failed to read theme:', e instanceof Error ? e.message : String(e)); return 'dark' }
   })
 
   const [isEmergency, setIsEmergency] = useState<boolean>(() => {
-    try { return localStorage.getItem('emergencyMode') === 'true' } catch (e) { console.warn('Failed to read emergency mode:', (e as Error).message); return false }
+    try { return localStorage.getItem('emergencyMode') === 'true' } catch (e) { console.warn('Failed to read emergency mode:', e instanceof Error ? e.message : String(e)); return false }
   })
 
   const [isHighContrast, setIsHighContrast] = useState<boolean>(() => {
-    try { return localStorage.getItem('highContrastMode') === 'true' } catch (e) { console.warn('Failed to read high contrast mode:', (e as Error).message); return false }
+    try { return localStorage.getItem('highContrastMode') === 'true' } catch (e) { console.warn('Failed to read high contrast mode:', e instanceof Error ? e.message : String(e)); return false }
   })
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('theme', theme) 
       localStorage.setItem('emergencyMode', isEmergency.toString())
       localStorage.setItem('highContrastMode', isHighContrast.toString())
-    } catch (e) { console.warn('Failed to save settings:', (e as Error).message) }
+    } catch (e) { console.warn('Failed to save settings:', e instanceof Error ? e.message : String(e)) }
   }, [theme, isEmergency, isHighContrast])
 
   const toggleTheme = useCallback(() => {

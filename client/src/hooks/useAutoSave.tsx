@@ -17,6 +17,8 @@ export function useAutoSave({ key, data, delay = 1500, onSave, enabled = true }:
   const [status, setStatus] = useState<SaveStatus>('idle')
   const timerRef = useRef<ReturnType<typeof setTimeout>>()
   const mountedRef = useRef(true)
+  const onSaveRef = useRef(onSave)
+  onSaveRef.current = onSave
 
   useEffect(() => {
     mountedRef.current = true
@@ -63,7 +65,7 @@ export function useAutoSave({ key, data, delay = 1500, onSave, enabled = true }:
             throw storageErr
           }
         }
-        if (onSave) await onSave(data)
+        if (onSaveRef.current) await onSaveRef.current(data)
         if (mountedRef.current) setStatus('saved')
       } catch {
         if (mountedRef.current) setStatus('error')
@@ -76,7 +78,7 @@ export function useAutoSave({ key, data, delay = 1500, onSave, enabled = true }:
     }, delay)
 
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
-  }, [data, key, delay, onSave, enabled])
+  }, [data, key, delay, enabled])
 
   const restore = useCallback(<T,>(): T | null => {
     try {

@@ -64,10 +64,11 @@ async function apiFetch<T = Record<string, unknown>>(path: string, { method = 'G
     return data as T
   } catch (err) {
     clearTimeout(timer)
-    if ((err as Error).name === 'AbortError') {
+    const errObj = err instanceof Error ? err : new Error(String(err))
+    if (errObj.name === 'AbortError') {
       throw new Error('Request timed out. Please check your connection and try again.')
     }
-    if ((err as Error).message === 'Failed to fetch' || (err as Error).name === 'TypeError') {
+    if (errObj.message === 'Failed to fetch' || errObj.name === 'TypeError') {
       throw new Error('Unable to connect to the server. Please ensure the backend is running and try again.')
     }
     throw err
@@ -90,8 +91,14 @@ async function exportCSV(path: string, filename: string): Promise<void> {
   const a = document.createElement('a')
   a.href = url
   a.download = filename
+  a.style.display = 'none'
+  document.body.appendChild(a)
   a.click()
-  URL.revokeObjectURL(url)
+  // Wait for download to start before revoking
+  setTimeout(() => {
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, 1000)
 }
 
 export const clientApi = {

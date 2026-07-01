@@ -44,7 +44,7 @@ export function useVersionCheck(): { hasUpdate: boolean; applyUpdate: () => void
           setHasUpdate(true)
         }
       } catch (e) {
-        console.warn('Version check failed:', (e as Error).message)
+        console.warn('Version check failed:', e instanceof Error ? e.message : String(e))
       }
     }
 
