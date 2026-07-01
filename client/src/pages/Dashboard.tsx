@@ -78,6 +78,7 @@ export default function Dashboard() {
   const { connected } = useSocket()
 
   const displayName = currentUser?.displayName || currentUser?.email || t('common.unknown')
+  const hasUrgent = items.some((it) => it.priority === 'Critical' || it.priority === 'High')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -143,23 +144,25 @@ export default function Dashboard() {
       <motion.div className="container" variants={containerVariants} initial="hidden" animate="visible">
         {/* ── GREETING ── */}
         <motion.div className="mb-lg" variants={fadeUp}>
-          <motion.div className="bento-card" variants={itemVariants}>
-            <div className="flex items-center gap-sm mb-sm">
-              <div className="bento-icon bento-icon-accent">
-                <Sun size={20} />
+          <motion.div className={`hero-gradient ${hasUrgent ? 'hero-gradient--urgent' : ''}`} variants={itemVariants}>
+            <div className="bento-card">
+              <div className="flex items-center gap-sm mb-sm">
+                <div className="bento-icon bento-icon-accent">
+                  <Sun size={20} />
+                </div>
+                <div>
+                  <div className="text-base greeting-text">{greeting}, {displayName.split(' ')[0]}</div>
+                  <div className="text-xs text-muted">{currentDate}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-base greeting-text">{greeting}, {displayName.split(' ')[0]}</div>
-                <div className="text-xs text-muted">{currentDate}</div>
+              <div className="flex items-center gap-sm">
+                <span className={`live-dot ${connected ? '' : 'live-dot--disconnected'}`}>
+                  {connected ? t('dashboard.live') : t('dashboard.offline')}
+                </span>
+                {total > 0 && (
+                  <span className="text-xs text-muted">{total} {t('dashboard.totalRequests')}</span>
+                )}
               </div>
-            </div>
-            <div className="flex items-center gap-sm">
-              <span className={`live-dot ${connected ? '' : 'live-dot--disconnected'}`}>
-                {connected ? t('dashboard.live') : t('dashboard.offline')}
-              </span>
-              {total > 0 && (
-                <span className="text-xs text-muted">{total} {t('dashboard.totalRequests')}</span>
-              )}
             </div>
           </motion.div>
         </motion.div>

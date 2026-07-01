@@ -46,3 +46,13 @@ export function cleanupLeafletMap(map: L.Map | null | undefined): void {
   }
   map.remove()
 }
+
+type PulseSeverity = 'critical' | 'high' | 'medium' | 'low' | 'info'
+
+export function createPulseMarker(map: L.Map, lat: number, lng: number, severity: PulseSeverity = 'info', label?: string): L.Marker {
+  const el = document.createElement('div')
+  el.className = `pulse-marker pulse-marker--${severity}`
+  el.innerHTML = '<div class="pulse-marker-dot"></div>'
+  if (label) el.setAttribute('aria-label', label)
+  return L.marker([lat, lng], { icon: L.divIcon({ html: el.outerHTML, className: '', iconSize: [24, 24], iconAnchor: [12, 12] }) }).addTo(map)
+}

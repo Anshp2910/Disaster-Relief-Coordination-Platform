@@ -2,40 +2,72 @@
    ENTERPRISE CARDS — Bento, KPI, activity, stats, tabs
    ================================================================ */
 
-/* ── Base Card ── */
+/* ── Base Card (Glass-morphism) ── */
 .card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   transition: box-shadow var(--duration-normal) var(--ease-out),
               border-color var(--duration-normal) var(--ease-out),
-              transform var(--duration-normal) var(--ease-out);
+              transform var(--duration-normal) var(--ease-out),
+              background var(--duration-normal) var(--ease-out);
   position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent-soft), transparent 40%);
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
+  pointer-events: none;
 }
 .card:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--border-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  background: var(--glass-bg-strong);
 }
+.card:hover::before { opacity: 0.3; }
 
 .listCard {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-xs);
-  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.6));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.6));
   transition: box-shadow var(--duration-normal) var(--ease-out),
               border-color var(--duration-normal) var(--ease-out),
-              background var(--duration-fast) var(--ease-out);
+              background var(--duration-fast) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.listCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent-soft), transparent 50%);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+  pointer-events: none;
 }
 .listCard:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--border-hover);
-  background: var(--bg-elevated);
+  background: var(--glass-bg-strong);
+  transform: translateY(-1px);
 }
+.listCard:hover::after { opacity: 0.15; }
 .listCard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ── Bento Grid ── */
@@ -45,11 +77,13 @@
   gap: var(--space-md);
 }
 .bento-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-xs);
-  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.8));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.8));
   transition: box-shadow var(--duration-normal) var(--ease-out),
               border-color var(--duration-normal) var(--ease-out),
               transform var(--duration-normal) var(--ease-out);
@@ -147,11 +181,13 @@
   gap: var(--space-md);
 }
 .kpi-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-xs);
-  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.5));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.5));
   transition: box-shadow var(--duration-normal) var(--ease-out),
               border-color var(--duration-normal) var(--ease-out);
   position: relative;

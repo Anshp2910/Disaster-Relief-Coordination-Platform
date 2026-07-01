@@ -7,11 +7,22 @@ interface BadgeProps {
   colorKey?: string
   size?: 'sm' | 'md' | 'lg'
   className?: string
+  ribbon?: boolean
+  severity?: 'critical' | 'high' | 'medium' | 'low'
 }
 
-const Badge = memo(function Badge({ label, colors, colorKey, size = 'md', className = '' }: BadgeProps) {
+const Badge = memo(function Badge({ label, colors, colorKey, size = 'md', className = '', ribbon, severity }: BadgeProps) {
   const c = (colors || {})[colorKey || label] || COLORS_FALLBACK
   const sizeClass = size === 'sm' ? 'govt-badge--sm' : size === 'lg' ? 'govt-badge--lg' : ''
+
+  if (ribbon && severity) {
+    return (
+      <div className={`severity-ribbon severity-ribbon--${severity} ${className}`.trim()}>
+        {label}
+      </div>
+    )
+  }
+
   return (
     <span className={`govt-badge ${sizeClass} ${className}`.trim()} role="status" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
