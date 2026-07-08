@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -11,6 +11,7 @@ const container = createStagger(0.08, 0.1)
 const item = createListItem(20, 0.5)
 
 export default function ResetPassword() {
+  useEffect(() => { document.title = 'Disaster Relief - Reset Password' }, [])
   const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') || ''

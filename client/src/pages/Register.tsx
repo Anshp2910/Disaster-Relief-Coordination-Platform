@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -19,6 +19,7 @@ const container = createStagger(0.08, 0.1)
 const item = createListItem(20, 0.5)
 
 export default function Register() {
+  useEffect(() => { document.title = 'Disaster Relief - Register' }, [])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)

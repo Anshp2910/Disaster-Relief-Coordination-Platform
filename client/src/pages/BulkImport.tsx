@@ -1,4 +1,4 @@
-﻿import { useState, useRef } from 'react'
+﻿import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Upload, FileText, CheckCircle, AlertTriangle, Download, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
@@ -104,6 +104,7 @@ const REQUEST_EXAMPLE = 'Flood relief needed,Water and food needed,Food,High,Ope
 const RESOURCE_EXAMPLE = 'Rice bags,Food,100,kg,Available,Chennai Depot,13.0827,80.2707'
 
 export default function BulkImport() {
+  useEffect(() => { document.title = 'Disaster Relief - Bulk Import' }, [])
   const { t } = useTranslation()
   const toast = useToast()
   const [tab, setTab] = useState('requests')

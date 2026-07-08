@@ -9,6 +9,7 @@ import { PageTransition } from '../components/ui'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 export default function EditRequest() {
+  useEffect(() => { document.title = 'Disaster Relief - Edit Request' }, [])
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { t } = useTranslation()

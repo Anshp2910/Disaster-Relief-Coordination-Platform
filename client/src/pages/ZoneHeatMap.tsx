@@ -64,6 +64,7 @@ const containerVariants = createStagger(0.05)
 const itemVariants = createListItem(10, 0.3)
 
 export default function ZoneHeatMap() {
+  useEffect(() => { document.title = 'Disaster Relief - Zones' }, [])
   const { t } = useTranslation()
   const [zones, setZones] = useState<Zone[]>([])
   const [loading, setLoading] = useState(true)

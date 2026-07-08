@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -18,6 +18,7 @@ const container = createStagger(0.08, 0.1)
 const item = createListItem(20, 0.5)
 
 export default function Login() {
+  useEffect(() => { document.title = 'Disaster Relief - Login' }, [])
   const [email, setEmail] = useState(() => {
     try { return localStorage.getItem('rememberedEmail') || '' } catch { return '' }
   })

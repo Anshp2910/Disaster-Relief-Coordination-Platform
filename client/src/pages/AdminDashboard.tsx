@@ -275,19 +275,19 @@ function StatsPanel({ stats }: StatsPanelProps) {
 
       <div className="admin-charts-grid">
         <motion.div className="admin-chart-card" variants={itemVariants}>
-          <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.requestsOverTime')}</div>
+          <div className="text-semi mb-xs text-accent text-sm">{t('admin.requestsOverTime')}</div>
           <DailyRequestsChart data={stats.dailyRequests} />
         </motion.div>
         <motion.div className="admin-chart-card" variants={itemVariants}>
-          <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byStatus')}</div>
+          <div className="text-semi mb-xs text-accent text-sm">{t('admin.byStatus')}</div>
           <StatusPieChart data={stats.byStatus} />
         </motion.div>
         <motion.div className="admin-chart-card" variants={itemVariants}>
-          <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byPriority')}</div>
+          <div className="text-semi mb-xs text-accent text-sm">{t('admin.byPriority')}</div>
           <PriorityPieChart data={stats.byPriority} />
         </motion.div>
         <motion.div className="admin-chart-card admin-chart-card--wide" variants={itemVariants}>
-          <div className="text-semi mb-xs text-accent-blue text-13">{t('admin.byCategory')}</div>
+          <div className="text-semi mb-xs text-accent text-sm">{t('admin.byCategory')}</div>
           <CategoryBarChart data={stats.byCategory} total={stats.totalRequests} />
         </motion.div>
       </div>
@@ -523,6 +523,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
 }
 
 export default function AdminDashboard() {
+  useEffect(() => { document.title = 'Disaster Relief - Admin Dashboard' }, [])
   const [stats, setStats] = useState<Stats | null>(null)
   const [users, setUsers] = useState<User[]>([])
   const [requests, setRequests] = useState<Request[]>([])

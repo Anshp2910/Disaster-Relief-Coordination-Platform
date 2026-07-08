@@ -37,6 +37,7 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 }
 
 export default function PublicStatus() {
+  useEffect(() => { document.title = 'Disaster Relief - Public Status' }, [])
   const { t } = useTranslation()
   const [data, setData] = useState<Record<string, unknown> | null>(null)
   const [loading, setLoading] = useState(true)

@@ -442,3 +442,60 @@
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+/* ================================================================
+   BREADCRUMBS — Professional hierarchical page navigation
+   ================================================================ */
+
+.breadcrumbs {
+  margin-bottom: var(--space-sm);
+}
+
+.breadcrumbs-list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-size: var(--text-xs);
+}
+
+.breadcrumbs-home-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.breadcrumbs-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+}
+.breadcrumbs-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.breadcrumbs-link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-3xs);
+}
+
+.breadcrumbs-current {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.breadcrumbs-sep {
+  color: var(--border);
+  flex-shrink: 0;
+}

@@ -64,7 +64,7 @@
   --text: #0f172a;
   --text-secondary: #475569;
   --text-tertiary: #64748b;
-  --text-muted: #94a3b8;
+  --text-muted: #6b7280;
   --text-disabled: #cbd5e1;
   --text-on-accent: #ffffff;
   --text-on-dark: #f1f5f9;
@@ -137,20 +137,20 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
 
-  /* ── Type Scale (8px grid aligned) ── */
-  --text-3xs: 11px;
-  --text-2xs: 12px;
-  --text-xs: 13px;
-  --text-sm: 14px;
-  --text-base: 15px;
-  --text-lg: 17px;
-  --text-xl: 20px;
-  --text-2xl: 24px;
-  --text-3xl: 30px;
-  --text-4xl: 36px;
-  --text-5xl: 48px;
-  --text-6xl: 60px;
-  --text-7xl: 72px;
+  /* ── Type Scale (rem-based for WCAG 1.4.4 resizing) ── */
+  --text-3xs: 0.6875rem;
+  --text-2xs: 0.75rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
+  --text-7xl: 4.5rem;
 
   /* ── Line Heights ── */
   --leading-none: 1;

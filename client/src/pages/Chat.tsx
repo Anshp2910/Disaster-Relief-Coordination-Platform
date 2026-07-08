@@ -40,6 +40,7 @@ interface ChatProps {
 }
 
 export default function Chat({ requestId, onClose }: ChatProps) {
+  useEffect(() => { document.title = 'Disaster Relief - Chat' }, [])
   const { t, i18n } = useTranslation()
   const { user: currentUser } = useAuth()
   const { socket } = useSocket()

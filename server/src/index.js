@@ -47,7 +47,7 @@ async function start() {
   const { getJwtSecret } = await import('./config/env.js')
 
   io.use((socket, next) => {
-    const token = socket.handshake.auth?.token || socket.handshake.query?.token
+    const token = socket.handshake.auth?.token
     if (!token) return next(new Error('Authentication required'))
     try {
       const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] })

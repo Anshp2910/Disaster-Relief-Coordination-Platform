@@ -28,6 +28,7 @@ interface RequestOption {
 }
 
 export default function Escalation() {
+  useEffect(() => { document.title = 'Disaster Relief - Escalations' }, [])
   const { t } = useTranslation()
   const [items, setItems] = useState<EscalatedItem[]>([])
   const [loading, setLoading] = useState(true)

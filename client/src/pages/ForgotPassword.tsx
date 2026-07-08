@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -11,6 +11,7 @@ const container = createStagger(0.08, 0.1)
 const item = createListItem(20, 0.5)
 
 export default function ForgotPassword() {
+  useEffect(() => { document.title = 'Disaster Relief - Forgot Password' }, [])
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)

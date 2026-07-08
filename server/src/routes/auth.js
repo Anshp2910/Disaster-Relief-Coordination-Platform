@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import passport from 'passport'
+import rateLimit from 'express-rate-limit'
 import { getJwtSecret } from '../config/env.js'
 import { User } from '../models/User.js'
 import { requireAuth } from '../middleware/auth.js'
@@ -9,6 +10,22 @@ import { validate } from '../middleware/validate.js'
 import { logger } from '../utils/logger.js'
 import { sendPasswordResetEmail } from '../utils/email.js'
 import '../config/passport.js'
+
+const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Too many refresh requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+const csrfLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: 'Too many CSRF token requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
 
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 
@@ -161,9 +178,6 @@ authRouter.post('/forgot-password', async (req, res) => {
     if (typeof sent === 'string') {
       payload.emailPreviewUrl = sent
     }
-    if (!sent) {
-      payload.resetUrl = resetUrl
-    }
     return res.json(payload)
   } catch (err) {
     logger.error('[auth] forgot-password error', { message: err.message })
@@ -246,7 +260,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   })
 }
 
-authRouter.post('/refresh', async (req, res) => {
+authRouter.post('/refresh', refreshLimiter, async (req, res) => {
   try {
     const { token } = req.body || {}
     if (!token) return res.status(400).json({ error: 'Token required' })
@@ -254,12 +268,8 @@ authRouter.post('/refresh', async (req, res) => {
     let decoded
     try {
       decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] })
-    } catch (verifyErr) {
-      if (verifyErr.name === 'TokenExpiredError') {
-        decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'], ignoreExpiration: true })
-      } else {
-        return res.status(401).json({ error: 'Invalid token' })
-      }
+    } catch {
+      return res.status(401).json({ error: 'Invalid or expired token' })
     }
 
     if (!decoded.sub || !decoded.exp || !decoded.iat) {
@@ -280,7 +290,7 @@ authRouter.post('/refresh', async (req, res) => {
   }
 })
 
-authRouter.get('/csrf-token', requireAuth, (req, res) => {
+authRouter.get('/csrf-token', csrfLimiter, requireAuth, (req, res) => {
   const csrfToken = generateCsrfToken(req.user._id)
   return res.json({ csrfToken })
 })

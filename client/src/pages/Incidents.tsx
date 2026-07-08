@@ -92,6 +92,7 @@ const DEFAULT_FORM: IncidentForm = {
 }
 
 export default function Incidents() {
+  useEffect(() => { document.title = 'Disaster Relief - Incidents' }, [])
   const { t } = useTranslation()
   const [incidents, setIncidents] = useState<Incident[]>([])
   const [loading, setLoading] = useState(true)

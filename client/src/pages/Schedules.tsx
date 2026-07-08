@@ -103,6 +103,7 @@ const DEFAULT_FORM: ScheduleForm = {
 }
 
 export default function Schedules() {
+  useEffect(() => { document.title = 'Disaster Relief - Schedules' }, [])
   const { t, i18n } = useTranslation()
   const [items, setItems] = useState<ScheduleItem[]>([])
   const [loading, setLoading] = useState(true)

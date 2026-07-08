@@ -7,6 +7,7 @@ import { safeSetItem } from '../utils/storage'
 import { API_BASE } from '../api/client'
 
 export default function SocialCallback() {
+  useEffect(() => { document.title = 'Disaster Relief - Signing In...' }, [])
   const navigate = useNavigate()
   const { t } = useTranslation()
   const [searchParams] = useSearchParams()

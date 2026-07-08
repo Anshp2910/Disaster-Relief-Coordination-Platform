@@ -49,6 +49,7 @@ const STATUSES = ['All', ...RESOURCE_STATUS_OPTIONS]
 const EMPTY_FORM: ResourceFormState = { name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' }
 
 export default function Resources() {
+  useEffect(() => { document.title = 'Disaster Relief - Resources' }, [])
   const { t } = useTranslation()
   const toast = useToast()
 

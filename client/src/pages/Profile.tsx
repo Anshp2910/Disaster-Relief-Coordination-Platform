@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useMemo } from 'react'
+﻿import { useState, useRef, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -11,6 +11,7 @@ import { evaluatePasswordStrength } from '../utils/passwordStrength'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 export default function Profile() {
+  useEffect(() => { document.title = 'Disaster Relief - Profile' }, [])
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, updateUser } = useAuth()

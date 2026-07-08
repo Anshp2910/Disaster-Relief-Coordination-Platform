@@ -51,6 +51,7 @@ const containerVariants = createStagger(0.05)
 const fadeUp = createListItem(16, 0.3)
 
 export default function Dashboard() {
+  useEffect(() => { document.title = 'Disaster Relief - Dashboard' }, [])
   const [items, setItems] = useState<Item[]>([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)

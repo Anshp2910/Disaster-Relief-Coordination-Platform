@@ -44,6 +44,7 @@ const PRIORITY_FILTER_KEYS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const CATEGORY_FILTER_KEYS = ['All', 'Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
 
 export default function MapOverview() {
+  useEffect(() => { document.title = 'Disaster Relief - Map' }, [])
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [items, setItems] = useState<Item[]>([])

@@ -70,6 +70,7 @@ function createMapIcon(color: string) {
 }
 
 export default function Geofencing() {
+  useEffect(() => { document.title = 'Disaster Relief - Geofencing' }, [])
   const { t } = useTranslation()
   const [position, setPosition] = useState<Position | null>(null)
   const [radius, setRadius] = useState(10)

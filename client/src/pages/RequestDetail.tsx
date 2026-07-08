@@ -102,6 +102,7 @@ const containerVariants = createStagger(0.08)
 const itemVariants = createListItem(12, 0.35)
 
 export default function RequestDetail() {
+  useEffect(() => { document.title = 'Disaster Relief - Request Details' }, [])
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { t } = useTranslation()

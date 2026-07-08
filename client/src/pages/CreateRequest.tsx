@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { clientApi } from '../api/client'
@@ -5,6 +6,7 @@ import RequestForm from '../components/RequestForm'
 import { PageTransition } from '../components/ui'
 
 export default function CreateRequest() {
+  useEffect(() => { document.title = 'Disaster Relief - New Request' }, [])
   const navigate = useNavigate()
   const { t } = useTranslation()
 

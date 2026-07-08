@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -6,6 +7,7 @@ import { PageTransition } from '../components/ui'
 import { RippleBtn } from '../components/ui'
 
 export default function NotFound() {
+  useEffect(() => { document.title = 'Disaster Relief - Page Not Found' }, [])
   const navigate = useNavigate()
   const { t } = useTranslation()
 
