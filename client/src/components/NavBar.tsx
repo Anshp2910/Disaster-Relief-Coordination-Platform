@@ -3,70 +3,21 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
-import {
-  Sun, Moon, User, LogOut, AlertTriangle, Zap,
-  LayoutDashboard, Map, Package, MapPin, PlusSquare,
-  Shield, Menu, X, Calendar, Crosshair, Upload, TrendingUp
-} from 'lucide-react'
-import NotificationBell from './NotificationBell'
-
-interface Language {
-  code: string
-  label: string
-}
-
-const LANGUAGES: Language[] = [
-  { code: 'en', label: 'English' },
-  { code: 'hi', label: 'Hindi' },
-  { code: 'bn', label: 'Bengali' },
-  { code: 'ta', label: 'Tamil' },
-  { code: 'te', label: 'Telugu' },
-  { code: 'mr', label: 'Marathi' },
-  { code: 'gu', label: 'Gujarati' },
-  { code: 'kn', label: 'Kannada' },
-  { code: 'pa', label: 'Punjabi' },
-  { code: 'ur', label: 'اردو' },
-]
-
-interface NavLink {
-  path: string
-  labelKey: string
-  fallback: string
-  icon: React.ReactNode
-  admin?: boolean
-}
-
-const NAV_LINKS: NavLink[] = [
-  { path: '/dashboard', labelKey: 'nav.dashboard', fallback: 'Dashboard', icon: <LayoutDashboard size={16} /> },
-  { path: '/map', labelKey: 'nav.mapView', fallback: 'Map', icon: <Map size={16} /> },
-  { path: '/resources', labelKey: 'nav.resources', fallback: 'Resources', icon: <Package size={16} /> },
-  { path: '/zones', labelKey: 'nav.zones', fallback: 'Zones', icon: <MapPin size={16} /> },
-  { path: '/incidents', labelKey: 'nav.incidents', fallback: 'Incidents', icon: <AlertTriangle size={16} /> },
-  { path: '/schedules', labelKey: 'nav.schedules', fallback: 'Schedules', icon: <Calendar size={16} /> },
-  { path: '/geofencing', labelKey: 'nav.geofencing', fallback: 'Geofencing', icon: <Crosshair size={16} /> },
-  { path: '/requests/new', labelKey: 'nav.newRequest', fallback: 'New Request', icon: <PlusSquare size={16} /> },
-  { path: '/escalation', labelKey: 'nav.escalation', fallback: 'Escalation', icon: <TrendingUp size={16} />, admin: true },
-  { path: '/bulk', labelKey: 'nav.bulkImport', fallback: 'Bulk Import', icon: <Upload size={16} />, admin: true },
-  { path: '/admin', labelKey: 'nav.admin', fallback: 'Admin', icon: <Shield size={16} />, admin: true },
-]
+import { FeatureNav } from './FeatureNav'
+import { NavControls } from './NavControls'
 
 export function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const { t, i18n } = useTranslation()
-  const { user: currentUser, isAuthenticated, isAdmin, logout: authLogout } = useAuth()
-  const { theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, toggleEmergency } = useTheme()
+  const { t } = useTranslation()
+  const { isAuthenticated } = useAuth()
+  const { toggleEmergency, togglePremiumTheme } = useTheme()
 
   // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false)
   }, [location.pathname])
-
-  function changeLanguage(langCode: string) {
-    i18n.changeLanguage(langCode)
-    try { localStorage.setItem('language', langCode) } catch { /* noop */ }
-  }
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -83,12 +34,6 @@ export function NavBar() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [toggleEmergency, togglePremiumTheme])
 
-  const isActive = (path: string) => {
-    if (path === '/dashboard') return location.pathname === '/dashboard'
-    return location.pathname.startsWith(path)
-  }
-
-  const filteredLinks = NAV_LINKS.filter(l => !l.admin || (l.admin && isAdmin))
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
   const showNav = isAuthenticated && !isAuthPage
 
@@ -112,157 +57,19 @@ export function NavBar() {
           </div>
         </button>
 
-        {/* ─── Desktop Nav Links ─── */}
-        <div className="gov-navbar-links">
-          {showNav && filteredLinks.map((link) => (
-            <button                key={link.path}
-              onClick={() => { navigate(link.path) }}
-              className={`gov-navbar-link ${isActive(link.path) ? 'active' : ''}`}
-              aria-current={isActive(link.path) ? 'page' : undefined}
-            >
-              {link.icon}
-              <span>{t(link.labelKey, link.fallback)}</span>
-            </button>
-          ))}
-        </div>
+        <FeatureNav />
 
-        {/* ─── Right Controls ─── */}
-        <div className="gov-navbar-controls">
-          {showNav && (
-            <>
-              {/* Tools group */}
-              <div className="gov-navbar-btn-group">
-                <div className="gov-navbar-lang">
-                  <select
-                    value={i18n.language}
-                    onChange={(e) => changeLanguage(e.target.value)}
-                    className="gov-navbar-lang-select"
-                    aria-label={t('header.selectLanguage')}
-                  >
-                    {LANGUAGES.map((l) => (
-                      <option key={l.code} value={l.code}>{l.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="gov-navbar-divider" />
-
-              {/* Theme group */}
-              <div className="gov-navbar-btn-group">
-                <button
-                  onClick={toggleTheme}
-                  className="gov-navbar-tool-btn"
-                  aria-label={t('nav.switchTo', { mode: theme === 'light' ? t('nav.darkMode') : t('nav.lightMode') })}
-                  title={theme === 'light' ? t('nav.darkMode') : t('nav.lightMode')}
-                >
-                  {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-                </button>
-                <button
-                  onClick={togglePremiumTheme}
-                  className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`}
-                  aria-label={isPremium ? t('nav.disablePremiumTheme') : t('nav.activatePremiumTheme')}
-                  title={t('nav.premiumThemeHint')}
-                >
-                  <Zap size={14} />
-                </button>
-                <button
-                  onClick={toggleEmergency}
-                  className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`}
-                  aria-label={isEmergency ? t('nav.disableEmergencyMode') : t('nav.activateEmergencyMode')}
-                  title={t('nav.emergencyModeHint')}
-                >
-                  <AlertTriangle size={14} />
-                  {isEmergency && <span className="gov-navbar-emergency-dot" />}
-                </button>
-              </div>
-
-              <div className="gov-navbar-divider" />
-
-              {/* User group */}
-              <div className="gov-navbar-btn-group">
-                <NotificationBell />
-                <button
-                  onClick={() => { navigate('/profile') }}
-                  className="gov-navbar-user-btn"
-                  aria-label={t('nav.profile')}
-                  title={currentUser?.displayName || t('nav.profile')}
-                >
-                  <User size={16} />
-                  <span className="gov-navbar-user-name">{currentUser?.displayName?.split(' ')[0] || t('nav.profile')}</span>
-                </button>
-                <button
-                  onClick={() => {
-                    authLogout()
-                    navigate('/login')
-                  }}
-                  className="gov-navbar-tool-btn"
-                  aria-label={t('nav.logout')}
-                  title={t('nav.logout')}
-                >
-                  <LogOut size={14} />
-                </button>
-              </div>
-            </>
-          )}
-
-          {/* Always visible: hamburger */}
-          <button
-            className="gov-navbar-hamburger"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
-          >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
+        <NavControls
+          onToggleMenu={() => setMenuOpen(!menuOpen)}
+          menuOpen={menuOpen}
+          showNav={showNav}
+        />
       </div>
 
-      {/* ─── Mobile Menu ─── */}
       {menuOpen && showNav && (
         <div className="gov-navbar-mobile" id="mobile-menu" role="region" aria-label={t('nav.mobileNavigation')}>
-          <div className="gov-navbar-mobile-section-label">{t('nav.navigation')}</div>
-          {filteredLinks.map((link) => (
-            <button
-              key={link.path}
-              onClick={() => { navigate(link.path) }}
-              className={`gov-navbar-mobile-link ${isActive(link.path) ? 'active' : ''}`}
-              aria-current={isActive(link.path) ? 'page' : undefined}
-            >
-              {link.icon}
-              <span>{t(link.labelKey, link.fallback)}</span>
-            </button>
-          ))}
-
-          <div className="gov-navbar-mobile-divider" />
-
-          <div className="gov-navbar-mobile-section-label">{t('nav.settings')}</div>
-          <div className="gov-navbar-mobile-controls">
-            <div className="gov-navbar-lang">
-              <select
-                value={i18n.language}
-                onChange={(e) => changeLanguage(e.target.value)}
-                className="gov-navbar-lang-select"
-                aria-label={t('header.selectLanguage')}
-              >
-                {LANGUAGES.map((l) => (
-                  <option key={l.code} value={l.code}>{l.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="gov-navbar-mobile-theme">
-              <button onClick={toggleTheme} className="gov-navbar-tool-btn" aria-label={t('nav.toggleTheme')}>
-                {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-              </button>
-              <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} aria-label={t('nav.togglePremiumTheme')} title={t('nav.premiumThemeHint')}>
-                <Zap size={14} />
-              </button>
-              <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} aria-label={isEmergency ? t('nav.disableEmergencyMode') : t('nav.activateEmergencyMode')} title={t('nav.emergencyModeHint')}>
-                <AlertTriangle size={14} />
-              </button>
-            </div>
-          </div>
+          <FeatureNav mobile />
+          <NavControls mobile onToggleMenu={() => setMenuOpen(!menuOpen)} menuOpen={menuOpen} showNav={showNav} />
         </div>
       )}
     </nav>
