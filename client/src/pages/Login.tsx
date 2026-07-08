@@ -153,6 +153,7 @@ export default function Login() {
                   placeholder={t('auth.password')}
                   aria-describedby={error ? 'login-error' : undefined}
                   aria-invalid={error ? 'true' : 'false'}
+                  autoComplete="current-password"
                   minLength={8}
                 />
                 <button

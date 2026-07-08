@@ -68,7 +68,7 @@ export function createApp() {
       directives: {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", "https://*.tile.openstreetmap.org", "data:", "blob:"],
-        styleSrc: ["'self'", "https://unpkg.com", "https://fonts.googleapis.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://fonts.googleapis.com"],
         connectSrc: ["'self'", "ws:", "wss:", "https://*.tile.openstreetmap.org", "https://nominatim.openstreetmap.org", "https://fonts.googleapis.com", ...allOrigins],
         scriptSrc: ["'self'", "https://static.cloudflareinsights.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
