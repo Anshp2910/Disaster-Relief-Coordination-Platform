@@ -31,9 +31,11 @@ const NAV_LINKS: NavLink[] = [
 
 interface FeatureNavProps {
   mobile?: boolean
+  showNav?: boolean
 }
 
-export function FeatureNav({ mobile = false }: FeatureNavProps) {
+export function FeatureNav({ mobile = false, showNav = true }: FeatureNavProps) {
+  if (!showNav) return null
   const location = useLocation()
   const navigate = useNavigate()
   const { t } = useTranslation()

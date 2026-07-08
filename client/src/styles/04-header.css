@@ -90,10 +90,19 @@
   flex: 1;
   justify-content: center;
   overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+  -ms-overflow-style: auto;
+  mask-image: linear-gradient(to right, transparent, black var(--space-xsml), black calc(100% - var(--space-xsml)), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black var(--space-xsml), black calc(100% - var(--space-xsml)), transparent);
 }
-.gov-navbar-links::-webkit-scrollbar { display: none; }
+.gov-navbar-links:hover {
+  scrollbar-color: var(--accent) transparent;
+}
+.gov-navbar-links::-webkit-scrollbar { height: 3px; }
+.gov-navbar-links::-webkit-scrollbar-track { background: transparent; }
+.gov-navbar-links::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
+.gov-navbar-links:hover::-webkit-scrollbar-thumb { background: var(--accent); }
 
 .gov-navbar-link {
   display: flex;

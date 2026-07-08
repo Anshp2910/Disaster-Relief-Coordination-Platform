@@ -57,7 +57,7 @@ export function NavBar() {
           </div>
         </button>
 
-        <FeatureNav />
+        <FeatureNav showNav={showNav} />
 
         <NavControls
           onToggleMenu={() => setMenuOpen(!menuOpen)}
