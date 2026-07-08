@@ -102,6 +102,41 @@ NODE_ENV=production node server/src/index.js
 | ADMIN_PASSWORD | No | Admin seed password |
 | NODE_ENV | No | Environment (development/production) |
 
+## Keeping the Server Warm (Free Tier)
+
+The server is deployed on Render's free tier, which spins down after 15 minutes of inactivity. This causes a 50+ second cold start on the first request.
+
+### Built-in Client Keepalive
+
+The React app automatically pings `/health` every 5 minutes while any browser tab is open. This keeps the server warm during active use.
+
+### Recommended: External Uptime Monitor (24/7)
+
+For around-the-clock coverage, set up a **free uptime monitoring service** to ping the health endpoint every 5 minutes:
+
+**Option A — UptimeRobot (recommended)**
+
+1. Go to [uptimerobot.com](https://uptimerobot.com) and create a free account
+2. Click **Add New Monitor**
+3. Set:
+   - **Monitor Type:** HTTP(s)
+   - **Friendly Name:** `Disaster Relief API`
+   - **URL:** `https://disaster-relief-coordination-platform-l6mk.onrender.com/health`
+   - **Monitoring Interval:** 5 minutes
+4. Click **Create Monitor**
+
+**Option B — cron-job.org**
+
+1. Go to [cron-job.org](https://cron-job.org) and create a free account
+2. Click **Create Cronjob**
+3. Set:
+   - **URL:** `https://disaster-relief-coordination-platform-l6mk.onrender.com/health`
+   - **Execution interval:** Every 5 minutes
+4. Click **Create**
+
+Either option will keep your Render instance active and eliminate cold starts.
+
+
 ## Testing
 
 ```bash

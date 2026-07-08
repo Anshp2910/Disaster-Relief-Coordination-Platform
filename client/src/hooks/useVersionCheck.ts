@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { API_BASE } from '../api/client'
 
-const API_BASE: string = import.meta.env.VITE_API_BASE_URL || ''
 const CHECK_INTERVAL = 120_000 // 2 minutes
 const RELOAD_COOLDOWN = 300_000 // 5 minutes
 

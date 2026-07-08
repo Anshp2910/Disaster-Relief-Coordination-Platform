@@ -1,6 +1,6 @@
 import { safeGetItem, safeRemoveItem } from '../utils/storage'
 
-const API_BASE: string = import.meta.env.VITE_API_BASE_URL || ''
+export const API_BASE: string = import.meta.env.VITE_API_BASE_URL || ''
 let redirectingToLogin = false
 
 function getToken(): string | null {

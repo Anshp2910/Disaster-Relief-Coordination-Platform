@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { safeSetItem } from '../utils/storage'
+import { API_BASE } from '../api/client'
 
 export default function SocialCallback() {
   const navigate = useNavigate()
@@ -32,8 +33,6 @@ export default function SocialCallback() {
     safeSetItem('token', token)
 
     // Fetch user info from /me endpoint, then store and redirect
-    const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
-
     fetch(`${API_BASE}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })

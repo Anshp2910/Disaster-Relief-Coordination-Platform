@@ -319,34 +319,34 @@
     "roleForUser": "{{role}} for {{user}}"
   },
   "categories": {
-    "Medical": "অবস্থান নেই",
-    "Food": "সময়ের সাথে সাথে অনুরোধ",
-    "Shelter": "মেডিকেল",
-    "Water": "খাদ্য",
-    "Rescue": "আশ্রয়",
-    "Supplies": "জল",
-    "Healthcare": "উদ্ধার",
-    "Sanitation": "সরবরাহ",
-    "Clothing": "স্বাস্থ্যসেবা",
-    "Transportation": "স্যানিটেশন",
-    "Communication": "পোশাক",
-    "Power": "পরিবহন",
-    "Infrastructure": "যোগাযোগ",
-    "Other": "শক্তি",
-    "Equipment": "Equipment"
+    "Medical": "চিকিৎসা",
+    "Food": "খাদ্য",
+    "Shelter": "আশ্রয়",
+    "Water": "পানি",
+    "Rescue": "উদ্ধার",
+    "Supplies": "সরবরাহ",
+    "Healthcare": "স্বাস্থ্যসেবা",
+    "Sanitation": "স্যানিটেশন",
+    "Clothing": "পোশাক",
+    "Transportation": "পরিবহন",
+    "Communication": "যোগাযোগ",
+    "Power": "বিদ্যুৎ",
+    "Infrastructure": "অবকাঠামো",
+    "Other": "অন্যান্য",
+    "Equipment": "সরঞ্জাম"
   },
   "priorities": {
-    "Critical": "অবকাঠামো",
-    "High": "অন্যান্য",
-    "Medium": "সমালোচনামূলক",
-    "Low": "উচ্চ"
+    "Critical": "গুরুতর",
+    "High": "উচ্চ",
+    "Medium": "মধ্যম",
+    "Low": "নিম্ন"
   },
   "statuses": {
-    "Open": "সব",
+    "Open": "খোলা",
     "Pending": "মুলতুবি",
-    "In Progress": "খোলা",
-    "Resolved": "চলছে",
-    "Fulfilled": "সমাধান করা হয়েছে"
+    "In Progress": "চলছে",
+    "Resolved": "সমাধান করা হয়েছে",
+    "Fulfilled": "পূর্ণ হয়েছে"
   },
   "resources": {
     "title": "রিলিজ অনুরোধ",
@@ -667,7 +667,7 @@
     "phone": "পাসওয়ার্ড আপডেট করুন",
     "phonePlaceholder": "ফোন নম্বর",
     "skills": "দক্ষতা",
-    "notificationPreferences": "+91 XXXXX XXXXX",
+    "notificationPreferences": "বিজ্ঞপ্তি পছন্দসমূহ",
     "emailNotification": "ইমেইল",
     "smsNotification": "বিজ্ঞপ্তি পছন্দ",
     "eventSubscriptions": "এসএমএস",
@@ -750,7 +750,9 @@
     "broadcastSuccess": "এসওএস থেকে",
     "broadcastFailed": "SOS সতর্কতা সম্প্রচার!",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
     "loading": "তৈরি করুন",

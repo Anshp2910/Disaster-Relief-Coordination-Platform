@@ -319,34 +319,34 @@
     "roleForUser": "{{role}} for {{user}}"
   },
   "categories": {
-    "Medical": "స్థానం లేదు",
-    "Food": "కాలక్రమేణా అభ్యర్థనలు",
-    "Shelter": "వైద్య",
-    "Water": "ఆహారం",
-    "Rescue": "ఆశ్రయం",
-    "Supplies": "నీరు",
-    "Healthcare": "రక్షించు",
-    "Sanitation": "సరఫరా",
-    "Clothing": "ఆరోగ్య సంరక్షణ",
-    "Transportation": "పారిశుధ్యం",
-    "Communication": "దుస్తులు",
-    "Power": "రవాణా",
-    "Infrastructure": "కమ్యూనికేషన్",
-    "Other": "శక్తి",
-    "Equipment": "Equipment"
+    "Medical": "వైద్య",
+    "Food": "ఆహారం",
+    "Shelter": "ఆశ్రయం",
+    "Water": "నీరు",
+    "Rescue": "రక్షించు",
+    "Supplies": "సరఫరా",
+    "Healthcare": "ఆరోగ్య సంరక్షణ",
+    "Sanitation": "పారిశుధ్యం",
+    "Clothing": "దుస్తులు",
+    "Transportation": "రవాణా",
+    "Communication": "కమ్యూనికేషన్",
+    "Power": "శక్తి",
+    "Infrastructure": "మౌలిక సదుపాయాలు",
+    "Other": "ఇతర",
+    "Equipment": "సామగ్రి"
   },
   "priorities": {
-    "Critical": "మౌలిక సదుపాయాలు",
-    "High": "ఇతర",
-    "Medium": "క్లిష్టమైన",
-    "Low": "అధిక"
+    "Critical": "క్లిష్టమైన",
+    "High": "అధిక",
+    "Medium": "మధ్యస్థం",
+    "Low": "తక్కువ"
   },
   "statuses": {
-    "Open": "అన్నీ",
+    "Open": "తెరవండి",
     "Pending": "పెండింగ్‌లో ఉంది",
-    "In Progress": "తెరవండి",
-    "Resolved": "పురోగతిలో ఉంది",
-    "Fulfilled": "పరిష్కరించబడింది"
+    "In Progress": "పురోగతిలో ఉంది",
+    "Resolved": "పరిష్కరించబడింది",
+    "Fulfilled": "నెరవేరింది"
   },
   "resources": {
     "title": "విడుదల అభ్యర్థన",
@@ -664,10 +664,10 @@
     "newPassword": "ప్రస్తుత పాస్వర్డ్",
     "confirmPassword": "కొత్త పాస్‌వర్డ్",
     "updatePassword": "కొత్త పాస్‌వర్డ్‌ని నిర్ధారించండి",
-    "phone": "పాస్‌వర్డ్‌ని నవీకరించండి",
-    "phonePlaceholder": "ఫోన్ నంబర్",
+    "phone": "ఫోన్ నంబర్",
+    "phonePlaceholder": "+91 XXXXX XXXXX",
     "skills": "నైపుణ్యాలు",
-    "notificationPreferences": "+91 XXXXX XXXXX",
+    "notificationPreferences": "నోటిఫికేషన్ ప్రాధాన్యతలు",
     "emailNotification": "ఇమెయిల్",
     "smsNotification": "నోటిఫికేషన్ ప్రాధాన్యతలు",
     "eventSubscriptions": "SMS",
@@ -750,7 +750,9 @@
     "broadcastSuccess": "నుండి SOS",
     "broadcastFailed": "SOS హెచ్చరిక ప్రసారం చేయబడింది!",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
     "loading": "సృష్టించు",

@@ -16,8 +16,7 @@ import { useConfirm } from '../hooks/useConfirm'
 import Chat from './Chat'
 import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS } from '../utils/constants'
 import { getErrorMessage } from '../utils/getErrorMessage'
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+import { API_BASE } from '../api/client'
 
 interface FileItem {
   _id?: string

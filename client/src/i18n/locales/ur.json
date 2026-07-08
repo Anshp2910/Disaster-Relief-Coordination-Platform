@@ -794,7 +794,9 @@
     "broadcastSuccess": "SOS alert broadcasted!",
     "broadcastFailed": "Failed: {{error}}",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "weekdays": {
     "sunday": "اتوار",

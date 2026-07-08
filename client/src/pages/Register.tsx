@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
 import { MapPin, ShieldCheck, Users, Eye, EyeOff, Loader2, GitBranch, Globe, User, Mail } from 'lucide-react'
-import { clientApi } from '../api/client'
+import { clientApi, API_BASE } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import { evaluatePasswordStrength } from '../utils/passwordStrength'
 
@@ -55,7 +55,6 @@ export default function Register() {
   const { login } = useAuth()
 
   function handleSocialLogin(provider: 'google' | 'github') {
-    const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
     window.location.href = `${API_BASE}/api/auth/${provider}`
   }
 

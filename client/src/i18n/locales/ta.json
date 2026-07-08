@@ -319,34 +319,34 @@
     "roleForUser": "{{role}} for {{user}}"
   },
   "categories": {
-    "Medical": "இடம் இல்லை",
-    "Food": "காலப்போக்கில் கோரிக்கைகள்",
-    "Shelter": "மருத்துவம்",
-    "Water": "உணவு",
-    "Rescue": "தங்குமிடம்",
-    "Supplies": "தண்ணீர்",
-    "Healthcare": "மீட்பு",
-    "Sanitation": "பொருட்கள்",
-    "Clothing": "சுகாதாரம்",
-    "Transportation": "சுகாதாரம்",
-    "Communication": "ஆடை",
-    "Power": "போக்குவரத்து",
-    "Infrastructure": "தொடர்பு",
-    "Other": "சக்தி",
-    "Equipment": "Equipment"
+    "Medical": "மருத்துவம்",
+    "Food": "உணவு",
+    "Shelter": "தங்குமிடம்",
+    "Water": "தண்ணீர்",
+    "Rescue": "மீட்பு",
+    "Supplies": "பொருட்கள்",
+    "Healthcare": "சுகாதார பாதுகாப்பு",
+    "Sanitation": "சுகாதாரம்",
+    "Clothing": "ஆடை",
+    "Transportation": "போக்குவரத்து",
+    "Communication": "தொடர்பு",
+    "Power": "மின்சக்தி",
+    "Infrastructure": "உள்கட்டமைப்பு",
+    "Other": "மற்றவை",
+    "Equipment": "உபகரணங்கள்"
   },
   "priorities": {
-    "Critical": "உள்கட்டமைப்பு",
-    "High": "மற்றவை",
-    "Medium": "விமர்சனம்",
-    "Low": "உயர்"
+    "Critical": "மிக முக்கியமான",
+    "High": "உயர்",
+    "Medium": "நடுத்தர",
+    "Low": "குறைந்த"
   },
   "statuses": {
-    "Open": "அனைத்து",
+    "Open": "திறந்த",
     "Pending": "நிலுவையில் உள்ளது",
-    "In Progress": "திற",
-    "Resolved": "செயல்பாட்டில் உள்ளது",
-    "Fulfilled": "தீர்க்கப்பட்டது"
+    "In Progress": "செயல்பாட்டில் உள்ளது",
+    "Resolved": "தீர்க்கப்பட்டது",
+    "Fulfilled": "நிறைவேற்றப்பட்டது"
   },
   "resources": {
     "title": "விடுதலை கோரிக்கை",
@@ -667,7 +667,7 @@
     "phone": "கடவுச்சொல்லை புதுப்பிக்கவும்",
     "phonePlaceholder": "தொலைபேசி எண்",
     "skills": "திறன்கள்",
-    "notificationPreferences": "+91 XXXXX XXXXX",
+    "notificationPreferences": "அறிவிப்பு விருப்பத்தேர்வுகள்",
     "emailNotification": "மின்னஞ்சல்",
     "smsNotification": "அறிவிப்பு விருப்பத்தேர்வுகள்",
     "eventSubscriptions": "எஸ்எம்எஸ்",
@@ -750,7 +750,9 @@
     "broadcastSuccess": "SOS இருந்து",
     "broadcastFailed": "SOS எச்சரிக்கை ஒளிபரப்பப்பட்டது!",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
     "loading": "உருவாக்கு",

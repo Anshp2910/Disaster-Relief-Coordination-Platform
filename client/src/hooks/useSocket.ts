@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { io, type Socket } from 'socket.io-client'
 import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/storage'
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+import { API_BASE } from '../api/client'
 const isProduction = import.meta.env.PROD
 
 let socket: Socket | null = null

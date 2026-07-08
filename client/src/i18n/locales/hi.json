@@ -319,34 +319,34 @@
     "roleForUser": "{{role}} for {{user}}"
   },
   "categories": {
-    "Medical": "अनुरोध सफलतापूर्वक हटा दिया गया",
-    "Food": "कोई स्थान नहीं",
-    "Shelter": "समय के साथ अनुरोध",
-    "Water": "मेडिकल",
-    "Rescue": "खाना",
-    "Supplies": "आश्रय",
-    "Healthcare": "पानी",
-    "Sanitation": "बचाव",
-    "Clothing": "आपूर्ति",
-    "Transportation": "स्वास्थ्य सेवा",
-    "Communication": "स्वच्छता",
-    "Power": "वस्त्र",
-    "Infrastructure": "परिवहन",
-    "Other": "संचार",
-    "Equipment": "Equipment"
+    "Medical": "चिकित्सा",
+    "Food": "भोजन",
+    "Shelter": "आश्रय",
+    "Water": "पानी",
+    "Rescue": "बचाव",
+    "Supplies": "आपूर्ति",
+    "Healthcare": "स्वास्थ्य सेवा",
+    "Sanitation": "स्वच्छता",
+    "Clothing": "वस्त्र",
+    "Transportation": "परिवहन",
+    "Communication": "संचार",
+    "Power": "बिजली",
+    "Infrastructure": "बुनियादी ढाँचा",
+    "Other": "अन्य",
+    "Equipment": "उपकरण"
   },
   "priorities": {
-    "Critical": "शक्ति",
-    "High": "बुनियादी ढाँचा",
-    "Medium": "अन्य",
-    "Low": "गंभीर"
+    "Critical": "गंभीर",
+    "High": "उच्च",
+    "Medium": "मध्यम",
+    "Low": "निम्न"
   },
   "statuses": {
-    "Open": "सब",
-    "Pending": "ऊँचा",
-    "In Progress": "खुला",
-    "Resolved": "प्रगति पर है",
-    "Fulfilled": "सुलझ गया"
+    "Open": "खुला",
+    "Pending": "लंबित",
+    "In Progress": "प्रगति पर है",
+    "Resolved": "हल हो गया",
+    "Fulfilled": "पूरा हो गया"
   },
   "resources": {
     "title": "रिहाई अनुरोध",
@@ -667,7 +667,7 @@
     "phone": "पासवर्ड अपडेट करें",
     "phonePlaceholder": "फ़ोन नंबर",
     "skills": "कौशल",
-    "notificationPreferences": "+91 XXXXX XXXXX",
+    "notificationPreferences": "अधिसूचना प्राथमिकताएँ",
     "emailNotification": "ईमेल",
     "smsNotification": "अधिसूचना प्राथमिकताएँ",
     "eventSubscriptions": "एसएमएस",
@@ -750,7 +750,9 @@
     "broadcastSuccess": "सभी कनेक्टेड उपयोगकर्ताओं को एसओएस आपातकालीन अलर्ट भेजें?",
     "broadcastFailed": "एसओएस से",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
     "loading": "लोड हो रहा है...",

@@ -319,34 +319,34 @@
     "roleForUser": "{{role}} for {{user}}"
   },
   "categories": {
-    "Medical": "विनंती यशस्वीरित्या हटवली",
-    "Food": "स्थान नाही",
-    "Shelter": "कालांतराने विनंत्या",
-    "Water": "वैद्यकीय",
-    "Rescue": "अन्न",
-    "Supplies": "निवारा",
-    "Healthcare": "पाणी",
-    "Sanitation": "बचाव",
-    "Clothing": "पुरवठा",
-    "Transportation": "आरोग्यसेवा",
-    "Communication": "स्वच्छता",
-    "Power": "कपडे",
-    "Infrastructure": "वाहतूक",
-    "Other": "संवाद",
-    "Equipment": "Equipment"
+    "Medical": "वैद्यकीय",
+    "Food": "अन्न",
+    "Shelter": "निवारा",
+    "Water": "पाणी",
+    "Rescue": "बचाव",
+    "Supplies": "पुरवठा",
+    "Healthcare": "आरोग्यसेवा",
+    "Sanitation": "स्वच्छता",
+    "Clothing": "कपडे",
+    "Transportation": "वाहतूक",
+    "Communication": "संवाद",
+    "Power": "वीज",
+    "Infrastructure": "पायाभूत सुविधा",
+    "Other": "इतर",
+    "Equipment": "उपकरणे"
   },
   "priorities": {
-    "Critical": "शक्ती",
-    "High": "पायाभूत सुविधा",
-    "Medium": "इतर",
-    "Low": "गंभीर"
+    "Critical": "गंभीर",
+    "High": "उच्च",
+    "Medium": "मध्यम",
+    "Low": "कमी"
   },
   "statuses": {
-    "Open": "सर्व",
-    "Pending": "उच्च",
-    "In Progress": "उघडा",
-    "Resolved": "प्रगतीपथावर आहे",
-    "Fulfilled": "निराकरण केले"
+    "Open": "उघडा",
+    "Pending": "प्रलंबित",
+    "In Progress": "प्रगतीपथावर आहे",
+    "Resolved": "निराकरण केले",
+    "Fulfilled": "पूर्ण केले"
   },
   "resources": {
     "title": "रिलीझ विनंती",
@@ -667,7 +667,7 @@
     "phone": "पासवर्ड अपडेट करा",
     "phonePlaceholder": "फोन नंबर",
     "skills": "कौशल्य",
-    "notificationPreferences": "+91 XXXXX XXXXX",
+    "notificationPreferences": "सूचना प्राधान्ये",
     "emailNotification": "ईमेल",
     "smsNotification": "सूचना प्राधान्ये",
     "eventSubscriptions": "एसएमएस",
@@ -750,7 +750,9 @@
     "broadcastSuccess": "सर्व कनेक्ट केलेल्या वापरकर्त्यांना SOS आपत्कालीन सूचना पाठवायची?",
     "broadcastFailed": "SOS पासून",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
     "loading": "लोड करत आहे...",

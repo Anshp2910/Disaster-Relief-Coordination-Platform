@@ -727,7 +727,9 @@
     "broadcastSuccess": "SOS ಎಚ್ಚರಿಕೆ ಪ್ರಸಾರಿಸಲಾಗಿದೆ!",
     "broadcastFailed": "ವಿಫಲ: {{error}}",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
     "loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",

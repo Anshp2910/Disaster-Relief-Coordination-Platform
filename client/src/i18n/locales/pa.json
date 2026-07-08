@@ -727,7 +727,9 @@
     "broadcastSuccess": "SOS ਅਲਾਰਮ ਪ੍ਰਸਾਰਿਤ!",
     "broadcastFailed": "ਅਸਫਲ: {{error}}",
     "noActiveAlerts": "No active SOS alerts",
-    "trigger": "SOS"
+    "trigger": "SOS",
+    "alertLabel": "Emergency SOS alert",
+    "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
     "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
