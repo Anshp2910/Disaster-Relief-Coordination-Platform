@@ -1,13 +1,13 @@
 /* ================================================================
-   ENTERPRISE RESPONSIVE — Breakpoints & touch/rtl optimizations
+   GOVERNMENT-GRADE RESPONSIVE — Breakpoints & optimizations
    ================================================================ */
 
-/* ── Responsive Container ── */
 @media (max-width: 1200px) {
   .container { max-width: 100%; padding: 0 var(--space-lg); }
-  .admin-stats-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .admin-stats-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .bento--wide { grid-column: span 1; }
   .grid-sidebar, .grid-sidebar-wide { grid-template-columns: 1fr; }
+  .bento-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 }
 
 @media (max-width: 1024px) {
@@ -18,24 +18,19 @@
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .grid-4-responsive { grid-template-columns: repeat(2, 1fr); }
   .notification-dropdown { width: 320px; right: -40px; }
-  .bento-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .filter-group { flex-wrap: wrap; }
-  .filter-group select { width: 100%; }
   .admin-charts-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
   .container { padding: 0 var(--space-md); }
-  .gov-main { padding-top: 52px; }
+  .gov-main { padding-top: var(--navbar-height); }
 
-  /* NavBar mobile: show hamburger, hide desktop links + extras */
   .gov-navbar-links { display: none; }
   .gov-navbar-hamburger { display: flex; }
   .gov-navbar-user-name { display: none; }
-  .gov-navbar-lang { display: none; }
-  .gov-navbar-divider { display: none; }
-  .gov-navbar-inner { height: 52px; padding: 0 var(--space-md); margin: 0 var(--space-md); }
-  .gov-navbar-bottom-inner { flex-direction: column; gap: var(--space-xs); text-align: center; padding: var(--space-md) var(--space-md); margin: 0 var(--space-md); }
+  .gov-navbar-inner { padding: 0 var(--space-md); }
+  .gov-navbar-bottom-inner { flex-direction: column; gap: var(--space-xs); text-align: center; padding: var(--space-md); }
 
   .bento-grid { grid-template-columns: 1fr; }
   .grid-2, .grid-3, .grid-4-responsive { grid-template-columns: 1fr; }
@@ -43,54 +38,40 @@
   .admin-charts-grid { grid-template-columns: 1fr; }
   .notification-dropdown { width: 300px; right: -60px; }
   .toast-container { left: var(--space-md); right: var(--space-md); max-width: none; }
-  .bento--wide { grid-column: span 1; }
   .grid-sidebar, .grid-sidebar-wide { grid-template-columns: 1fr; }
 
-  /* Better touch targets on mobile */
   .nav-chip { min-width: 70px; padding: var(--space-sm) var(--space-md); }
-  .btn-filter,
-  .filter-pill { padding: var(--space-xs) var(--space-sm); }
   button, .btn { min-height: 44px; }
+
+  .dt-toolbar { flex-direction: column; align-items: stretch; }
 }
 
 @media (max-width: 480px) {
   .container { padding: 0 var(--space-sm); }
-  .gov-main { padding-top: 48px; }
-  .gov-navbar-inner { height: 48px; padding: 0 var(--space-sm); gap: var(--space-4xs); margin: 0 var(--space-xsml); }
+  .gov-main { padding-top: var(--navbar-height); }
+  .gov-navbar-inner { padding: 0 var(--space-sm); gap: var(--space-2xs); }
+
   .kpi-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xs); }
   .kpi-card { padding: var(--space-md); }
   .bento-kpi-value { font-size: var(--text-2xl); }
   .notification-dropdown { width: calc(100vw - 32px); right: -16px; }
-  .bento-card { padding: var(--space-md); }
-  .listCard { padding: var(--space-md); }
-  .card { padding: var(--space-md); }
+  .card, .listCard, .bento-card { padding: var(--space-md); }
   .pageTitle { font-size: var(--text-xl); }
-  
-  /* Stack all filters */
-  .dt-toolbar { flex-direction: column; align-items: stretch; }
+
   .dt-toolbar-left, .dt-toolbar-right { width: 100%; }
   .dt-search-input { width: 100%; }
   .dt-search-wrap { flex: 1; }
   .dt-filters { width: 100%; }
-  .dt-filter-select { flex: 1; min-width: 0; }
-  .dt-count { display: none; }
 
-  /* FilterBar stacks on mobile */
-  .search-input-wrapper { max-width: 100% !important; flex: 1 1 100% !important; }
-  .filter-group { flex: 1 1 calc(50% - var(--space-xs)); min-width: 120px; }
-
-  /* Zone side panels stack below map */
-  .w-320, .w-280 { width: 100% !important; max-width: 100% !important; flex-shrink: 1 !important; }
+  .search-input-wrapper { max-width: 100% !important; }
 }
 
 @media (max-width: 360px) {
   .kpi-grid { grid-template-columns: 1fr; }
-  .gov-navbar-lang-select { font-size: var(--text-3xs); }
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .listCard:hover, .bento-card:hover, .kpi-card:hover { transform: none; }
-  .nav-chip:hover, .nav-chip::after { transform: none; opacity: 0; }
+  .card:hover, .listCard:hover, .kpi-card:hover, .bento-card:hover { transform: none; }
   select, input, textarea { font-size: 16px !important; }
 }
 
@@ -103,7 +84,6 @@
 [dir="rtl"] .gov-navbar-links { flex-direction: row-reverse; }
 [dir="rtl"] .toast-item { flex-direction: row-reverse; }
 [dir="rtl"] .notification-dropdown { right: auto; left: 0; }
-[dir="rtl"] .activity-item:hover { padding-left: var(--space-lg); padding-right: calc(var(--space-lg) + 3px); border-left: none; border-right: 3px solid var(--accent); }
 
 /* ── Modal Responsive ── */
 @media (max-width: 480px) {
@@ -113,6 +93,7 @@
 /* ── SOS FAB Responsive ── */
 @media (max-width: 480px) {
   .sos-fab { bottom: var(--space-md); right: var(--space-md); }
+  .sos-fab-btn { width: 48px; height: 48px; }
 }
 
 /* ── Map Responsive ── */
@@ -122,25 +103,8 @@
   .map-container-full { min-height: 50vh; }
 }
 
-/* ── StepForm Responsive ── */
-@media (max-width: 480px) {
-  .sf-header { gap: 0; }
-  .sf-step-indicator { width: 28px; height: 28px; font-size: var(--text-3xs); }
-  .sf-content { min-height: 80px; }
-}
-
 /* ── DataTable Responsive ── */
 @media (max-width: 768px) {
   .dt-container { overflow-x: auto; }
   .dt-pagination { flex-wrap: wrap; gap: var(--space-xs); }
-}
-
-/* ── ModernSelect Responsive ── */
-@media (max-width: 480px) {
-  .ms-dropdown { max-height: 180px; }
-}
-
-/* ── Location Search Responsive ── */
-@media (max-width: 480px) {
-  .location-search-input { font-size: var(--text-sm); }
 }

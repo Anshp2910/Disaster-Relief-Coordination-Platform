@@ -1,5 +1,5 @@
 /* ================================================================
-   ENTERPRISE MODAL — Overlay, card, confirm dialog
+   GOVERNMENT-GRADE MODAL — Clean overlay, card, confirm dialog
    ================================================================ */
 
 .modal-overlay {
@@ -7,8 +7,6 @@
   inset: 0;
   z-index: var(--z-modal-backdrop);
   background: var(--overlay-bg);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,7 +16,7 @@
 
 .modal-card {
   background: var(--bg-elevated);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-2xl);
   padding: var(--space-xl);
@@ -28,14 +26,27 @@
   overflow-y: auto;
   animation: scaleIn var(--duration-normal) var(--ease-out);
 }
+
 .modal-card h3 {
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-sm);
 }
-.modal-icon { font-size: var(--text-4xl); margin-bottom: var(--space-md); line-height: var(--leading-none); }
-.modal-title { font-size: var(--text-lg); font-weight: var(--font-weight-bold); color: var(--text); margin: 0 0 var(--space-xs); }
-.modal-desc { font-size: var(--text-sm); color: var(--text-secondary);   line-height: var(--leading-normal); margin: 0 0 var(--space-md); }
+
+.modal-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text);
+  margin: 0 0 var(--space-xs);
+}
+
+.modal-desc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+  margin: 0 0 var(--space-md);
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;

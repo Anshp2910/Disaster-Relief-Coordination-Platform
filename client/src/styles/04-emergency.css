@@ -1,10 +1,8 @@
 /* ================================================================
    EMERGENCY ALERT SYSTEM — Crisis response interface
-   Redefined for disaster relief coordination
    WCAG-compliant: no flashing/flickering animations
    ================================================================ */
 
-/* ── Emergency Mode Theme (safe, no filter hacks) ── */
 html.emergency-mode {
   --text: #ffffff;
   --text-secondary: #fecaca;
@@ -25,12 +23,10 @@ html.emergency-mode {
   --accent-hover: #dc2626;
   --accent-soft: rgba(239, 68, 68, 0.12);
   --accent-soft-hover: rgba(239, 68, 68, 0.2);
-  --shadow-xs: 0 0 0 1px rgba(239, 68, 68, 0.15), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-sm: 0 1px 2px rgba(239, 68, 68, 0.1), 0 1px 1px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 2px 4px rgba(239, 68, 68, 0.15), 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 4px 8px rgba(239, 68, 68, 0.2), 0 8px 24px rgba(0, 0, 0, 0.35);
-  --glass-bg: rgba(26, 5, 5, 0.85);
-  --glass-border: rgba(239, 68, 68, 0.18);
 }
 
 html.emergency-mode body {
@@ -46,12 +42,12 @@ html.emergency-mode body {
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--tracking-wide);
   position: fixed;
-  top: 72px;
+  top: var(--navbar-height);
   left: 0;
   right: 0;
   z-index: var(--z-emergency);
   box-shadow: 0 4px 20px rgba(239, 68, 68, 0.5);
-  animation: emergencyAlertSlide 0.3s var(--ease-out);
+  animation: slideDown 0.3s var(--ease-out);
 }
 
 .emergency-alert.critical {
@@ -68,12 +64,7 @@ html.emergency-mode body {
   border-bottom: 3px solid var(--warning);
 }
 
-@keyframes emergencyAlertSlide {
-  from { transform: translateY(-100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* ── High Contrast Mode Toggle (accessibility-first) ── */
+/* ── High Contrast Mode ── */
 html.high-contrast {
   --text: #000000;
   --text-secondary: #1a1a1a;
@@ -109,4 +100,3 @@ html.high-contrast [class*="card"] {
     background: Canvas;
   }
 }
-

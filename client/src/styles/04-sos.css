@@ -1,5 +1,5 @@
 /* ================================================================
-   ENTERPRISE SOS FAB — Fixed floating action button
+   SOS FAB — Fixed emergency floating action button
    ================================================================ */
 
 .sos-fab {
@@ -27,19 +27,19 @@
   transition: all var(--duration-normal) var(--ease-out);
   position: relative;
 }
-.sos-fab-btn:hover { transform: scale(1.08); box-shadow: var(--shadow-danger-xl); }
+.sos-fab-btn:hover { transform: scale(1.08); box-shadow: var(--shadow-danger-lg); }
 .sos-fab-btn:active { transform: scale(0.95); }
-.sos-fab-btn:focus-visible { outline: 3px solid #fff; outline-offset: 4px; box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.3); }
+.sos-fab-btn:focus-visible { outline: 3px solid var(--text-on-accent); outline-offset: 4px; box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.3); }
 
 .sos-fab-label {
   position: absolute;
-  right: calc(100% + var(--space-xsml));
+  right: calc(100% + var(--space-sm));
   background: var(--bg-elevated);
   color: var(--text);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
-  padding: var(--space-2xs) var(--space-xsml);
-  border-radius: var(--radius-md);
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
   white-space: nowrap;

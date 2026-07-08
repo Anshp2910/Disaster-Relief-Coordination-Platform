@@ -1,6 +1,6 @@
 /* ================================================================
-   ENTERPRISE BASE — Premium reset & typography
-   Inspired by Apple HIG, Vercel, Stripe, Tailwind
+   GOVERNMENT-GRADE BASE — Clean reset & professional typography
+   Inspired by GOV.UK, US Web Design System, IBM Carbon
    ================================================================ */
 
 *, *::before, *::after {
@@ -30,32 +30,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   transition: background var(--duration-slow) var(--ease-out),
-  color var(--duration-slow) var(--ease-out),
-  background-image var(--duration-slower) var(--ease-out);
-  animation: bg-shift 22s var(--ease-in-out) infinite;
-  letter-spacing: 0.012em;
-}
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.3;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
-}
-[data-theme="dark"] body,
-[data-theme="dark"] .gov-layout {
-  animation-name: bg-shift-dark;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body, .gov-layout { animation: none !important; }
+              color var(--duration-slow) var(--ease-out);
 }
 
 img {
@@ -69,36 +44,26 @@ a {
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease-out);
 }
-a:hover { color: var(--accent-hover); }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+a:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-3xs);
+}
 
-h1 {
-  margin: 0;
-  font-weight: var(--font-weight-bold);
-  line-height: 1.15;
-  color: var(--text);
-  letter-spacing: -0.03em;
-}
-h2 {
-  margin: 0;
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.18;
-  color: var(--text);
-  letter-spacing: -0.018em;
-}
-h3 {
+/* ── Headings ── */
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-weight: var(--font-weight-semibold);
   line-height: var(--leading-tight);
   color: var(--text);
-  letter-spacing: -0.012em;
 }
-h4, h5, h6 {
-  margin: 0;
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--leading-tight);
-  color: var(--text);
-  letter-spacing: var(--tracking-tight);
-}
+h1 { font-size: var(--text-3xl); font-weight: var(--font-weight-bold); letter-spacing: var(--tracking-tight); }
+h2 { font-size: var(--text-2xl); letter-spacing: var(--tracking-tight); }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+h5 { font-size: var(--text-base); }
+h6 { font-size: var(--text-sm); }
 
 p { margin: 0; }
 ul, ol { margin: 0; padding-left: var(--space-lg); }
@@ -117,12 +82,12 @@ hr {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-3xs);
 }
 
-/* ── Premium Scrollbar ── */
+/* ── Scrollbar (Clean) ── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -132,14 +97,13 @@ hr {
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: var(--radius-2xs);
+  border-radius: var(--radius-3xs);
   transition: background var(--duration-fast) var(--ease-out);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
 
-/* Firefox scrollbar */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
@@ -155,7 +119,7 @@ hr {
   html { scroll-behavior: auto; }
 }
 
-/* ── Skip link (visible on focus) ── */
+/* ── Skip Link ── */
 .skip-link {
   position: absolute;
   top: -100%;
@@ -171,29 +135,26 @@ hr {
 }
 .skip-link:focus { top: 0; outline: 2px solid #fff; outline-offset: 2px; }
 
-/* ── Focus ring (WCAG AA compliant) ── */
+/* ── Remove focus ring for mouse users ── */
 *:focus:not(:focus-visible) {
   outline: none;
 }
 
-/* ── Professional Reusable Base Classes ── */
+/* ── Professional Base Card Class ── */
 .professional-card {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
-  transition: box-shadow var(--duration-normal) var(--ease-spring),
-  border-color var(--duration-normal) var(--ease-out),
-  transform var(--duration-normal) var(--ease-spring);
+  transition: box-shadow var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out);
 }
 .professional-card:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--border-hover);
-  transform: translateY(-2px);
 }
 .professional-card:focus-visible {
   border-color: var(--accent);
   outline: none;
   box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-md);
 }
-

@@ -1,18 +1,16 @@
-﻿/* ================================================================
-   ENTERPRISE LAYOUT — Fixed navbar, container, grids, page structure
+/* ================================================================
+   GOVERNMENT-GRADE LAYOUT — Container, grids, page structure
    ================================================================ */
 
-/* ── Page Shell ── */
 .gov-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* ── Main Content ── */
 .gov-main {
   flex: 1;
-  padding-top: var(--navbar-height, 60px);
+  padding-top: var(--navbar-height, 56px);
   padding-bottom: var(--space-xl);
 }
 
@@ -21,7 +19,7 @@
   padding-top: var(--space-lg);
 }
 
-/* ── Container ── */
+/* ── Container Scale ── */
 .container {
   width: 100%;
   max-width: 1200px;
@@ -29,19 +27,11 @@
   padding: 0 var(--space-lg);
 }
 
-.container-sm {
-  max-width: 720px;
-}
+.container-sm { max-width: 720px; }
+.container-lg { max-width: 1360px; }
+.container-xl { max-width: 1520px; }
 
-.container-lg {
-  max-width: 1360px;
-}
-
-.container-xl {
-  max-width: 1520px;
-}
-
-/* ── Page Section Separators ── */
+/* ── Page Sections ── */
 .page-section {
   padding: var(--space-lg) 0;
 }
@@ -53,25 +43,25 @@
 /* ── Responsive Grids ── */
 .grid-2-responsive {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
 }
 
 .grid-3-responsive {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
 }
 
 .grid-4-responsive {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-lg);
 }
 
 .grid-auto {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--space-md);
 }
 
@@ -79,13 +69,13 @@
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .grid-3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .grid-sidebar {
@@ -99,4 +89,3 @@
   grid-template-columns: 320px 1fr;
   gap: var(--space-lg);
 }
-

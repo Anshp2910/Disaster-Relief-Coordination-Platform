@@ -1,27 +1,14 @@
 /* ================================================================
-   SKELETON LOADERS — organic shimmer placeholders
+   SKELETON LOADERS — Clean placeholder shimmer
    ================================================================ */
 
 .sk-line {
   height: 14px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(90deg, var(--bg-subtle) 30%, var(--border-light) 55%, var(--bg-subtle) 80%);
+  border-radius: var(--radius-3xs);
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
   margin-bottom: var(--space-xs);
-  position: relative;
-  overflow: hidden;
-  animation: sk-shimmer var(--sk-shimmer-speed, 1.8s) var(--ease-in-out) infinite;
-}
-.sk-line::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: sk-shimmer var(--sk-shimmer-speed, 1.8s) var(--ease-in-out) infinite;
-  mask-image: linear-gradient(90deg, transparent 15%, black 50%, transparent 85%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 15%, black 50%, transparent 85%);
+  animation: sk-shimmer var(--sk-shimmer-speed) var(--sk-shimmer-ease) infinite;
 }
 .sk-line:last-child { width: 65%; }
 
@@ -32,23 +19,18 @@
 
 .sk-card {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: var(--space-lg);
   border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-}
-.sk-card .sk-line {
-  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
-  background-size: 200% 100%;
 }
 
 .sk-map {
   width: 100%;
   height: 200px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
+  animation: sk-shimmer var(--sk-shimmer-speed) var(--sk-shimmer-ease) infinite;
 }
 
 .sk-circle {
@@ -57,6 +39,7 @@
   border-radius: 50%;
   background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
   background-size: 200% 100%;
+  animation: sk-shimmer var(--sk-shimmer-speed) var(--sk-shimmer-ease) infinite;
 }
 
 .sk-list {

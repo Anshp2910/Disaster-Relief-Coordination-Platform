@@ -5,14 +5,21 @@ import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
 import { RippleBtn, PageTransition } from '../components/ui'
 import {
-  Sun,
+  AlertTriangle,
   ClipboardList,
+  MapPin,
+  Users,
+  RefreshCw,
+  Plus,
+  ArrowRight,
+  ShieldAlert,
+  FileText,
+  BarChart3,
+  ListChecks,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
-import { useConfirm } from '../hooks/useConfirm'
 import { registerRefreshListener } from '../hooks/useSocket'
-import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
 import { useSocket } from '../hooks/useSocket'
 import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, CATEGORY_OPTIONS } from '../utils/constants'
@@ -36,25 +43,11 @@ interface Item {
   matchedResources?: unknown[]
 }
 
-interface OwnerActionsProps {
-  id: string
-  item: Item
-  onChanged: () => void
-}
-
-function getGreeting(t: (k: string) => string): string {
-  const h = new Date().getHours()
-  if (h < 12) return t('greeting.morning')
-  if (h < 18) return t('greeting.afternoon')
-  return t('greeting.evening')
-}
-
 function formatDate(i18nLng: string): string {
   return new Date().toLocaleDateString(i18nLng, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 const containerVariants = createStagger(0.05)
-const itemVariants = createListItem(16, 0.35)
 const fadeUp = createListItem(16, 0.3)
 
 export default function Dashboard() {
@@ -71,14 +64,16 @@ export default function Dashboard() {
 
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
-  const greeting = getGreeting(t)
   const currentDate = formatDate(i18n.language)
 
   const { user: currentUser } = useAuth()
   const { connected } = useSocket()
 
   const displayName = currentUser?.displayName || currentUser?.email || t('common.unknown')
-  const hasUrgent = items.some((it) => it.priority === 'Critical' || it.priority === 'High')
+  const criticalCount = items.filter((it) => it.priority === 'Critical').length
+  const highCount = items.filter((it) => it.priority === 'High').length
+  const openCount = items.filter((it) => it.status === 'Open').length
+  const hasUrgent = criticalCount > 0 || highCount > 0
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -141,107 +136,319 @@ export default function Dashboard() {
 
   return (
     <PageTransition>
-      <motion.div className="container" variants={containerVariants} initial="hidden" animate="visible">
-        {/* ── GREETING ── */}
-        <motion.div className="mb-lg" variants={fadeUp}>
-          <motion.div className={`hero-gradient ${hasUrgent ? 'hero-gradient--urgent' : ''}`} variants={itemVariants}>
-            <div className="bento-card">
-              <div className="flex items-center gap-sm mb-sm">
-                <div className="bento-icon bento-icon-accent">
-                  <Sun size={20} />
-                </div>
-                <div>
-                  <div className="text-base greeting-text">{greeting}, {displayName.split(' ')[0]}</div>
-                  <div className="text-xs text-muted">{currentDate}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-sm">
-                <span className={`live-dot ${connected ? '' : 'live-dot--disconnected'}`}>
-                  {connected ? t('dashboard.live') : t('dashboard.offline')}
-                </span>
-                {total > 0 && (
-                  <span className="text-xs text-muted">{total} {t('dashboard.totalRequests')}</span>
-                )}
-              </div>
-            </div>
-          </motion.div>
+      <motion.div
+        className="container"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* ── PAGE HEADER ── */}
+        <motion.div className="flex-between mb-md" variants={fadeUp}>
+          <div>
+            <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
+            <p className="text-sm text-muted mt-xs">{currentDate}</p>
+          </div>
+          <div className="flex flex-gap-sm items-center">
+            <RippleBtn
+              onClick={load}
+              className="btn-secondary btn-sm"
+              aria-label={t('dashboard.refresh')}
+            >
+              <RefreshCw size={14} />
+              <span>{t('dashboard.refresh') || 'Refresh'}</span>
+            </RippleBtn>
+            <RippleBtn
+              onClick={() => navigate('/requests/new')}
+              className="btn-primary btn-sm"
+              aria-label={t('dashboard.createRequest')}
+            >
+              <Plus size={14} />
+              <span>{t('dashboard.createRequest') || 'New Request'}</span>
+            </RippleBtn>
+          </div>
         </motion.div>
 
-        {/* ── REQUESTS LIST ── */}
-        <motion.div className="card" variants={fadeUp}>
-          <div className="flex-between mb-md">
-            <h2 className="text-lg text-bold m-0">{t('dashboard.allRequests')}</h2>
-            <div className="flex flex-gap-sm">
-              <RippleBtn onClick={load} className="text-sm p-xs refresh-btn">
-                {t('dashboard.refresh') || 'Refresh'}
-              </RippleBtn>
+        {/* ── COMMAND CENTER STATUS BAR ── */}
+        <motion.div className="flex flex-gap-sm items-center mb-md" variants={fadeUp}>
+          <span className={`live-dot ${connected ? '' : 'live-dot--disconnected'}`}>
+            {connected ? (t('dashboard.live') || 'Live') : (t('dashboard.offline') || 'Offline')}
+          </span>
+          {hasUrgent && (
+            <span className="govt-badge govt-badge-blue flex items-center gap-xs">
+              <AlertTriangle size={12} />
+              {criticalCount > 0 && <span>{criticalCount} Critical</span>}
+              {highCount > 0 && <span className={criticalCount > 0 ? 'ml-xs' : ''}>{highCount} High</span>}
+            </span>
+          )}
+          <span className="text-xs text-muted">
+            {t('dashboard.greeting') || 'Welcome'}, {displayName.split(' ')[0]}
+          </span>
+        </motion.div>
+
+        {/* ── KPI GRID ── */}
+        <motion.div className="kpi-grid mb-lg" variants={fadeUp}>
+          <div className="kpi-card" data-animate="stagger">
+            <div className="kpi-header">
+              <span className="kpi-label">{t('dashboard.totalRequests') || 'Total Requests'}</span>
+              <FileText size={16} className="text-muted" />
+            </div>
+            <div className="kpi-value">{loading ? '—' : total}</div>
+          </div>
+          <div className="kpi-card" data-animate="stagger">
+            <div className="kpi-header">
+              <span className="kpi-label">{t('statuses.Open') || 'Open'}</span>
+              <ClipboardList size={16} className="text-accent" />
+            </div>
+            <div className="kpi-value">{loading ? '—' : openCount}</div>
+          </div>
+          <div className="kpi-card" data-animate="stagger">
+            <div className="kpi-header">
+              <span className="kpi-label">{t('priorities.Critical') || 'Critical'}</span>
+              <ShieldAlert size={16} className="text-danger" />
+            </div>
+            <div className="kpi-value" style={{ color: criticalCount > 0 ? 'var(--danger)' : undefined }}>
+              {loading ? '—' : criticalCount}
             </div>
           </div>
-          {error ? <div className="error-text mb-md">{error}</div> : null}
-          <nav aria-label="Filters">
-            <motion.div className="flex flex-gap-sm mt-md flex-wrap" variants={fadeUp}>
+          <div className="kpi-card" data-animate="stagger">
+            <div className="kpi-header">
+              <span className="kpi-label">{t('dashboard.urgent') || 'High Priority'}</span>
+              <AlertTriangle size={16} className="text-warning" />
+            </div>
+            <div className="kpi-value" style={{ color: highCount > 0 ? 'var(--warning)' : undefined }}>
+              {loading ? '—' : highCount}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── QUICK ACTION NAV ── */}
+        <motion.div className="flex flex-gap-sm flex-wrap mb-lg" variants={fadeUp}>
+          <button
+            onClick={() => navigate('/requests/new')}
+            className="btn-secondary btn-sm"
+            aria-label={t('dashboard.createRequest')}
+          >
+            <Plus size={14} />
+            <span>{t('dashboard.createRequest') || 'New Request'}</span>
+          </button>
+          <button
+            onClick={() => navigate('/map')}
+            className="btn-secondary btn-sm"
+            aria-label={t('common.viewMap')}
+          >
+            <MapPin size={14} />
+            <span>{t('common.viewMap') || 'View Map'}</span>
+          </button>
+          <button
+            onClick={() => navigate('/resources')}
+            className="btn-secondary btn-sm"
+            aria-label={t('common.resources')}
+          >
+            <Users size={14} />
+            <span>{t('common.resources') || 'Resources'}</span>
+          </button>
+          <button
+            onClick={() => navigate('/admin')}
+            className="btn-secondary btn-sm"
+            aria-label={t('admin.title')}
+          >
+            <BarChart3 size={14} />
+            <span>{t('admin.title') || 'Admin'}</span>
+          </button>
+        </motion.div>
+
+        {/* ── REQUESTS SECTION ── */}
+        <motion.div className="card" variants={fadeUp}>
+          <div className="flex-between mb-md">
+            <div className="flex items-center gap-xs">
+              <ListChecks size={18} className="text-accent" />
+              <h2 className="pageTitle" style={{ fontSize: 'var(--text-lg)' }}>
+                {t('dashboard.allRequests') || 'All Requests'}
+              </h2>
+            </div>
+          </div>
+
+          {error && (
+            <div className="error-text mb-md">
+              <AlertTriangle size={14} />
+              {error}
+            </div>
+          )}
+
+          {/* ── Filters ── */}
+          <nav aria-label={t('dashboard.filters') || 'Filters'}>
+            <div className="flex flex-gap-sm flex-wrap mb-sm">
               {filterOptions.map((f) => (
-                <motion.button key={f.key} onClick={() => { setFilterStatus(f.key); setPage(1) }} className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`} aria-label={f.label} whileTap={{ scale: 0.95 }}>{f.label}</motion.button>
+                <button
+                  key={f.key}
+                  onClick={() => { setFilterStatus(f.key); setPage(1) }}
+                  className={`btn-filter ${filterStatus === f.key ? 'active' : ''}`}
+                  aria-label={f.label}
+                  aria-pressed={filterStatus === f.key}
+                >
+                  {f.label}
+                </button>
               ))}
-            </motion.div>
-            <motion.div className="flex flex-gap-sm mt-sm flex-wrap" variants={fadeUp}>
-              {priorityOptions.map((p) => (
-                <motion.button key={p.key} onClick={() => { setFilterPriority(p.key); setPage(1) }} className={`filter-pill ${filterPriority === p.key ? 'active' : ''} text-xs`} aria-label={p.label} whileTap={{ scale: 0.95 }}>{p.label}</motion.button>
-              ))}
-            </motion.div>
-            <div className="flex flex-wrap flex-gap-sm mt-sm items-center">
-              <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="filter-select">
-                {categoryOptions.map((c) => (
-                  <option key={c.key} value={c.key}>{c.key === 'All' ? t('dashboard.allCategories') : c.label}</option>
+            </div>
+            <div className="flex flex-gap-sm flex-wrap items-center">
+              <div className="flex flex-gap-sm flex-wrap">
+                {priorityOptions.map((p) => (
+                  <button
+                    key={p.key}
+                    onClick={() => { setFilterPriority(p.key); setPage(1) }}
+                    className={`btn-filter text-xs ${filterPriority === p.key ? 'active' : ''}`}
+                    aria-label={p.label}
+                    aria-pressed={filterPriority === p.key}
+                  >
+                    {p.label}
+                  </button>
                 ))}
-              </select>
-              <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="filter-select">
-                {sortOptions.map((s) => (
-                  <option key={s.key} value={s.key}>{s.label}</option>
-                ))}
-              </select>
+              </div>
+              <div className="flex flex-gap-sm items-center ml-auto">
+                <select
+                  value={filterCategory}
+                  onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }}
+                  className="filter-select"
+                  aria-label={t('dashboard.filterCategory') || 'Category'}
+                >
+                  {categoryOptions.map((c) => (
+                    <option key={c.key} value={c.key}>
+                      {c.key === 'All' ? (t('dashboard.allCategories') || 'All Categories') : c.label}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={sortBy}
+                  onChange={(e) => { setSortBy(e.target.value); setPage(1) }}
+                  className="filter-select"
+                  aria-label={t('dashboard.sortBy') || 'Sort by'}
+                >
+                  {sortOptions.map((s) => (
+                    <option key={s.key} value={s.key}>{s.label}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </nav>
+
+          {/* ── Request List ── */}
           <section aria-label={t('dashboard.title')} aria-live="polite">
             {loading ? (
               <SkeletonList count={4} lines={3} />
             ) : (
               <>
-                <motion.div className="gridGap mt-lg" variants={fadeUp}>
+                <div className="gridGap mt-lg">
                   {items.length === 0 ? (
-                    <EmptyState icon={<ClipboardList size={32} />} title={t('dashboard.noRequests')} description={t('dashboard.noRequestsDesc') || 'No requests match your filters'} />
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <EmptyState
+                        icon={<ClipboardList size={32} />}
+                        title={t('dashboard.noRequests')}
+                        description={t('dashboard.noRequestsDesc') || 'No requests match your filters. Create a new request or adjust your filters.'}
+                        action={{ onClick: () => navigate('/requests/new'), label: t('dashboard.createRequest') || 'New Request' }}
+                      />
+                    </div>
                   ) : (
                     items.map((it) => (
-                      <motion.div key={it._id} className="listCard cursor-pointer" role="button" tabIndex={0} onClick={() => navigate(`/requests/${it._id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(`/requests/${it._id}`) } }} whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
+                      <motion.div
+                        key={it._id}
+                        className="listCard"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigate(`/requests/${it._id}`)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            navigate(`/requests/${it._id}`)
+                          }
+                        }}
+                        whileHover={{ scale: 1.01 }}
+                        transition={{ duration: 0.2 }}
+                      >
                         <div className="flex-between flex-gap-sm">
                           <div className="flex-1 min-w-0">
-                            <div className="text-bold text-accent-blue text-15">{it.title}</div>
-                            <div className="flex flex-gap-sm mt-sm flex-wrap">
-                              <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
-                              <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
-                              <Badge label={t(`categories.${it.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={it.category || 'Other'} />
+                            <div className="flex items-center gap-xs mb-xs">
+                              <span className="text-bold text-accent">{it.title}</span>
+                              {it.priority === 'Critical' && (
+                                <AlertTriangle size={14} className="text-danger flex-shrink-0" />
+                              )}
+                            </div>
+                            <div className="flex flex-gap-sm flex-wrap mb-xs">
+                              <Badge
+                                label={t(`statuses.${it.status || 'Open'}`)}
+                                colors={STATUS_COLORS}
+                                colorKey={it.status || 'Open'}
+                              />
+                              <Badge
+                                label={t(`priorities.${it.priority || 'Medium'}`)}
+                                colors={PRIORITY_COLORS}
+                                colorKey={it.priority || 'Medium'}
+                              />
+                              <Badge
+                                label={t(`categories.${it.category || 'Other'}`)}
+                                colors={CATEGORY_COLORS}
+                                colorKey={it.category || 'Other'}
+                              />
                               {it.matchedResources && it.matchedResources.length > 0 && (
-                                <span className="govt-badge govt-badge-green" title={`${it.matchedResources.length} matched resources`}>
-                                  {it.matchedResources.length} Match{it.matchedResources.length > 1 ? 'es' : ''}
+                                <span className="govt-badge govt-badge-green">
+                                  {it.matchedResources.length} Resource{it.matchedResources.length > 1 ? 's' : ''}
                                 </span>
                               )}
                             </div>
-                            <div className="muted mt-sm text-base">{it.description && it.description.length > 120 ? it.description.slice(0, 120) + '...' : it.description}</div>
-                            <div className="small mt-sm">{it.locationName}</div>
-                            {it.createdBy && <div className="small mt-xs">{t('dashboard.postedBy')} {it.createdBy.displayName || it.createdBy.email || t('dashboard.unknown')}</div>}
-                            {it.claimedBy && <div className="small mt-xs text-accent-orange">{t('dashboard.claimedBy')} {it.claimedBy.displayName || it.claimedBy.email}</div>}
+                            {it.description && (
+                              <p className="text-sm text-secondary mt-xs">
+                                {it.description.length > 120
+                                  ? it.description.slice(0, 120) + '...'
+                                  : it.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-sm mt-xs">
+                              {it.locationName && (
+                                <span className="text-xs text-muted flex items-center gap-2xs">
+                                  <MapPin size={10} />
+                                  {it.locationName}
+                                </span>
+                              )}
+                              {it.createdBy && (
+                                <span className="text-xs text-muted">
+                                  {it.createdBy.displayName || it.createdBy.email || ''}
+                                </span>
+                              )}
+                              {it.claimedBy && (
+                                <span className="text-xs text-warning">
+                                  {t('dashboard.claimedBy') || 'Claimed'}: {it.claimedBy.displayName || it.claimedBy.email}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <OwnerActions id={it._id} item={it} onChanged={load} />
+                          <ArrowRight size={16} className="text-muted flex-shrink-0" />
                         </div>
                       </motion.div>
                     ))
                   )}
-                </motion.div>
+                </div>
+
+                {/* ── Pagination ── */}
                 {totalPages > 1 && (
-                  <div className="flex flex-center flex-gap-sm mt-lg">
-                    <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-ghost btn-sm" aria-label={t('dashboard.previous')}>{t('dashboard.previous')}</button>
-                    <span className="text-sm text-muted">{page} / {totalPages}</span>
-                    <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="btn-ghost btn-sm" aria-label={t('dashboard.next')}>{t('dashboard.next')}</button>
+                  <div className="flex items-center justify-center gap-sm mt-lg">
+                    <button
+                      disabled={page <= 1}
+                      onClick={() => setPage((p) => p - 1)}
+                      className="btn-ghost btn-sm"
+                      aria-label={t('dashboard.previous') || 'Previous'}
+                    >
+                      {t('dashboard.previous') || 'Previous'}
+                    </button>
+                    <span className="text-sm text-muted">
+                      {page} / {totalPages}
+                    </span>
+                    <button
+                      disabled={page >= totalPages}
+                      onClick={() => setPage((p) => p + 1)}
+                      className="btn-ghost btn-sm"
+                      aria-label={t('dashboard.next') || 'Next'}
+                    >
+                      {t('dashboard.next') || 'Next'}
+                    </button>
                   </div>
                 )}
               </>
@@ -250,35 +457,5 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
     </PageTransition>
-  )
-}
-
-function OwnerActions({ id, item, onChanged }: OwnerActionsProps) {
-  const navigate = useNavigate()
-  const { t } = useTranslation()
-  const toast = useToast()
-  const { user } = useAuth()
-  const [deleting, setDeleting] = useState(false)
-  const { confirm, ConfirmDialog } = useConfirm()
-  const ownerId = item.createdBy?._id || (item.createdBy as Record<string, string | undefined>)?.id
-  const isOwner = !!(user?.id && ownerId && String(ownerId) === String(user.id))
-  const canEdit = isOwner || user?.role === 'admin'
-
-  async function del(e: React.MouseEvent) {
-    e.stopPropagation()
-    const ok = await confirm({ message: t('dashboard.deleteConfirm'), confirmText: t('dashboard.delete'), danger: true })
-    if (!ok) return
-    setDeleting(true)
-    try { await clientApi.deleteRequest(id); onChanged() } catch (e) { toast.error(getErrorMessage(e) || t('dashboard.failedToDelete')) } finally { setDeleting(false) }
-  }
-
-  function edit(e: React.MouseEvent) { e.stopPropagation(); navigate(`/requests/${id}/edit`) }
-
-  return (
-    <div className="flex flex-col flex-gap-sm items-end">
-      <RippleBtn disabled={!canEdit} onClick={edit} className="text-sm p-xs" aria-label={t('dashboard.edit')}>{t('dashboard.edit')}</RippleBtn>
-      <button disabled={!canEdit || deleting} onClick={del} className="btn-danger text-sm p-xs" aria-label={deleting ? t('dashboard.deleting') : t('dashboard.delete')}>{deleting ? t('dashboard.deleting') : t('dashboard.delete')}</button>
-      {ConfirmDialog}
-    </div>
   )
 }
