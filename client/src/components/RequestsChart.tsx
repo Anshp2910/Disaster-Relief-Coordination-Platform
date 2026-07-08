@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { BarChart3 } from 'lucide-react'
@@ -8,7 +9,7 @@ interface RequestsChartProps {
   data: Array<{ date: string; count: number }>
 }
 
-export default function RequestsChart({ data }: RequestsChartProps) {
+const RequestsChart = memo(function RequestsChart({ data }: RequestsChartProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
   return (
@@ -36,4 +37,6 @@ export default function RequestsChart({ data }: RequestsChartProps) {
       )}
     </>
   )
-}
+})
+
+export default RequestsChart

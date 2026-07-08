@@ -224,6 +224,22 @@ const schemas = {
     token: Joi.string().required(),
     password: Joi.string().min(8).max(128).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/).required().messages({ 'string.pattern.base': 'Password must be at least 8 characters with uppercase, lowercase, digit, and special character' }),
   }),
+
+  forgotPassword: Joi.object({
+    email: Joi.string().email().required().trim().lowercase(),
+  }),
+
+  refresh: Joi.object({
+    token: Joi.string().required(),
+  }),
+
+  updateNotifications: Joi.object({
+    email: Joi.boolean(),
+    sms: Joi.boolean(),
+    newRequest: Joi.boolean(),
+    statusChange: Joi.boolean(),
+    newComment: Joi.boolean(),
+  }).min(1),
 }
 
 const querySchemas = {
@@ -299,14 +315,6 @@ const querySchemas = {
     lng: Joi.number().min(-180).max(180).required(),
     radiusKm: Joi.number().min(0.1).max(500).default(10),
   }),
-
-  updateNotifications: Joi.object({
-    email: Joi.boolean(),
-    sms: Joi.boolean(),
-    newRequest: Joi.boolean(),
-    statusChange: Joi.boolean(),
-    newComment: Joi.boolean(),
-  }).min(1),
 }
 
 export function validate(schemaName) {

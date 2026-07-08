@@ -95,7 +95,7 @@ if (root) {
               <AuthProvider>
                 <ToastProvider>
                   <UpdateBanner />
-                  <WebVitalsReporter />
+                  {import.meta.env.DEV && <WebVitalsReporter />}
                   <App />
                 </ToastProvider>
               </AuthProvider>

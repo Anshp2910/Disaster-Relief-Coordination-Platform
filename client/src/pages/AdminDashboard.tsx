@@ -320,7 +320,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
     return counts
   }, [safeUsers])
 
-  const renderTop = (
+  const renderTop = useMemo(() => (
     <motion.div className="flex flex-gap-sm text-sm mb-md px-md" variants={itemVariants}>
       <span className="govt-badge govt-badge-blue">
         <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer', { count: roleCounts.volunteer })}
@@ -332,9 +332,9 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
         <Shield size={12} /> {roleCounts.admin} {t('nav.admin', { count: roleCounts.admin })}
       </span>
     </motion.div>
-  )
+  ), [roleCounts, t])
 
-  const columns: ColumnDef<User>[] = [
+  const columns: ColumnDef<User>[] = useMemo(() => [
     {
       id: 'user',
       header: t('admin.userHeader'),
@@ -387,7 +387,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
         </button>
       ),
     },
-  ]
+  ], [t])
 
   return (
     <section aria-label={t('admin.userManagementLabel')}>
@@ -423,7 +423,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
 
   const safeRequests = Array.isArray(requests) ? requests : []
 
-  const columns: ColumnDef<Request>[] = [
+  const columns: ColumnDef<Request>[] = useMemo(() => [
     {
       id: 'request',
       header: t('admin.requestHeader'),
@@ -498,7 +498,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
         </button>
       ),
     },
-  ]
+  ], [t, navigate])
 
   return (
     <section aria-label={t('admin.requestManagementLabel')}>

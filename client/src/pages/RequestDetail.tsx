@@ -10,6 +10,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { Modal, ErrorState, PageHeader, RippleBtn, PageTransition } from '../components/ui'
 import Badge from '../components/Badge'
+import SteppedProgress from '../components/SteppedProgress'
 import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
@@ -367,6 +368,10 @@ export default function RequestDetail() {
           <Badge label={t(`statuses.${item.status}`)} colors={STATUS_COLORS} colorKey={item.status} />
           <Badge label={t(`priorities.${item.priority}`)} colors={PRIORITY_COLORS} colorKey={item.priority} />
           <Badge label={t(`categories.${item.category}`)} colors={CATEGORY_COLORS} colorKey={item.category} />
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="mb-lg">
+          <SteppedProgress currentStatus={item.status || 'Open'} />
         </motion.div>
 
         <div className="grid-3-responsive gap-16">

@@ -39,10 +39,10 @@ export default function Breadcrumbs() {
     return null
   }
 
-  const segments: BreadcrumbSegment[] = [
-    { label: t('nav.home') || 'Home', path: '/dashboard' },
-  ]
-
+  // Build segments, skipping the dashboard link if we're already on /dashboard
+  // to avoid duplicate keys (Home points to /dashboard and first segment also is /dashboard)
+  const segments: BreadcrumbSegment[] = []
+  
   let currentPath = ''
   for (const part of pathParts) {
     currentPath += `/${part}`
@@ -52,6 +52,11 @@ export default function Breadcrumbs() {
     } else {
       segments.push({ label: part.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()), path: currentPath })
     }
+  }
+
+  // Prepend Home only if first segment isn't already the dashboard
+  if (segments.length === 0 || segments[0]!.path !== '/dashboard') {
+    segments.unshift({ label: t('nav.home') || 'Home', path: '/dashboard' })
   }
 
   return (

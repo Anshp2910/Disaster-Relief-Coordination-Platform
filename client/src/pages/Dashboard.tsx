@@ -12,9 +12,7 @@ import {
   RefreshCw,
   Plus,
   ArrowRight,
-  FileText,
   BarChart3,
-  ListChecks,
   LayoutDashboard,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
@@ -31,6 +29,8 @@ import RiskWidget from '../components/RiskWidget'
 import RequestsChart from '../components/RequestsChart'
 import DashboardMap from '../components/DashboardMap'
 import ActivityFeed from '../components/ActivityFeed'
+import WeatherWidget from '../components/WeatherWidget'
+import TaskList from '../components/TaskList'
 
 interface Item {
   _id: string
@@ -49,8 +49,8 @@ interface Item {
 }
 
 interface Stats {
-  totalUsers?: number
-  totalRequests?: number
+  totalUsers: number
+  totalRequests: number
   byStatus?: Record<string, number>
   byCategory?: Record<string, number>
   byPriority?: Record<string, number>
@@ -76,7 +76,9 @@ export default function Dashboard() {
   const [sortBy, setSortBy] = useState('-createdAt')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [total, setTotal] = useState(0)
+  const [, setTotal] = useState(0)
+  const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: string } | null>(null)
+  const [weatherLoading, setWeatherLoading] = useState(true)
 
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
@@ -86,9 +88,10 @@ export default function Dashboard() {
   const { connected } = useSocket()
 
   const displayName = currentUser?.displayName || currentUser?.email || t('common.unknown')
-  const criticalCount = items.filter((it) => it.priority === 'Critical').length
-  const highCount = items.filter((it) => it.priority === 'High').length
-  const hasUrgent = criticalCount > 0 || highCount > 0
+  const criticalCount = useMemo(() => items.filter((it) => it.priority === 'Critical').length, [items])
+  const highCount = useMemo(() => items.filter((it) => it.priority === 'High').length, [items])
+  const hasUrgent = useMemo(() => criticalCount > 0 || highCount > 0, [criticalCount, highCount])
+  const chartData = useMemo(() => stats?.dailyRequests?.map((d) => ({ date: d.date, count: d.count })) || [], [stats?.dailyRequests])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -107,7 +110,7 @@ export default function Dashboard() {
         byStatus: data.byStatus,
         byPriority: data.byPriority,
         byCategory: data.byCategory,
-        dailyRequests: data.dailyRequests,
+        dailyRequests: data.dailyRequests?.map((d) => ({ date: d.date, count: d.count })),
         totalUsers: currentUser ? 1 : 0,
       })
     } catch (e) {
@@ -116,6 +119,27 @@ export default function Dashboard() {
       setLoading(false)
     }
   }, [page, filterStatus, filterPriority, filterCategory, sortBy, t, currentUser])
+
+  const loadWeather = useCallback(async () => {
+    setWeatherLoading(true)
+    try {
+      const data = await clientApi.getWeatherCurrent(28.6139, 77.209) as { temperature?: number; feelsLike?: number; humidity?: number; windSpeed?: number; conditions?: string }
+      if (data) {
+        setWeather({
+          temp: Math.round(data.temperature ?? 0),
+          condition: data.conditions || 'Unknown',
+          humidity: data.humidity ?? 0,
+          wind: data.windSpeed != null ? `${Math.round(data.windSpeed)} km/h` : 'N/A',
+        })
+      }
+    } catch {
+      // silent
+    } finally {
+      setWeatherLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { loadWeather() }, [loadWeather])
 
   useEffect(() => { load() }, [load])
 
@@ -171,9 +195,7 @@ export default function Dashboard() {
             <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
             <p className="text-sm text-muted mt-xs">{currentDate}</p>
           </div>
-          <div className="flex flex-gap-sm items-center">
-            <RippleBtn
-              onClick={load}
+          <div className="flex flex-gap-sm items-center">            <RippleBtn onClick={load}
               className="btn-secondary btn-sm"
               aria-label={t('dashboard.refresh')}
             >
@@ -182,7 +204,6 @@ export default function Dashboard() {
             </RippleBtn>
             <RippleBtn
               onClick={() => navigate('/requests/new')}
-              className="btn-primary btn-sm"
               aria-label={t('dashboard.createRequest')}
             >
               <Plus size={14} />
@@ -217,10 +238,16 @@ export default function Dashboard() {
             <RiskWidget stats={stats} loading={loading} />
           </div>
           <div className="bento-card bento--wide">
-            <RequestsChart data={stats?.dailyRequests?.map((d) => ({ date: d.date, count: d.count })) || []} />
+            <RequestsChart data={chartData} />
+          </div>
+          <div className="bento-card">
+            <WeatherWidget weather={weather} loading={weatherLoading} />
           </div>
           <div className="bento-card bento--wide">
             <ActivityFeed compact limit={8} />
+          </div>
+          <div className="bento-card bento--wide">
+            <TaskList requests={items} loading={loading} />
           </div>
         </motion.div>
 
@@ -228,14 +255,6 @@ export default function Dashboard() {
 
         {/* ── QUICK ACTION NAV ── */}
         <motion.div className="flex flex-gap-sm flex-wrap mb-lg" variants={fadeUp}>
-          <button
-            onClick={() => navigate('/requests/new')}
-            className="btn-secondary btn-sm"
-            aria-label={t('dashboard.createRequest')}
-          >
-            <Plus size={14} />
-            <span>{t('dashboard.createRequest') || 'New Request'}</span>
-          </button>
           <button
             onClick={() => navigate('/map')}
             className="btn-secondary btn-sm"
@@ -251,6 +270,14 @@ export default function Dashboard() {
           >
             <Users size={14} />
             <span>{t('common.resources') || 'Resources'}</span>
+          </button>
+          <button
+            onClick={() => navigate('/incidents')}
+            className="btn-secondary btn-sm"
+            aria-label={t('nav.incidents')}
+          >
+            <AlertTriangle size={14} />
+            <span>{t('nav.incidents') || 'Incidents'}</span>
           </button>
           <button
             onClick={() => navigate('/admin')}

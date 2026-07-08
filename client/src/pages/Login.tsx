@@ -129,10 +129,12 @@ export default function Login() {
               <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
               <input
                 id="login-email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
                 className="auth-input"
                 placeholder={t('auth.email')}
                 aria-describedby={error ? "login-error" : undefined}

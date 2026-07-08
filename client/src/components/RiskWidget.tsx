@@ -10,7 +10,7 @@ interface AdminStats {
   byStatus?: Record<string, number>
   byCategory?: Record<string, number>
   byPriority?: Record<string, number>
-  dailyRequests?: Array<{ _id: string; count: number }>
+  dailyRequests?: Array<{ date: string; count: number }>
 }
 
 interface RiskWidgetProps {

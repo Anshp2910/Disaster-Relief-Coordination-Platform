@@ -126,7 +126,7 @@ export default function Register() {
             <motion.div className="auth-field" variants={item}>
               <label htmlFor="reg-name" className="auth-label">{t('auth.fullName')}</label>
               <div className="auth-input-wrap">
-                <input id="reg-name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} className="auth-input" placeholder={t('auth.fullName')} aria-describedby={error ? 'register-error' : undefined} />
+                <input id="reg-name" name="name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} autoComplete="name" className="auth-input" placeholder={t('auth.fullName')} aria-describedby={error ? 'register-error' : undefined} />
                 <User size={16} className="auth-input-icon" aria-hidden="true" />
               </div>
             </motion.div>
@@ -134,7 +134,7 @@ export default function Register() {
             <motion.div className="auth-field" variants={item}>
               <label htmlFor="reg-email" className="auth-label">{t('auth.email')}</label>
               <div className="auth-input-wrap">
-                <input id="reg-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={128} className="auth-input" placeholder={t('auth.email')} aria-describedby={error ? 'register-error' : undefined} />
+                <input id="reg-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={128} autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-describedby={error ? 'register-error' : undefined} />
                 <Mail size={16} className="auth-input-icon" aria-hidden="true" />
               </div>
             </motion.div>
@@ -142,7 +142,7 @@ export default function Register() {
             <motion.div className="auth-field" variants={item}>
               <label htmlFor="reg-password" className="auth-label">{t('auth.password')}</label>
               <div className="auth-input-wrap">
-                <input id="reg-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} maxLength={128} className="auth-input" placeholder={t('auth.password')} aria-describedby={error ? 'register-error' : undefined} />
+                <input id="reg-password" name="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} maxLength={128} autoComplete="new-password" className="auth-input" placeholder={t('auth.password')} aria-describedby={error ? 'register-error' : undefined} />
                 <button type="button" className="auth-pw-toggle" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={0}>
                   {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                 </button>

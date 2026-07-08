@@ -142,7 +142,7 @@ authRouter.post('/login', validate('login'), async (req, res) => {
   }
 })
 
-authRouter.post('/forgot-password', async (req, res) => {
+authRouter.post('/forgot-password', validate('forgotPassword'), async (req, res) => {
   try {
     const { email } = req.body || {}
     if (!email) return res.status(400).json({ error: 'Email required' })
@@ -260,7 +260,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   })
 }
 
-authRouter.post('/refresh', refreshLimiter, async (req, res) => {
+authRouter.post('/refresh', refreshLimiter, validate('refresh'), async (req, res) => {
   try {
     const { token } = req.body || {}
     if (!token) return res.status(400).json({ error: 'Token required' })

@@ -50,7 +50,7 @@ describe('API Routes', () => {
       .send({ email: 'not-an-email' })
       .set('Content-Type', 'application/json')
     expect(res.status).toBe(400)
-    expect(res.body.error).toMatch(/invalid email/i)
+    expect(res.body.error).toMatch(/valid email/i)
   })
 
   it('POST /api/auth/reset-password validates required fields', async () => {
