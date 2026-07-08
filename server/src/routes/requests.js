@@ -56,24 +56,46 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
     const limitNum = limit || 20
     const sortStr = sort || '-createdAt'
     const skip = (pageNum - 1) * limitNum
-    const [items, total] = await Promise.all([
-      Request.find(filter)
-        .select('title description locationName lat lng status category priority peopleCount files.url files.filename files.mimetype createdAt createdBy claimedBy escalated')
-        .sort(sortStr)
-        .skip(skip)
-        .limit(limitNum)
-        .populate('createdBy', 'displayName email role')
-        .populate('claimedBy', 'displayName email role')
-        .lean(),
-      Request.countDocuments(filter),
-    ])
+    const items = await Request.find(filter)
+      .select('title description locationName lat lng status category priority peopleCount files.url files.filename files.mimetype createdAt createdBy claimedBy escalated')
+      .sort(sortStr)
+      .skip(skip)
+      .limit(limitNum)
+      .populate('createdBy', 'displayName email role')
+      .populate('claimedBy', 'displayName email role')
+      .lean()
+    const total = await Request.countDocuments(filter)
 
-    return res.json({
+    const result = {
       items,
       total,
       page: pageNum,
       pages: Math.ceil(total / limitNum),
-    })
+    }
+
+    if (req.query.summary === 'true') {
+      const statsFilter = { ...filter }
+      delete statsFilter.status
+      delete statsFilter.category
+      delete statsFilter.priority
+      const [byStatusAgg, byPriorityAgg, byCategoryAgg, dailyAgg] = await Promise.all([
+        Request.aggregate([{ $match: statsFilter }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
+        Request.aggregate([{ $match: statsFilter }, { $group: { _id: '$priority', count: { $sum: 1 } } }]),
+        Request.aggregate([{ $match: statsFilter }, { $group: { _id: '$category', count: { $sum: 1 } } }]),
+        Request.aggregate([
+          { $match: statsFilter },
+          { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+          { $sort: { _id: 1 } },
+          { $limit: 30 },
+        ]),
+      ])
+      result.byStatus = Object.fromEntries(byStatusAgg.map((s) => [s._id, s.count]))
+      result.byPriority = Object.fromEntries(byPriorityAgg.map((s) => [s._id, s.count]))
+      result.byCategory = Object.fromEntries(byCategoryAgg.map((s) => [s._id, s.count]))
+      result.dailyRequests = dailyAgg.map((d) => ({ date: d._id, count: d.count }))
+    }
+
+    return res.json(result)
   } catch (err) {
     logger.error('[requests] list error', { message: err.message })
     return res.status(500).json({ error: 'Server error' })

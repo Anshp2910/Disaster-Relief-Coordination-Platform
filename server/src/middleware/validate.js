@@ -235,6 +235,7 @@ const querySchemas = {
     priority: Joi.string().valid('Critical', 'High', 'Medium', 'Low', 'All'),
     search: Joi.string().max(200).trim().allow(''),
     sort: Joi.string().valid('-createdAt', 'createdAt', '-priority', 'priority', '-status', 'status', 'title', '-title'),
+    summary: Joi.boolean().default(false),
   }),
 
   resourcesList: Joi.object({

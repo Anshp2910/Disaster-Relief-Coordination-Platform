@@ -12,10 +12,10 @@ import {
   RefreshCw,
   Plus,
   ArrowRight,
-  ShieldAlert,
   FileText,
   BarChart3,
   ListChecks,
+  LayoutDashboard,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
@@ -26,6 +26,11 @@ import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, CATEGORY_OPTIONS } fro
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import KpiCards from '../components/KpiCards'
+import RiskWidget from '../components/RiskWidget'
+import RequestsChart from '../components/RequestsChart'
+import DashboardMap from '../components/DashboardMap'
+import ActivityFeed from '../components/ActivityFeed'
 
 interface Item {
   _id: string
@@ -43,6 +48,15 @@ interface Item {
   matchedResources?: unknown[]
 }
 
+interface Stats {
+  totalUsers?: number
+  totalRequests?: number
+  byStatus?: Record<string, number>
+  byCategory?: Record<string, number>
+  byPriority?: Record<string, number>
+  dailyRequests?: Array<{ date: string; count: number }>
+}
+
 function formatDate(i18nLng: string): string {
   return new Date().toLocaleDateString(i18nLng, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
@@ -53,6 +67,7 @@ const fadeUp = createListItem(16, 0.3)
 export default function Dashboard() {
   useEffect(() => { document.title = 'Disaster Relief - Dashboard' }, [])
   const [items, setItems] = useState<Item[]>([])
+  const [stats, setStats] = useState<Stats | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState('All')
@@ -73,27 +88,34 @@ export default function Dashboard() {
   const displayName = currentUser?.displayName || currentUser?.email || t('common.unknown')
   const criticalCount = items.filter((it) => it.priority === 'Critical').length
   const highCount = items.filter((it) => it.priority === 'High').length
-  const openCount = items.filter((it) => it.status === 'Open').length
   const hasUrgent = criticalCount > 0 || highCount > 0
 
   const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
-      const params: Record<string, string | number | undefined> = { page, limit: 12, sort: sortBy }
+      const params: Record<string, string | number | boolean | undefined> = { page, limit: 12, sort: sortBy, summary: true }
       if (filterStatus !== 'All') params.status = filterStatus
       if (filterPriority !== 'All') params.priority = filterPriority
       if (filterCategory !== 'All') params.category = filterCategory
-      const data = await clientApi.getRequests(params) as { items?: Item[]; pages?: number; total?: number }
+      const data = await clientApi.getRequests(params) as { items?: Item[]; pages?: number; total?: number; byStatus?: Record<string, number>; byPriority?: Record<string, number>; byCategory?: Record<string, number>; dailyRequests?: Array<{ date: string; count: number }> }
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
       setTotal(data.total || 0)
+      setStats({
+        totalRequests: data.total || 0,
+        byStatus: data.byStatus,
+        byPriority: data.byPriority,
+        byCategory: data.byCategory,
+        dailyRequests: data.dailyRequests,
+        totalUsers: currentUser ? 1 : 0,
+      })
     } catch (e) {
       setError(getErrorMessage(e) || t('dashboard.failedToLoad'))
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, filterPriority, filterCategory, sortBy, t])
+  }, [page, filterStatus, filterPriority, filterCategory, sortBy, t, currentUser])
 
   useEffect(() => { load() }, [load])
 
@@ -187,40 +209,22 @@ export default function Dashboard() {
         </motion.div>
 
         {/* ── KPI GRID ── */}
-        <motion.div className="kpi-grid mb-lg" variants={fadeUp}>
-          <div className="kpi-card" data-animate="stagger">
-            <div className="kpi-header">
-              <span className="kpi-label">{t('dashboard.totalRequests') || 'Total Requests'}</span>
-              <FileText size={16} className="text-muted" />
-            </div>
-            <div className="kpi-value">{loading ? '—' : total}</div>
+        <KpiCards stats={stats} loading={loading} />
+
+        {/* ── VISUALIZATION BENTO GRID ── */}
+        <motion.div className="bento-grid mb-lg" variants={fadeUp}>
+          <div className="bento-card">
+            <RiskWidget stats={stats} loading={loading} />
           </div>
-          <div className="kpi-card" data-animate="stagger">
-            <div className="kpi-header">
-              <span className="kpi-label">{t('statuses.Open') || 'Open'}</span>
-              <ClipboardList size={16} className="text-accent" />
-            </div>
-            <div className="kpi-value">{loading ? '—' : openCount}</div>
+          <div className="bento-card bento--wide">
+            <RequestsChart data={stats?.dailyRequests?.map((d) => ({ date: d.date, count: d.count })) || []} />
           </div>
-          <div className="kpi-card" data-animate="stagger">
-            <div className="kpi-header">
-              <span className="kpi-label">{t('priorities.Critical') || 'Critical'}</span>
-              <ShieldAlert size={16} className="text-danger" />
-            </div>
-            <div className="kpi-value" style={{ color: criticalCount > 0 ? 'var(--danger)' : undefined }}>
-              {loading ? '—' : criticalCount}
-            </div>
-          </div>
-          <div className="kpi-card" data-animate="stagger">
-            <div className="kpi-header">
-              <span className="kpi-label">{t('dashboard.urgent') || 'High Priority'}</span>
-              <AlertTriangle size={16} className="text-warning" />
-            </div>
-            <div className="kpi-value" style={{ color: highCount > 0 ? 'var(--warning)' : undefined }}>
-              {loading ? '—' : highCount}
-            </div>
+          <div className="bento-card bento--wide">
+            <ActivityFeed compact limit={8} />
           </div>
         </motion.div>
+
+        <DashboardMap />
 
         {/* ── QUICK ACTION NAV ── */}
         <motion.div className="flex flex-gap-sm flex-wrap mb-lg" variants={fadeUp}>
@@ -262,7 +266,7 @@ export default function Dashboard() {
         <motion.div className="card" variants={fadeUp}>
           <div className="flex-between mb-md">
             <div className="flex items-center gap-xs">
-              <ListChecks size={18} className="text-accent" />
+              <LayoutDashboard size={18} className="text-accent" />
               <h2 className="pageTitle" style={{ fontSize: 'var(--text-lg)' }}>
                 {t('dashboard.allRequests') || 'All Requests'}
               </h2>
