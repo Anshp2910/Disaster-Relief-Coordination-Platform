@@ -317,9 +317,9 @@ export default function Resources() {
               <Download size={16} />
               <span className="ml-xs">{t('resources.exportCSV')}</span>
             </button>
-            <RippleBtn className="" onClick={openCreate} aria-label={t('resources.addResource')}>
+            <RippleBtn onClick={openCreate} aria-label={t('resources.addResource')}>
               <Plus size={16} />
-              <span className="ml-xs">{t('resources.addResource')}</span>
+              {t('resources.addResource')}
             </RippleBtn>
           </>
         }
@@ -508,12 +508,12 @@ export default function Resources() {
                 <div className="flex-1">
                   <div className="flex flex-gap-sm flex-wrap">
                     <span className="text-bold text-lg">{r.name}</span>
-                    <Badge label={t(`categories.${r.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={r.category} />
-                    <Badge label={r.status || 'Available'} colors={RESOURCE_STATUS_COLORS} colorKey={r.status} />
+                  <Badge label={t(`categories.${r.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={r.category} />
+                  <Badge label={r.status || 'Available'} colors={RESOURCE_STATUS_COLORS} colorKey={r.status} />
                   </div>
                   <div className="mt-xs text-base">
                     <strong>{r.quantity}</strong> {r.unit}
-                    {(r.allocatedQuantity ?? 0) > 0 && <span className="text-accent-orange ml-sm">({r.allocatedQuantity} {t('resources.allocated')})</span>}
+                    {(r.allocatedQuantity ?? 0) > 0 && <span className="text-warning ml-xs">({r.allocatedQuantity} {t('resources.allocated')})</span>}
                   </div>
                   <div className="small muted mt-xs">{r.locationName}</div>
                   {r.allocatedTo && (
@@ -545,11 +545,11 @@ export default function Resources() {
                   )}
                   <button onClick={() => openEdit(r)} className="text-sm p-xs" aria-label={`${t('resources.editResource')} ${r.name || ''}`}>
                     <Edit size={14} />
-                    <span className="ml-xs">{t('resources.editResource')}</span>
+                    <span>{t('resources.editResource')}</span>
                   </button>
-                  <button onClick={() => handleDelete(r._id)} className="btn-danger text-sm p-xs" aria-label={`${t('resources.delete')} ${r.name || ''}`}>
+                  <button onClick={() => handleDelete(r._id)} className="btn-danger btn-sm" aria-label={`${t('resources.delete')} ${r.name || ''}`}>
                     <Trash2 size={14} />
-                    <span className="ml-xs">{t('resources.delete')}</span>
+                    {t('resources.delete')}
                   </button>
                 </div>
               </div>
@@ -663,7 +663,7 @@ export default function Resources() {
       </Modal>
 
       {selectMode && selectedIds.size > 0 && (
-        <div className="sticky-bar z-50" role="toolbar" aria-label={t('resources.bulkActions') || 'Bulk actions'}>
+        <div className="sticky-bar" role="toolbar" aria-label={t('resources.bulkActions') || 'Bulk actions'}>
           <RippleBtn onClick={openBulkEdit} className="text-sm" disabled={bulkUpdating} aria-label={t('resources.editSelected') || 'Edit Selected'}>
             <Edit size={16} />
             <span className="ml-xs">{t('resources.editSelected') || 'Edit Selected'} ({selectedIds.size})</span>

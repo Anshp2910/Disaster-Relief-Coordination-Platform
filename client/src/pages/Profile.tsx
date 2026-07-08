@@ -182,7 +182,7 @@ export default function Profile() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <h3 className="m-0 mb text-base text-accent-blue flex items-center gap-xs">
+        <h3 className="m-0 mb text-base text-accent flex items-center gap-xs">
           <User size={16} aria-hidden="true" />
           {t('profile.accountInfo')}
         </h3>
@@ -293,7 +293,7 @@ export default function Profile() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
       >
-        <h3 className="m-0 mb text-base text-accent-blue flex items-center gap-xs">
+        <h3 className="m-0 mb text-base text-accent flex items-center gap-xs">
           <Key size={16} aria-hidden="true" />
           {t('profile.changePassword')}
         </h3>

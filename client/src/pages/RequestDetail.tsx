@@ -371,7 +371,7 @@ export default function RequestDetail() {
 
         <div className="grid-3-responsive gap-16">
           <motion.div variants={itemVariants} className="card">
-            <h3 className="text-base text-bold text-accent-blue" style={{ margin: '0 0 var(--space-xsml)' }}>{t('editRequest.subtitle')}</h3>
+            <h3 className="text-base text-bold text-accent" style={{ margin: '0 0 var(--space-sm)' }}>{t('editRequest.subtitle')}</h3>
             <p className="text-base m-0 leading-normal">{item.description}</p>
 
             <div className="mt-lg text-sm">
@@ -396,7 +396,7 @@ export default function RequestDetail() {
             </div>
 
             {item.claimedBy && (
-              <div className="mt-sm text-sm p-sm bg-warning-soft rounded-sm flex flex-gap-xs">
+              <div className="mt-sm text-sm p-sm bg-elevated rounded-sm flex flex-gap-xs">
                 <Activity size={14} className="flex-shrink-0" aria-hidden="true" />
                 <span>
                   {t('requestDetail.claimedBy')} <strong>{item.claimedBy.displayName || item.claimedBy.email}</strong>
@@ -432,7 +432,7 @@ export default function RequestDetail() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="card">
-            <h3 className="m-0 mb text-base text-accent-blue flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
               <Paperclip size={16} aria-hidden="true" />
               {t('requestDetail.files')}
             </h3>
@@ -458,7 +458,7 @@ export default function RequestDetail() {
                     {(f.mimetype?.startsWith('image/') || f.mimetype === 'application/pdf') && (
                       <button onClick={() => setPreviewFile(f)} className="text-xs p-xs">{t('requestDetail.preview') || 'Preview'}</button>
                     )}
-                    <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm text-accent-blue" aria-label={`${t('requestDetail.open')} ${f.filename}`}>
+                    <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm text-accent" aria-label={`${t('requestDetail.open')} ${f.filename}`}>
                       <Download size={14} />
                     </a>
                     {(f.uploadedBy && (currentUser?._id === f.uploadedBy || currentUser?.role === 'admin')) && (
@@ -479,7 +479,7 @@ export default function RequestDetail() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="card">
-            <h3 className="m-0 mb text-base text-accent-blue flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
               <Package size={16} aria-hidden="true" />
               {t('requestDetail.allocateResources')}
             </h3>
@@ -505,7 +505,7 @@ export default function RequestDetail() {
 
         {matches.length > 0 && (
           <motion.div variants={itemVariants} className="card mt-lg">
-            <h3 className="m-0 mb text-base text-accent-blue flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
               <Share2 size={16} aria-hidden="true" />
               {t('requestDetail.suggestedResources') || 'Suggested Resources'} ({matches.length})
             </h3>
@@ -533,7 +533,7 @@ export default function RequestDetail() {
         )}
 
         <motion.section variants={itemVariants} aria-label={t('requestDetail.comments')} aria-live="polite" className="card mt-lg">
-          <h3 className="m-0 mb text-base text-accent-blue flex flex-gap-xs">
+          <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
             <MessageSquare size={16} aria-hidden="true" />
             {t('requestDetail.comments')} ({item.comments?.length || 0})
           </h3>
@@ -588,7 +588,7 @@ export default function RequestDetail() {
 
         {item.auditLog && item.auditLog.length > 0 && (
           <motion.aside variants={itemVariants} aria-label={t('requestDetail.activityLog')} className="card mt-lg">
-            <h3 className="m-0 mb text-base text-accent-blue flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
               <Clock size={16} aria-hidden="true" />
               {t('requestDetail.activityLog')}
             </h3>
@@ -607,7 +607,7 @@ export default function RequestDetail() {
 
         <motion.div variants={itemVariants} className="card mt-lg">
           <div className={`flex-between ${showChat ? 'mb-sm' : 'mb-0'}`}>
-            <h3 className="m-0 text-base text-accent-blue flex flex-gap-xs">
+            <h3 className="m-0 text-base text-accent flex flex-gap-xs">
               <MessageSquare size={16} aria-hidden="true" />
               {t('requestDetail.realTimeChat')}
             </h3>
@@ -624,7 +624,7 @@ export default function RequestDetail() {
 
         <motion.div variants={itemVariants} className="card mt-lg">
           <div className="flex-between mb">
-            <h3 className="m-0 text-base text-accent-blue">
+            <h3 className="m-0 text-base text-accent">
               {t('requestDetail.feedback')} ({feedbackList.length})
             </h3>
             {!showFeedbackForm && (

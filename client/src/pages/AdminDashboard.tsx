@@ -252,7 +252,7 @@ function StatsPanel({ stats }: StatsPanelProps) {
 
   return (
     <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
-      <h3 className="m-0 text-bold text-accent-blue text-15">{t('admin.platformOverview')}</h3>
+      <h3 className="m-0 text-bold text-accent">{t('admin.platformOverview')}</h3>
 
       <section aria-label={t('admin.statisticsLabel')}>
         <div className="admin-stats-grid">

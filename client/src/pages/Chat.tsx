@@ -268,7 +268,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     <>
       <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
       <div className="flex flex-between flex-center p-sm border-bottom">
-        <h3 className="m-0 text-sm text-accent-blue">{t('chat.title')}</h3>
+        <h3 className="m-0 text-sm text-accent">{t('chat.title')}</h3>
         <div className="flex items-center gap-xs">
           {onClose && (
             <button onClick={onClose} className="bg-none border-none cursor-pointer" aria-label={t('chat.close') || 'Close chat'}>
@@ -307,7 +307,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                 transition={{ duration: 0.2 }}
               >
                 <div className="flex flex-center">
-                  <div className="text-xs text-muted bg-accent-soft rounded-xl p-xs">
+                  <div className="text-xs text-muted bg-elevated rounded-xl p-xs">
                     {escapeHtml(m.text)}
                   </div>
                 </div>
@@ -367,7 +367,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       )}
 
       {selectedFile && (
-        <div className="flex flex-gap-sm p-xs border-top bg-accent-soft items-center">
+        <div className="flex flex-gap-sm p-xs border-top bg-elevated items-center">
           <Paperclip size={14} aria-hidden="true" />
           <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedFile.name}</span>
           <button onClick={() => setSelectedFile(null)} className="bg-none border-none cursor-pointer" aria-label={t('common.close')}><X size={14} /></button>

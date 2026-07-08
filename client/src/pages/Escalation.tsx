@@ -254,7 +254,7 @@ export default function Escalation() {
           <div className="listCard border-l-4" style={{ borderLeftColor: 'var(--gov-danger)' }}>
             <div className="flex-between">
               <div className="flex-1">
-                <div className="text-bold text-base text-accent-blue">{item.title}</div>
+                <div className="text-bold text-base text-accent">{item.title}</div>
                 <div className="text-sm text-red mt-xs">
                   <AlertTriangle size={14} className="inline-block mr-xs" aria-hidden="true" />
                   {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}

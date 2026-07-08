@@ -212,7 +212,7 @@ export default function MapOverview() {
 
       <div className="card p-0 relative">
         {loading && (
-          <div className="inset-0 z-100">
+          <div className="inset-0">
             <SkeletonMap height="70vh" />
           </div>
         )}
@@ -220,7 +220,7 @@ export default function MapOverview() {
         <div ref={mapRef} className="map-container-full w-full" aria-label={t('map.mapAriaLabel')} />
 
         {!loading && error && (
-          <div className="flex flex-col flex-center inset-0 z-100 bg-elevated">
+          <div className="flex flex-col flex-center inset-0 bg-elevated">
             <ErrorState message={error} />
           </div>
         )}

@@ -320,7 +320,7 @@ export default function ZoneHeatMap() {
           <div className="flex-1">
             <div className="card p-0 relative">
               {loading && (
-                <div className="inset-0 z-100">
+                <div className="inset-0">
                   <SkeletonMap height="65vh" />
                 </div>
               )}

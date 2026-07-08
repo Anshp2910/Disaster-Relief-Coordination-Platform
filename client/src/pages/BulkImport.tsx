@@ -320,10 +320,10 @@ export default function BulkImport() {
               </div>
 
               <div className="p-2xl text-center border-dashed-2 rounded">
-                <div className="mb-sm text-accent-blue">
+                <div className="mb-sm text-accent">
                   <Upload size={32} className="inline-block" aria-hidden="true" />
                 </div>
-                <div className="text-base mb-sm text-accent-blue">{t('bulkImport.importFromCSV', { tab })}</div>
+                <div className="text-base mb-sm text-accent">{t('bulkImport.importFromCSV', { tab })}</div>
                 <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
                 <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label={t('bulkImport.uploadCSV')} />
                 <RippleBtn onClick={() => document.getElementById('csv-upload')?.click()} className="cursor-pointer inline-block text-13 p-sm">
@@ -344,7 +344,7 @@ export default function BulkImport() {
               </div>
 
               {unmatchedCount > 0 && (
-                <div className="mb p-sm rounded-sm bg-warning-soft">
+                <div className="mb p-sm rounded-sm bg-elevated">
                   <span className="text-13 text-semi flex items-center gap-xs text-warning">
                     <AlertTriangle size={14} />
                     {unmatchedCount} {t('bulkImport.columnDisplay', { count: unmatchedCount })} {t('bulkImport.willBeIgnored')}
@@ -458,7 +458,7 @@ export default function BulkImport() {
                       <div className="dt-inline-cell text-center dt-inline-shrink" role="gridcell">
                         <button
                           onClick={() => setEditingRow(isEditing ? null : rowId)}
-                          className="bg-none border-none cursor-pointer text-sm p-xs text-accent-blue"
+                          className="bg-none border-none cursor-pointer text-sm p-xs text-accent"
                           aria-label={isEditing ? t('bulkImport.doneEditing') : t('bulkImport.editRow', { num: rowOffset + idx + 1 })}
                         >
                           {isEditing ? t('bulkImport.done') : t('bulkImport.edit')}

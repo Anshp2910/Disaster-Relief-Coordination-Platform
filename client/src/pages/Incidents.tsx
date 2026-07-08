@@ -331,7 +331,7 @@ export default function Incidents() {
             {selectedIncident && (
               <div className="card flex-shrink-0 w-320">
                 <div className="flex-between mb-sm">
-                  <h3 className="m-0 text-accent-blue text-15 flex items-center gap-xs">
+                  <h3 className="m-0 text-accent flex items-center gap-xs">
                     <AlertTriangle size={16} />
                     {selectedIncident.name}
                   </h3>
@@ -342,16 +342,16 @@ export default function Incidents() {
                   <span className="text-xs text-semi severity-badge" data-severity={selectedIncident.severity}>
                     {selectedIncident.severity}
                   </span>
-                  <span className="text-xs text-semi rounded-sm p-xs bg-accent-soft text-accent-blue">
+                  <span className="text-xs text-semi rounded-sm p-xs bg-elevated text-accent">
                     {selectedIncident.status}
                   </span>
                 </div>
 
                 {selectedIncident.description && (
-                  <div className="mb-sm text-13 leading-normal">{selectedIncident.description}</div>
+                  <div className="mb-sm text-base leading-normal">{selectedIncident.description}</div>
                 )}
 
-                <div className="text-13 leading-lg">
+                <div className="text-sm leading-lg">
                   <div className="flex items-center gap-xs">
                     <MapPin size={14} />
                     <span>{t('incidents.type')}: <strong>{selectedIncident.disasterType}</strong></span>

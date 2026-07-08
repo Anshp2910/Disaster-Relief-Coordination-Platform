@@ -1,16 +1,14 @@
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'path'
-import fs from 'fs'
-import { createServer } from 'http'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 dotenv.config({ path: resolve(__dirname, '../../.env') })
+dotenv.config({ path: resolve(__dirname, '../.env') })
 
-import { createApp } from './app.js'
-import { connectDB } from './config/db.js'
-import { seedAdmin } from './seed.js'
+import fs from 'fs'
+import { createServer } from 'http'
 import { logger } from './utils/logger.js'
 
 const PORT = process.env.PORT || 5001
@@ -20,6 +18,10 @@ async function start() {
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true })
   }
+
+  const { connectDB } = await import('./config/db.js')
+  const { seedAdmin } = await import('./seed.js')
+  const { createApp } = await import('./app.js')
 
   await connectDB()
   await seedAdmin()
