@@ -57,7 +57,7 @@ export default function RippleBtn({
       onClick={handleClick}
       disabled={disabled}
       aria-label={ariaLabel}
-      style={{ position: 'relative', overflow: 'hidden', ...style }}
+      style={{ position: 'relative', ...style }}
     >
       {children}
       {!reduced && <AnimatePresence>

@@ -225,6 +225,7 @@ export default function Dashboard() {
             </RippleBtn>
             <RippleBtn
               onClick={() => navigate('/requests/new')}
+              className="btn-primary btn-sm"
               aria-label={t('dashboard.createRequest')}
             >
               <Plus size={14} />
@@ -317,7 +318,7 @@ export default function Dashboard() {
           <div className="flex-between mb-md">
             <div className="flex items-center gap-xs">
               <LayoutDashboard size={18} className="text-accent" />
-              <h2 className="pageTitle" style={{ fontSize: 'var(--text-lg)' }}>
+              <h2 className="pageTitle-sm">
                 {t('dashboard.allRequests') || 'All Requests'}
               </h2>
             </div>

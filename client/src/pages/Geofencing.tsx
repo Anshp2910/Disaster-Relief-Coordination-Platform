@@ -303,7 +303,7 @@ export default function Geofencing() {
           <RippleBtn
             onClick={checkArea}
             disabled={loading || !position}
-            className="text-sm p-sm flex items-center gap-xs"
+            className="btn-primary btn-sm"
             aria-label={t('geofencing.checkArea') || 'Check area'}
           >
             <Target size={16} />

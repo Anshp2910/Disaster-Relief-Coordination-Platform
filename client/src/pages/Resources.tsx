@@ -333,7 +333,7 @@ export default function Resources() {
           <>
             <RippleBtn
               onClick={toggleSelectMode}
-              className="text-sm p-xs"
+              className="btn-secondary btn-sm"
               aria-label={t('resources.selectMode') || 'Select Mode'}
               aria-pressed={selectMode}
             >
@@ -344,7 +344,7 @@ export default function Resources() {
               <Download size={16} />
               <span className="ml-xs">{t('resources.exportCSV')}</span>
             </button>
-            <RippleBtn onClick={openCreate} aria-label={t('resources.addResource')}>
+            <RippleBtn onClick={openCreate} className="btn-primary btn-sm" aria-label={t('resources.addResource')}>
               <Plus size={16} />
               {t('resources.addResource')}
             </RippleBtn>
@@ -485,7 +485,7 @@ export default function Resources() {
           </div>
 
           <div className="flex flex-gap-sm mt">
-            <RippleBtn type="submit" className="" aria-label={editItem ? t('resources.update') : t('resources.create')}>
+            <RippleBtn type="submit" className="btn-primary btn-sm" aria-label={editItem ? t('resources.update') : t('resources.create')}>
               <CheckCircle size={16} />
               <span className="ml-xs">{editItem ? t('resources.update') : t('resources.create')}</span>
             </RippleBtn>
@@ -617,7 +617,7 @@ export default function Resources() {
             />
           </div>
           <div className="flex flex-gap-sm">
-            <RippleBtn type="submit" disabled={bulkUpdating} className="" aria-label={t('resources.apply') || 'Apply'}>
+            <RippleBtn type="submit" disabled={bulkUpdating} className="btn-primary btn-sm" aria-label={t('resources.apply') || 'Apply'}>
               <CheckCircle size={16} />
               <span className="ml-xs">{t('resources.apply') || 'Apply'}</span>
             </RippleBtn>
@@ -752,7 +752,7 @@ export default function Resources() {
                 </div>
               </div>
               <div className="flex flex-gap-sm">
-                <RippleBtn type="submit" disabled={allocating} className="text-base" aria-label={t('resources.allocate')}>
+                <RippleBtn type="submit" disabled={allocating} className="btn-primary btn-sm" aria-label={t('resources.allocate')}>
                   {allocating ? '...' : (
                     <><CheckCircle size={16} /><span className="ml-xs">{t('resources.allocate')}</span></>
                   )}
@@ -766,7 +766,7 @@ export default function Resources() {
 
       {selectMode && selectedIds.size > 0 && (
         <div className="sticky-bar" role="toolbar" aria-label={t('resources.bulkActions') || 'Bulk actions'}>
-          <RippleBtn onClick={openBulkEdit} className="text-sm" disabled={bulkUpdating} aria-label={t('resources.editSelected') || 'Edit Selected'}>
+          <RippleBtn onClick={openBulkEdit} className="btn-primary btn-sm" disabled={bulkUpdating} aria-label={t('resources.editSelected') || 'Edit Selected'}>
             <Edit size={16} />
             <span className="ml-xs">{t('resources.editSelected') || 'Edit Selected'} ({selectedIds.size})</span>
           </RippleBtn>

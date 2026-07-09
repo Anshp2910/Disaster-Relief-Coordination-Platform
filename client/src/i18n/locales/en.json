@@ -292,7 +292,9 @@
     "pageTitle": "Request Detail",
     "star": "star",
     "stars": "stars",
-    "suggestedResources": "Suggested Resources"
+    "suggestedResources": "Suggested Resources",
+    "changeStatus": "Change status",
+    "statusUpdated": "Status updated"
   },
   "kpi": {
     "totalRequests": "Total Requests",

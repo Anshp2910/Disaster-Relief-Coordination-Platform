@@ -278,6 +278,14 @@
   color: var(--text);
   margin: 0;
 }
+.pageTitle-sm {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--text);
+  margin: 0;
+}
 
 /* ── Nav Chips ── */
 .nav-chip {

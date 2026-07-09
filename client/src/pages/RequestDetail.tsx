@@ -15,7 +15,7 @@ import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import Chat from './Chat'
-import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS } from '../utils/constants'
+import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, STATUS_OPTIONS } from '../utils/constants'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { API_BASE } from '../api/client'
 
@@ -132,7 +132,22 @@ export default function RequestDetail() {
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
   const [editCommentText, setEditCommentText] = useState('')
+  const [statusUpdating, setStatusUpdating] = useState(false)
   const { confirm, ConfirmDialog } = useConfirm()
+
+  async function handleStatusChange(newStatus: string) {
+    if (!id || !item || newStatus === item.status) return
+    setStatusUpdating(true)
+    try {
+      const data = await clientApi.updateRequest(id, { status: newStatus }) as { item: RequestDetailItem }
+      setItem(data.item)
+      toast.success(t('requestDetail.statusUpdated') || 'Status updated')
+    } catch (err) {
+      toast.error(getErrorMessage(err))
+    } finally {
+      setStatusUpdating(false)
+    }
+  }
 
   const load = useCallback(async () => {
     if (!id) return
@@ -405,8 +420,26 @@ export default function RequestDetail() {
       />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <motion.div variants={itemVariants} className="flex flex-gap-xs mb-lg flex-wrap" role="group" aria-label="Status and priority badges">
+        <motion.div variants={itemVariants} className="flex flex-gap-xs mb-lg flex-wrap items-center" role="group" aria-label="Status and priority badges">
           <Badge label={t(`statuses.${item.status}`)} colors={STATUS_COLORS} colorKey={item.status} />
+          {(currentUser?.role === 'admin' || currentUser?._id === item.createdBy?._id) && (
+            <div className="flex items-center gap-xs ml-xs">
+              <label htmlFor="rd-status" className="sr-only">{t('requestDetail.status')}</label>
+              <select
+                id="rd-status"
+                value={item.status}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                disabled={statusUpdating}
+                className="status-select"
+                aria-label={t('requestDetail.changeStatus')}
+              >
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s} value={s} disabled={item.status === 'Resolved' && s !== 'Resolved' && currentUser?.role !== 'admin'}>{t(`statuses.${s}`)}</option>
+                ))}
+              </select>
+              {statusUpdating && <span className="spinner-sm" aria-label={t('common.loading')} />}
+            </div>
+          )}
           <Badge label={t(`priorities.${item.priority}`)} colors={PRIORITY_COLORS} colorKey={item.priority} />
           <Badge label={t(`categories.${item.category}`)} colors={CATEGORY_COLORS} colorKey={item.category} />
         </motion.div>
@@ -453,7 +486,7 @@ export default function RequestDetail() {
 
             <div className="flex flex-gap-sm mt">
               {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
-                <RippleBtn className="" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
+                <RippleBtn className="btn-secondary" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
                   {claiming ? '...' : t('dashboard.claim')}
                 </RippleBtn>
               )}
@@ -539,7 +572,7 @@ export default function RequestDetail() {
               </select>
               <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
               <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
-              <RippleBtn type="submit" disabled={allocating || !allocResource || !allocQty} className="text-sm p-sm">
+              <RippleBtn type="submit" disabled={allocating || !allocResource || !allocQty} className="btn-primary btn-sm">
                 {allocating ? '...' : t('requestDetail.allocate')}
               </RippleBtn>
             </form>
@@ -602,7 +635,7 @@ export default function RequestDetail() {
                 </label>
               </div>
             </div>
-            <RippleBtn type="submit" className="text-sm p-sm" style={{ height: 44, alignSelf: 'flex-end' }} disabled={posting}>
+            <RippleBtn type="submit" className="btn-primary btn-sm" style={{ height: 40, alignSelf: 'flex-end' }} disabled={posting}>
               {posting ? '...' : t('requestDetail.post')}
             </RippleBtn>
           </form>
@@ -615,7 +648,7 @@ export default function RequestDetail() {
                 const withinEditWindow = canEdit(c)
 
                 return (
-                  <div key={c._id} className={`text-sm p-sm bg-card ${isEditing ? 'border-gov' : ''}`} style={{ borderRadius: 8, border: isEditing ? '1px solid var(--accent)' : '1px solid transparent' }}>
+                  <div key={c._id} className={`text-sm p-sm bg-card rounded-sm ${isEditing ? 'border-gov' : ''}`} style={{ border: isEditing ? '1px solid var(--accent)' : '1px solid transparent' }}>
                     {isEditing ? (
                       <>
                         <div className="ff-group m-0">

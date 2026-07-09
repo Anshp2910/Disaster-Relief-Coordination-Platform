@@ -267,7 +267,7 @@ export default function Incidents() {
         subtitle={`${incidents.length} ${t('incidents.incidentsTracked')}`}
         actions={
           currentUser?.role === 'admin' ? (
-            <RippleBtn className="" onClick={openCreate}>
+            <RippleBtn className="btn-primary btn-sm" onClick={openCreate}>
               <Plus size={16} />
               <span className="ml-xs">{t('incidents.createIncident')}</span>
             </RippleBtn>
@@ -516,7 +516,7 @@ export default function Incidents() {
           </div>
 
           <div className="flex flex-gap-sm mt">
-            <RippleBtn type="submit" className="">{editIncident ? t('incidents.update') : t('incidents.create')}</RippleBtn>
+            <RippleBtn type="submit" className="btn-primary btn-sm">{editIncident ? t('incidents.update') : t('incidents.create')}</RippleBtn>
             <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
           </div>
         </form>

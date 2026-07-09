@@ -305,7 +305,7 @@ export default function Schedules() {
         title={t('nav.schedules') || 'Volunteer Scheduling'}
         subtitle={`${items.length} ${t('schedules.schedulesCount')}`}
         actions={
-          <RippleBtn className="" onClick={openCreate} aria-label={t('schedules.createSchedule')}>
+          <RippleBtn className="btn-primary btn-sm" onClick={openCreate} aria-label={t('schedules.createSchedule')}>
             <Plus size={16} />
             <span className="ml-xs">{t('schedules.createSchedule')}</span>
           </RippleBtn>

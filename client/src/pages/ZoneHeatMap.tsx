@@ -271,7 +271,7 @@ export default function ZoneHeatMap() {
         actions={
           <div className="btnRow">
             {currentUser?.role === 'admin' && (
-              <RippleBtn className="" onClick={openCreate} aria-label={t('zones.addZone')}>
+              <RippleBtn className="btn-primary btn-sm" onClick={openCreate} aria-label={t('zones.addZone')}>
                 <Plus size={16} />
                 <span className="ml-xs">{t('zones.addZone')}</span>
               </RippleBtn>
