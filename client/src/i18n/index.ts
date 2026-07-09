@@ -41,7 +41,7 @@ i18n.use(initReactI18next).init({
 })
 
 if (savedLang !== 'en') {
-  loadLocale(savedLang).then(() => i18n.changeLanguage(savedLang)).catch(() => {})
+  loadLocale(savedLang).then(() => i18n.changeLanguage(savedLang)).catch(() => { console.warn('[i18n] Failed to load saved locale', savedLang) })
 }
 
 const origChangeLanguage = i18n.changeLanguage.bind(i18n)

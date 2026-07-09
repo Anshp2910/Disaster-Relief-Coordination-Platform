@@ -141,6 +141,39 @@ export default function BulkImport() {
     cancelPreview()
   }
 
+  /** Parse raw CSV text and advance to the mapping step. Shared by file input and drag-and-drop. */
+  async function processCSVText(text: string): Promise<void> {
+    const cleaned = text.replace(/^\uFEFF/, '')
+    const rows = parseCSV(cleaned)
+
+    if (rows.length < 2) throw new Error(t('bulkImport.csvMustHaveRows'))
+
+    const h = rows[0]!.map((c) => c.trim())
+    const dataRows = rows.slice(1).filter((row) => row.some((v) => v.trim() !== ''))
+
+    if (dataRows.length === 0) throw new Error(t('bulkImport.csvNoDataRows'))
+
+    const isRequestCSV = h.some((c) => /^title$/i.test(c.trim()))
+    const isResourceCSV = h.some((c) => /^name$/i.test(c.trim()))
+
+    if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
+      throw new Error(t('bulkImport.wrongCSVType', { type: 'Resources' }))
+    }
+    if (tab === 'resources' && isRequestCSV && !isResourceCSV) {
+      throw new Error(t('bulkImport.wrongCSVType', { type: 'Requests' }))
+    }
+
+    const initialMaps: ColumnMap[] = h.map((col) => ({
+      csvCol: col,
+      systemCol: autoDetectField(col, systemFields),
+    }))
+
+    setRawHeaders(h)
+    setRawData(dataRows)
+    setColumnMaps(initialMaps)
+    setStep('mapping')
+  }
+
   async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
@@ -149,36 +182,7 @@ export default function BulkImport() {
     setError('')
 
     try {
-      let text = await file.text()
-      text = text.replace(/^\uFEFF/, '')
-      const rows = parseCSV(text)
-
-      if (rows.length < 2) throw new Error(t('bulkImport.csvMustHaveRows'))
-
-      const h = rows[0]!.map((c) => c.trim())
-      const dataRows = rows.slice(1).filter((row) => row.some((v) => v.trim() !== ''))
-
-      if (dataRows.length === 0) throw new Error(t('bulkImport.csvNoDataRows'))
-
-      const isRequestCSV = h.some((c) => /^title$/i.test(c.trim()))
-      const isResourceCSV = h.some((c) => /^name$/i.test(c.trim()))
-
-      if (tab === 'requests' && isResourceCSV && !isRequestCSV) {
-        throw new Error(t('bulkImport.wrongCSVType', { type: 'Resources' }))
-      }
-      if (tab === 'resources' && isRequestCSV && !isResourceCSV) {
-        throw new Error(t('bulkImport.wrongCSVType', { type: 'Requests' }))
-      }
-
-      const initialMaps: ColumnMap[] = h.map((col) => ({
-        csvCol: col,
-        systemCol: autoDetectField(col, systemFields),
-      }))
-
-      setRawHeaders(h)
-      setRawData(dataRows)
-      setColumnMaps(initialMaps)
-      setStep('mapping')
+      await processCSVText(await file.text())
     } catch (e) {
       const err = e as Error
       setError(err.message)
@@ -323,16 +327,23 @@ export default function BulkImport() {
                 className="p-2xl text-center border-dashed-2 rounded"
                 onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-soft)' }}
                 onDragLeave={(e) => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = '' }}
-                onDrop={(e) => {
+                onDrop={async (e) => {
                   e.preventDefault()
                   e.currentTarget.style.borderColor = ''
                   e.currentTarget.style.background = ''
                   const file = e.dataTransfer.files?.[0]
-                  if (file && fileRef.current) {
-                    const dt = new DataTransfer()
-                    dt.items.add(file)
-                    fileRef.current.files = dt.files
-                    handleImport({ target: fileRef.current } as unknown as React.ChangeEvent<HTMLInputElement>)
+                  if (file) {
+                    // Process the dropped file directly — don't attempt to set
+                    // the read-only .files property on the hidden input element.
+                    setImporting(true)
+                    setError('')
+                    try {
+                      await processCSVText(await file.text())
+                    } catch (err) {
+                      setError((err as Error).message)
+                    } finally {
+                      setImporting(false)
+                    }
                   }
                 }}
               >

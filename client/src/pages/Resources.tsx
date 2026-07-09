@@ -651,7 +651,7 @@ export default function Resources() {
                         if (requestOptions.length === 0) {
                           ;(clientApi.getRequests({ limit: '500', status: 'Open' }) as Promise<{ items: { _id: string; title: string; status: string; locationName?: string }[] }>)
                             .then((data) => setRequestOptions(data.items || []))
-                            .catch(() => {})
+                            .catch(() => { console.warn('[Resources] deallocate failed silently') })
                         }
                       }}
                       onKeyDown={(e) => {

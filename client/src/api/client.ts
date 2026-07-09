@@ -47,7 +47,7 @@ async function apiFetch<T = Record<string, unknown>>(path: string, { method = 'G
 
     clearTimeout(timer)
 
-    const data: Record<string, unknown> = await res.json().catch(() => ({}))
+    const raw: Record<string, unknown> = await res.json().catch(() => ({}))
     if (!res.ok) {
   if (res.status === 401 && auth) {
     safeRemoveItem('token')
@@ -58,10 +58,25 @@ async function apiFetch<T = Record<string, unknown>>(path: string, { method = 'G
       setTimeout(() => { redirectingToLogin = false }, 5000)
     }
   }
-      const msg = (data?.error as string) || `Request failed with status ${res.status}`
+      const msg = (raw?.error as string) || `Request failed with status ${res.status}`
       throw new Error(msg)
     }
-    return data as T
+    // Unwrap standardized { success, data, meta } envelope
+    // Returns a flat object merging data and meta so callers see the old format unchanged
+    if (raw && typeof raw === 'object' && raw.success === true && 'data' in raw) {
+      const rawData = raw.data
+      let unwrapped: Record<string, unknown> = {}
+      if (Array.isArray(rawData)) {
+        unwrapped.items = rawData
+      } else if (typeof rawData === 'object' && rawData !== null) {
+        unwrapped = { ...(rawData as Record<string, unknown>) }
+      }
+      if (raw.meta && typeof raw.meta === 'object') {
+        Object.assign(unwrapped, raw.meta as Record<string, unknown>)
+      }
+      return unwrapped as T
+    }
+    return raw as T
   } catch (err) {
     clearTimeout(timer)
     const errObj = err instanceof Error ? err : new Error(String(err))
@@ -134,7 +149,9 @@ export const clientApi = {
   },
 
   adminStats: () => apiFetch('/api/admin/stats'),
-  adminUsers: () => apiFetch('/api/admin/users'),
+  adminUsers: (params: Record<string, string | number | boolean | undefined | null> = {}) => {
+    return apiFetch(`/api/admin/users${toSearchParams(params)}`)
+  },
   adminRequests: (params: Record<string, string | number | boolean | undefined | null> = {}) => {
     return apiFetch(`/api/admin/requests${toSearchParams(params)}`)
   },
@@ -197,7 +214,9 @@ export const clientApi = {
   importRequests: (rows: Record<string, unknown>[]) => apiFetch('/api/bulk/requests/import', { method: 'POST', body: { rows }, timeout: 120000 }),
   importResources: (rows: Record<string, unknown>[]) => apiFetch('/api/bulk/resources/import', { method: 'POST', body: { rows }, timeout: 120000 }),
 
-  getEscalated: () => apiFetch('/api/escalation'),
+  getEscalated: (params: Record<string, string | number | boolean | undefined | null> = {}) => {
+    return apiFetch(`/api/escalation${toSearchParams(params)}`)
+  },
   escalateRequest: (requestId: string, reason: string) => apiFetch(`/api/escalation/${requestId}`, { method: 'POST', body: { reason } }),
   deescalateRequest: (requestId: string) => apiFetch(`/api/escalation/${requestId}`, { method: 'DELETE' }),
 

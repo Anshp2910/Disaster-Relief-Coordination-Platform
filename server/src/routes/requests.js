@@ -91,7 +91,9 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
     }
 
     // Pass only the summary fields as extra to avoid duplicating total/page/pages
-    const { total: _, page: __, pages: ___, ...summaryFields } = meta
+    const summaryFields = meta.byStatus
+      ? { byStatus: meta.byStatus, byPriority: meta.byPriority, byCategory: meta.byCategory, dailyRequests: meta.dailyRequests }
+      : {}
     return sendPaginated(res, { items, total, page: pageNum, pages: Math.ceil(total / limitNum), extra: summaryFields })
   } catch (err) {
     logger.error('[requests] list error', { message: err.message })

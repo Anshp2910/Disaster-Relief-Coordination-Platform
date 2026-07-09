@@ -55,7 +55,7 @@ export function SosFab() {
     <>
       <motion.button
         className="sos-fab sos-fab-btn"
-        onClick={() => { handleSOS().catch(() => {}) }}
+        onClick={() => { handleSOS().catch(() => { console.warn('[SOS] handleSOS promise rejected') }) }}
         disabled={loading || cooldown > 0}
         aria-label={cooldown > 0 ? t('sos.cooldown', { count: cooldown }) || `SOS cooldown ${cooldown}s` : t('sos.alertLabel') || 'Emergency SOS alert'}
         onMouseEnter={() => setShowLabel(true)}

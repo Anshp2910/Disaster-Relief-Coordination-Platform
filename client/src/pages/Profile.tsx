@@ -57,6 +57,7 @@ export default function Profile() {
       if (selectedFile.type.startsWith('image/')) {
         fileToUpload = await new Promise<File>((resolve) => {
           const img = new Image()
+          const objectUrl = URL.createObjectURL(selectedFile)
           img.onload = () => {
             const maxDim = 500
             let { width, height } = img
@@ -70,7 +71,8 @@ export default function Profile() {
             canvas.height = height
             const ctx = canvas.getContext('2d')!
             ctx.drawImage(img, 0, 0, width, height)
-            URL.revokeObjectURL(img.src)
+            // Revoke the object URL AFTER the canvas has the pixel data
+            URL.revokeObjectURL(objectUrl)
             canvas.toBlob((blob) => {
               if (blob) {
                 resolve(new File([blob], selectedFile.name, { type: 'image/jpeg', lastModified: Date.now() }))
@@ -79,7 +81,7 @@ export default function Profile() {
               }
             }, 'image/jpeg', 0.85)
           }
-          img.src = URL.createObjectURL(selectedFile)
+          img.src = objectUrl
         })
       }
 

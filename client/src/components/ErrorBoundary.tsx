@@ -50,7 +50,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       if (navigator.sendBeacon) {
         navigator.sendBeacon('/api/log', new Blob([JSON.stringify(body)], { type: 'application/json' }))
       } else {
-        fetch('/api/log', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => {})
+        fetch('/api/log', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => { console.warn('[ErrorBoundary] Failed to send error report to server') })
       }
     } catch { console.error('[ErrorBoundary] Failed to log error to server') }
   }

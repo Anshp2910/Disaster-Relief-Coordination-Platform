@@ -73,14 +73,14 @@ function WebVitalsReporter() {
           console.warn('[web-vital]', m.name, m.value)
         }
       })
-    }).catch(() => {})
+    }).catch(() => { console.warn('[web-vitals] reportWebVitals import failed') })
   }, [])
   return null
 }
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {})
+    navigator.serviceWorker.register('/sw.js').catch(() => { console.warn('[sw] ServiceWorker registration failed') })
   })
 }
 
