@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import mongoose from 'mongoose'
+import { MongoMemoryServer } from 'mongodb-memory-server'
 import { createApp } from '../src/app.js'
 import { getJwtSecret } from '../src/config/env.js'
 import jwt from 'jsonwebtoken'
@@ -7,18 +8,17 @@ import jwt from 'jsonwebtoken'
 let app
 let adminToken
 let userToken
+let mongod
 
 beforeAll(async () => {
   process.env.JWT_SECRET = 'test-jwt-secret-that-is-at-least-32-characters-long!!'
   process.env.NODE_ENV = 'test'
 
-  const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/disaster_relief_test'
-  try {
-    await mongoose.connect(mongoUri)
-  } catch (e) {
-    console.warn('MongoDB not available for integration tests, skipping:', e.message)
-    return
-  }
+  // Start in-memory MongoDB (first run downloads the binary, so timeout is generous)
+  mongod = await MongoMemoryServer.create()
+  const mongoUri = mongod.getUri()
+
+  await mongoose.connect(mongoUri)
 
   const { User } = await import('../src/models/User.js')
 
@@ -42,7 +42,7 @@ beforeAll(async () => {
   userToken = jwt.sign({ sub: user._id.toString(), role: 'volunteer' }, getJwtSecret(), { expiresIn: '1h' })
 
   app = createApp()
-})
+}, 120000)  // 2 min timeout for first-time binary download
 
 afterAll(async () => {
   if (mongoose.connection.readyState === 1) {
@@ -51,6 +51,9 @@ afterAll(async () => {
       await collections[key].deleteMany({})
     }
     await mongoose.disconnect()
+  }
+  if (mongod) {
+    await mongod.stop()
   }
 })
 
