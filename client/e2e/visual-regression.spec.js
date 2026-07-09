@@ -1,5 +1,14 @@
 import { test, expect } from '@playwright/test'
 
+/* Skip if PLAYWRIGHT_SKIP_VISUAL is set (e.g. in CI without visual comparison) */
+const runVisual = !process.env.PLAYWRIGHT_SKIP_VISUAL
+
+if (!runVisual) {
+  test.describe('visual regression (skipped)', () => {
+    test('PLAYWRIGHT_SKIP_VISUAL is set — skipping all visual tests', () => test.skip())
+  })
+}
+
 /* ── Shared constants ──────────────────────────────────────────── */
 
 const MOCK_USER = {
@@ -62,27 +71,15 @@ const SAMPLE_DATA = {
 
 /* ── Helpers ────────────────────────────────────────────────────── */
 
-/**
- * Mock all backend API routes with sample data so screenshots
- * are deterministic.
- */
 async function mockApiRoutes(page) {
   await page.route('**/api/auth/**', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ token: MOCK_TOKEN, user: MOCK_USER }),
-    }),
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ token: MOCK_TOKEN, user: MOCK_USER }) }),
   )
   await page.route('**/api/version', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ version: '1.0.0' }) }),
   )
   await page.route('**/api/requests/**', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ items: SAMPLE_DATA.requests, total: SAMPLE_DATA.requests.length, pages: 1 }),
-    }),
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ items: SAMPLE_DATA.requests, total: SAMPLE_DATA.requests.length, pages: 1 }) }),
   )
   await page.route('**/api/resources/**', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(SAMPLE_DATA.resources) }),
@@ -108,15 +105,11 @@ async function mockApiRoutes(page) {
   await page.route('**/api/chat/**', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(SAMPLE_DATA.chat) }),
   )
-
   await page.route('**/api/dashboard/stats', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(SAMPLE_DATA.stats) }),
   )
 }
 
-/**
- * Inject auth into localStorage before navigation.
- */
 async function injectAuth(page) {
   await page.addInitScript(({ token, user }) => {
     localStorage.setItem('token', token)
@@ -124,9 +117,6 @@ async function injectAuth(page) {
   }, { token: MOCK_TOKEN, user: MOCK_USER })
 }
 
-/**
- * Disable CSS animations / transitions so screenshots are deterministic.
- */
 async function freezeAnimations(page) {
   await page.addStyleTag({
     content: `
@@ -140,26 +130,19 @@ async function freezeAnimations(page) {
   })
 }
 
-/**
- * Navigate to a page and wait for it to settle.
- */
 async function navigateAndSettle(page, hashPath) {
   await page.goto(`/#${hashPath}`, { waitUntil: 'networkidle' })
-  await page.waitForTimeout(1500) // allow SPA routes + lazy loading
+  await page.waitForTimeout(1500)
   await freezeAnimations(page)
-  await page.waitForTimeout(300) // let freeze take effect
+  await page.waitForTimeout(300)
 }
 
-/**
- * Take a named screenshot at the current viewport.
- * fullPage captures the entire scrollable area.
- */
 async function snap(page, name) {
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => window.scrollTo(0, 0))
   await expect(page).toHaveScreenshot(`${name}.png`, {
     fullPage: true,
-    maxDiffPixelRatio: 0.05, // 5% — accounts for font rendering & anti-aliasing differences
+    maxDiffPixelRatio: 0.05,
   })
 }
 
@@ -176,85 +159,83 @@ test.beforeEach(async ({ page }) => {
 
 /* ── Tests ─────────────────────────────────────────────────────── */
 
-BREAKPOINTS.forEach((bp) => {
-  test.describe(`@${bp.name} (${bp.width}×${bp.height})`, () => {
-    test.beforeEach(async ({ page }) => {
-      await page.setViewportSize({ width: bp.width, height: bp.height })
-      await mockApiRoutes(page)
-    })
+if (runVisual) {
+  BREAKPOINTS.forEach((bp) => {
+    test.describe(`@${bp.name} (${bp.width}×${bp.height})`, () => {
+      test.beforeEach(async ({ page }) => {
+        await page.setViewportSize({ width: bp.width, height: bp.height })
+        await mockApiRoutes(page)
+      })
 
-    /* Public pages */
+      test(`login page — ${bp.name}`, async ({ page }) => {
+        await navigateAndSettle(page, '/login')
+        await snap(page, `login-${bp.name}`)
+      })
 
-    test(`login page — ${bp.name}`, async ({ page }) => {
-      await navigateAndSettle(page, '/login')
-      await snap(page, `login-${bp.name}`)
-    })
+      test(`register page — ${bp.name}`, async ({ page }) => {
+        await navigateAndSettle(page, '/register')
+        await snap(page, `register-${bp.name}`)
+      })
 
-    test(`register page — ${bp.name}`, async ({ page }) => {
-      await navigateAndSettle(page, '/register')
-      await snap(page, `register-${bp.name}`)
-    })
+      test(`public status page — ${bp.name}`, async ({ page }) => {
+        await navigateAndSettle(page, '/public')
+        await snap(page, `public-status-${bp.name}`)
+      })
 
-    test(`public status page — ${bp.name}`, async ({ page }) => {
-      await navigateAndSettle(page, '/public')
-      await snap(page, `public-status-${bp.name}`)
-    })
+      AUTH_PAGES.forEach((path) => {
+        const pageName = path.replace('/', '')
 
-    /* Authenticated pages */
-
-    AUTH_PAGES.forEach((path) => {
-      const pageName = path.replace('/', '')
-
-      test(`${pageName} page — ${bp.name}`, async ({ page }) => {
-        await injectAuth(page)
-        await navigateAndSettle(page, path)
-        await snap(page, `${pageName}-${bp.name}`)
+        test(`${pageName} page — ${bp.name}`, async ({ page }) => {
+          await injectAuth(page)
+          await navigateAndSettle(page, path)
+          await snap(page, `${pageName}-${bp.name}`)
+        })
       })
     })
   })
-})
 
-/* ── Edge-case tests ───────────────────────────────────────────── */
+  /* ── Edge-case tests ───────────────────────────────────────────── */
 
-test.describe('edge cases', () => {
-  test.beforeEach(async ({ page }) => {
-    await mockApiRoutes(page)
-    await injectAuth(page)
+  test.describe('edge cases', () => {
+    test.beforeEach(async ({ page }) => {
+      await mockApiRoutes(page)
+      await injectAuth(page)
+    })
+
+    test('very narrow viewport (320px) — dashboard', async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 568 })
+      await navigateAndSettle(page, '/dashboard')
+      await snap(page, 'dashboard-narrow')
+    })
+
+    test('mid-range viewport (1024px) — dashboard', async ({ page }) => {
+      await page.setViewportSize({ width: 1024, height: 768 })
+      await navigateAndSettle(page, '/dashboard')
+      await snap(page, 'dashboard-1024')
+    })
+
+    test('ultrawide viewport (1920px) — dashboard', async ({ page }) => {
+      await page.setViewportSize({ width: 1920, height: 1080 })
+      await navigateAndSettle(page, '/dashboard')
+      await snap(page, 'dashboard-ultrawide')
+    })
+
+    test('long-content page (request detail) — phone', async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 812 })
+      await navigateAndSettle(page, '/requests/r1')
+      await snap(page, 'request-detail-phone')
+    })
+
+    test('404 page — phone', async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 812 })
+      await navigateAndSettle(page, '/nonexistent-route')
+      await snap(page, 'not-found-phone')
+    })
+
+    test('profile page — phone', async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 812 })
+      await navigateAndSettle(page, '/profile')
+      await snap(page, 'profile-phone')
+    })
   })
-
-  test('very narrow viewport (320px) — dashboard', async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 568 }) // iPhone SE
-    await navigateAndSettle(page, '/dashboard')
-    await snap(page, 'dashboard-narrow')
-  })
-
-  test('mid-range viewport (1024px) — dashboard', async ({ page }) => {
-    await page.setViewportSize({ width: 1024, height: 768 }) // iPad landscape
-    await navigateAndSettle(page, '/dashboard')
-    await snap(page, 'dashboard-1024')
-  })
-
-  test('ultrawide viewport (1920px) — dashboard', async ({ page }) => {
-    await page.setViewportSize({ width: 1920, height: 1080 })
-    await navigateAndSettle(page, '/dashboard')
-    await snap(page, 'dashboard-ultrawide')
-  })
-
-  test('long-content page (request detail) — phone', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 })
-    await navigateAndSettle(page, '/requests/r1')
-    await snap(page, 'request-detail-phone')
-  })
-
-  test('404 page — phone', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 })
-    await navigateAndSettle(page, '/nonexistent-route')
-    await snap(page, 'not-found-phone')
-  })
-
-  test('profile page — phone', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 })
-    await navigateAndSettle(page, '/profile')
-    await snap(page, 'profile-phone')
-  })
-})
+}

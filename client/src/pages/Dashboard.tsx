@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -19,7 +19,6 @@ import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useAuth } from '../context/AuthContext'
-import { useSocket } from '../hooks/useSocket'
 import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, CATEGORY_OPTIONS } from '../utils/constants'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
@@ -27,8 +26,6 @@ import { getErrorMessage } from '../utils/getErrorMessage'
 import RiskWidget from '../components/RiskWidget'
 import RequestsChart from '../components/RequestsChart'
 import DashboardMap from '../components/DashboardMap'
-import ActivityFeed from '../components/ActivityFeed'
-import WeatherWidget from '../components/WeatherWidget'
 import TaskList from '../components/TaskList'
 
 interface Item {
@@ -75,20 +72,13 @@ export default function Dashboard() {
   const [sortBy, setSortBy] = useState('-createdAt')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: string } | null>(null)
-  const [weatherLoading, setWeatherLoading] = useState(true)
 
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const currentDate = formatDate(i18n.language)
 
   const { user: currentUser } = useAuth()
-  const { connected } = useSocket()
 
-  const displayName = currentUser?.displayName || currentUser?.email || t('common.unknown')
-  const criticalCount = useMemo(() => items.filter((it) => it.priority === 'Critical').length, [items])
-  const highCount = useMemo(() => items.filter((it) => it.priority === 'High').length, [items])
-  const hasUrgent = useMemo(() => criticalCount > 0 || highCount > 0, [criticalCount, highCount])
   const chartData = useMemo(() => stats?.dailyRequests?.map((d) => ({ date: d.date, count: d.count })) || [], [stats?.dailyRequests])
 
   const load = useCallback(async () => {
@@ -116,50 +106,6 @@ export default function Dashboard() {
       setLoading(false)
     }
   }, [page, filterStatus, filterPriority, filterCategory, sortBy, t, currentUser])
-
-  const cachedCoordsRef = useRef<{lat: number; lng: number; timestamp: number} | null>(null)
-
-  const loadWeather = useCallback(async () => {
-    setWeatherLoading(true)
-    try {
-      // Cache geolocation for 10 minutes to avoid repeated browser prompts
-      let coords = cachedCoordsRef.current
-      if (!coords || Date.now() - coords.timestamp > 600000) {
-        coords = await new Promise<{lat: number; lng: number; timestamp: number}>((resolve) => {
-          if (!navigator.geolocation) {
-            resolve({ lat: 28.6139, lng: 77.209, timestamp: Date.now() })
-            return
-          }
-          navigator.geolocation.getCurrentPosition(
-            (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, timestamp: Date.now() }),
-            () => resolve({ lat: 28.6139, lng: 77.209, timestamp: Date.now() })
-          )
-        })
-        cachedCoordsRef.current = coords
-      }
-      const data = await clientApi.getWeatherCurrent(coords.lat, coords.lng) as { temperature?: number; feelsLike?: number; humidity?: number; windSpeed?: number; conditions?: string }
-      if (data) {
-        setWeather({
-          temp: Math.round(data.temperature ?? 0),
-          condition: data.conditions || 'Unknown',
-          humidity: data.humidity ?? 0,
-          wind: data.windSpeed != null ? `${Math.round(data.windSpeed)} km/h` : 'N/A',
-        })
-      }
-    } catch {
-      // silent
-    } finally {
-      setWeatherLoading(false)
-    }
-  }, [])
-
-  useEffect(() => { loadWeather() }, [loadWeather])
-
-  // Refresh weather every 5 minutes
-  useEffect(() => {
-    const interval = setInterval(() => { loadWeather() }, 300000)
-    return () => clearInterval(interval)
-  }, [loadWeather])
 
   useEffect(() => { load() }, [load])
 
@@ -233,23 +179,6 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* ── COMMAND CENTER STATUS BAR ── */}
-        <motion.div className="flex gap-sm items-center mb-md" variants={fadeUp}>
-          <span className={`live-dot ${connected ? '' : 'live-dot--disconnected'}`}>
-            {connected ? (t('dashboard.live') || 'Live') : (t('dashboard.offline') || 'Offline')}
-          </span>
-          {hasUrgent && (
-            <span className="govt-badge govt-badge-blue flex items-center gap-xs">
-              <AlertTriangle size={12} />
-              {criticalCount > 0 && <span>{criticalCount} Critical</span>}
-              {highCount > 0 && <span className={criticalCount > 0 ? 'ml-xs' : ''}>{highCount} High</span>}
-            </span>
-          )}
-          <span className="text-xs text-muted">
-            {t('dashboard.greeting') || 'Welcome'}, {displayName.split(' ')[0]}
-          </span>
-        </motion.div>
-
         {/* ── VISUALIZATION BENTO GRID ── */}
         <motion.div className="bento-grid mb-sm" variants={fadeUp}>
           {(loading || stats) && (
@@ -259,14 +188,6 @@ export default function Dashboard() {
           )}
           <div className="bento-card bento--wide">
             <RequestsChart data={chartData} />
-          </div>
-          <div className="bento-card">
-            <WeatherWidget weather={weather} loading={weatherLoading} />
-          </div>
-          <div className="bento-card bento--wide">
-            <div className="bento-card-scroll-content">
-              <ActivityFeed compact limit={8} />
-            </div>
           </div>
           <div className="bento-card bento--wide">
             <div className="bento-card-scroll-content">

@@ -11,7 +11,9 @@
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
+    "test:visual": "npx playwright test e2e/visual-regression.spec.js",
+    "test:visual:update": "npx playwright test e2e/visual-regression.spec.js --update-snapshots"
   },
   "dependencies": {
     "framer-motion": "^12.42.0",
