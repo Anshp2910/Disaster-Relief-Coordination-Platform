@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { createStagger, createListItem } from '../utils/animations'
+import { createStagger } from '../utils/animations'
 import {
   AlertTriangle, ClipboardList, MapPin, Users, BarChart3,
   RefreshCw, Plus, ArrowRight,
@@ -31,7 +31,6 @@ interface Item {
 }
 
 const containerVariants = createStagger(0.05)
-const fadeUp = createListItem(16, 0.3)
 
 export default function Dashboard() {
   useEffect(() => { document.title = 'Disaster Relief - Dashboard' }, [])

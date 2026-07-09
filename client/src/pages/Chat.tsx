@@ -1,12 +1,14 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Send, Paperclip, User, ChevronLeft, ArrowDown, X } from 'lucide-react'
+import { Send, Paperclip, User, ChevronLeft, ArrowDown, X, MessageSquare } from 'lucide-react'
 import { useSocket } from '../hooks/useSocket'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { ErrorState } from '../components/ui'
+import EmptyState from '../components/EmptyState'
 
 const ALLOWED_MIME_TYPES = ['image/', 'application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
 
@@ -40,7 +42,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
   useEffect(() => { document.title = 'Disaster Relief - Chat' }, [])
   const { t, i18n } = useTranslation()
   const { user: currentUser } = useAuth()
-  const { socket } = useSocket()
+  const { socket, connected } = useSocket()
   const bottomRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)

@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
-import { createStagger, createListItem } from '../utils/animations'
 import { AlertTriangle, Plus, Edit, Trash2, MapPin, User, Activity, X } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'

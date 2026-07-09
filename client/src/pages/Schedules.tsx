@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
-import { createListItem } from '../utils/animations'
 import { Calendar, Plus, Edit, Trash2, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
 import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect } from '../components/ui'
 import DataList from '../components/ui/DataList'

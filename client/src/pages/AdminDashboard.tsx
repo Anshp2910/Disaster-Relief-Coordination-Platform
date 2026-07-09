@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { createStagger, createListItem } from '../utils/animations'
 import { Users, FileText, Activity, CheckCircle, Shield, Trash2, Download, ArrowLeft } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { clientApi } from '../api/client'
@@ -59,8 +58,6 @@ const PIE_COLORS_STATUS = ['var(--color-open)', 'var(--color-progress)', 'var(--
 
 const PIE_COLORS_PRIORITY = ['var(--color-critical)', 'var(--color-high)', 'var(--color-medium)', 'var(--color-low)']
 
-const itemVariants = createListItem(12, 0.3)
-const fadeUp = createListItem(16, 0.3)
 
 function formatDate(dateStr: string, locale: string): string {
   const d = new Date(dateStr)

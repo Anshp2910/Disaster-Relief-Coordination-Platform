@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Package, Plus, Edit, Trash2, CheckCircle, XCircle, Download, CheckSquare } from 'lucide-react'
+import { Package, Plus, Edit, CheckCircle, XCircle, Download, CheckSquare } from 'lucide-react'
 import { Modal, PageHeader, ErrorState, FilterBar, DataCard, ModernSelect } from '../components/ui'
 import DataList from '../components/ui/DataList'
 import Badge from '../components/Badge'
