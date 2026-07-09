@@ -24,7 +24,6 @@ import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, CATEGORY_OPTIONS } fro
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
-import KpiCards from '../components/KpiCards'
 import RiskWidget from '../components/RiskWidget'
 import RequestsChart from '../components/RequestsChart'
 import DashboardMap from '../components/DashboardMap'
@@ -250,9 +249,6 @@ export default function Dashboard() {
             {t('dashboard.greeting') || 'Welcome'}, {displayName.split(' ')[0]}
           </span>
         </motion.div>
-
-        {/* ── KPI GRID ── */}
-        {(loading || stats) && <KpiCards stats={stats} loading={loading} />}
 
         {/* ── VISUALIZATION BENTO GRID ── */}
         <motion.div className="bento-grid mb-sm" variants={fadeUp}>
