@@ -12,6 +12,7 @@ import { SkeletonList } from '../components/Skeleton'
 import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, CATEGORY_OPTIONS } from '../utils/constants'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
+import ErrorState from '../components/ui/ErrorState'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 interface Item {
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const [items, setItems] = useState<Item[]>([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [refreshLoading, setRefreshLoading] = useState(false)
   const [filterStatus, setFilterStatus] = useState('All')
   const [filterPriority, setFilterPriority] = useState('All')
   const [filterCategory, setFilterCategory] = useState('All')
@@ -95,8 +97,8 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex gap-sm items-center">
-            <button onClick={load} className="btn-secondary btn-sm" aria-label={t('dashboard.refresh')}>
-              <RefreshCw size={14} />
+            <button onClick={() => { setRefreshLoading(true); load().finally(() => setRefreshLoading(false)) }} className="btn-secondary btn-sm" aria-label={t('dashboard.refresh')} autoFocus>
+              {refreshLoading ? <span className="spinner-sm" /> : <RefreshCw size={14} />}
               <span>{t('dashboard.refresh') || 'Refresh'}</span>
             </button>
             <button onClick={() => navigate('/requests/new')} className="btn-primary btn-sm" aria-label={t('dashboard.createRequest')}>
@@ -133,12 +135,7 @@ export default function Dashboard() {
             </h2>
           </div>
 
-          {error && (
-            <div className="error-text mb-sm">
-              <AlertTriangle size={14} />
-              {error}
-            </div>
-          )}
+          {error && <ErrorState message={error} onRetry={load} />}
 
           <div className="flex gap-sm flex-wrap items-center mb-sm">
             {filterOptions.map((f) => (

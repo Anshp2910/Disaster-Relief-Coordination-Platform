@@ -104,13 +104,13 @@ export default function Login() {
             {error && <div className="auth-error" id="login-error" role="alert">{error}</div>}
             <div className="mb-md">
               <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
-              <input id="login-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-invalid={error ? 'true' : 'false'} />
+              <input id="login-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-invalid={error ? 'true' : 'false'} autoFocus />
             </div>
             <div className="mb-md">
               <label htmlFor="login-password" className="auth-label">{t('auth.password')}</label>
               <div style={{ position: 'relative' }}>
                 <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required className="auth-input" placeholder={t('auth.password')} aria-invalid={error ? 'true' : 'false'} autoComplete="current-password" minLength={8} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 'var(--space-2xs)', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 'var(--space-2xs)' }}>
+                <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password visibility" style={{ position: 'absolute', right: 'var(--space-2xs)', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 'var(--space-2xs)' }}>
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>

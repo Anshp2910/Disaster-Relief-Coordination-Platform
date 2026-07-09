@@ -8,6 +8,7 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { useConfirm } from '../hooks/useConfirm'
+import { useToast } from '../components/Toast'
 
 interface EscalatedItem {
   _id: string
@@ -29,6 +30,7 @@ interface RequestOption {
 export default function Escalation() {
   useEffect(() => { document.title = 'Disaster Relief - Escalations' }, [])
   const { t } = useTranslation()
+  const toast = useToast()
   const [items, setItems] = useState<EscalatedItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -42,6 +44,9 @@ export default function Escalation() {
   const [showReqDropdown, setShowReqDropdown] = useState(false)
   const [reqActiveIndex, setReqActiveIndex] = useState(-1)
   const reqSearchRef = useRef<HTMLDivElement>(null)
+  const [escalating, setEscalating] = useState(false)
+  const [escalationSuccess, setEscalationSuccess] = useState(false)
+  const [deEscalationSuccess, setDeEscalationSuccess] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -63,6 +68,20 @@ export default function Escalation() {
       setAllRequests(data.items || [])
     }).catch(() => { setAllRequests([]) })
   }, [load])
+
+  useEffect(() => {
+    if (escalationSuccess) {
+      toast.success(t('escalation.escalated') || 'Escalation submitted')
+      setEscalationSuccess(false)
+    }
+  }, [escalationSuccess, toast, t])
+
+  useEffect(() => {
+    if (deEscalationSuccess) {
+      toast.success(t('escalation.deEscalated') || 'De-escalation completed')
+      setDeEscalationSuccess(false)
+    }
+  }, [deEscalationSuccess, toast, t])
 
   useAutoRefresh(load, { interval: 20000 })
 
@@ -108,14 +127,18 @@ export default function Escalation() {
   async function handleEscalate(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    setEscalating(true)
     try {
       await clientApi.escalateRequest(requestId, reason)
       setRequestId('')
       setReason('')
+      setEscalationSuccess(true)
       load()
     } catch (e) {
       const err = e as Error
       setError(err.message)
+    } finally {
+      setEscalating(false)
     }
   }
 
@@ -124,6 +147,7 @@ export default function Escalation() {
     if (!ok) return
     try {
       await clientApi.deescalateRequest(id)
+      setDeEscalationSuccess(true)
       load()
     } catch (e) {
       const err = e as Error
@@ -139,7 +163,7 @@ export default function Escalation() {
           subtitle={t('escalation.subtitle')}
         />
 
-        {error && <ErrorState message={error} />}
+        {error && <ErrorState message={error} onRetry={load} />}
 
         <form onSubmit={handleEscalate} className="mb-lg">
           <div className="ff-group">
@@ -225,9 +249,9 @@ export default function Escalation() {
               </label>
             </div>
           </div>
-          <button type="submit" className="btn-primary btn-sm" aria-label={t('escalation.escalateRequest')}>
-            <ArrowUp size={16} />
-            {t('escalation.escalateRequest')}
+          <button type="submit" className="btn-primary btn-sm" aria-label={t('escalation.escalateRequest')} disabled={escalating}>
+            {escalating ? <span className="spinner-sm" /> : <ArrowUp size={16} />}
+            {escalating ? 'Escalating...' : t('escalation.escalateRequest')}
           </button>
         </form>
 

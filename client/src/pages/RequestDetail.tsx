@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger } from '../utils/animations'
-import { ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2, Star } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2, Star } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
@@ -397,7 +397,18 @@ export default function RequestDetail() {
     </div>
   )
 
-  if (!item) return null
+  if (!item && !loading && !error) {
+    return (
+      <div className="container">
+        <div className="flex-center flex-col text-center" style={{ padding: 'var(--space-2xl)' }}>
+          <AlertCircle size={48} style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-sm)' }} />
+          <h2 className="text-lg text-bold">Request not found</h2>
+          <p className="text-sm text-muted mb-md">This request may have been removed or you may not have access.</p>
+          <button className="btn-primary" onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <article className="container" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
@@ -478,17 +489,17 @@ export default function RequestDetail() {
 
             <div className="flex gap-sm mt">
               {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
-                <button type="button" className="btn-secondary" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
-                  {claiming ? '...' : t('dashboard.claim')}
+                <button type="button" className="btn-secondary" onClick={handleClaim} disabled={claiming} aria-label="Claim this request">
+                  {claiming && <span className="spinner-sm" />} {claiming ? 'Claiming...' : t('dashboard.claim')}
                 </button>
               )}
               {item.claimedBy?._id === currentUser?.id && (
-                <button type="button" className="btn-danger" onClick={handleUnclaim} disabled={claiming} aria-label={t('dashboard.unclaim')}>
-                  {claiming ? '...' : t('dashboard.unclaim')}
+                <button type="button" className="btn-danger" onClick={handleUnclaim} disabled={claiming} aria-label="Unclaim this request">
+                  {claiming && <span className="spinner-sm" />} {claiming ? 'Unclaiming...' : t('dashboard.unclaim')}
                 </button>
               )}
               {(currentUser?.id === item.createdBy?._id || currentUser?.role === 'admin') && (
-                <button type="button" onClick={() => navigate(`/requests/${id}/edit`)} className="btn-ghost btn-sm flex-center gap-xs" aria-label={t('dashboard.edit')}>
+                <button type="button" onClick={() => navigate(`/requests/${id}/edit`)} className="btn-ghost btn-sm flex-center gap-xs" aria-label="Edit request">
                   <Edit size={14} />
                   {t('dashboard.edit')}
                 </button>
@@ -567,7 +578,7 @@ export default function RequestDetail() {
               <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
               <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
               <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btn-primary btn-sm">
-                {allocating ? '...' : t('requestDetail.allocate')}
+                {allocating && <span className="spinner-sm" />} {allocating ? 'Allocating...' : t('requestDetail.allocate')}
               </button>
             </form>
             {resources.length === 0 && (
@@ -630,7 +641,7 @@ export default function RequestDetail() {
               </div>
             </div>
             <button type="submit" className="btn-primary btn-sm" disabled={posting}>
-              {posting ? '...' : t('requestDetail.post')}
+              {posting && <span className="spinner-sm" />} {posting ? 'Posting...' : t('requestDetail.post')}
             </button>
           </form>
 
@@ -801,7 +812,7 @@ export default function RequestDetail() {
               </div>
               <div className="flex gap-sm mt-sm">
                 <button type="submit" disabled={feedbackLoading} className="btn-primary btn-sm">
-                  {feedbackLoading ? '...' : t('requestDetail.submit')}
+                  {feedbackLoading && <span className="spinner-sm" />} {feedbackLoading ? 'Submitting...' : t('requestDetail.submit')}
                 </button>
                 <button type="button" onClick={() => setShowFeedbackForm(false)} className="text-sm">{t('editRequest.cancel')}</button>
               </div>

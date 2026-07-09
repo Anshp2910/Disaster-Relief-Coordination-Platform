@@ -135,7 +135,7 @@ export default function Register() {
             <div className="auth-field">
               <label htmlFor="reg-name" className="auth-label">{t('auth.fullName')}</label>
               <div className="auth-input-wrap">
-                <input id="reg-name" name="name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} autoComplete="name" className="auth-input" placeholder={t('auth.fullName')} aria-describedby={error ? 'register-error' : undefined} />
+                <input id="reg-name" name="name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} autoComplete="name" className="auth-input" placeholder={t('auth.fullName')} aria-describedby={error ? 'register-error' : undefined} autoFocus />
                 <User size={16} className="auth-input-icon" aria-hidden="true" />
               </div>
             </div>

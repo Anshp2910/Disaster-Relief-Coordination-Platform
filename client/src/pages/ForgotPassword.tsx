@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 import { ShieldCheck, Mail, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { getErrorMessage } from '../utils/getErrorMessage'
@@ -66,7 +67,7 @@ export default function ForgotPassword() {
           </div>
 
           {sent ? (
-            <>
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
               <div className="flex-center" style={{ fontSize: '3rem', color: 'var(--success)', marginBottom: 'var(--space-md)' }}>
                 <CheckCircle size={48} />
               </div>
@@ -90,7 +91,7 @@ export default function ForgotPassword() {
               <div className="auth-back">
                 <Link to="/login" className="flex items-center gap-xs justify-center"><ArrowLeft size={16} />{t('auth.backToLogin')}</Link>
               </div>
-            </>
+            </motion.div>
           ) : (
             <>
               <div className="flex-center" style={{ fontSize: '3rem', color: 'var(--accent)', marginBottom: 'var(--space-md)' }}>
@@ -105,7 +106,7 @@ export default function ForgotPassword() {
                 <div className="auth-field">
                   <label htmlFor="email" className="auth-label">{t('auth.email')}</label>
                   <div className="auth-input-wrap">
-                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} className="auth-input" placeholder=" " aria-describedby={error ? 'forgot-error' : undefined} />
+                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} className="auth-input" placeholder=" " aria-describedby={error ? 'forgot-error' : undefined} autoFocus />
                     <Mail size={16} className="auth-input-icon" aria-hidden="true" />
                   </div>
                 </div>

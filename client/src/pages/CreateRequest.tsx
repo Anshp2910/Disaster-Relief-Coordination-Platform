@@ -5,6 +5,8 @@ import { AlertTriangle } from 'lucide-react'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { ErrorState } from '../components/ui'
+import { useToast } from '../components/Toast'
 
 export default function CreateRequest() {
   useEffect(() => { document.title = 'Disaster Relief - New Request' }, [])
@@ -12,10 +14,13 @@ export default function CreateRequest() {
   const { t } = useTranslation()
   const [error, setError] = useState('')
 
+  const toast = useToast()
+
   const onSubmit = async (data: Record<string, unknown>) => {
     setError('')
     try {
       await clientApi.createRequest(data)
+      toast.success('Request created successfully')
       navigate('/dashboard')
     } catch (e) {
       setError(getErrorMessage(e) || t('createRequest.failed'))
@@ -24,14 +29,7 @@ export default function CreateRequest() {
 
   return (
     <div className="container">
-      {error && (
-        <div className="mb-md">
-          <div className="flex items-center gap-xs text-danger" role="alert">
-            <AlertTriangle size={14} />
-            {error}
-          </div>
-        </div>
-      )}
+      {error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
       <RequestForm
         title={t('createRequest.title')}
         subtitle={t('createRequest.subtitle')}

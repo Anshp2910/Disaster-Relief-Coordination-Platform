@@ -290,8 +290,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           </button>
         )}
         {loading && <SkeletonList count={4} lines={1} />}
-        {!loading && messages.length === 0 && !messageError && <div className="small muted text-center">{t('chat.noMessages')}</div>}
-        {messageError && <div className="small text-center" style={{ color: 'var(--danger)' }}>{messageError}</div>}
+        {!loading && messages.length === 0 && !messageError && <EmptyState icon={<MessageSquare size={32} />} title="No messages yet" description="Start the conversation by sending a message below" compact />}
+        {messageError && <ErrorState message={messageError} onRetry={loadMessages} />}
 
         {messages.map((m) => {
           const isMe = m.sender?.id === currentUser?.id || m.sender?._id === currentUser?.id
@@ -341,6 +341,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
         <div ref={bottomRef} />
       </div>
+
+      {!connected && <div className="text-xs text-muted flex items-center gap-xs mt-xs"><span className="spinner-sm" /> Connecting...</div>}
 
       {showScrollBtn && (
         <button

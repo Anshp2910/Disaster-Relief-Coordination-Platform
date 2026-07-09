@@ -11,6 +11,7 @@ import { useDebounce } from '../hooks/useDebounce'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { useToast } from '../components/Toast'
 
 interface ScheduleItem {
   _id: string
@@ -75,6 +76,8 @@ export default function Schedules() {
   const [users, setUsers] = useState<User[]>([])
   const [zones, setZones] = useState<Zone[]>([])
   const [form, setForm] = useState<ScheduleForm>(DEFAULT_FORM)
+  const toast = useToast()
+  const [submitting, setSubmitting] = useState(false)
   const [viewMode, setViewMode] = useState<'list' | 'week'>('list')
   const [weekOffset, setWeekOffset] = useState(0)
   const [selectedDaySchedule, setSelectedDaySchedule] = useState<ScheduleItem | null>(null)
@@ -123,25 +126,27 @@ export default function Schedules() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setError('')
     if (form.startDate && form.endDate && new Date(form.endDate) < new Date(form.startDate)) { setError(t('schedules.endDateBeforeStart') || 'End date must be after start date'); return }
+    setSubmitting(true)
     try {
       const payload: Record<string, unknown> = { ...form }
       if (!payload.zoneId) delete payload.zoneId
       if (!payload.userId) payload.userId = currentUser?.id
-      if (editItem) { await clientApi.updateSchedule(editItem._id, payload) }
-      else { await clientApi.createSchedule(payload) }
+      if (editItem) { await clientApi.updateSchedule(editItem._id, payload); toast.success('Schedule updated') }
+      else { await clientApi.createSchedule(payload); toast.success('Schedule created') }
       setShowForm(false); load()
     } catch (e) { setError(getErrorMessage(e)) }
+    finally { setSubmitting(false) }
   }
 
   async function handleDelete(id: string) {
     const ok = await confirm({ message: t('schedules.deleteConfirm'), danger: true })
     if (!ok) return
-    try { await clientApi.deleteSchedule(id); load() }
+    try { await clientApi.deleteSchedule(id); toast.success('Schedule deleted'); load() }
     catch (e) { setError(getErrorMessage(e)) }
   }
 
   const handleStatusChange = useCallback(async (id: string, status: string) => {
-    try { await clientApi.updateSchedule(id, { status }); load() }
+    try { await clientApi.updateSchedule(id, { status }); toast.success('Schedule status updated'); load() }
     catch (e) { setError(getErrorMessage(e)) }
   }, [load])
 
@@ -242,8 +247,8 @@ export default function Schedules() {
                 <div className="flex flex-wrap gap-xs mt-sm">
                   <StatusButton currentStatus={item.status || 'Scheduled'} expectedStatus="Scheduled" nextStatus="Active" label={t('schedules.startButton')} color={SCHEDULE_STATUS_COLORS.Active!} scheduleId={item._id} onStatusChange={handleStatusChange} />
                   <StatusButton currentStatus={item.status || 'Scheduled'} expectedStatus="Active" nextStatus="Completed" label={t('schedules.completeButton')} color={SCHEDULE_STATUS_COLORS.Completed!} scheduleId={item._id} onStatusChange={handleStatusChange} />
-                  <button onClick={() => openEdit(item)} className="btn-ghost btn-sm"><Edit size={14} /> {t('common.edit')}</button>
-                  <button onClick={() => handleDelete(item._id)} className="btn-danger btn-sm"><Trash2 size={14} /> {t('common.delete')}</button>
+                  <button onClick={() => openEdit(item)} className="btn-ghost btn-sm" aria-label="Edit schedule"><Edit size={14} /> {t('common.edit')}</button>
+                  <button onClick={() => handleDelete(item._id)} className="btn-danger btn-sm" aria-label="Delete schedule"><Trash2 size={14} /> {t('common.delete')}</button>
                 </div>
               </div>
             )
@@ -282,7 +287,7 @@ export default function Schedules() {
             </div>
           </div>
           <div className="flex gap-sm mt-sm">
-            <button type="submit" className="btn-primary btn-sm"><CheckCircle size={16} /> {editItem ? t('schedules.update') : t('schedules.create')}</button>
+            <button type="submit" className="btn-primary btn-sm" disabled={submitting}>{submitting ? <span className="spinner-sm" /> : <><CheckCircle size={16} /> {editItem ? t('schedules.update') : t('schedules.create')}</>}</button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm">{t('schedules.cancel')}</button>
           </div>
         </form>

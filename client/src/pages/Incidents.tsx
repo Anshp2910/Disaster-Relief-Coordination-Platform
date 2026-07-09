@@ -14,6 +14,7 @@ import { useConfirm } from '../hooks/useConfirm'
 import { useAuth } from '../context/AuthContext'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { useToast } from '../components/Toast'
 
 interface Incident {
   _id: string
@@ -77,9 +78,11 @@ export default function Incidents() {
   const [showForm, setShowForm] = useState(false)
   const [editIncident, setEditIncident] = useState<Incident | null>(null)
   const [form, setForm] = useState<IncidentForm>(DEFAULT_FORM)
+  const [submitting, setSubmitting] = useState(false)
   const { confirm, ConfirmDialog } = useConfirm()
   const { user: currentUser } = useAuth()
   const { socket } = useSocket()
+  const toast = useToast()
   const mapRef = useRef<HTMLDivElement | null>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
   const markersRef = useRef<L.Marker[]>([])
@@ -137,19 +140,20 @@ export default function Incidents() {
   const updateForm = (field: keyof IncidentForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault(); setError('')
+    e.preventDefault(); setError(''); setSubmitting(true)
     try {
       const payload = { ...form, affectedPopulation: Number(form.affectedPopulation) || 0, centerLat: Number(form.centerLat), centerLng: Number(form.centerLng) }
-      if (editIncident) { await clientApi.updateIncident(editIncident._id, payload) }
-      else { await clientApi.createIncident(payload) }
+      if (editIncident) { await clientApi.updateIncident(editIncident._id, payload); toast.success('Incident updated') }
+      else { await clientApi.createIncident(payload); toast.success('Incident created') }
       setShowForm(false); load()
     } catch (e) { setError(getErrorMessage(e)) }
+    finally { setSubmitting(false) }
   }
 
   async function handleDelete(id: string) {
     const ok = await confirm({ message: t('incidents.deleteConfirm'), danger: true })
     if (!ok) return
-    try { await clientApi.deleteIncident(id); setSelectedIncident(null); load() }
+    try { await clientApi.deleteIncident(id); setSelectedIncident(null); toast.success('Incident deleted'); load() }
     catch (e) { setError(getErrorMessage(e)) }
   }
 
@@ -176,7 +180,7 @@ export default function Incidents() {
       {loading ? (
         <SkeletonList count={3} lines={2} />
       ) : incidents.length === 0 ? (
-        <EmptyState icon={<AlertTriangle size={32} />} title={t('incidents.noIncidents') || 'No incidents found'} description={t('incidents.noIncidentsDesc') || 'No incidents match your filters'} />
+        <EmptyState icon={<AlertTriangle size={32} />} title={t('incidents.noIncidents') || 'No incidents found'} description={t('incidents.noIncidentsDesc') || 'No incidents match your filters'} action={{ onClick: () => setShowForm(true), label: 'Create Incident' }} />
       ) : (
         <div className="flex gap-md flex-wrap">
           <div className="flex-1 min-w-0">
@@ -189,7 +193,7 @@ export default function Incidents() {
             <div className="card w-320">
               <div className="flex-between mb-sm">
                 <h3 className="m-0 text-accent flex items-center gap-xs"><AlertTriangle size={16} /> {selectedIncident.name}</h3>
-                <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer"><X size={18} /></button>
+                <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer" aria-label="Close sidebar"><X size={18} /></button>
               </div>
               <div className="flex gap-sm mb-sm flex-wrap">
                 <span className="status-badge" style={{ color: SEVERITY_COLORS[selectedIncident.severity || ''] || 'var(--text-muted)', background: 'var(--bg-subtle)' }}>{selectedIncident.severity}</span>
@@ -208,8 +212,8 @@ export default function Incidents() {
               </div>
               {currentUser?.role === 'admin' && (
                 <div className="flex gap-sm mt-md">
-                  <button onClick={() => openEdit(selectedIncident)} className="btn-ghost btn-sm"><Edit size={14} /> {t('common.edit')}</button>
-                  <button onClick={() => handleDelete(selectedIncident._id)} className="btn-danger btn-sm"><Trash2 size={14} /> {t('common.delete')}</button>
+                  <button onClick={() => openEdit(selectedIncident)} className="btn-ghost btn-sm" aria-label="Edit incident"><Edit size={14} /> {t('common.edit')}</button>
+                  <button onClick={() => handleDelete(selectedIncident._id)} className="btn-danger btn-sm" aria-label="Delete incident"><Trash2 size={14} /> {t('common.delete')}</button>
                 </div>
               )}
             </div>
@@ -263,7 +267,7 @@ export default function Incidents() {
             </div>
           </div>
           <div className="flex gap-sm mt-sm">
-            <button type="submit" className="btn-primary btn-sm">{editIncident ? t('incidents.update') : t('incidents.create')}</button>
+            <button type="submit" className="btn-primary btn-sm" disabled={submitting}>{submitting ? <span className="spinner-sm" /> : (editIncident ? t('incidents.update') : t('incidents.create'))}</button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm">{t('incidents.cancel')}</button>
           </div>
         </form>
