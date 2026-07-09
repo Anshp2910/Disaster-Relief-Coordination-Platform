@@ -251,13 +251,15 @@ export default function Dashboard() {
         </motion.div>
 
         {/* ── KPI GRID ── */}
-        <KpiCards stats={stats} loading={loading} />
+        {(loading || stats) && <KpiCards stats={stats} loading={loading} />}
 
         {/* ── VISUALIZATION BENTO GRID ── */}
         <motion.div className="bento-grid mb-lg" variants={fadeUp}>
-          <div className="bento-card">
-            <RiskWidget stats={stats} loading={loading} />
-          </div>
+          {(loading || stats) && (
+            <div className="bento-card">
+              <RiskWidget stats={stats} loading={loading} />
+            </div>
+          )}
           <div className="bento-card bento--wide">
             <RequestsChart data={chartData} />
           </div>
