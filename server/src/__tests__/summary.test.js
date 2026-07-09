@@ -26,11 +26,7 @@ vi.mock('../models/Request.js', () => {
   mockRequest.find.mockReturnValue(mockRequest)
   mockRequest.findById.mockReturnValue(mockRequest)
   mockRequest.countDocuments.mockResolvedValue(5)
-  mockRequest.aggregate
-    .mockResolvedValueOnce([{ _id: 'Open', count: 3 }, { _id: 'Resolved', count: 2 }])
-    .mockResolvedValueOnce([{ _id: 'Critical', count: 1 }, { _id: 'High', count: 2 }])
-    .mockResolvedValueOnce([{ _id: 'Medical', count: 2 }, { _id: 'Food', count: 3 }])
-    .mockResolvedValueOnce([{ _id: '2025-01-01', count: 2 }, { _id: '2025-01-02', count: 3 }])
+  mockRequest.aggregate.mockResolvedValue([{ _id: 'Open', count: 3 }, { _id: 'Resolved', count: 2 }])
   return { Request: mockRequest }
 })
 
