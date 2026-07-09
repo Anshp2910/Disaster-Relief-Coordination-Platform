@@ -20,7 +20,7 @@ export function validateEnv() {
     APP_NAME:        Joi.string().max(100).optional(),
     LOG_LEVEL:       Joi.string().valid('error', 'warn', 'info', 'debug').optional(),
     RESEND_API_KEY:  Joi.string().optional().allow(''),
-    RESEND_FROM:     Joi.string().email().optional().allow(''),
+    RESEND_FROM:     Joi.string().optional().allow('').default('noreply@disaster-relief.app'),
     GOOGLE_CLIENT_ID:     Joi.string().optional().allow(''),
     GOOGLE_CLIENT_SECRET: Joi.string().optional().allow(''),
     GITHUB_CLIENT_ID:     Joi.string().optional().allow(''),
