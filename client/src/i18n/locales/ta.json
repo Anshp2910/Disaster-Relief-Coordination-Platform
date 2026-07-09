@@ -41,7 +41,11 @@
     "mobileNavigation": "Mobile navigation",
     "darkMode": "Dark mode",
     "lightMode": "Light mode",
-    "switchTo": "Switch to {{mode}} mode"
+    "switchTo": "Switch to {{mode}} mode",
+    "home": "Home",
+    "requests": "Requests",
+    "map": "Map",
+    "chat": "Chat"
   },
   "auth": {
     "appName": "பேரிடர் நிவாரணம்",
@@ -114,7 +118,9 @@
     "volunteer_plural": "Volunteers",
     "ngo_plural": "NGOs",
     "signingIn": "Signing you in...",
-    "redirecting": "Please wait while we redirect you."
+    "redirecting": "Please wait while we redirect you.",
+    "socialLoginDenied": "Social login was denied. Please try again.",
+    "invalidCallback": "Authentication failed. Please try again."
   },
   "dashboard": {
     "title": "பேரிடர் நிவாரண கோரிக்கைகள்",
@@ -164,7 +170,11 @@
     "refresh": "Refresh",
     "filters": "Filters",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "failedToDelete": "Failed to delete"
+    "failedToDelete": "Failed to delete",
+    "greeting": "Welcome",
+    "createRequest": "New Request",
+    "filterCategory": "Category",
+    "sortBy": "Sort by"
   },
   "createRequest": {
     "title": "பேரிடர் நிவாரண கோரிக்கையை உருவாக்கவும்",
@@ -198,7 +208,8 @@
     "peopleLabel": "People affected:",
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
-    "locationRequired": "Please select a location on the map before submitting."
+    "locationRequired": "Please select a location on the map before submitting.",
+    "failed": "Failed to create request"
   },
   "editRequest": {
     "title": "கோரிக்கையைத் திருத்தவும்",
@@ -261,7 +272,12 @@
     "pageTitle": "Request Detail",
     "star": "star",
     "stars": "stars",
-    "suggestedResources": "Suggested Resources"
+    "suggestedResources": "Suggested Resources",
+    "editComment": "Edit your comment...",
+    "commentUpdated": "Comment updated",
+    "editTimeExpired": "Edit window expired (5 minutes)",
+    "editWindowExpired": "Edit window closed (5 min)",
+    "edit": "Edit"
   },
   "admin": {
     "title": "நிர்வாக டாஷ்போர்டு",
@@ -402,7 +418,9 @@
     "apply": "Apply",
     "select": "Select",
     "bulkActions": "Bulk actions",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "searchRequestPlaceholder": "Search for a request...",
+    "searchRequest": "Search for a request"
   },
   "zones": {
     "title": "ஒதுக்குவதற்கு எதுவும் இல்லை",
@@ -472,7 +490,8 @@
     "severityHeader": "Severity",
     "severityLabel": "Severity",
     "statusHeader": "Status",
-    "zonesCount": "zones"
+    "zonesCount": "zones",
+    "map": "Zone Heat Map"
   },
   "public": {
     "title": "பேரிடர் நிவாரண நிலை",
@@ -547,7 +566,8 @@
     "createFirst": "Create your first schedule",
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
-    "status": "Status"
+    "status": "Status",
+    "today": "Today"
   },
   "bulkImport": {
     "title": "மொத்த இறக்குமதி & CSV ஏற்றுமதி",
@@ -595,7 +615,8 @@
     "mapColumnToField": "Map column \"{{column}}\" to system field",
     "rowNumber": "#",
     "editField": "Edit {{field}}",
-    "rowNum": "Row {{row}}"
+    "rowNum": "Row {{row}}",
+    "dragDropHint": "Drag & drop a CSV file here or click to browse"
   },
   "escalation": {
     "title": "CSV இல் தலைப்பு வரிசையும் குறைந்தது ஒரு தரவு வரிசையும் இருக்க வேண்டும்",
@@ -796,7 +817,9 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "viewMap": "View Map",
+    "resources": "Resources"
   },
   "weekdays": {
     "sunday": "ஞாயிறு",
@@ -883,7 +906,8 @@
     "exportCSV": "Export CSV",
     "columns": "Columns",
     "clearSearch": "Clear search",
-    "clearAllFilters": "Clear all filters"
+    "clearAllFilters": "Clear all filters",
+    "scrollHint": "Scroll horizontally for more columns"
   },
   "dataList": {
     "noItems": "No items"

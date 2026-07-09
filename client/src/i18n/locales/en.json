@@ -22,6 +22,10 @@
     "evening": "Good Evening"
   },
   "nav": {
+    "home": "Home",
+    "requests": "Requests",
+    "map": "Map",
+    "chat": "Chat",
     "dashboard": "Dashboard",
     "mapView": "Map View",
     "newRequest": "New Request",
@@ -122,6 +126,8 @@
     "passwordStrong": "Strong",
     "passwordVeryStrong": "Very Strong",
     "invalidEmail": "Please enter a valid email address",
+    "socialLoginDenied": "Social login was denied. Please try again.",
+    "invalidCallback": "Authentication failed. Please try again.",
     "socialLoginComingSoon": "{{provider}} login coming soon",
     "signInWithGoogle": "Sign in with Google",
     "signInWithGitHub": "Sign in with GitHub",
@@ -136,7 +142,10 @@
     "redirecting": "Please wait while we redirect you."
   },
   "dashboard": {
-    "filters": "Filters",
+    "greeting": "Welcome",
+    "createRequest": "New Request",
+    "filterCategory": "Category",
+    "sortBy": "Sort by",
     "title": "Disaster Relief Requests",
     "totalRequests": "total requests",
     "open": "open",
@@ -186,6 +195,7 @@
     "refresh": "Refresh"
   },
   "createRequest": {
+    "failed": "Failed to create request",
     "title": "Create Disaster Relief Request",
     "subtitle": "Fill in the details below to submit a new relief request",
     "titleLabel": "Title:",
@@ -229,6 +239,11 @@
     "cancel": "Cancel"
   },
   "requestDetail": {
+    "editComment": "Edit your comment...",
+    "commentUpdated": "Comment updated",
+    "editTimeExpired": "Edit window expired (5 minutes)",
+    "editWindowExpired": "Edit window closed (5 min)",
+    "edit": "Edit",
     "statusPriorityBadges": "Status and priority badges",
     "files": "Files",
     "noFiles": "No files uploaded yet",
@@ -314,6 +329,7 @@
     "retry": "Retry"
   },
   "dataTable": {
+    "scrollHint": "Scroll horizontally for more columns",
     "label": "Data table",
     "searchPlaceholder": "Search...",
     "noData": "No data",
@@ -500,6 +516,8 @@
     "Fulfilled": "Fulfilled"
   },
   "resources": {
+    "searchRequestPlaceholder": "Search for a request...",
+    "searchRequest": "Search for a request",
     "title": "Resource Inventory",
     "addResource": "Add Resource",
     "editResource": "Edit Resource",
@@ -556,6 +574,7 @@
     "selectAll": "Select All"
   },
   "zones": {
+    "map": "Zone Heat Map",
     "title": "Disaster Zone Heat Map",
     "addZone": "Add Zone",
     "editZone": "Edit Zone",
@@ -684,6 +703,7 @@
     "status": "Status"
   },
   "schedules": {
+    "today": "Today",
     "title": "Volunteer Scheduling",
     "schedulesCount": "schedules",
     "createSchedule": "Create Schedule",
@@ -718,6 +738,7 @@
     "status": "Status"
   },
   "bulkImport": {
+    "dragDropHint": "Drag & drop a CSV file here or click to browse",
     "selectAll": "Select all",
     "dataPreview": "Data preview",
     "title": "Bulk Import & CSV Export",
@@ -923,6 +944,8 @@
     "cooldown": "SOS cooldown {{count}}s"
   },
   "common": {
+    "viewMap": "View Map",
+    "resources": "Resources",
     "loading": "Loading...",
     "error": "An error occurred",
     "save": "Save",

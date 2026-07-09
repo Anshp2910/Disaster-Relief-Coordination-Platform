@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { safeSetItem } from '../utils/storage'
-import { clientApi, API_BASE } from '../api/client'
+import { clientApi } from '../api/client'
 
 export default function SocialCallback() {
   useEffect(() => { document.title = 'Disaster Relief - Signing In...' }, [])

@@ -38,7 +38,11 @@
     "mobileNavigation": "Mobile navigation",
     "darkMode": "Dark mode",
     "lightMode": "Light mode",
-    "switchTo": "Switch to {{mode}} mode"
+    "switchTo": "Switch to {{mode}} mode",
+    "home": "Home",
+    "requests": "Requests",
+    "map": "Map",
+    "chat": "Chat"
   },
   "auth": {
     "appName": "આપત્તિ રાહત",
@@ -111,7 +115,9 @@
     "volunteer_plural": "Volunteers",
     "ngo_plural": "NGOs",
     "signingIn": "Signing you in...",
-    "redirecting": "Please wait while we redirect you."
+    "redirecting": "Please wait while we redirect you.",
+    "socialLoginDenied": "Social login was denied. Please try again.",
+    "invalidCallback": "Authentication failed. Please try again."
   },
   "dashboard": {
     "title": "આપત્તિ રાહત વિનંતીઓ",
@@ -161,7 +167,11 @@
     "refresh": "Refresh",
     "filters": "Filters",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "failedToDelete": "Failed to delete"
+    "failedToDelete": "Failed to delete",
+    "greeting": "Welcome",
+    "createRequest": "New Request",
+    "filterCategory": "Category",
+    "sortBy": "Sort by"
   },
   "createRequest": {
     "title": "આપત્તિ રાહત વિનંતી બનાવો",
@@ -195,7 +205,8 @@
     "peopleLabel": "People affected:",
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
-    "locationRequired": "Please select a location on the map before submitting."
+    "locationRequired": "Please select a location on the map before submitting.",
+    "failed": "Failed to create request"
   },
   "editRequest": {
     "title": "વિનંતી સંપાદિત કરો",
@@ -258,7 +269,12 @@
     "pageTitle": "Request Detail",
     "star": "star",
     "stars": "stars",
-    "suggestedResources": "Suggested Resources"
+    "suggestedResources": "Suggested Resources",
+    "editComment": "Edit your comment...",
+    "commentUpdated": "Comment updated",
+    "editTimeExpired": "Edit window expired (5 minutes)",
+    "editWindowExpired": "Edit window closed (5 min)",
+    "edit": "Edit"
   },
   "admin": {
     "title": "સંચાલન ડેશબોર્ડ",
@@ -399,7 +415,9 @@
     "apply": "Apply",
     "select": "Select",
     "bulkActions": "Bulk actions",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "searchRequestPlaceholder": "Search for a request...",
+    "searchRequest": "Search for a request"
   },
   "zones": {
     "title": "આપત્તિ વિસ્તાર હીટ મેપ",
@@ -469,7 +487,8 @@
     "severityHeader": "Severity",
     "severityLabel": "Severity",
     "statusHeader": "Status",
-    "zonesCount": "zones"
+    "zonesCount": "zones",
+    "map": "Zone Heat Map"
   },
   "incidents": {
     "title": "ઘટના જૂથીકરણ",
@@ -530,7 +549,8 @@
     "createFirst": "Create your first schedule",
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
-    "status": "Status"
+    "status": "Status",
+    "today": "Today"
   },
   "bulkImport": {
     "title": "બલ્ક આયાત અને CSV નિકાસ",
@@ -578,7 +598,8 @@
     "mapColumnToField": "Map column \"{{column}}\" to system field",
     "rowNumber": "#",
     "editField": "Edit {{field}}",
-    "rowNum": "Row {{row}}"
+    "rowNum": "Row {{row}}",
+    "dragDropHint": "Drag & drop a CSV file here or click to browse"
   },
   "escalation": {
     "title": "વિનંતી એસ્કેલેશન પાઇપલાઇન",
@@ -773,7 +794,9 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "viewMap": "View Map",
+    "resources": "Resources"
   },
   "header": {
     "selectLanguage": "Select Language"
@@ -883,7 +906,8 @@
     "exportCSV": "Export CSV",
     "columns": "Columns",
     "clearSearch": "Clear search",
-    "clearAllFilters": "Clear all filters"
+    "clearAllFilters": "Clear all filters",
+    "scrollHint": "Scroll horizontally for more columns"
   },
   "dataList": {
     "noItems": "No items"
