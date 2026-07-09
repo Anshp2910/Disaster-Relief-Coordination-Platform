@@ -1328,6 +1328,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .bg-elevated { background: var(--bg-elevated); }
 .bg-subtle { background: var(--bg-subtle); }
 .bg-none { background: none; }
+.bg-accent { background: var(--accent); }
 
 .grid-full { grid-column: 1 / -1; }
 .sticky-bar {

@@ -183,7 +183,7 @@ export default function Resources() {
     else setSelectedIds(new Set(items.map((r) => r._id)))
   }
   function handleSelectOne(id: string) {
-    setSelectedIds((prev) => { const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id); return next })
+    setSelectedIds((prev) => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next })
   }
   function openBulkEdit() { setBulkEditStatus(''); setBulkEditCategory(''); setBulkEditOpen(true) }
 
@@ -312,10 +312,10 @@ export default function Resources() {
       </Modal>
 
       {selectMode && items.length > 0 && (
-        <label className="flex gap-sm items-center cursor-pointer mb-sm">
-          <input type="checkbox" checked={selectedIds.size === items.length} onChange={handleSelectAll} className="cursor-pointer" />
-          <span className="text-sm text-muted">{t('resources.selectAll') || 'Select All'} ({selectedIds.size}/{items.length})</span>
-        </label>
+        <div className="flex gap-sm items-center mb-sm">
+          <input id="select-all-checkbox" type="checkbox" checked={selectedIds.size === items.length} onChange={handleSelectAll} className="cursor-pointer" />
+          <label htmlFor="select-all-checkbox" className="text-sm text-muted cursor-pointer">{t('resources.selectAll') || 'Select All'} ({selectedIds.size}/{items.length})</label>
+        </div>
       )}
 
       <DataList
@@ -327,12 +327,10 @@ export default function Resources() {
         skeletonLines={3}
         keyExtractor={(r) => r._id}
         renderItem={(r) => (
-          <div className={`listCard ${selectMode ? 'p-sm' : ''}`} style={{ cursor: 'default' }}>
+          <div className={`listCard ${selectMode ? 'p-sm' : ''}${!selectMode ? ' cursor-default' : ''}`}>
             <div className="flex-between gap-sm">
               {selectMode && (
-                <label className="flex items-center cursor-pointer">
-                  <input type="checkbox" checked={selectedIds.has(r._id)} onChange={() => handleSelectOne(r._id)} className="cursor-pointer" />
-                </label>
+                <input id={`res-check-${r._id}`} type="checkbox" checked={selectedIds.has(r._id)} onChange={() => handleSelectOne(r._id)} className="cursor-pointer" aria-label={`${t('resources.select') || 'Select'} ${r.name || r._id}`} />
               )}
               <div className="flex-1">
                 <div className="flex gap-sm flex-wrap">
@@ -359,8 +357,8 @@ export default function Resources() {
                     <XCircle size={14} /> {t('resources.deallocate')}
                   </button>
                 )}
-                <button onClick={() => openEdit(r)} className="btn-ghost btn-sm">{t('resources.editResource')}</button>
-                <button onClick={() => handleDelete(r._id)} className="btn-danger btn-sm">{t('resources.delete')}</button>
+                <button onClick={() => openEdit(r)} className="btn-ghost btn-sm" aria-label={t('resources.editResource') || 'Edit resource'}>{t('resources.editResource')}</button>
+                <button onClick={() => handleDelete(r._id)} className="btn-danger btn-sm" aria-label={t('resources.delete') || 'Delete resource'}>{t('resources.delete')}</button>
               </div>
             </div>
           </div>
@@ -379,7 +377,7 @@ export default function Resources() {
             <ModernSelect label={t('resources.category') || 'Category'} options={[{ label: t('common.noChange') || 'No change', value: '' }, ...CATEGORIES.filter((c) => c !== 'All').map((c) => ({ label: c, value: c }))]} value={bulkEditCategory} onChange={(v) => setBulkEditCategory(v)} />
           </div>
           <div className="flex gap-sm">
-            <button type="submit" disabled={bulkUpdating} className="btn-primary btn-sm">{t('resources.apply') || 'Apply'}</button>
+            <button type="submit" disabled={bulkUpdating} className="btn-primary btn-sm">{bulkUpdating ? <><span className="spinner-sm" /> {t('resources.applying') || 'Applying...'}</> : <>{t('resources.apply') || 'Apply'}</>}</button>
             <button type="button" onClick={() => setBulkEditOpen(false)} className="btn-ghost btn-sm">{t('resources.cancel')}</button>
             {bulkUpdating && <span className="text-sm text-muted">{bulkProgress.current}/{bulkProgress.total}</span>}
           </div>
@@ -395,7 +393,7 @@ export default function Resources() {
                 <div ref={allocReqSearchRef} className="relative">
                   <div className={`ff-wrap ${allocReqSearch ? 'ff-focused' : ''}`}>
                     <input id="alloc-reqid" type="text" value={allocReqSearch} onChange={(e) => { setAllocReqSearch(e.target.value); setAllocShowReqDropdown(true); if (allocRequestId) setAllocRequestId(''); setAllocReqActiveIndex(-1) }}
-                      onFocus={() => { setAllocShowReqDropdown(true); if (requestOptions.length === 0) { ;(clientApi.getRequests({ limit: '500', status: 'Open' }) as Promise<{ items: { _id: string; title: string; status: string; locationName?: string }[] }>).then((data) => setRequestOptions(data.items || [])).catch(() => {}) } }}
+                      onFocus={() => { setAllocShowReqDropdown(true); if (requestOptions.length === 0) { void (clientApi.getRequests({ limit: '500', status: 'Open' }) as Promise<{ items: { _id: string; title: string; status: string; locationName?: string }[] }>).then((data) => setRequestOptions(data.items || [])).catch(() => {/* silent */}) } }}
                       onKeyDown={(e) => {
                         const filtered = requestOptions.filter((r) => (r.title || '').toLowerCase().includes(allocReqSearch.toLowerCase()) || (r.locationName || '').toLowerCase().includes(allocReqSearch.toLowerCase()))
                         if (e.key === 'ArrowDown') { e.preventDefault(); setAllocReqActiveIndex((prev) => Math.min(prev + 1, filtered.length - 1)) }
@@ -407,11 +405,11 @@ export default function Resources() {
                     <label htmlFor="alloc-reqid" className={`ff-label ${allocReqSearch ? 'ff-label-float' : ''}`}>{t('resources.requestId')}</label>
                   </div>
                   {allocShowReqDropdown && (
-                    <div className="ms-dropdown" style={{ maxHeight: 280 }}>
+                    <div className="ms-dropdown">
                       {(() => {
-                        const filtered = requestOptions.filter((r) => (r.title || '').toLowerCase().includes(allocReqSearch.toLowerCase()) || (r.locationName || '').toLowerCase().includes(allocReqSearch.toLowerCase()))
+                        const filtered = requestOptions.filter((opt) => (opt.title || '').toLowerCase().includes(allocReqSearch.toLowerCase()) || (opt.locationName || '').toLowerCase().includes(allocReqSearch.toLowerCase()))
                         if (filtered.length === 0) return <div className="ms-no-options">{t('common.noResults') || 'No matching requests'}</div>
-                        return <div className="overflow-y-auto p-xs" style={{ maxHeight: 240 }}>{filtered.map((r, idx) => (
+                        return <div className="overflow-y-auto p-xs">{filtered.map((r, idx) => (
                           <div key={r._id} role="option" aria-selected={idx === allocReqActiveIndex} onClick={() => { setAllocRequestId(r._id); setAllocReqSearch(`${r.title}`); setAllocShowReqDropdown(false) }}
                             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); setAllocRequestId(r._id); setAllocReqSearch(`${r.title}`); setAllocShowReqDropdown(false) } }} tabIndex={0}
                             onMouseEnter={() => setAllocReqActiveIndex(idx)} className={`ms-option ${idx === allocReqActiveIndex ? 'ms-option-active' : ''}`}>
@@ -430,7 +428,7 @@ export default function Resources() {
                 </div>
               </div>
               <div className="flex gap-sm">
-                <button type="submit" disabled={allocating} className="btn-primary btn-sm">{allocating ? '...' : <><CheckCircle size={16} /> {t('resources.allocate')}</>}</button>
+                <button type="submit" disabled={allocating} className="btn-primary btn-sm">{allocating ? <><span className="spinner-sm" /> Allocating...</> : <><CheckCircle size={16} /> {t('resources.allocate')}</>}</button>
                 <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} className="btn-ghost btn-sm">{t('resources.cancel')}</button>
               </div>
             </form>

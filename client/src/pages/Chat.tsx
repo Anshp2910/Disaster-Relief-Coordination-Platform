@@ -161,6 +161,17 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     }
   }, [])
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === '/' && document.activeElement !== inputRef.current && !(document.activeElement instanceof HTMLInputElement || document.activeElement instanceof HTMLTextAreaElement)) {
+        e.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const handleTyping = useCallback(() => {
     if (!socket) return
     const now = Date.now()
@@ -270,7 +281,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <h3 className="m-0 text-sm text-accent">{t('chat.title')}</h3>
         <div className="flex items-center gap-xs">
           {onClose && (
-            <button onClick={onClose} className="bg-none border-none cursor-pointer" aria-label={t('chat.close') || 'Close chat'}>
+            <button onClick={onClose} className="btn-ghost" aria-label={t('chat.close') || 'Close chat'}>
               <ChevronLeft size={20} />
             </button>
           )}
@@ -285,8 +296,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         aria-live="polite"
       >
         {hasMore && (
-          <button onClick={() => loadMessages(page + 1)} className="text-xs bg-none border-none cursor-pointer" style={{ color: 'var(--gov-saffron)', alignSelf: 'center' }}>
-            {t('chat.loadEarlier')}
+          <button onClick={() => loadMessages(page + 1)} className="text-xs btn-ghost text-accent" disabled={loading}>
+            {loading ? <span className="spinner-sm" /> : t('chat.loadEarlier')}
           </button>
         )}
         {loading && <SkeletonList count={4} lines={1} />}
@@ -316,7 +327,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
             >
               <div className="max-w-75p">
                 {!isMe && (
-                  <div className="text-xs text-semi mb-xs flex items-center gap-xs" style={{ color: 'var(--gov-blue)' }}>
+                  <div className="text-xs text-semi mb-xs flex items-center gap-xs">
                     <User size={12} aria-hidden="true" />
                     {m.sender?.displayName || t('chat.userFallback')}
                   </div>
@@ -358,7 +369,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <div className="flex gap-sm p-xs border-top bg-elevated items-center">
           <Paperclip size={14} aria-hidden="true" />
           <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedFile.name}</span>
-          <button onClick={() => setSelectedFile(null)} className="bg-none border-none cursor-pointer" aria-label={t('common.close')}><X size={14} /></button>
+          <button onClick={() => setSelectedFile(null)} className="btn-ghost" aria-label={t('common.close')}><X size={14} /></button>
         </div>
       )}
 
@@ -395,9 +406,9 @@ export default function Chat({ requestId, onClose }: ChatProps) {
             </label>
           </div>
         </div>
-        <span className="text-xs text-muted self-center">{text.length}/2000</span>
-        <button type="submit" className="btn-primary btn-sm flex items-center gap-xs" style={{ height: 44, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
-          {sending ? t('common.sending') : <><Send size={14} /> {t('chat.send')}</>}
+        <span className={`text-xs self-center ${text.length > 1800 ? 'text-warning' : ''} ${text.length >= 2000 ? 'text-danger' : ''}`}>{text.length}/2000</span>
+        <button type="submit" className="btn-primary btn-sm flex items-center gap-xs h-auto" disabled={(!text.trim() && !selectedFile) || sending}>
+          {sending ? <><span className="spinner-sm" /> Sending...</> : <><Send size={14} /> {t('chat.send')}</>}
         </button>
       </form>      </div>
     </>

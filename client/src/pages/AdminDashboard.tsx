@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -251,19 +251,19 @@ function StatsPanel({ stats }: StatsPanelProps) {
       <section aria-label={t('admin.statisticsLabel')}>
         <div className="admin-stats-grid">
           {summaryCards.map((c) => (
-            <div key={c.label} className="bento-card">
-              <div className="bento-header">
-                <span className="bento-title">{c.label}</span>
-                <div className="bento-icon" style={{ background: `${c.color}20`, color: c.color } as React.CSSProperties}>
-                  {c.icon}
-                </div>
+          <div key={c.label} className="bento-card">
+            <div className="bento-header">
+              <span className="bento-title">{c.label}</span>
+              <div className="bento-icon" style={{ background: `${c.color}20`, color: c.color } as React.CSSProperties}>
+                {c.icon}
               </div>
-              <div className="bento-kpi-value">
-                <AnimatedCounter to={c.value} duration={1.8} />
-              </div>
-              {c.subtitle && <div className="mt-sm text-xs text-muted">{c.subtitle}</div>}
             </div>
-          ))}
+            <div className="bento-kpi-value">
+              <AnimatedCounter to={c.value} duration={1.8} />
+            </div>
+            {c.subtitle && <div className="mt-sm text-xs text-muted">{c.subtitle}</div>}
+          </div>
+        ))}
         </div>
       </section>
 
@@ -520,9 +520,11 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('stats')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
   const toast = useToast()
+  const tabPanelRef = useRef<HTMLDivElement>(null)
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -547,6 +549,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     loadData()
   }, [loadData])
+
+  useEffect(() => {
+    tabPanelRef.current?.focus()
+  }, [activeTab])
 
   useAutoRefresh(loadData, { interval: 20000 })
 
@@ -591,6 +597,7 @@ export default function AdminDashboard() {
   }, [toast, t, delConfirm])
 
   async function handleExport(format: string) {
+    setExporting(true)
     try {
       if (format === 'csv') {
         await clientApi.adminExportRequests('csv')
@@ -608,6 +615,8 @@ export default function AdminDashboard() {
       toast.success(t('admin.exportSuccess') || 'Export downloaded successfully')
     } catch (e) {
       toast.error(getErrorMessage(e) || t('admin.exportFailed'))
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -631,8 +640,9 @@ export default function AdminDashboard() {
               onClick={() => handleExport('csv')}
               className="btn-success btn-sm"
               aria-label={t('common.exportCSV')}
+              disabled={exporting}
             >
-              <Download size={14} /> {t('common.exportCSV')}
+              {exporting ? <span className="spinner-sm" /> : <Download size={14} />} {t('common.exportCSV')}
             </button>
           </div>
         }
@@ -677,7 +687,10 @@ export default function AdminDashboard() {
         </div>
       ) : (
         <div
+          ref={tabPanelRef}
           role="tabpanel"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
           id={`admin-panel-${activeTab}`}
           aria-label={tabs.find((t) => t.id === activeTab)?.label || activeTab}
         >

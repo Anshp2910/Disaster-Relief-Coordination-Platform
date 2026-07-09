@@ -56,10 +56,8 @@ export default function ForgotPassword() {
 
       <div className="auth-card-wrap">
         <div className="auth-card-inner">
-          <div className="auth-logo-wrap">
-            <div className="auth-logo" aria-hidden="true">
-              <ShieldCheck size={22} />
-            </div>
+          <div className="flex items-center gap-sm mb-xl">
+            <div className="auth-logo-wrap"><div className="auth-logo" aria-hidden="true"><ShieldCheck size={22} /></div></div>
             <div>
               <div className="auth-logo-text">{t('auth.appName')}</div>
               <div className="auth-logo-sub">{t('auth.govtOfIndia')}</div>
@@ -68,23 +66,23 @@ export default function ForgotPassword() {
 
           {sent ? (
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
-              <div className="flex-center" style={{ fontSize: '3rem', color: 'var(--success)', marginBottom: 'var(--space-md)' }}>
+              <div className="flex-center mb-md text-success">
                 <CheckCircle size={48} />
               </div>
               <h2 className="auth-title">{t('auth.checkEmail')}</h2>
               <p className="auth-subtitle">{t('auth.resetLinkSent')}</p>
 
               {previewUrl && (
-                <div className="auth-field" style={{ width: '100%' }}>
+                <div className="auth-field w-full">
                   <label htmlFor="forgot-preview-url">{t('auth.previewUrl') || 'View email:'}</label>
-                  <a id="forgot-preview-url" href={previewUrl} target="_blank" rel="noopener noreferrer" className="auth-link" style={{ fontSize: 'var(--text-xs)', wordBreak: 'break-all', display: 'block' }}>{previewUrl}</a>
+                  <a id="forgot-preview-url" href={previewUrl} target="_blank" rel="noopener noreferrer" className="auth-link text-xs text-wrap block">{previewUrl}</a>
                 </div>
               )}
 
               {resetUrl && !previewUrl && (
-                <div className="auth-field" style={{ width: '100%' }}>
+                <div className="auth-field w-full">
                   <label htmlFor="forgot-reset-url">{t('auth.directResetLink') || 'Direct reset link (email not sent):'}</label>
-                  <input id="forgot-reset-url" type="text" readOnly value={resetUrl} onClick={(e) => (e.target as HTMLInputElement).select()} style={{ fontSize: 'var(--text-xs)', wordBreak: 'break-all' }} />
+                  <input id="forgot-reset-url" type="text" readOnly value={resetUrl} onClick={(e) => (e.target as HTMLInputElement).select()} className="auth-input text-xs" />
                 </div>
               )}
 
@@ -94,13 +92,13 @@ export default function ForgotPassword() {
             </motion.div>
           ) : (
             <>
-              <div className="flex-center" style={{ fontSize: '3rem', color: 'var(--accent)', marginBottom: 'var(--space-md)' }}>
+              <div className="flex-center mb-md text-accent">
                 <Mail size={48} />
               </div>
               <h2 className="auth-title">{t('auth.forgotPassword')}</h2>
               <p className="auth-subtitle">{t('auth.enterEmailReset')}</p>
 
-              {error && <div className="auth-error" id="forgot-error" role="alert">{error}</div>}
+              {error && <div className="auth-error animate-shake" id="forgot-error" role="alert">{error}</div>}
 
               <form onSubmit={handleSubmit}>
                 <div className="auth-field">

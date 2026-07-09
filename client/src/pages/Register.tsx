@@ -17,6 +17,13 @@ const FALLBACK_STATS = [
 
 const container = createStagger(0.08, 0.1)
 
+const CSS_CLASS_MAP: Record<string, string> = {
+  weak: 'weak',
+  medium: 'good',
+  strong: 'strong',
+  'very-strong': 'strong',
+}
+
 export default function Register() {
   useEffect(() => { document.title = 'Disaster Relief - Register' }, [])
   const [liveStats, setLiveStats] = useState(FALLBACK_STATS)
@@ -53,7 +60,7 @@ export default function Register() {
 
   const strength = useMemo(() => {
     const result = evaluatePasswordStrength(password)
-    return result ? { className: result.className, labelKey: result.labelKey } : null
+    return result ? { className: CSS_CLASS_MAP[result.className] || result.className, labelKey: result.labelKey } : null
   }, [password])
 
   async function onSubmit(e: React.FormEvent) {
@@ -96,7 +103,7 @@ export default function Register() {
             ))}
           </div>
 
-          <div className="auth-hero-mission">
+          <div className="auth-hero-mission flex items-center gap-sm">
             <Users size={14} aria-hidden="true" />
             <span>{t('auth.registerMission')}</span>
           </div>
@@ -106,10 +113,8 @@ export default function Register() {
       {/* ── RIGHT: Register Card ── */}
       <div className="auth-card-wrap">
         <div className="auth-card-inner">
-          <div className="auth-logo-wrap">
-            <div className="auth-logo" aria-hidden="true">
-              <ShieldCheck size={22} />
-            </div>
+          <div className="flex items-center gap-sm mb-xl">
+            <div className="auth-logo-wrap"><div className="auth-logo" aria-hidden="true"><ShieldCheck size={22} /></div></div>
             <div>
               <div className="auth-logo-text">{t('auth.appName')}</div>
               <div className="auth-logo-sub">{t('auth.govtOfIndia')}</div>
@@ -118,7 +123,7 @@ export default function Register() {
 
           <h2 className="auth-title">{t('auth.registerTitle')}</h2>
 
-          <div className="auth-social">
+          <div className="auth-social grid-2 mb-lg">
             <button className="auth-social-btn" aria-label={t('auth.signUpWithGoogle')} onClick={() => handleSocialLogin('google')}>
               <Globe size={18} aria-hidden="true" /> Google
             </button>
@@ -130,12 +135,12 @@ export default function Register() {
           <div className="auth-divider"><span>{t('auth.orEmail')}</span></div>
 
           <form onSubmit={onSubmit}>
-            {error && <div className="auth-error" id="register-error" role="alert">{error}</div>}
+            {error && <div className="auth-error animate-shake" id="register-error" role="alert">{error}</div>}
 
             <div className="auth-field">
               <label htmlFor="reg-name" className="auth-label">{t('auth.fullName')}</label>
               <div className="auth-input-wrap">
-                <input id="reg-name" name="name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} autoComplete="name" className="auth-input" placeholder={t('auth.fullName')} aria-describedby={error ? 'register-error' : undefined} autoFocus />
+                <input id="reg-name" name="name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} autoComplete="name" className="auth-input" placeholder={t('auth.fullName')} aria-describedby={error ? 'register-error' : undefined} />
                 <User size={16} className="auth-input-icon" aria-hidden="true" />
               </div>
             </div>
@@ -159,13 +164,15 @@ export default function Register() {
             </div>
 
             {strength && (
-              <div>
+              <div className="mb-sm">
                 <div className="password-strength">
-                  {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className={`password-strength-bar ${strength.className}`} />
-                  ))}
+                  <div className="password-strength-bar">
+                    {[0, 1, 2, 3].map((i) => (
+                      <span key={i} className={strength.className} />
+                    ))}
+                  </div>
                 </div>
-                <div className="password-strength-label">{t(strength.labelKey)}</div>
+                <div className={`password-strength-label ${strength.className}`}>{t(strength.labelKey)}</div>
               </div>
             )}
 

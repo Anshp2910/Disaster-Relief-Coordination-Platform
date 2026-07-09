@@ -50,7 +50,7 @@ export default function Login() {
     e.preventDefault(); setError(''); setLoading(true)
     try {
       const { token, user } = (await clientApi.login({ email, password })) as { token: string; user: Record<string, unknown> }
-      if (remember) { try { localStorage.setItem('rememberedEmail', email) } catch {} } else { try { localStorage.removeItem('rememberedEmail') } catch {} }
+      if (remember) { try { localStorage.setItem('rememberedEmail', email) } catch {/* silent */} } else { try { localStorage.removeItem('rememberedEmail') } catch {/* silent */} }
       login(token, user)
       const from = (location.state as { from?: string })?.from || '/dashboard'
       navigate(from, { replace: true })
@@ -63,7 +63,7 @@ export default function Login() {
       <motion.div className="auth-hero" variants={item}>
         <div className="auth-hero-content">
           <motion.div className="flex items-center gap-sm mb-lg" variants={item}>
-            <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-sm)', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheck size={28} color="#fff" /></div>
+            <div className="flex-center rounded-sm bg-accent" style={{ width: 48, height: 48 }}><ShieldCheck size={28} color="#fff" /></div>
           </motion.div>
           <motion.h1 className="auth-hero-title" variants={item}>{t('appTitle')}</motion.h1>
           <motion.p className="auth-hero-sub" variants={item}>{t('auth.heroSubtitle')}</motion.p>
@@ -75,7 +75,7 @@ export default function Login() {
               </motion.div>
             ))}
           </motion.div>
-          <motion.div className="flex items-center gap-sm" style={{ fontSize: 'var(--text-xs)', color: 'rgba(255,255,255,0.5)' }} variants={item}>
+          <motion.div className="auth-hero-mission flex items-center gap-sm" variants={item}>
             <Activity size={14} /> <span>{t('auth.mission')}</span>
           </motion.div>
         </div>
@@ -84,16 +84,16 @@ export default function Login() {
       <motion.div className="auth-card-wrap" variants={item}>
         <div className="auth-card-inner">
           <motion.div className="flex items-center gap-sm mb-xl" variants={item}>
-            <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-xs)', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheck size={22} color="#fff" /></div>
+            <div className="auth-logo-wrap"><div className="auth-logo" aria-hidden="true"><ShieldCheck size={22} /></div></div>
             <div>
-              <div className="text-sm text-bold" style={{ color: 'var(--text)' }}>{t('auth.appName')}</div>
+              <div className="text-sm text-bold">{t('auth.appName')}</div>
               <div className="text-xs text-muted">{t('auth.govtOfIndia')}</div>
             </div>
           </motion.div>
 
           <motion.h2 className="auth-title" variants={item}>{t('auth.loginTitle')}</motion.h2>
 
-          <motion.div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-sm)', marginBottom: 'var(--space-lg)' }} variants={item}>
+          <motion.div className="auth-social grid-2 mb-lg" variants={item}>
             <button className="auth-social-btn" onClick={() => handleSocialLogin('google')}><Globe size={18} /> Google</button>
             <button className="auth-social-btn" onClick={() => handleSocialLogin('github')}><GitBranch size={18} /> GitHub</button>
           </motion.div>
@@ -101,25 +101,25 @@ export default function Login() {
           <motion.div className="auth-divider" variants={item}><span>{t('auth.orEmail')}</span></motion.div>
 
           <motion.form onSubmit={onSubmit} variants={item}>
-            {error && <div className="auth-error" id="login-error" role="alert">{error}</div>}
+            {error && <div className="auth-error animate-shake" id="login-error" role="alert">{error}</div>}
             <div className="mb-md">
               <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
               <input id="login-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-invalid={error ? 'true' : 'false'} />
             </div>
             <div className="mb-md">
               <label htmlFor="login-password" className="auth-label">{t('auth.password')}</label>
-              <div style={{ position: 'relative' }}>
+              <div className="auth-input-wrap">
                 <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required className="auth-input" placeholder={t('auth.password')} aria-invalid={error ? 'true' : 'false'} autoComplete="current-password" minLength={8} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password visibility" style={{ position: 'absolute', right: 'var(--space-2xs)', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 'var(--space-2xs)' }}>
+                <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password visibility" className="auth-pw-toggle">
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
             <div className="flex items-center justify-between mb-lg">
-              <label className="flex items-center gap-xs" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} style={{ accentColor: 'var(--accent)' }} /> {t('auth.rememberMe')}
+              <label className="flex items-center gap-xs text-xs text-muted cursor-pointer">
+                <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} /> {t('auth.rememberMe')}
               </label>
-              <Link to="/forgot-password" style={{ fontSize: 'var(--text-xs)', color: 'var(--accent)', textDecoration: 'underline' }}>{t('auth.forgotPassword')}</Link>
+              <Link to="/forgot-password" className="text-xs text-accent">{t('auth.forgotPassword')}</Link>
             </div>
             <button disabled={loading} type="submit" className="auth-submit">
               {loading ? <span className="flex items-center justify-center gap-sm"><Loader2 size={18} className="spinner" /> {t('auth.loggingIn')}</span> : t('auth.loginButton')}

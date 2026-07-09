@@ -148,7 +148,7 @@ export default function Schedules() {
   const handleStatusChange = useCallback(async (id: string, status: string) => {
     try { await clientApi.updateSchedule(id, { status }); toast.success('Schedule status updated'); load() }
     catch (e) { setError(getErrorMessage(e)) }
-  }, [load])
+  }, [load, toast])
 
   function toggleSkill(skill: string) {
     setForm((prev) => ({ ...prev, skills: prev.skills.includes(skill) ? prev.skills.filter((s) => s !== skill) : [...prev.skills, skill] }))
