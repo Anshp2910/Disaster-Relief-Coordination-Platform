@@ -20,7 +20,7 @@
   gap: var(--space-xs);
   padding: 0 var(--space-lg);
   height: var(--navbar-height);
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
 }
 
@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   height: var(--subnav-height);
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
   padding: 0 var(--space-lg);
   overflow-x: auto;
@@ -46,8 +46,8 @@
 .gov-subnav-inner::-webkit-scrollbar { display: none; }
 .gov-subnav .gov-navbar-links {
   flex: 1;
-  justify-content: flex-start;
-  gap: var(--space-2xs);
+  justify-content: center;
+  gap: var(--space-xs);
 }
 .gov-subnav .gov-navbar-link {
   border-radius: var(--radius-md);
@@ -384,7 +384,7 @@
   font-size: var(--text-xs);
   color: var(--text-muted);
   line-height: var(--leading-relaxed);
-  max-width: 1440px;
+  max-width: var(--shell-max);
   margin: 0 auto;
 }
 
