@@ -9,12 +9,20 @@ export const feedbackRouter = express.Router()
 
 feedbackRouter.get('/request/:requestId', requireAuth, validateObjectId('requestId'), async (req, res) => {
   try {
-    const feedback = await Feedback.find({ requestId: req.params.requestId })
-      .populate('submittedBy', 'displayName email role')
-      .populate('fulfilledBy', 'displayName email role')
-      .sort({ createdAt: -1 })
-      .lean()
-    res.json({ feedback })
+    const page = Math.max(1, Number(req.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20))
+    const skip = (page - 1) * limit
+    const [feedback, total] = await Promise.all([
+      Feedback.find({ requestId: req.params.requestId })
+        .populate('submittedBy', 'displayName email role')
+        .populate('fulfilledBy', 'displayName email role')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Feedback.countDocuments({ requestId: req.params.requestId }),
+    ])
+    res.json({ feedback, total, page, pages: Math.ceil(total / limit) })
   } catch (err) {
     logger.error('[feedback] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })

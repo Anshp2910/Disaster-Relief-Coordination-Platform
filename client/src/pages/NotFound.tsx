@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { ArrowLeft, LayoutDashboard } from 'lucide-react'
-import { PageTransition } from '../components/ui'
-import { RippleBtn } from '../components/ui'
+import { PageTransition, RippleBtn } from '../components/ui'
 
 export default function NotFound() {
   useEffect(() => { document.title = 'Disaster Relief - Page Not Found' }, [])
@@ -35,10 +34,10 @@ export default function NotFound() {
         {t('notFound.description') || 'The page you are looking for doesn\'t exist or has been moved.'}
       </p>
       <div className="flex-center gap-sm">
-        <RippleBtn className="" onClick={() => navigate('/dashboard')}>
+        <RippleBtn className="" onClick={() => navigate('/dashboard')} aria-label={t('notFound.goHome') || 'Go to Dashboard'}>
           <LayoutDashboard size={16} /> {t('notFound.goHome') || 'Go to Dashboard'}
         </RippleBtn>
-        <motion.button className="btn-ghost" onClick={() => navigate(-1)} whileTap={{ scale: 0.97 }}>
+        <motion.button className="btn-ghost" onClick={() => navigate(-1)} whileTap={{ scale: 0.97 }} aria-label={t('notFound.goBack') || 'Go Back'}>
           <ArrowLeft size={16} /> {t('notFound.goBack') || 'Go Back'}
         </motion.button>
       </div>

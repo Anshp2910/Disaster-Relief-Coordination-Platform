@@ -91,3 +91,24 @@
   70% { box-shadow: 0 0 0 12px transparent; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
+
+/* ── Geofencing Pulse ── */
+@keyframes geofencePulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Value Pop ── */
+@keyframes value-pop {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .marker-pulse { animation: none; }
+  [data-animate] { animation: none; opacity: 1; }
+  [data-animate="stagger"] > * { animation: none; opacity: 1; }
+}

@@ -282,7 +282,8 @@ export default function Resources() {
       r.locationName || '',
       (r.notes || '').replace(/,/g, ' '),
     ])
-    const csv = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')
+    const sanitize = (v: string) => /^[=+\-@|]/.test(v) ? `'${v}` : v
+    const csv = [headers.join(','), ...rows.map((row) => row.map(sanitize).join(','))].join('\n')
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')

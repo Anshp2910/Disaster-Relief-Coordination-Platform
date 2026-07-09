@@ -2,7 +2,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Edit } from 'lucide-react'
+import { ArrowLeft, Edit, AlertTriangle } from 'lucide-react'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
 import { PageTransition } from '../components/ui'
@@ -75,7 +75,7 @@ export default function EditRequest() {
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="card">
-            <div className="error-text">{error}</div>
+            <div className="error-text flex items-center gap-xs" role="alert"><AlertTriangle size={14} /> {error}</div>
           </div>
         </motion.div>
       </PageTransition>
@@ -104,7 +104,6 @@ export default function EditRequest() {
         submitLabel={t('editRequest.saving')}
         submitButtonLabel={t('editRequest.saveChanges')}
         onSubmit={async (data) => { if (!id) return; await clientApi.updateRequest(id, data); navigate('/dashboard') }}
-        onCancel={() => navigate('/dashboard')}
         showStatus
       />
     </motion.div>

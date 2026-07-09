@@ -12,7 +12,7 @@ interface DataListProps<T> {
   loading: boolean
   error?: string
   onRetry?: () => void
-  emptyIcon?: string
+  emptyIcon?: ReactNode
   emptyTitle?: string
   emptyDescription?: string
   renderItem: (item: T, index: number) => ReactNode

@@ -14,6 +14,7 @@
 .flex-gap-sm { gap: var(--space-sm); }
 .flex-gap-md { gap: var(--space-md); }
 .flex-gap-lg { gap: var(--space-lg); }
+.flex-gap-lg { gap: var(--space-lg); }
 .gap-xs { gap: var(--space-xs); }
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }
@@ -30,6 +31,16 @@
 
 /* ── Grid ── */
 .grid { display: grid; }
+.gridGap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+}
+.grid-auto-sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
 
 /* ── Text ── */
 .text-left { text-align: left; }
@@ -45,7 +56,11 @@
 .text-red, .text-danger { color: var(--danger); }
 .text-warning { color: var(--warning); }
 .text-success { color: var(--success); }
+.text-3xs { font-size: var(--text-3xs); }
+.text-2xs { font-size: var(--text-2xs); }
 .text-xs { font-size: var(--text-xs); }
+.text-12 { font-size: 0.75rem; }
+.text-13 { font-size: 0.8125rem; }
 .text-sm { font-size: var(--text-sm); }
 .text-base { font-size: var(--text-base); }
 .text-lg { font-size: var(--text-lg); }
@@ -96,11 +111,16 @@
 .w-80 { width: 80px; }
 .w-100 { width: 100px; }
 .w-150 { width: 150px; }
+.w-160 { width: 160px; }
 .w-200 { width: 200px; }
 .w-320 { width: 320px; }
 .min-w-0 { min-width: 0; }
 .max-w-400 { max-width: 400px; }
+.max-w-sm { max-width: 640px; }
+.max-w-md { max-width: 800px; }
+.max-w-lg { max-width: 960px; }
 .h-full { height: 100%; }
+.h-40 { height: 40px; }
 
 /* ── Border / Radius ── */
 .border-gov { border: 1px solid var(--border); }
@@ -168,6 +188,18 @@
 .severity-high { color: var(--severity-high); }
 .severity-medium { color: var(--severity-medium); }
 .severity-low { color: var(--severity-low); }
+
+/* ── Text Color extras ── */
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-muted-extra { color: var(--text-tertiary); font-size: var(--text-xs); }
+.text-on-accent { color: var(--text-on-accent); }
+
+/* ── Map Container heights ── */
+.h-55vh { height: 55vh; }
+.h-60vh { height: 60vh; }
+.h-65vh { height: 65vh; }
+.map-container-60vh { min-height: 60vh; }
 
 /* ── Search Input ── */
 .search-input-wrapper { position: relative; display: flex; align-items: center; }
@@ -260,3 +292,12 @@
   font-weight: var(--font-weight-medium);
   border: 1px solid transparent;
 }
+
+/* ── Misc extras ── */
+.h-100 { height: 100%; }
+.max-w-75p { max-width: 75%; }
+.border-top { border-top: 1px solid var(--border); }
+.overflow-auto { overflow: auto; }
+.self-center { align-self: center; }
+
+

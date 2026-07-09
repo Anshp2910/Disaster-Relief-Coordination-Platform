@@ -39,12 +39,6 @@ export const MAP_MARKER_COLORS: Record<string, string> = {
   'Fulfilled': 'var(--color-fulfilled)',
 }
 
-export const SHIFT_COLORS: Record<string, string> = {
-  morning: 'var(--cat-rescue)',
-  afternoon: 'var(--color-open)',
-  night: 'var(--cat-supplies)',
-}
-
 export const RESOURCE_STATUS_COLORS: Record<string, { bg: string; border: string; text: string }> = {
   Available: { bg: 'rgba(34,197,94,.1)', border: 'rgba(34,197,94,.25)', text: 'var(--color-low)' },
   Deployed: { bg: 'rgba(59,130,246,.1)', border: 'rgba(59,130,246,.25)', text: 'var(--color-open)' },

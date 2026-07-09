@@ -332,7 +332,7 @@ export default function ZoneHeatMap() {
                   action={currentUser?.role === 'admin' ? { onClick: openCreate, label: t('zones.createZone') } : undefined}
                 />
               )}
-              <div ref={mapRef} className="map-container-full h-65vh w-full" />
+              <div ref={mapRef} className="map-container-full h-65vh w-full" aria-label={t('zones.map') || 'Zone Heat Map'} />
             </div>
 
             <MapLegend />

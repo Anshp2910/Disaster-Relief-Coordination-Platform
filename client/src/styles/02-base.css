@@ -140,6 +140,73 @@ hr {
   outline: none;
 }
 
+/* ── Print Styles ── */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .gov-navbar,
+  .gov-navbar-bottom,
+  .sos-fab,
+  .skip-link,
+  .sticky-bar,
+  .toast-container,
+  .modal-overlay,
+  #mobile-menu,
+  .notification-dropdown,
+  .dt-toolbar,
+  .dt-pagination,
+  .dt-filter-select,
+  .dt-search-wrap,
+  .dt-bulk-bar,
+  .dt-col-vis,
+  .btn,
+  button,
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-ghost,
+  .btn-filter,
+  .filter-pill,
+  .filter-group,
+  .gov-navbar-lang-select,
+  .pwa-install-banner {
+    display: none !important;
+  }
+  .card,
+  .bento-card,
+  .kpi-card,
+  .listCard,
+  .professional-card {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+  }
+  .gov-main {
+    padding-top: 0 !important;
+  }
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+  .bento-grid,
+  .kpi-grid,
+  .grid-2-responsive,
+  .grid-3-responsive,
+  .grid-4-responsive {
+    gap: 12px !important;
+  }
+}
+
 /* ── Professional Base Card Class ── */
 .professional-card {
   background: var(--bg-card);

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { escCsv } from '../src/routes/admin.js'
+import { escCsv } from '../src/utils/csv.js'
 import { sanitizeBody } from '../src/middleware/sanitize.js'
 import { checkAndRecordAttempt } from '../src/routes/auth.js'
 
@@ -12,30 +12,30 @@ describe('escCsv (CSV injection protection)', () => {
     expect(escCsv('he"llo')).toBe('"he""llo"')
   })
 
-  it('prefixes a value starting with = with a tab to prevent formula injection', () => {
+  it('prefixes a value starting with = with a single quote to prevent formula injection', () => {
     const result = escCsv('=SUM(A1:A10)')
-    expect(result).toMatch(/^\t/)
+    expect(result).toMatch(/^"'/)
     expect(result).toContain('=SUM')
   })
 
   it('prefixes a value starting with + to prevent formula injection', () => {
     const result = escCsv('+1234')
-    expect(result).toMatch(/^\t/)
+    expect(result).toMatch(/^"'/)
   })
 
   it('prefixes a value starting with - to prevent formula injection', () => {
     const result = escCsv('-1+1')
-    expect(result).toMatch(/^\t/)
+    expect(result).toMatch(/^"'/)
   })
 
   it('prefixes a value starting with @ to prevent formula injection', () => {
     const result = escCsv('@SUM')
-    expect(result).toMatch(/^\t/)
+    expect(result).toMatch(/^"'/)
   })
 
   it('prefixes a value starting with | to prevent formula injection', () => {
     const result = escCsv('|CONCAT')
-    expect(result).toMatch(/^\t/)
+    expect(result).toMatch(/^"'/)
   })
 
   it('handles numbers', () => {
@@ -57,7 +57,7 @@ describe('escCsv (CSV injection protection)', () => {
 
   it('escapes quotes in injection values', () => {
     const result = escCsv('=HYPERLINK("http://evil.com")')
-    expect(result).toMatch(/^\t/)
+    expect(result).toMatch(/^"'/)
     expect(result).toContain('""')
   })
 })

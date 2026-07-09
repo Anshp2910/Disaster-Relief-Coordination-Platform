@@ -8,11 +8,19 @@ export const escalationRouter = express.Router()
 
 escalationRouter.get('/', requireAuth, requireAdmin, async (req, res) => {
   try {
-    const items = await Request.find({ escalated: true })
-      .sort({ escalatedAt: -1 })
-      .populate('createdBy', 'displayName email')
-      .lean()
-    res.json({ items })
+    const page = Math.max(1, Number(req.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20))
+    const skip = (page - 1) * limit
+    const [items, total] = await Promise.all([
+      Request.find({ escalated: true })
+        .sort({ escalatedAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('createdBy', 'displayName email')
+        .lean(),
+      Request.countDocuments({ escalated: true }),
+    ])
+    res.json({ items, total, page, pages: Math.ceil(total / limit) })
   } catch (err) {
     logger.error('[escalation] list error', { message: err.message })
     res.status(500).json({ error: 'Server error' })

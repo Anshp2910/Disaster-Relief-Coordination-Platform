@@ -7,8 +7,7 @@ import { Zone } from '../models/Zone.js'
 import { Incident } from '../models/Incident.js'
 import { ChatMessage } from '../models/ChatMessage.js'
 import { logger } from '../utils/logger.js'
-
-export const escCsv = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
+import { escCsv } from '../utils/csv.js'
 
 export const adminRouter = express.Router()
 

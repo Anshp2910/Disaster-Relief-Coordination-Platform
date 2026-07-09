@@ -61,7 +61,7 @@ export default function PublicStatus() {
   }, [])
 
   if (loading) return <SkeletonList count={8} lines={1} />
-  if (error) return <div className="text-center p-lg"><div className="muted">{t('public.error')}</div><div className="small muted">{error}</div></div>
+  if (error) return <div className="text-center p-lg" role="alert"><div className="muted">{t('public.error')}</div><div className="small muted">{error}</div></div>
 
   return (
     <PageTransition>

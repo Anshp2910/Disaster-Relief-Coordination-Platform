@@ -12,11 +12,21 @@ interface ModalProps {
   maxWidth?: number
 }
 
+let modalIdCounter = 0
+const stableIds = new Map<string, string>()
+
+function getStableId(title: string | undefined): string | undefined {
+  if (!title) return undefined
+  if (!stableIds.has(title)) stableIds.set(title, `modal-title-${++modalIdCounter}`)
+  return stableIds.get(title)
+}
+
 export default function Modal({ open, onClose, title, children, maxWidth = 500 }: ModalProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
   const [announce, setAnnounce] = useState('')
+  const titleId = getStableId(title)
 
   useEffect(() => {
     if (!open) return
@@ -61,7 +71,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
             style={{ maxWidth }}
             role="dialog"
             aria-modal="true"
-            aria-labelledby={title ? "modal-title" : undefined}
+            aria-labelledby={titleId}
             tabIndex={-1}
             initial={reduced ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -71,7 +81,7 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
           >
             {title && (
               <div className="flex-between mb-md">
-                <h3 id="modal-title" style={{ margin: 0 }}>{title}</h3>
+                <h3 id={titleId} style={{ margin: 0 }}>{title}</h3>
                 <button onClick={onClose} className="icon-btn" aria-label={t('common.close')}><X size={18} aria-hidden="true" /></button>
               </div>
             )}

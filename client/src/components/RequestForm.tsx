@@ -39,7 +39,6 @@ interface RequestFormProps {
   subtitle?: string
   showStatus?: boolean
   loading?: boolean
-  onCancel?: () => void
 }
 
 export const PIN_ICON = L.divIcon({
@@ -132,7 +131,6 @@ export default function RequestForm({
   subtitle,
   showStatus = false,
   loading = false,
-  onCancel: _onCancel,
 }: RequestFormProps) {
   const { t } = useTranslation()
   const STEPS: Step[] = [

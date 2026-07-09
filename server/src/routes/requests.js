@@ -73,7 +73,7 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
       pages: Math.ceil(total / limitNum),
     }
 
-    if (req.query.summary === 'true') {
+    if (req.query.summary) {
       const statsFilter = { ...filter }
       delete statsFilter.status
       delete statsFilter.category
@@ -434,7 +434,7 @@ requestsRouter.delete('/:id/files/:fileId', requireAuth, validateObjectId('id'),
 
     const io = req.app.get('io')
     if (io) {
-      try { io.emit('request:updated', { item: { _id: id, files: item.files } }) } catch {}
+      try { io.emit('request:updated', { item: { _id: id, files: item.files } }) } catch (err) { logger.error('[ws] emit request:updated error', { message: err.message }) }
     }
 
     return res.json({ files: item.files })

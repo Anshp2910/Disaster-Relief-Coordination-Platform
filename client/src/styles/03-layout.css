@@ -11,7 +11,7 @@
 .gov-main {
   flex: 1;
   padding-top: var(--navbar-height, 56px);
-  padding-bottom: var(--space-xl);
+  padding-bottom: var(--space-3xl);
 }
 
 .gov-main > .container,

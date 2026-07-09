@@ -9,7 +9,6 @@ import { clientApi } from '../api/client'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../context/AuthContext'
 import { getErrorMessage } from '../utils/getErrorMessage'
-import { escapeHtml } from '../utils/escapeHtml'
 
 const ALLOWED_MIME_TYPES = ['image/', 'application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
 
@@ -208,7 +207,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       return
     }
 
-    const msg = escapeHtml(text.trim())
+    const msg = text.trim()
     setText('')
     setSending(true)
     try {
@@ -308,7 +307,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
               >
                 <div className="flex flex-center">
                   <div className="text-xs text-muted bg-elevated rounded-xl p-xs">
-                    {escapeHtml(m.text)}
+                    {m.text}
                   </div>
                 </div>
               </motion.div>
@@ -330,13 +329,8 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                     {m.sender?.displayName || t('chat.userFallback')}
                   </div>
                 )}
-                <div className="text-sm chat-bubble" style={{
-                  background: isMe ? 'var(--accent)' : 'var(--accent-soft)',
-                  color: isMe ? '#fff' : 'var(--text)',
-                  padding: 'var(--space-2xs) var(--space-xsml)',
-                  borderRadius: isMe ? 'var(--radius-md) var(--radius-md) var(--radius-2xs) var(--radius-md)' : 'var(--radius-md) var(--radius-md) var(--radius-md) var(--radius-2xs)',
-                }}>
-                  {escapeHtml(m.text)}
+                <div className={`text-sm ${isMe ? 'chat-bubble-self' : 'chat-bubble-other'}`}>
+                  {m.text}
                 </div>
                 <div className={`text-xs text-muted mt-xs ${isMe ? 'text-right' : ''}`}>
                   {formatTime(m.createdAt)}

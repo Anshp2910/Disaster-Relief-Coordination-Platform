@@ -53,10 +53,24 @@ function getLoginKey(email) {
 
 const csrfTokens = new Map()
 
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, token] of csrfTokens) {
+    if (now - token.createdAt > LOCKOUT_WINDOW) csrfTokens.delete(key)
+  }
+}, 60000)
+
 function generateCsrfToken(userId) {
   const token = crypto.randomBytes(32).toString('hex')
-  csrfTokens.set(userId.toString(), token)
+  csrfTokens.set(userId.toString(), { token, createdAt: Date.now() })
   return token
+}
+
+function verifyCsrfToken(userId, token) {
+  const entry = csrfTokens.get(userId?.toString())
+  if (!entry || entry.token !== token) return false
+  csrfTokens.delete(userId.toString())
+  return true
 }
 
 export function checkAndRecordAttempt(email) {
@@ -117,7 +131,7 @@ authRouter.post('/login', validate('login'), async (req, res) => {
     const user = await User.findOne({ email })
     if (!user) return res.status(401).json({ error: 'Invalid credentials' })
     if (user.provider !== 'local') {
-      return res.status(401).json({ error: 'This account uses social login. Please sign in with ' + user.provider + '.' })
+      return res.status(401).json({ error: 'Invalid credentials' })
     }
 
     const ok = await user.verifyPassword(password)
@@ -280,8 +294,9 @@ authRouter.post('/refresh', refreshLimiter, validate('refresh'), async (req, res
     if (!user) return res.status(401).json({ error: 'User not found' })
 
     const originalDuration = decoded.exp - decoded.iat
+    const refreshDuration = Math.min(Math.max(originalDuration, 3600), 86400 * 7)
     const newToken = jwt.sign({ sub: user._id.toString(), role: user.role }, getJwtSecret(), {
-      expiresIn: Math.max(originalDuration, 3600),
+      expiresIn: refreshDuration,
     })
 
     return res.json({ token: newToken })

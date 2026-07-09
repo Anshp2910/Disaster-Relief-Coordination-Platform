@@ -61,7 +61,8 @@ export const COVERAGE_COLORS: Record<string, string> = {
 
 export const SEVERITY_OPTIONS = ['All', 'Critical', 'High', 'Medium', 'Low']
 export const DISASTER_OPTIONS = ['All', ...Object.keys(DISASTER_ICONS)]
-export const STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
+export const ZONE_STATUS_OPTIONS = ['All', 'Active', 'Monitoring', 'Resolved', 'Closed']
+export const STATUS_OPTIONS = ZONE_STATUS_OPTIONS
 
 export const DEFAULT_FORM: ZoneForm = {
   name: '', description: '', centerLat: '20.5937', centerLng: '78.9629', radiusKm: '10',

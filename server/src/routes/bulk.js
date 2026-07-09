@@ -5,6 +5,7 @@ import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { Zone } from '../models/Zone.js'
 import { logger } from '../utils/logger.js'
+import { escCsv } from '../utils/csv.js'
 
 export const bulkRouter = express.Router()
 
@@ -12,10 +13,9 @@ bulkRouter.get('/requests/export', requireAuth, requireAdmin, async (req, res) =
   try {
     const items = await Request.find({}).sort({ createdAt: -1 }).lean()
     const headers = ['title', 'description', 'category', 'priority', 'status', 'locationName', 'lat', 'lng', 'createdAt']
-    const escCsv2 = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
     const csv = [headers.join(',')]
     for (const r of items) {
-      csv.push(headers.map((h) => escCsv2(r[h] || '')).join(','))
+      csv.push(headers.map((h) => escCsv(r[h] || '')).join(','))
     }
     res.setHeader('Content-Type', 'text/csv')
     res.setHeader('Content-Disposition', 'attachment; filename="requests.csv"')
@@ -30,10 +30,9 @@ bulkRouter.get('/resources/export', requireAuth, requireAdmin, async (req, res) 
   try {
     const items = await Resource.find({}).sort({ createdAt: -1 }).lean()
     const headers = ['name', 'category', 'quantity', 'unit', 'status', 'locationName', 'lat', 'lng', 'createdAt']
-    const escCsv2 = (v) => { const s = String(v).replace(/"/g, '""'); return /^[=+\-@|]/.test(s) ? `\t"${s}"` : `"${s}"` }
     const csv = [headers.join(',')]
     for (const r of items) {
-      csv.push(headers.map((h) => escCsv2(r[h] || '')).join(','))
+      csv.push(headers.map((h) => escCsv(r[h] || '')).join(','))
     }
     res.setHeader('Content-Type', 'text/csv')
     res.setHeader('Content-Disposition', 'attachment; filename="resources.csv"')

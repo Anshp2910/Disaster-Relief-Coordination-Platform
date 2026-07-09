@@ -523,10 +523,10 @@ export default function Incidents() {
       </Modal>
 
       {totalPages > 1 && (
-        <div className="flex flex-center flex-gap-sm mt-lg">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="text-sm p-xs" aria-label={t('common.previous')}>{t('common.previous')}</button>
-          <span className="text-sm p-xs">{page} / {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="text-sm p-xs" aria-label={t('common.next')}>{t('common.next')}</button>
+        <div className="flex items-center justify-center gap-sm mt-lg">
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-ghost btn-sm" aria-label={t('common.previous')}>{t('common.previous')}</button>
+          <span className="text-sm text-muted">{page} / {totalPages}</span>
+          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="btn-ghost btn-sm" aria-label={t('common.next')}>{t('common.next')}</button>
         </div>
       )}
       {ConfirmDialog}

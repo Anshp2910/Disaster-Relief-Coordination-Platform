@@ -4,7 +4,6 @@ import {
   PRIORITY_COLORS,
   CATEGORY_COLORS,
   MAP_MARKER_COLORS,
-  SHIFT_COLORS,
   RESOURCE_STATUS_COLORS,
   COLORS_FALLBACK,
   STATUS_OPTIONS,
@@ -58,14 +57,6 @@ describe('constants', () => {
     it('maps statuses to color values', () => {
       expect(typeof MAP_MARKER_COLORS['Open']).toBe('string')
       expect(typeof MAP_MARKER_COLORS['Resolved']).toBe('string')
-    })
-  })
-
-  describe('SHIFT_COLORS', () => {
-    it('has morning, afternoon, night', () => {
-      expect(SHIFT_COLORS).toHaveProperty('morning')
-      expect(SHIFT_COLORS).toHaveProperty('afternoon')
-      expect(SHIFT_COLORS).toHaveProperty('night')
     })
   })
 
