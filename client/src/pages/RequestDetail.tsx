@@ -564,12 +564,14 @@ export default function RequestDetail() {
             </h3>
             <form onSubmit={handleAllocate} className="flex gap-sm flex-wrap">
               <label htmlFor="rd-resource" className="sr-only">{t('requestDetail.selectResource')}</label>
-              <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="filter-select">
-                <option value="">{t('requestDetail.selectResource')}</option>
-                {resources.map((r) => (
-                  <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>
-                ))}
-              </select>
+              <div className="filter-group">
+                <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="filter-select">
+                  <option value="">{t('requestDetail.selectResource')}</option>
+                  {resources.map((r) => (
+                    <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>
+                  ))}
+                </select>
+              </div>
               <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
               <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
               <RippleBtn type="submit" disabled={allocating || !allocResource || !allocQty} className="btn-primary btn-sm">

@@ -88,10 +88,21 @@ html.high-contrast [class*="card"] {
   border: 2px solid var(--border) !important;
 }
 
+/* ── Badges use inline colors; re-apply theme tokens in high-contrast ── */
+html.high-contrast .govt-badge {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  border: 2px solid var(--border) !important;
+}
+
 @media (forced-colors: active) {
   html.high-contrast .bg-card,
   html.high-contrast [class*="card"] {
     border: 2px solid ButtonText !important;
+  }
+  html.high-contrast .govt-badge {
+    border: 2px solid ButtonText !important;
+    color: ButtonText !important;
   }
   html.high-contrast .btn {
     border: 1px solid ButtonText;

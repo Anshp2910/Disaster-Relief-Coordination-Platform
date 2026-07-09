@@ -278,39 +278,45 @@ export default function Dashboard() {
         <DashboardMap />
 
         {/* ── QUICK ACTION NAV ── */}
-        <motion.div className="flex gap-sm flex-wrap mb-lg" variants={fadeUp}>
-          <button
-            onClick={() => navigate('/map')}
-            className="btn-secondary btn-sm"
-            aria-label={t('common.viewMap')}
-          >
-            <MapPin size={14} />
-            <span>{t('common.viewMap') || 'View Map'}</span>
-          </button>
-          <button
-            onClick={() => navigate('/resources')}
-            className="btn-secondary btn-sm"
-            aria-label={t('common.resources')}
-          >
-            <Users size={14} />
-            <span>{t('common.resources') || 'Resources'}</span>
-          </button>
-          <button
-            onClick={() => navigate('/incidents')}
-            className="btn-secondary btn-sm"
-            aria-label={t('nav.incidents')}
-          >
-            <AlertTriangle size={14} />
-            <span>{t('nav.incidents') || 'Incidents'}</span>
-          </button>
-          <button
-            onClick={() => navigate('/admin')}
-            className="btn-secondary btn-sm"
-            aria-label={t('admin.title')}
-          >
-            <BarChart3 size={14} />
-            <span>{t('admin.title') || 'Admin'}</span>
-          </button>
+        <motion.div className="mb-lg" variants={fadeUp}>
+          <div className="quick-actions">
+            <button
+              type="button"
+              onClick={() => navigate('/map')}
+              className="quick-action-card"
+              aria-label={t('common.viewMap')}
+            >
+              <MapPin size={20} />
+              <span>{t('common.viewMap') || 'View Map'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/resources')}
+              className="quick-action-card"
+              aria-label={t('common.resources')}
+            >
+              <Users size={20} />
+              <span>{t('common.resources') || 'Resources'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/incidents')}
+              className="quick-action-card"
+              aria-label={t('nav.incidents')}
+            >
+              <AlertTriangle size={20} />
+              <span>{t('nav.incidents') || 'Incidents'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/admin')}
+              className="quick-action-card"
+              aria-label={t('admin.title')}
+            >
+              <BarChart3 size={20} />
+              <span>{t('admin.title') || 'Admin'}</span>
+            </button>
+          </div>
         </motion.div>
 
         {/* ── REQUESTS SECTION ── */}
@@ -361,34 +367,38 @@ export default function Dashboard() {
                 ))}
               </div>
               <div className="flex gap-sm items-center ml-auto">
-                <select
-                  value={filterCategory}
-                  onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }}
-                  className="filter-select"
-                  aria-label={t('dashboard.filterCategory') || 'Category'}
-                >
-                  {categoryOptions.map((c) => (
-                    <option key={c.key} value={c.key}>
-                      {c.key === 'All' ? (t('dashboard.allCategories') || 'All Categories') : c.label}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={sortBy}
-                  onChange={(e) => { setSortBy(e.target.value); setPage(1) }}
-                  className="filter-select"
-                  aria-label={t('dashboard.sortBy') || 'Sort by'}
-                >
-                  {sortOptions.map((s) => (
-                    <option key={s.key} value={s.key}>{s.label}</option>
-                  ))}
-                </select>
+                <div className="filter-group">
+                  <select
+                    value={filterCategory}
+                    onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }}
+                    className="filter-select"
+                    aria-label={t('dashboard.filterCategory') || 'Category'}
+                  >
+                    {categoryOptions.map((c) => (
+                      <option key={c.key} value={c.key}>
+                        {c.key === 'All' ? (t('dashboard.allCategories') || 'All Categories') : c.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="filter-group">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => { setSortBy(e.target.value); setPage(1) }}
+                    className="filter-select"
+                    aria-label={t('dashboard.sortBy') || 'Sort by'}
+                  >
+                    {sortOptions.map((s) => (
+                      <option key={s.key} value={s.key}>{s.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </nav>
 
           {/* ── Request List ── */}
-          <section aria-label={t('dashboard.title')} aria-live="polite">
+          <section aria-label={t('dashboard.title')}>
             {loading ? (
               <SkeletonList count={4} lines={3} />
             ) : (

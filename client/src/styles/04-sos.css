@@ -4,8 +4,8 @@
 
 .sos-fab {
   position: fixed;
-  bottom: var(--space-xl);
-  right: var(--space-xl);
+  bottom: calc(var(--space-xl) + env(safe-area-inset-bottom, 0px));
+  right: calc(var(--space-xl) + env(safe-area-inset-right, 0px));
   z-index: var(--z-tooltip);
   display: flex;
   align-items: center;

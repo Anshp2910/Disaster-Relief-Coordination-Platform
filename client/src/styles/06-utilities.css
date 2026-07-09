@@ -1,5 +1,5 @@
 /* ================================================================
-   FRIENDLY UTILITY CLASSES — Warm, approachable, consistent
+   RELIEF PLATFORM DESIGN SYSTEM — Utility Classes
    ================================================================ */
 
 /* ── Flex ── */
@@ -54,8 +54,8 @@
 .text-3xs { font-size: var(--text-3xs); }
 .text-2xs { font-size: var(--text-2xs); }
 .text-xs { font-size: var(--text-xs); }
-.text-12 { font-size: 0.75rem; }
-.text-13 { font-size: 0.8125rem; }
+.text-12 { font-size: var(--text-2xs); }
+.text-13 { font-size: var(--text-xs); }
 .text-sm { font-size: var(--text-sm); }
 .text-base { font-size: var(--text-base); }
 .text-lg { font-size: var(--text-lg); }
@@ -319,11 +319,11 @@
 .border-top { border-top: 1px solid var(--border); }
 .overflow-auto { overflow: auto; }
 .self-center { align-self: center; }
-.gap-16 { gap: 16px; }
+.gap-16 { gap: var(--space-sm); }
 .border-dashed-2 { border: 2px dashed var(--border); }
-.font-extrabold { font-weight: 800; }
-.font-semibold { font-weight: 600; }
-.text-5xl { font-size: 3rem; line-height: var(--leading-tight); }
+.font-extrabold { font-weight: var(--font-weight-extrabold); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.text-5xl { font-size: var(--text-5xl); line-height: var(--leading-tight); }
 .feedback-card { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); }
 
 

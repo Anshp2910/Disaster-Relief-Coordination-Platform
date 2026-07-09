@@ -163,8 +163,8 @@
 .gov-navbar-tools {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 3px;
+  gap: var(--space-px);
+  padding: var(--space-4xs);
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);

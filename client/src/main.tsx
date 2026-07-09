@@ -32,14 +32,14 @@ function UpdateBanner() {
           zIndex: 99999,
           background: 'var(--accent, #3b82f6)',
           color: '#fff',
-          padding: '8px 16px',
+          padding: 'var(--space-2xs) var(--space-sm)',
           textAlign: 'center',
-          fontSize: 14,
-          fontWeight: 600,
+          fontSize: 'var(--text-sm)',
+          fontWeight: 'var(--font-weight-semibold)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 12,
+          gap: 'var(--space-xs)',
         }}
       >
         <span>A new version is available</span>
@@ -49,11 +49,11 @@ function UpdateBanner() {
             background: '#fff',
             color: 'var(--accent, #3b82f6)',
             border: 'none',
-            borderRadius: 4,
-            padding: '4px 12px',
-            fontWeight: 700,
+            borderRadius: 'var(--radius-4xs)',
+            padding: 'var(--space-3xs) var(--space-xs)',
+            fontWeight: 'var(--font-weight-bold)',
             cursor: 'pointer',
-            fontSize: 13,
+            fontSize: 'var(--text-xs)',
           }}
         >
           Refresh now

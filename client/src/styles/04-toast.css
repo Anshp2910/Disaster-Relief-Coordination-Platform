@@ -43,7 +43,7 @@
 
 .toast-item.toast-exit { animation: toastSlideOut var(--duration-normal) var(--ease-out) forwards; }
 
-.toast-icon { flex-shrink: 0; font-size: var(--text-sm); margin-top: 2px; }
+.toast-icon { flex-shrink: 0; font-size: var(--text-sm); margin-top: var(--space-4xs); }
 .toast-icon.success { color: var(--success); }
 .toast-icon.error { color: var(--danger); }
 .toast-icon.warning { color: var(--warning); }

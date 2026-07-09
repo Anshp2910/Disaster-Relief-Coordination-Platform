@@ -9,7 +9,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 100px;
+  scroll-padding-top: calc(var(--navbar-height, 56px) + var(--subnav-height, 48px));
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -204,7 +204,7 @@ hr {
   .grid-2-responsive,
   .grid-3-responsive,
   .grid-4-responsive {
-    gap: 12px !important;
+    gap: var(--space-xs);
   }
 }
 

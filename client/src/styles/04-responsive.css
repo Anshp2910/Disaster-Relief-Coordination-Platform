@@ -16,10 +16,6 @@
   .grid-3-responsive { grid-template-columns: repeat(3, 1fr); }
 }
 
-@media (max-width: 1024px) {
-  .gov-navbar-links .gov-navbar-link span { display: none; }
-}
-
 @media (max-width: 900px) {
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .grid-4-responsive { grid-template-columns: repeat(2, 1fr); }
@@ -57,6 +53,8 @@
   .container { padding: 0 var(--space-sm); }
   .gov-main { padding-top: var(--navbar-height); }
   .gov-navbar-inner { padding: 0 var(--space-sm); gap: var(--space-2xs); }
+  /* Reduce top-bar crowding: language picker lives in the mobile menu */
+  .gov-navbar-controls .gov-navbar-lang { display: none; }
 
   .kpi-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xs); }
   .kpi-card { padding: var(--space-md); }
