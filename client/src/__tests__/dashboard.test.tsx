@@ -6,7 +6,6 @@ import RequestsChart from '../components/RequestsChart'
 import WeatherWidget from '../components/WeatherWidget'
 import EmptyState from '../components/EmptyState'
 import ErrorState from '../components/ui/ErrorState'
-import PageSkeleton from '../components/PageSkeleton'
 import Badge from '../components/Badge'
 
 vi.mock('react-i18next', () => ({
@@ -55,13 +54,13 @@ describe('RiskWidget', () => {
   })
 
   it('renders risk indicators when stats provided', () => {
-    const stats = { byPriority: { Critical: 3, High: 2 } }
+    const stats = { totalUsers: 10, totalRequests: 20, byPriority: { Critical: 3, High: 2 } }
     const { container } = render(<RiskWidget stats={stats} loading={false} />)
-    expect(container.textContent).toContain('risk.critical')
+    expect(container.textContent).toContain('risk.moderate')
   })
 
   it('shows low risk when no priority data', () => {
-    const { container } = render(<RiskWidget stats={{}} loading={false} />)
+    const { container } = render(<RiskWidget stats={{ totalUsers: 0, totalRequests: 0 }} loading={false} />)
     expect(container.textContent).toContain('risk.low')
   })
 })

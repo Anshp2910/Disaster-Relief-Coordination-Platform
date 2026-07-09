@@ -106,12 +106,6 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
-/* ── Geofencing Pulse ── */
-@keyframes geofencePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(59,130,246,0); }
-}
-
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
   .marker-pulse { animation: none; }

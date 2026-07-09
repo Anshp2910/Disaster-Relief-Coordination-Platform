@@ -124,11 +124,11 @@
   --shadow-danger-lg: 0 4px 16px rgba(220, 38, 38, 0.2);
   --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.04);
 
-  /* ================================================================
-     TYPOGRAPHY — Government-Grade Font Stack
-     ================================================================ */
-  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Noto Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+/* ================================================================
+TYPOGRAPHY — Government-Grade Font Stack
+=============================================================== */
+--font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Noto Sans', system-ui, sans-serif;
+--font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
 
   --font-weight-light: 300;
   --font-weight-regular: 400;
