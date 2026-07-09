@@ -170,8 +170,7 @@ export default function Schedules() {
   }
 
   useEffect(() => { load() }, [load])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { loadDropdowns() }, [])
+  useEffect(() => { loadDropdowns() }, [currentUser])
 
   useAutoRefresh(load, { interval: 20000 })
 

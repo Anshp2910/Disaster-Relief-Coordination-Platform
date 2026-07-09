@@ -76,7 +76,6 @@ export default function Dashboard() {
   const [sortBy, setSortBy] = useState('-createdAt')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [, setTotal] = useState(0)
   const [weather, setWeather] = useState<{ temp: number; condition: string; humidity: number; wind: string } | null>(null)
   const [weatherLoading, setWeatherLoading] = useState(true)
 
@@ -104,7 +103,6 @@ export default function Dashboard() {
       const data = await clientApi.getRequests(params) as { items?: Item[]; pages?: number; total?: number; byStatus?: Record<string, number>; byPriority?: Record<string, number>; byCategory?: Record<string, number>; dailyRequests?: Array<{ date: string; count: number }> }
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
-      setTotal(data.total || 0)
       setStats({
         totalRequests: data.total || 0,
         byStatus: data.byStatus,

@@ -5,6 +5,7 @@ import { API_BASE } from '../api/client'
 const isProduction = import.meta.env.PROD
 
 let socket: Socket | null = null
+let socketRefCount = 0
 
 interface RefreshListener {
   events: string[]
@@ -140,7 +141,10 @@ export function useSocket() {
     window.addEventListener('authchange', onAuthChange)
 
     const s = (() => { connectSocket(); return socket })()
-    if (s) registerSocketHandlers(s)
+    if (s) {
+      socketRefCount++
+      registerSocketHandlers(s)
+    }
 
     return () => {
       if (s) {
@@ -156,10 +160,13 @@ export function useSocket() {
         s.off('sos:alert', onSosAlert)
         s.off('request:escalated', onRequestEscalated)
         s.off('request:deleted', onRequestDeleted)
-        disconnectSocket()
       }
-      socket = null
-      setConnected(false)
+      socketRefCount--
+      if (socketRefCount <= 0) {
+        disconnectSocket()
+        socket = null
+        setConnected(false)
+      }
       window.removeEventListener('authchange', onAuthChange)
     }
   }, [addNotification])

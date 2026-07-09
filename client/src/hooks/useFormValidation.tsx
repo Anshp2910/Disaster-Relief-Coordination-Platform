@@ -28,7 +28,6 @@ const rules: Record<string, Rule> = {
   text: { required: true, min: 1, max: 2000, label: 'Message' },
   startDate: { required: true, label: 'Start Date' },
   endDate: { required: true, label: 'End Date' },
-  comment: { required: true, min: 1, max: 2000, label: 'Comment' },
 }
 
 function validateField(name: string, value: unknown): string {

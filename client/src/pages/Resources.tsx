@@ -113,6 +113,16 @@ export default function Resources() {
   const [bulkUpdating, setBulkUpdating] = useState(false)
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 })
 
+  // Load summary data from the stats endpoint (separate from paginated list)
+  const loadSummary = useCallback(async () => {
+    try {
+      const statsData = await clientApi.getResourceStats() as { items?: SummaryItem[] }
+      setSummary(statsData.items || [])
+    } catch {
+      // silent — summary cards just won't show
+    }
+  }, [])
+
   const load = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -121,11 +131,10 @@ export default function Resources() {
       if (filterCategory !== 'All') params.category = filterCategory
       if (filterStatus !== 'All') params.status = filterStatus
       if (debouncedSearch) params.search = debouncedSearch
-      const data = await clientApi.getResources(params) as { items?: ResourceItem[]; pages?: number; total?: number; summary?: SummaryItem[] }
+      const data = await clientApi.getResources(params) as { items?: ResourceItem[]; pages?: number; total?: number }
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
       setTotal(data.total || 0)
-      setSummary(data.summary || [])
     } catch (err) {
       setError(getErrorMessage(err))
     } finally {
@@ -133,9 +142,10 @@ export default function Resources() {
     }
   }, [page, filterCategory, filterStatus, debouncedSearch])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load(); loadSummary() }, [load, loadSummary])
 
   useAutoRefresh(load, { interval: 20000 })
+  useAutoRefresh(loadSummary, { interval: 120000 })
 
   useEffect(() => {
     return registerRefreshListener(['resource:created', 'resource:allocated', 'request:created', 'request:updated'], load)
