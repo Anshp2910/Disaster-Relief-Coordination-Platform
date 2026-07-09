@@ -255,12 +255,12 @@ TYPOGRAPHY — Friendly, Approachable Font Stack
   --color-low: var(--success);
 
   --severity-critical: var(--danger);
-  --severity-high: var(--amber-500);
-  --severity-medium: var(--amber-600);
+  --severity-high: #f97316;
+  --severity-medium: var(--amber-500);
   --severity-low: var(--success);
   --severity-critical-stroke: #991b1b;
-  --severity-high-stroke: #92400e;
-  --severity-medium-stroke: #713f12;
+  --severity-high-stroke: #c2410c;
+  --severity-medium-stroke: #b45309;
   --severity-low-stroke: #166534;
 
   /* ── Coverage ── */
@@ -470,12 +470,12 @@ TYPOGRAPHY — Friendly, Approachable Font Stack
   --color-low: #4ade80;
 
   --severity-critical: #f87171;
-  --severity-high: #fbbf24;
-  --severity-medium: var(--amber-400);
-  --severity-low: #4ade80;
+  --severity-high: #fb923c;
+  --severity-medium: #fbbf24;
+  --severity-low: #34d399;
   --severity-critical-stroke: #7f1d1d;
-  --severity-high-stroke: #78350f;
-  --severity-medium-stroke: var(--amber-800);
+  --severity-high-stroke: #7c2d12;
+  --severity-medium-stroke: #78350f;
   --severity-low-stroke: #14532d;
 
   --coverage-covered: #4ade80;
