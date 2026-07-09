@@ -47,6 +47,7 @@ ZoneSchema.pre('save', function syncLocation() {
 ZoneSchema.index({ location: '2dsphere' })
 ZoneSchema.index({ centerLat: 1, centerLng: 1 })
 ZoneSchema.index({ severity: 1, status: 1 })
+ZoneSchema.index({ status: 1, severity: 1, disasterType: 1 })
 ZoneSchema.index({ name: 'text', description: 'text' })
 
 export const Zone = mongoose.model('Zone', ZoneSchema)

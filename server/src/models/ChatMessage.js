@@ -15,5 +15,6 @@ const ChatMessageSchema = new mongoose.Schema(
 )
 
 ChatMessageSchema.index({ requestId: 1, createdAt: -1 })
+ChatMessageSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 3600 })
 
 export const ChatMessage = mongoose.model('ChatMessage', ChatMessageSchema)

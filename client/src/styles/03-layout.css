@@ -31,6 +31,13 @@
 .container-lg { max-width: 1360px; }
 .container-xl { max-width: 1520px; }
 
+/* ── Ultrawide Container (>1920px) ── */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1440px;
+  }
+}
+
 /* ── Page Sections ── */
 .page-section {
   padding: var(--space-lg) 0;

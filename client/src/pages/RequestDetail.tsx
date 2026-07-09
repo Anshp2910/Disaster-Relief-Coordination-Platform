@@ -130,6 +130,8 @@ export default function RequestDetail() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const [claiming, setClaiming] = useState(false)
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
+  const [editCommentText, setEditCommentText] = useState('')
   const { confirm, ConfirmDialog } = useConfirm()
 
   const load = useCallback(async () => {
@@ -304,6 +306,45 @@ export default function RequestDetail() {
     }
   }
 
+  function handleStartEdit(c: CommentItem) {
+    setEditingCommentId(c._id)
+    setEditCommentText(c.text || '')
+  }
+
+  function handleCancelEdit() {
+    setEditingCommentId(null)
+    setEditCommentText('')
+  }
+
+  async function handleUpdateComment(commentId: string) {
+    if (!id) return
+    if (!editCommentText.trim()) return
+    try {
+      const data = await clientApi.updateComment(id, commentId, editCommentText.trim()) as { comments?: CommentItem[] }
+      setItem((prev) => ({ ...prev!, comments: data.comments || prev?.comments || [] }))
+      setEditingCommentId(null)
+      setEditCommentText('')
+      toast.success(t('requestDetail.commentUpdated') || 'Comment updated')
+    } catch (err) {
+      const msg = getErrorMessage(err)
+      // If the edit window expired, show a friendlier message
+      if (msg.toLowerCase().includes('5 minutes') || msg.toLowerCase().includes('edited within')) {
+        toast.warning(t('requestDetail.editTimeExpired') || 'Edit window expired (5 minutes)')
+      } else {
+        toast.error(msg)
+      }
+      setEditingCommentId(null)
+      setEditCommentText('')
+    }
+  }
+
+  function canEdit(c: CommentItem): boolean {
+    // Check if within 5-minute edit window (client-side check)
+    const commentDate = c.createdAt ? new Date(c.createdAt).getTime() : 0
+    const fiveMinAgo = Date.now() - 5 * 60 * 1000
+    return commentDate > fiveMinAgo
+  }
+
   async function handleAllocate(e: React.FormEvent) {
     if (!id) return
     e.preventDefault()
@@ -352,7 +393,7 @@ export default function RequestDetail() {
 
   return (
     <PageTransition>
-      <article className="container max-w-md" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
+      <article className="container" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
       <PageHeader
         title={item.title || ''}
         actions={
@@ -568,23 +609,87 @@ export default function RequestDetail() {
 
           {item.comments && item.comments.length > 0 ? (
             <div className="flex-col flex-gap-xs">
-              {[...item.comments].reverse().map((c) => (
-                <div key={c._id} className="text-sm p-sm bg-card" style={{ borderRadius: 8 }}>
-                  <div className="flex-between mb-xs">
-                    <strong className="text-sm">{c.createdBy?.displayName || c.createdBy?.email}</strong>
-                    <div className="flex flex-gap-sm">
-                      <span className="small muted">{c.createdAt ? new Date(c.createdAt).toLocaleDateString() : ''}</span>
-                      {(currentUser?.id === c.createdBy?._id || currentUser?.role === 'admin') && (
-                        <button onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0 text-red cursor-pointer flex-center gap-xs" aria-label={t('requestDetail.delete')}>
-                          <Trash2 size={12} />
-                          {t('requestDetail.delete')}
-                        </button>
-                      )}
-                    </div>
+              {[...item.comments].reverse().map((c) => {
+                const isEditing = editingCommentId === c._id
+                const isAuthorOrAdmin = currentUser?.id === c.createdBy?._id || currentUser?.role === 'admin'
+                const withinEditWindow = canEdit(c)
+
+                return (
+                  <div key={c._id} className={`text-sm p-sm bg-card ${isEditing ? 'border-gov' : ''}`} style={{ borderRadius: 8, border: isEditing ? '1px solid var(--accent)' : '1px solid transparent' }}>
+                    {isEditing ? (
+                      <>
+                        <div className="ff-group m-0">
+                          <div className={`ff-wrap ${editCommentText ? 'ff-focused' : ''}`}>
+                            <input
+                              type="text"
+                              value={editCommentText}
+                              onChange={(e) => setEditCommentText(e.target.value)}
+                              maxLength={2000}
+                              className={`ff-input ${editCommentText ? 'ff-input-filled' : ''}`}
+                              placeholder={t('requestDetail.editComment') || 'Edit your comment...'}
+                              autoFocus
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault()
+                                  handleUpdateComment(c._id)
+                                }
+                                if (e.key === 'Escape') {
+                                  handleCancelEdit()
+                                }
+                              }}
+                            />
+                            <label className={`ff-label ${editCommentText ? 'ff-label-float' : ''}`}>
+                              {t('requestDetail.editComment') || 'Edit your comment...'}
+                            </label>
+                          </div>
+                        </div>
+                        <div className="flex flex-gap-sm mt-xs">
+                          <RippleBtn
+                            onClick={() => handleUpdateComment(c._id)}
+                            disabled={!editCommentText.trim()}
+                            className="text-xs p-xs"
+                          >
+                            <CheckCircle size={12} />
+                            {t('common.save') || 'Save'}
+                          </RippleBtn>
+                          <button onClick={handleCancelEdit} className="text-xs btn-ghost">{t('common.cancel') || 'Cancel'}</button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex-between mb-xs">
+                          <strong className="text-sm">{c.createdBy?.displayName || c.createdBy?.email}</strong>
+                          <div className="flex flex-gap-sm">
+                            <span className="small muted">
+                              {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
+                            </span>
+                            {isAuthorOrAdmin && withinEditWindow && (
+                              <button
+                                onClick={() => handleStartEdit(c)}
+                                className="bg-none border-none text-xs p-0 cursor-pointer flex-center gap-xs"
+                                style={{ color: 'var(--accent)' }}
+                                aria-label={t('requestDetail.edit') || 'Edit'}
+                              >
+                                {t('requestDetail.edit') || 'Edit'}
+                              </button>
+                            )}
+                            {isAuthorOrAdmin && (
+                              <button onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0 text-red cursor-pointer flex-center gap-xs" aria-label={t('requestDetail.delete')}>
+                                <Trash2 size={12} />
+                                {t('requestDetail.delete')}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div>{c.text}</div>
+                        {!withinEditWindow && isAuthorOrAdmin && (
+                          <div className="text-3xs text-muted-extra mt-xs">{t('requestDetail.editWindowExpired') || 'Edit window closed (5 min)'}</div>
+                        )}
+                      </>
+                    )}
                   </div>
-                  <div>{c.text}</div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           ) : (
             <div className="muted text-sm">{t('requestDetail.noComments')}</div>

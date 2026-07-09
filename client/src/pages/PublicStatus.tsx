@@ -1,10 +1,10 @@
-﻿import { useEffect, useState } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Activity, Users, CheckCircle, AlertTriangle, Clock, BarChart3, TrendingUp } from 'lucide-react'
 import { PageHeader, DataCard, PageTransition } from '../components/ui'
 import { clientApi } from '../api/client'
-import { SkeletonList } from '../components/Skeleton'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
 
 const STATUS_COLORS: Record<string, string> = {
   Open: 'var(--pri-400)', Assigned: 'var(--amber-400)', 'In Progress': 'var(--amber-500)',
@@ -43,24 +43,39 @@ export default function PublicStatus() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    let mounted = true
-    async function load() {
-      try {
-        const res = await clientApi.getPublicOverview() as Record<string, unknown>
-        if (mounted) setData(res)
-      } catch (err) {
-        const e = err as Error
-        if (mounted) setError(e.message)
-      } finally {
-        if (mounted) setLoading(false)
-      }
+  const load = useCallback(async () => {
+    try {
+      const res = await clientApi.getPublicOverview() as Record<string, unknown>
+      setData(res)
+    } catch (err) {
+      const e = err as Error
+      setError(e.message)
+    } finally {
+      setLoading(false)
     }
-    load()
-    return () => { mounted = false }
   }, [])
 
-  if (loading) return <SkeletonList count={8} lines={1} />
+  useEffect(() => { load() }, [load])
+
+  useAutoRefresh(load, { interval: 30000 })
+
+  if (loading) return (
+    <PageTransition>
+      <div className="max-w-lg mx-auto p-xl">
+        <div className="grid-4-responsive gap-md">
+          {[1,2,3,4,5,6,7].map((i) => (
+            <div key={i} className="bento-card">
+              <div className="bento-header">
+                <div className="sk-line" style={{ width: '60%', height: 12 }} />
+                <div className="sk-circle" style={{ width: 32, height: 32 }} />
+              </div>
+              <div className="sk-line" style={{ width: '40%', height: 24, marginTop: 8 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </PageTransition>
+  )
   if (error) return <div className="text-center p-lg" role="alert"><div className="muted">{t('public.error')}</div><div className="small muted">{error}</div></div>
 
   return (

@@ -4,6 +4,7 @@ import { validate, validateObjectId } from '../middleware/validate.js'
 import { Feedback } from '../models/Feedback.js'
 import { Request } from '../models/Request.js'
 import { logger } from '../utils/logger.js'
+import { sendSuccess, sendCreated, sendPaginated, sendConflict, sendNotFound, sendServerError } from '../utils/response.js'
 
 export const feedbackRouter = express.Router()
 
@@ -16,28 +17,26 @@ feedbackRouter.get('/request/:requestId', requireAuth, validateObjectId('request
       Feedback.find({ requestId: req.params.requestId })
         .populate('submittedBy', 'displayName email role')
         .populate('fulfilledBy', 'displayName email role')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
+        .sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
       Feedback.countDocuments({ requestId: req.params.requestId }),
     ])
-    res.json({ feedback, total, page, pages: Math.ceil(total / limit) })
+    return sendPaginated(res, { items: feedback, total, page, pages: Math.ceil(total / limit) })
   } catch (err) {
     logger.error('[feedback] list error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 feedbackRouter.post('/request/:requestId', requireAuth, validateObjectId('requestId'), validate('feedback'), async (req, res) => {
   try {
     const { rating, comment, deliveryConfirmed } = req.body
+    if (rating < 1 || rating > 5) return res.status(400).json({ success: false, error: 'Rating must be between 1 and 5' })
 
     const item = await Request.findById(req.params.requestId)
-    if (!item) return res.status(404).json({ error: 'Request not found' })
+    if (!item) return sendNotFound(res, 'Request not found')
 
     const existing = await Feedback.findOne({ requestId: req.params.requestId, submittedBy: req.user._id }).lean()
-    if (existing) return res.status(409).json({ error: 'You already submitted feedback for this request' })
+    if (existing) return sendConflict(res, 'You already submitted feedback for this request')
 
     const feedback = await Feedback.create({
       requestId: req.params.requestId,
@@ -58,10 +57,10 @@ feedbackRouter.post('/request/:requestId', requireAuth, validateObjectId('reques
     }
 
     const populated = await feedback.populate('submittedBy', 'displayName email role')
-    return res.status(201).json({ feedback: populated })
+    return sendCreated(res, { feedback: populated })
   } catch (err) {
     logger.error('[feedback] create error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -70,9 +69,9 @@ feedbackRouter.get('/stats', requireAuth, async (req, res) => {
     const stats = await Feedback.aggregate([
       { $group: { _id: null, avgRating: { $avg: '$rating' }, totalFeedback: { $sum: 1 }, confirmedDeliveries: { $sum: { $cond: ['$deliveryConfirmed', 1, 0] } } } },
     ])
-    res.json({ stats: stats[0] || { avgRating: 0, totalFeedback: 0, confirmedDeliveries: 0 } })
+    return sendSuccess(res, { data: { stats: stats[0] || { avgRating: 0, totalFeedback: 0, confirmedDeliveries: 0 } } })
   } catch (err) {
     logger.error('[feedback] stats error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })

@@ -2,38 +2,48 @@ import jwt from 'jsonwebtoken'
 import { getJwtSecret } from '../config/env.js'
 import { User } from '../models/User.js'
 import { logger } from '../utils/logger.js'
+import { sendUnauthorized, sendForbidden, sendServerError } from '../utils/response.js'
 
 export async function requireAuth(req, res, next) {
   try {
     const auth = req.headers.authorization || ''
-    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null
-    if (!token) return res.status(401).json({ error: 'Missing token', code: 'MISSING_TOKEN' })
+    if (!auth.startsWith('Bearer ')) {
+      return sendUnauthorized(res, 'Missing or malformed token — use "Bearer <token>"')
+    }
+    const token = auth.slice(7)
+    if (!token) {
+      return sendUnauthorized(res, 'Missing token')
+    }
 
     let payload
     try {
       payload = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] })
     } catch (jwtErr) {
       logger.warn('[auth] JWT verify failed', { name: jwtErr.name, message: jwtErr.message })
-      return res.status(401).json({ error: 'Token expired or invalid', code: 'INVALID_TOKEN' })
+      const msg = jwtErr.name === 'TokenExpiredError' ? 'Token expired' : 'Token invalid'
+      return sendUnauthorized(res, msg)
     }
 
     const user = await User.findById(payload.sub).select('-passwordHash')
     if (!user) {
       logger.warn('[auth] User not found for token sub', { sub: payload.sub })
-      return res.status(401).json({ error: 'User not found', code: 'USER_NOT_FOUND' })
+      return sendUnauthorized(res, 'User not found')
     }
 
     req.user = user
     return next()
   } catch (err) {
     logger.error('[auth] Unexpected error', { message: err.message })
-    return res.status(500).json({ error: 'Authentication error', code: 'AUTH_ERROR' })
+    return sendServerError(res)
   }
 }
 
 export async function requireAdmin(req, res, next) {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required' })
+  if (!req.user) {
+    return sendUnauthorized(res)
+  }
+  if (req.user.role !== 'admin') {
+    return sendForbidden(res, 'Admin access required')
   }
   return next()
 }

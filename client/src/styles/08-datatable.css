@@ -165,6 +165,7 @@
 .dt-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .dt-table { display: flex; flex-direction: column; min-width: 100%; }
 .dt-thead { display: flex; flex-direction: column; }
+.dt-sticky { position: sticky; top: 0; z-index: var(--z-sticky); }
 .dt-tbody { display: flex; flex-direction: column; }
 
 .dt-tr {
@@ -309,3 +310,6 @@
 .dt-ctx-item:hover { background: var(--bg-subtle); }
 .dt-ctx-danger { color: var(--danger); }
 .dt-ctx-danger:hover { background: var(--danger-soft) !important; }
+
+/* ── Scroll hint (shown on mobile) ── */
+.dt-scroll-hint { display: none; font-size: var(--text-xs); color: var(--text-muted); padding: var(--space-2xs) var(--space-sm); text-align: right; }

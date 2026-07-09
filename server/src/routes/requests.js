@@ -8,6 +8,7 @@ import { validate, validateObjectId, validateQuery, querySchemas } from '../midd
 import { escapeRegex } from '../utils/geo.js'
 import { Request } from '../models/Request.js'
 import { logger } from '../utils/logger.js'
+import { sendSuccess, sendCreated, sendPaginated, sendBadRequest, sendNotFound, sendForbidden, sendServerError } from '../utils/response.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const uploadDir = path.join(__dirname, '../../uploads')
@@ -39,7 +40,6 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
   try {
     const { page, limit, status, category, priority, search, sort } = req.query
     const filter = {}
-
     if (status && status !== 'All') filter.status = status
     if (category && category !== 'All') filter.category = category
     if (priority && priority !== 'All') filter.priority = priority
@@ -66,12 +66,7 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
       .lean()
     const total = await Request.countDocuments(filter)
 
-    const result = {
-      items,
-      total,
-      page: pageNum,
-      pages: Math.ceil(total / limitNum),
-    }
+    const meta = { total, page: pageNum, pages: Math.ceil(total / limitNum) }
 
     if (req.query.summary) {
       const statsFilter = { ...filter }
@@ -89,16 +84,18 @@ requestsRouter.get('/', requireAuth, validateQuery(querySchemas.requestsList), a
           { $limit: 30 },
         ]),
       ])
-      result.byStatus = Object.fromEntries(byStatusAgg.map((s) => [s._id, s.count]))
-      result.byPriority = Object.fromEntries(byPriorityAgg.map((s) => [s._id, s.count]))
-      result.byCategory = Object.fromEntries(byCategoryAgg.map((s) => [s._id, s.count]))
-      result.dailyRequests = dailyAgg.map((d) => ({ date: d._id, count: d.count }))
+      meta.byStatus = Object.fromEntries(byStatusAgg.map((s) => [s._id, s.count]))
+      meta.byPriority = Object.fromEntries(byPriorityAgg.map((s) => [s._id, s.count]))
+      meta.byCategory = Object.fromEntries(byCategoryAgg.map((s) => [s._id, s.count]))
+      meta.dailyRequests = dailyAgg.map((d) => ({ date: d._id, count: d.count }))
     }
 
-    return res.json(result)
+    // Pass only the summary fields as extra to avoid duplicating total/page/pages
+    const { total: _, page: __, pages: ___, ...summaryFields } = meta
+    return sendPaginated(res, { items, total, page: pageNum, pages: Math.ceil(total / limitNum), extra: summaryFields })
   } catch (err) {
     logger.error('[requests] list error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -106,21 +103,14 @@ requestsRouter.post('/', requireAuth, validate('createRequest'), async (req, res
   try {
     const { title, description, locationName, lat, lng, status, category, priority, peopleCount } = req.body || {}
     if (!title || !description || !locationName || lat === undefined || lng === undefined) {
-      return res.status(400).json({ error: 'Missing required fields' })
+      return sendBadRequest(res, 'Missing required fields')
     }
 
     const item = await Request.create({
-      title,
-      description,
-      locationName,
-      lat,
-      lng,
+      title, description, locationName, lat, lng,
       location: { type: 'Point', coordinates: [lng, lat] },
-      status: 'Open',
-      category: category || 'Other',
-      priority: priority || 'Medium',
-      peopleCount: peopleCount || 1,
-      createdBy: req.user._id,
+      status: 'Open', category: category || 'Other', priority: priority || 'Medium',
+      peopleCount: peopleCount || 1, createdBy: req.user._id,
       auditLog: [{ action: 'created', by: req.user._id }],
     })
 
@@ -128,17 +118,13 @@ requestsRouter.post('/', requireAuth, validate('createRequest'), async (req, res
 
     const io = req.app.get('io')
     if (io) {
-      try {
-        io.emit('request:created', { item: populated })
-      } catch (err) {
-        logger.error('[ws] emit request:created error', { message: err.message })
-      }
+      try { io.emit('request:created', { item: populated }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.status(201).json({ item: populated })
+    return sendCreated(res, { item: populated })
   } catch (err) {
     logger.error('[requests] create error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -150,11 +136,11 @@ requestsRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res)
       .populate('claimedBy', 'displayName email role')
       .populate('comments.createdBy', 'displayName email role')
       .lean()
-    if (!item) return res.status(404).json({ error: 'Not found' })
-    return res.json({ item })
+    if (!item) return sendNotFound(res, 'Request not found')
+    return sendSuccess(res, { data: { item } })
   } catch (err) {
     logger.error('[requests] get error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -162,52 +148,46 @@ requestsRouter.put('/:id', requireAuth, validateObjectId('id'), validate('update
   try {
     const { id } = req.params
     const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
+    if (!item) return sendNotFound(res, 'Request not found')
 
     const isOwner = item.createdBy?.toString() === req.user._id?.toString()
     const isAdmin = req.user.role === 'admin'
-    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+    if (!isOwner && !isAdmin) return sendForbidden(res)
 
-    const { title, description, locationName, lat, lng, status, category, priority, peopleCount } = req.body || {}
-
-    if (status !== undefined && status !== item.status) {
-      item.auditLog.push({ action: `status:${item.status}->${status}`, by: req.user._id })
+    const allowedFields = ['title', 'description', 'locationName', 'lat', 'lng', 'status', 'category', 'priority', 'peopleCount']
+    const changes = []
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        changes.push(field)
+        item[field] = req.body[field]
+      }
     }
-    if (priority !== undefined && priority !== item.priority) {
-      item.auditLog.push({ action: `priority:${item.priority}->${priority}`, by: req.user._id })
+
+    if (changes.includes('status') && req.body.status !== item.status) {
+      item.auditLog.push({ action: `status change`, by: req.user._id })
+    }
+    if (changes.includes('priority') && req.body.priority !== item.priority) {
+      item.auditLog.push({ action: `priority change`, by: req.user._id })
     }
 
-    if (title !== undefined) item.title = title
-    if (description !== undefined) item.description = description
-    if (locationName !== undefined) item.locationName = locationName
-    if (lat !== undefined) item.lat = lat
-    if (lng !== undefined) item.lng = lng
-    const newLat = lat !== undefined ? lat : item.lat
-    const newLng = lng !== undefined ? lng : item.lng
+    const newLat = req.body.lat !== undefined ? req.body.lat : item.lat
+    const newLng = req.body.lng !== undefined ? req.body.lng : item.lng
     if (newLat != null && newLng != null) {
       item.location = { type: 'Point', coordinates: [newLng, newLat] }
     }
-    if (status !== undefined) item.status = status
-    if (category !== undefined) item.category = category
-    if (priority !== undefined) item.priority = priority
-    if (peopleCount !== undefined) item.peopleCount = peopleCount
 
     await item.save()
     const populated = await item.populate('createdBy', 'displayName email role')
 
     const io = req.app.get('io')
     if (io) {
-      try {
-        io.emit('request:updated', { item: populated })
-      } catch (err) {
-        logger.error('[ws] emit request:updated error', { message: err.message })
-      }
+      try { io.emit('request:updated', { item: populated }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.json({ item: populated })
+    return sendSuccess(res, { data: { item: populated } })
   } catch (err) {
     logger.error('[requests] update error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -215,38 +195,33 @@ requestsRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, r
   try {
     const { id } = req.params
     const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
+    if (!item) return sendNotFound(res, 'Request not found')
 
     const isOwner = item.createdBy?.toString() === req.user._id?.toString()
     const isAdmin = req.user.role === 'admin'
-    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+    if (!isOwner && !isAdmin) return sendForbidden(res)
 
     await item.deleteOne()
 
     const io = req.app.get('io')
     if (io) {
-      try {
-        io.emit('request:deleted', { id })
-      } catch (err) {
-        logger.error('[ws] emit request:deleted error', { message: err.message })
-      }
+      try { io.emit('request:deleted', { id }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.json({ deleted: true })
+    return sendSuccess(res, { data: { deleted: true } })
   } catch (err) {
     logger.error('[requests] delete error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 requestsRouter.post('/:id/claim', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const { id } = req.params
-
     const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
+    if (!item) return sendNotFound(res, 'Request not found')
     if (['Resolved', 'Fulfilled'].includes(item.status)) {
-      return res.status(400).json({ error: 'Cannot claim a completed request' })
+      return sendBadRequest(res, 'Cannot claim a completed request')
     }
 
     const updated = await Request.findOneAndUpdate(
@@ -254,7 +229,7 @@ requestsRouter.post('/:id/claim', requireAuth, validateObjectId('id'), async (re
       { $set: { claimedBy: req.user._id, claimedAt: new Date() } },
       { new: true },
     )
-    if (!updated) return res.status(400).json({ error: 'Already claimed' })
+    if (!updated) return sendBadRequest(res, 'Already claimed')
 
     if (updated.status === 'Open') updated.status = 'In Progress'
     updated.auditLog.push({ action: 'claimed', by: req.user._id })
@@ -265,17 +240,13 @@ requestsRouter.post('/:id/claim', requireAuth, validateObjectId('id'), async (re
 
     const io = req.app.get('io')
     if (io) {
-      try {
-        io.emit('request:updated', { item: populated })
-      } catch (err) {
-        logger.error('[ws] emit request:updated error', { message: err.message })
-      }
+      try { io.emit('request:updated', { item: populated }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.json({ item: populated })
+    return sendSuccess(res, { data: { item: populated } })
   } catch (err) {
     logger.error('[requests] claim error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -283,12 +254,12 @@ requestsRouter.post('/:id/unclaim', requireAuth, validateObjectId('id'), async (
   try {
     const { id } = req.params
     const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
-    if (['Resolved', 'Fulfilled'].includes(item.status)) return res.status(400).json({ error: 'Cannot unclaim a completed request' })
+    if (!item) return sendNotFound(res, 'Request not found')
+    if (['Resolved', 'Fulfilled'].includes(item.status)) return sendBadRequest(res, 'Cannot unclaim a completed request')
 
     const isClaimer = item.claimedBy && item.claimedBy.toString() === req.user._id.toString()
     const isAdmin = req.user.role === 'admin'
-    if (!isClaimer && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+    if (!isClaimer && !isAdmin) return sendForbidden(res)
 
     item.claimedBy = null
     item.claimedAt = null
@@ -300,17 +271,13 @@ requestsRouter.post('/:id/unclaim', requireAuth, validateObjectId('id'), async (
 
     const io = req.app.get('io')
     if (io) {
-      try {
-        io.emit('request:updated', { item: populated })
-      } catch (err) {
-        logger.error('[ws] emit request:updated error', { message: err.message })
-      }
+      try { io.emit('request:updated', { item: populated }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.json({ item: populated })
+    return sendSuccess(res, { data: { item: populated } })
   } catch (err) {
     logger.error('[requests] unclaim error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -318,10 +285,10 @@ requestsRouter.post('/:id/comments', requireAuth, validateObjectId('id'), valida
   try {
     const { id } = req.params
     const { text } = req.body || {}
-    if (!text || !text.trim()) return res.status(400).json({ error: 'Comment text required' })
+    if (!text || !text.trim()) return sendBadRequest(res, 'Comment text required')
 
     const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
+    if (!item) return sendNotFound(res, 'Request not found')
 
     item.comments.push({ text: text.trim(), createdBy: req.user._id })
     item.auditLog.push({ action: 'commented', by: req.user._id, details: text.trim().slice(0, 100) })
@@ -332,19 +299,48 @@ requestsRouter.post('/:id/comments', requireAuth, validateObjectId('id'), valida
     const io = req.app.get('io')
     if (io) {
       try {
-        io.emit('request:commented', {
-          requestId: id,
-          comment: populated.comments[populated.comments.length - 1],
-        })
-      } catch (err) {
-        logger.error('[ws] emit request:commented error', { message: err.message })
-      }
+        io.emit('request:commented', { requestId: id, comment: populated.comments[populated.comments.length - 1] })
+      } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.json({ comments: populated.comments })
+    return sendSuccess(res, { data: { comments: populated.comments } })
   } catch (err) {
     logger.error('[requests] comment error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
+  }
+})
+
+requestsRouter.put('/:id/comments/:commentId', requireAuth, validateObjectId('id'), validateObjectId('commentId'), async (req, res) => {
+  try {
+    const { id, commentId } = req.params
+    const { text } = req.body || {}
+    if (!text || !text.trim()) return sendBadRequest(res, 'Comment text required')
+
+    const item = await Request.findById(id)
+    if (!item) return sendNotFound(res, 'Request not found')
+
+    const comment = item.comments.id(commentId)
+    if (!comment) return sendNotFound(res, 'Comment not found')
+
+    const isAuthor = comment.createdBy?.toString() === req.user._id?.toString()
+    const isAdmin = req.user.role === 'admin'
+    if (!isAuthor && !isAdmin) return sendForbidden(res)
+
+    const now = Date.now()
+    const createdAt = new Date(comment.createdAt || comment._id.getTimestamp()).getTime()
+    const FIVE_MIN_MS = 5 * 60 * 1000
+    if (now - createdAt > FIVE_MIN_MS && !isAdmin) {
+      return sendBadRequest(res, 'Comment can only be edited within 5 minutes of posting')
+    }
+
+    comment.text = text.trim()
+    item.auditLog.push({ action: 'commentEdited', by: req.user._id, details: text.trim().slice(0, 100) })
+    await item.save()
+
+    return sendSuccess(res, { data: { comments: item.comments } })
+  } catch (err) {
+    logger.error('[requests] edit comment error', { message: err.message })
+    return sendServerError(res)
   }
 })
 
@@ -352,41 +348,39 @@ requestsRouter.delete('/:id/comments/:commentId', requireAuth, validateObjectId(
   try {
     const { id, commentId } = req.params
     const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
+    if (!item) return sendNotFound(res, 'Request not found')
 
     const comment = item.comments.id(commentId)
-    if (!comment) return res.status(404).json({ error: 'Comment not found' })
+    if (!comment) return sendNotFound(res, 'Comment not found')
 
     const isAuthor = comment.createdBy?.toString() === req.user._id?.toString()
     const isAdmin = req.user.role === 'admin'
-    if (!isAuthor && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+    if (!isAuthor && !isAdmin) return sendForbidden(res)
 
     comment.deleteOne()
     await item.save()
 
-    return res.json({ deleted: true })
+    return sendSuccess(res, { data: { deleted: true } })
   } catch (err) {
     logger.error('[requests] delete comment error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), async (req, res, next) => {
   const { id } = req.params
   const item = await Request.findById(id)
-  if (!item) return res.status(404).json({ error: 'Not found' })
+  if (!item) return sendNotFound(res, 'Request not found')
 
   if (item.createdBy?.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Not authorized' })
+    return sendForbidden(res, 'Not authorized')
   }
   req._item = item
   next()
 }, upload.array('files', 5), async (req, res) => {
   try {
     const multerFiles = req.files || []
-    if (multerFiles.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' })
-    }
+    if (multerFiles.length === 0) return sendBadRequest(res, 'No files uploaded')
 
     const newFiles = multerFiles.map((f) => ({
       url: `/uploads/${f.filename}`,
@@ -401,17 +395,13 @@ requestsRouter.post('/:id/files', requireAuth, validateObjectId('id'), async (re
 
     const io = req.app.get('io')
     if (io) {
-      try {
-        io.emit('request:updated', { item: { _id: req._item._id, files: req._item.files } })
-      } catch (err) {
-        logger.error('[ws] emit request:updated error', { message: err.message })
-      }
+      try { io.emit('request:updated', { item: { _id: req._item._id, files: req._item.files } }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.json({ files: req._item.files })
+    return sendSuccess(res, { data: { files: req._item.files } })
   } catch (err) {
     logger.error('[requests] file upload error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -419,13 +409,13 @@ requestsRouter.delete('/:id/files/:fileId', requireAuth, validateObjectId('id'),
   try {
     const { id, fileId } = req.params
     const item = await Request.findById(id)
-    if (!item) return res.status(404).json({ error: 'Not found' })
+    if (!item) return sendNotFound(res, 'Request not found')
 
     const file = item.files.id(fileId)
-    if (!file) return res.status(404).json({ error: 'File not found' })
+    if (!file) return sendNotFound(res, 'File not found')
 
     if (file.uploadedBy?.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Not authorized' })
+      return sendForbidden(res, 'Not authorized')
     }
 
     item.files.pull(fileId)
@@ -434,12 +424,12 @@ requestsRouter.delete('/:id/files/:fileId', requireAuth, validateObjectId('id'),
 
     const io = req.app.get('io')
     if (io) {
-      try { io.emit('request:updated', { item: { _id: id, files: item.files } }) } catch (err) { logger.error('[ws] emit request:updated error', { message: err.message }) }
+      try { io.emit('request:updated', { item: { _id: id, files: item.files } }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
     }
 
-    return res.json({ files: item.files })
+    return sendSuccess(res, { data: { files: item.files } })
   } catch (err) {
     logger.error('[requests] file delete error', { message: err.message })
-    return res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })

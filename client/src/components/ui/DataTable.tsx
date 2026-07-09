@@ -323,6 +323,8 @@ function DataTable<T>({
 
       {renderTop}
 
+      <div className="dt-scroll-hint" aria-hidden="true">{t('dataTable.scrollHint') || 'Scroll horizontally for more columns'}</div>
+
       {/* Bulk actions bar */}
       {bulkActions && selected.size > 0 && (
         <motion.div

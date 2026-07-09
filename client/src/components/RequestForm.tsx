@@ -371,7 +371,7 @@ export default function RequestForm({
           </div>
         )}
 
-        {error && <div className="error-text mt-sm mb-sm">{error}</div>}
+        {error && <div className="error-text mt-sm mb-sm" role="alert" aria-live="polite" id="rf-error">{error}</div>}
 
         <StepForm
           steps={STEPS}
@@ -395,6 +395,7 @@ export default function RequestForm({
                     onChange={(e) => setFormField('title', e.target.value)}
                     required
                     maxLength={200}
+                    aria-describedby={error ? 'rf-error' : undefined}
                     className={`ff-input ${form.title ? 'ff-input-filled' : ''}`}
                     placeholder={t('createRequest.titleLabel')}
                   />
@@ -446,6 +447,7 @@ export default function RequestForm({
                   <input
                     id="rf-people"
                     type="number"
+                    inputMode="numeric"
                     min="1"
                     max="10000"
                     value={form.peopleCount}

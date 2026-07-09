@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Package, Plus, Edit, Trash2, CheckCircle, XCircle, Download, CheckSquare } from 'lucide-react'
 import { Modal, PageHeader, ErrorState, FilterBar, DataCard, ModernSelect, RippleBtn, PageTransition } from '../components/ui'
@@ -66,6 +66,17 @@ export default function Resources() {
   const [summary, setSummary] = useState<SummaryItem[]>([])
   const { confirm, ConfirmDialog } = useConfirm()
 
+  // Click outside handler for allocation request search
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (allocReqSearchRef.current && !allocReqSearchRef.current.contains(e.target as Node)) {
+        setAllocShowReqDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<ResourceItem | null>(null)
   const [form, setForm] = useState<ResourceFormState>(EMPTY_FORM)
@@ -88,6 +99,11 @@ export default function Resources() {
   const [allocQty, setAllocQty] = useState('')
   const [allocRequestId, setAllocRequestId] = useState('')
   const [allocating, setAllocating] = useState(false)
+  const [allocReqSearch, setAllocReqSearch] = useState('')
+  const [allocShowReqDropdown, setAllocShowReqDropdown] = useState(false)
+  const [allocReqActiveIndex, setAllocReqActiveIndex] = useState(-1)
+  const [requestOptions, setRequestOptions] = useState<{ _id: string; title: string; status: string; locationName?: string }[]>([])
+  const allocReqSearchRef = useRef<HTMLDivElement>(null)
 
   const [selectMode, setSelectMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
@@ -617,19 +633,94 @@ export default function Resources() {
             </div>
             <form onSubmit={handleAllocate}>
               <div className="ff-group">
-                <div className={`ff-wrap ${allocRequestId ? 'ff-focused' : ''}`}>
-                  <input
-                    id="alloc-reqid"
-                    type="text"
-                    value={allocRequestId}
-                    onChange={(e) => setAllocRequestId(e.target.value)}
-                    required
-                    className={`ff-input ${allocRequestId ? 'ff-input-filled' : ''}`}
-                    placeholder={t('resources.pasteRequestId')}
-                  />
-                  <label htmlFor="alloc-reqid" className={`ff-label ${allocRequestId ? 'ff-label-float' : ''}`}>
-                    {t('resources.requestId')}
-                  </label>
+                <div ref={allocReqSearchRef} className="relative">
+                  <div className={`ff-wrap ${allocReqSearch ? 'ff-focused' : ''}`}>
+                    <input
+                      id="alloc-reqid"
+                      type="text"
+                      value={allocReqSearch}
+                      onChange={(e) => {
+                        setAllocReqSearch(e.target.value)
+                        setAllocShowReqDropdown(true)
+                        if (allocRequestId) setAllocRequestId('')
+                        setAllocReqActiveIndex(-1)
+                      }}
+                      onFocus={() => {
+                        setAllocShowReqDropdown(true)
+                        // Load requests on first focus
+                        if (requestOptions.length === 0) {
+                          ;(clientApi.getRequests({ limit: '500', status: 'Open' }) as Promise<{ items: { _id: string; title: string; status: string; locationName?: string }[] }>)
+                            .then((data) => setRequestOptions(data.items || []))
+                            .catch(() => {})
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        const filtered = requestOptions.filter((r) =>
+                          (r.title || '').toLowerCase().includes(allocReqSearch.toLowerCase()) ||
+                          (r.locationName || '').toLowerCase().includes(allocReqSearch.toLowerCase())
+                        )
+                        if (e.key === 'ArrowDown') {
+                          e.preventDefault()
+                          setAllocReqActiveIndex((prev) => Math.min(prev + 1, filtered.length - 1))
+                        } else if (e.key === 'ArrowUp') {
+                          e.preventDefault()
+                          setAllocReqActiveIndex((prev) => Math.max(prev - 1, 0))
+                        } else if (e.key === 'Enter' && allocReqActiveIndex >= 0 && filtered[allocReqActiveIndex]) {
+                          e.preventDefault()
+                          const r = filtered[allocReqActiveIndex]
+                          setAllocRequestId(r._id)
+                          setAllocReqSearch(`${r.title} (${r.status || 'Open'}) — ${r.locationName || r._id}`)
+                          setAllocShowReqDropdown(false)
+                        } else if (e.key === 'Escape') {
+                          setAllocShowReqDropdown(false)
+                        }
+                      }}
+                      required
+                      className={`ff-input ${allocReqSearch ? 'ff-input-filled' : ''}`}
+                      placeholder={t('resources.searchRequestPlaceholder') || 'Search for a request...'}
+                      aria-label={t('resources.searchRequest') || 'Search for a request'}
+                    />
+                    <label htmlFor="alloc-reqid" className={`ff-label ${allocReqSearch ? 'ff-label-float' : ''}`}>
+                      {t('resources.requestId')}
+                    </label>
+                  </div>
+                  {allocShowReqDropdown && (
+                    <div className="ms-dropdown mt-xs" style={{ left: 0, right: 0, top: '100%', maxHeight: 280 }}>
+                      {(() => {
+                        const filtered = requestOptions.filter((r) =>
+                          (r.title || '').toLowerCase().includes(allocReqSearch.toLowerCase()) ||
+                          (r.locationName || '').toLowerCase().includes(allocReqSearch.toLowerCase())
+                        )
+                        if (filtered.length === 0) return (
+                          <div className="ms-no-options">{t('common.noResults') || 'No matching requests'}</div>
+                        )
+                        return (
+                          <div className="overflow-y-auto p-xs" style={{ maxHeight: 240 }}>
+                            {filtered.map((r, idx) => (
+                              <div
+                                key={r._id}
+                                role="option"
+                                aria-selected={idx === allocReqActiveIndex}
+                                onClick={() => {
+                                  setAllocRequestId(r._id)
+                                  setAllocReqSearch(`${r.title} (${r.status || 'Open'}) — ${r.locationName || r._id}`)
+                                  setAllocShowReqDropdown(false)
+                                }}
+                                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); setAllocRequestId(r._id); setAllocReqSearch(`${r.title}`); setAllocShowReqDropdown(false) } }}
+                                tabIndex={0}
+                                onMouseEnter={() => setAllocReqActiveIndex(idx)}
+                                className={`ms-option ${idx === allocReqActiveIndex ? 'ms-option-active' : ''}`}
+                              >
+                                <span className="text-semi">{r.title}</span>
+                                <span className="text-muted"> ({r.status || 'Open'})</span>
+                                {r.locationName && <span className="text-muted"> — {r.locationName}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        )
+                      })()}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="ff-group">

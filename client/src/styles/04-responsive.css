@@ -10,6 +10,12 @@
   .bento-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 }
 
+/* ── Ultrawide (>1920px) ── */
+@media (min-width: 1920px) {
+  .bento--wide { grid-column: span 2; }
+  .grid-3-responsive { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (max-width: 1024px) {
   .gov-navbar-links .gov-navbar-link span { display: none; }
 }
@@ -107,4 +113,10 @@
 @media (max-width: 768px) {
   .dt-container { overflow-x: auto; }
   .dt-pagination { flex-wrap: wrap; gap: var(--space-xs); }
+  .dt-scroll-hint { display: block; }
+}
+
+/* ── Modal Fullscreen on small screens ── */
+@media (max-width: 360px) {
+  .modal-card { max-width: 100vw; margin: 0; border-radius: 0; height: 100vh; }
 }

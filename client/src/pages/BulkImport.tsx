@@ -319,12 +319,29 @@ export default function BulkImport() {
                 </RippleBtn>
               </div>
 
-              <div className="p-2xl text-center border-dashed-2 rounded">
+              <div
+                className="p-2xl text-center border-dashed-2 rounded"
+                onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-soft)' }}
+                onDragLeave={(e) => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = '' }}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  e.currentTarget.style.borderColor = ''
+                  e.currentTarget.style.background = ''
+                  const file = e.dataTransfer.files?.[0]
+                  if (file && fileRef.current) {
+                    const dt = new DataTransfer()
+                    dt.items.add(file)
+                    fileRef.current.files = dt.files
+                    handleImport({ target: fileRef.current } as unknown as React.ChangeEvent<HTMLInputElement>)
+                  }
+                }}
+              >
                 <div className="mb-sm text-accent">
                   <Upload size={32} className="inline-block" aria-hidden="true" />
                 </div>
                 <div className="text-base mb-sm text-accent">{t('bulkImport.importFromCSV', { tab })}</div>
                 <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
+                <div className="small muted mb" style={{ fontSize: 'var(--text-xs)' }}>{t('bulkImport.dragDropHint') || 'Drag & drop a CSV file here or click to browse'}</div>
                 <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label={t('bulkImport.uploadCSV')} />
                 <RippleBtn onClick={() => document.getElementById('csv-upload')?.click()} className="cursor-pointer inline-block text-13 p-sm">
                   {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}

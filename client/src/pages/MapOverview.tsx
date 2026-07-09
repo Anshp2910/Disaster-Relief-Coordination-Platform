@@ -168,13 +168,13 @@ export default function MapOverview() {
           title={t('dashboard.mapView')}
           actions={<button onClick={() => navigate('/dashboard')} aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
         />
-        <div className="flex flex-wrap gap-6">
-          <Filter size={16} className="text-muted self-center" aria-hidden="true" />
+        <div className="filter-row">
+          <Filter size={16} className="text-muted flex-shrink-0 self-center" aria-hidden="true" />
           {filterOptions.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilterStatus(f.key)}
-              className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
+              className={`filter-pill flex-shrink-0 ${filterStatus === f.key ? 'active' : ''}`}
               aria-label={t('map.filterByStatus') + ': ' + f.label}
             >
               {f.label}
@@ -182,12 +182,12 @@ export default function MapOverview() {
           ))}
         </div>
 
-        <div className="flex flex-wrap mt-sm gap-6">
+        <div className="filter-row mt-sm">
           {PRIORITY_FILTER_KEYS.map((p) => (
             <button
               key={p}
               onClick={() => setFilterPriority(p)}
-              className={`filter-pill text-xs ${filterPriority === p ? 'active' : ''}`}
+              className={`filter-pill text-xs flex-shrink-0 ${filterPriority === p ? 'active' : ''}`}
               style={p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : undefined}
               aria-label={`${t('map.filterByPriority')}: ${p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}`}
             >
@@ -196,12 +196,12 @@ export default function MapOverview() {
           ))}
         </div>
 
-        <div className="flex flex-wrap mt-sm gap-6">
+        <div className="filter-row mt-sm">
           {CATEGORY_FILTER_KEYS.map((c) => (
             <button
               key={c}
               onClick={() => setFilterCategory(c)}
-              className={`filter-pill text-xs ${filterCategory === c ? 'active' : ''}`}
+              className={`filter-pill text-xs flex-shrink-0 ${filterCategory === c ? 'active' : ''}`}
               aria-label={`${t('map.filterByCategory')}: ${c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}`}
             >
               {c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}

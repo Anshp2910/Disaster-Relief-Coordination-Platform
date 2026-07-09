@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -120,10 +120,27 @@ export default function Dashboard() {
     }
   }, [page, filterStatus, filterPriority, filterCategory, sortBy, t, currentUser])
 
+  const cachedCoordsRef = useRef<{lat: number; lng: number; timestamp: number} | null>(null)
+
   const loadWeather = useCallback(async () => {
     setWeatherLoading(true)
     try {
-      const data = await clientApi.getWeatherCurrent(28.6139, 77.209) as { temperature?: number; feelsLike?: number; humidity?: number; windSpeed?: number; conditions?: string }
+      // Cache geolocation for 10 minutes to avoid repeated browser prompts
+      let coords = cachedCoordsRef.current
+      if (!coords || Date.now() - coords.timestamp > 600000) {
+        coords = await new Promise<{lat: number; lng: number; timestamp: number}>((resolve) => {
+          if (!navigator.geolocation) {
+            resolve({ lat: 28.6139, lng: 77.209, timestamp: Date.now() })
+            return
+          }
+          navigator.geolocation.getCurrentPosition(
+            (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, timestamp: Date.now() }),
+            () => resolve({ lat: 28.6139, lng: 77.209, timestamp: Date.now() })
+          )
+        })
+        cachedCoordsRef.current = coords
+      }
+      const data = await clientApi.getWeatherCurrent(coords.lat, coords.lng) as { temperature?: number; feelsLike?: number; humidity?: number; windSpeed?: number; conditions?: string }
       if (data) {
         setWeather({
           temp: Math.round(data.temperature ?? 0),
@@ -140,6 +157,12 @@ export default function Dashboard() {
   }, [])
 
   useEffect(() => { loadWeather() }, [loadWeather])
+
+  // Refresh weather every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => { loadWeather() }, 300000)
+    return () => clearInterval(interval)
+  }, [loadWeather])
 
   useEffect(() => { load() }, [load])
 

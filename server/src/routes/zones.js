@@ -6,6 +6,7 @@ import { Request } from '../models/Request.js'
 import { Resource } from '../models/Resource.js'
 import { haversineKm, escapeRegex } from '../utils/geo.js'
 import { logger } from '../utils/logger.js'
+import { sendSuccess, sendCreated, sendPaginated, sendNotFound, sendForbidden, sendServerError } from '../utils/response.js'
 
 export const zonesRouter = express.Router()
 
@@ -30,28 +31,11 @@ zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (
     const zonesWithStats = await Promise.all(paginatedItems.map(async (zone) => {
       const radiusMeters = (zone.radiusKm || 10) * 1000
       const center = zone.location?.coordinates?.length === 2 ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
-
-      let requestsInRange = []
-      let resourcesInRange = []
-
+      let requestsInRange = [], resourcesInRange = []
       try {
         ;[requestsInRange, resourcesInRange] = await Promise.all([
-          Request.find({
-            'location.coordinates': { $exists: true, $ne: [] },
-            location: {
-              $geoWithin: {
-                $centerSphere: [center, radiusMeters / 6371000],
-              },
-            },
-          }).select('lat lng status category priority').lean(),
-          Resource.find({
-            'location.coordinates': { $exists: true, $ne: [] },
-            location: {
-              $geoWithin: {
-                $centerSphere: [center, radiusMeters / 6371000],
-              },
-            },
-          }).select('lat lng category quantity status').lean(),
+          Request.find({ 'location.coordinates': { $exists: true, $ne: [] }, location: { $geoWithin: { $centerSphere: [center, radiusMeters / 6371000] } } }).select('lat lng status category priority').lean(),
+          Resource.find({ 'location.coordinates': { $exists: true, $ne: [] }, location: { $geoWithin: { $centerSphere: [center, radiusMeters / 6371000] } } }).select('lat lng category quantity status').lean(),
         ])
       } catch (geoErr) {
         logger.error('[zones] geo query fallback', { message: geoErr.message })
@@ -60,64 +44,33 @@ zonesRouter.get('/', requireAuth, validateQuery(querySchemas.zonesList), async (
         requestsInRange = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
         resourcesInRange = allRes.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
       }
-
       const openRequests = requestsInRange.filter((r) => r.status === 'Open').length
       const totalResources = resourcesInRange.reduce((sum, r) => sum + (r.quantity || 0), 0)
       const lowResources = resourcesInRange.filter((r) => r.status === 'Low' || r.status === 'Depleted').length
-
       let coverageStatus = 'Covered'
       if (openRequests > 0 && totalResources === 0) coverageStatus = 'Gap'
       else if (openRequests > 0 && totalResources > 0) coverageStatus = 'Partial'
-
-      return {
-        ...zone,
-        stats: {
-          requestCount: requestsInRange.length,
-          openRequests,
-          resourceCount: resourcesInRange.length,
-          totalResources,
-          lowResources,
-          coverageStatus,
-        },
-      }
+      return { ...zone, stats: { requestCount: requestsInRange.length, openRequests, resourceCount: resourcesInRange.length, totalResources, lowResources, coverageStatus } }
     }))
 
-    res.json({ items: zonesWithStats, total, pages: Math.ceil(total / Number(limit)) })
+    return sendPaginated(res, { items: zonesWithStats, total, page: Number(page), pages: Math.ceil(total / Number(limit)) })
   } catch (err) {
     logger.error('[zones] list error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 zonesRouter.get('/heatmap', requireAuth, async (req, res) => {
   try {
     const zones = await Zone.find({ status: { $in: ['Active', 'Monitoring'] } }).lean()
-
     const heatData = await Promise.all(zones.map(async (zone) => {
       const radiusMeters = (zone.radiusKm || 10) * 1000
       const center = zone.location?.coordinates?.length === 2 ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
-
-      let requests = []
-      let resources = []
-
+      let requests = [], resources = []
       try {
         ;[requests, resources] = await Promise.all([
-          Request.find({
-            'location.coordinates': { $exists: true, $ne: [] },
-            location: {
-              $geoWithin: {
-                $centerSphere: [center, radiusMeters / 6371000],
-              },
-            },
-          }).select('lat lng status').lean(),
-          Resource.find({
-            'location.coordinates': { $exists: true, $ne: [] },
-            location: {
-              $geoWithin: {
-                $centerSphere: [center, radiusMeters / 6371000],
-              },
-            },
-          }).select('lat lng category quantity status').lean(),
+          Request.find({ 'location.coordinates': { $exists: true, $ne: [] }, location: { $geoWithin: { $centerSphere: [center, radiusMeters / 6371000] } } }).select('lat lng status').lean(),
+          Resource.find({ 'location.coordinates': { $exists: true, $ne: [] }, location: { $geoWithin: { $centerSphere: [center, radiusMeters / 6371000] } } }).select('lat lng category quantity status').lean(),
         ])
       } catch (geoErr) {
         logger.error('[zones] heatmap geo fallback', { message: geoErr.message })
@@ -126,63 +79,29 @@ zonesRouter.get('/heatmap', requireAuth, async (req, res) => {
         requests = allR.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
         resources = allRes.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
       }
-
       const openCount = requests.filter((r) => r.status === 'Open').length
       const totalRes = resources.reduce((sum, r) => sum + (r.quantity || 0), 0)
-      const hasGaps = openCount > 0 && totalRes === 0
-
-      return {
-        _id: zone._id,
-        name: zone.name,
-        centerLat: zone.centerLat,
-        centerLng: zone.centerLng,
-        radiusKm: zone.radiusKm,
-        severity: zone.severity,
-        disasterType: zone.disasterType,
-        affectedPopulation: zone.affectedPopulation,
-        openRequests: openCount,
-        totalResources: totalRes,
-        hasGaps,
-        coverageStatus: hasGaps ? 'Gap' : openCount > 0 ? 'Partial' : 'Covered',
-      }
+      return { _id: zone._id, name: zone.name, centerLat: zone.centerLat, centerLng: zone.centerLng, radiusKm: zone.radiusKm, severity: zone.severity, disasterType: zone.disasterType, affectedPopulation: zone.affectedPopulation, openRequests: openCount, totalResources: totalRes, hasGaps: openCount > 0 && totalRes === 0, coverageStatus: (openCount > 0 && totalRes === 0) ? 'Gap' : openCount > 0 ? 'Partial' : 'Covered' }
     }))
-
-    res.json({ zones: heatData })
+    return sendSuccess(res, { data: { zones: heatData } })
   } catch (err) {
     logger.error('[zones] heatmap error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 zonesRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const zone = await Zone.findById(req.params.id).populate('createdBy', 'displayName email').lean()
-    if (!zone) return res.status(404).json({ error: 'Zone not found' })
+    if (!zone) return sendNotFound(res, 'Zone not found')
 
     const radiusMeters = (zone.radiusKm || 10) * 1000
     const center = zone.location?.coordinates?.length === 2 ? [zone.location.coordinates[0], zone.location.coordinates[1]] : [zone.centerLng, zone.centerLat]
-
-    let requestsInRange = []
-    let resourcesInRange = []
-
+    let requestsInRange = [], resourcesInRange = []
     try {
       ;[requestsInRange, resourcesInRange] = await Promise.all([
-        Request.find({
-          'location.coordinates': { $exists: true, $ne: [] },
-          location: {
-            $geoWithin: {
-              $centerSphere: [center, radiusMeters / 6371000],
-            },
-          },
-        }).select('lat lng status category priority title').lean(),
-        Resource.find({
-          'location.coordinates': { $exists: true, $ne: [] },
-          location: {
-            $geoWithin: {
-              $centerSphere: [center, radiusMeters / 6371000],
-            },
-          },
-        }).select('lat lng category quantity status name unit').lean(),
+        Request.find({ 'location.coordinates': { $exists: true, $ne: [] }, location: { $geoWithin: { $centerSphere: [center, radiusMeters / 6371000] } } }).select('lat lng status category priority title').lean(),
+        Resource.find({ 'location.coordinates': { $exists: true, $ne: [] }, location: { $geoWithin: { $centerSphere: [center, radiusMeters / 6371000] } } }).select('lat lng category quantity status name unit').lean(),
       ])
     } catch (geoErr) {
       logger.error('[zones] detail geo fallback', { message: geoErr.message })
@@ -192,46 +111,36 @@ zonesRouter.get('/:id', requireAuth, validateObjectId('id'), async (req, res) =>
       resourcesInRange = allRes.filter((r) => r.lat != null && r.lng != null && haversineKm(center[1], center[0], r.lat, r.lng) <= (zone.radiusKm || 10))
     }
 
-    res.json({
-      item: zone,
-      stats: {
-        requests: requestsInRange,
-        resources: resourcesInRange,
-        requestCount: requestsInRange.length,
-        openRequests: requestsInRange.filter((r) => r.status === 'Open').length,
-        resourceCount: resourcesInRange.length,
-        totalResources: resourcesInRange.reduce((sum, r) => sum + (r.quantity || 0), 0),
+    return sendSuccess(res, {
+      data: {
+        item: zone,
+        stats: { requests: requestsInRange, resources: resourcesInRange, requestCount: requestsInRange.length, openRequests: requestsInRange.filter((r) => r.status === 'Open').length, resourceCount: resourcesInRange.length, totalResources: resourcesInRange.reduce((sum, r) => sum + (r.quantity || 0), 0) },
       },
     })
   } catch (err) {
     logger.error('[zones] get error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 zonesRouter.post('/', requireAuth, requireAdmin, validate('createZone'), async (req, res) => {
   try {
     const { name, description, centerLat, centerLng, radiusKm, severity, status, disasterType, affectedPopulation, notes } = req.body
-    const zone = new Zone({
-      name, description, centerLat, centerLng, radiusKm, severity, status, disasterType, affectedPopulation, notes,
-      location: { type: 'Point', coordinates: [centerLng, centerLat] },
-      createdBy: req.user._id,
-    })
+    const zone = new Zone({ name, description, centerLat, centerLng, radiusKm, severity, status, disasterType, affectedPopulation, notes, location: { type: 'Point', coordinates: [centerLng, centerLat] }, createdBy: req.user._id })
     await zone.save()
-    return res.status(201).json({ item: zone })
+    return sendCreated(res, { item: zone })
   } catch (err) {
     logger.error('[zones] create error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 zonesRouter.put('/:id', requireAuth, requireAdmin, validateObjectId('id'), validate('updateZone'), async (req, res) => {
   try {
     const zone = await Zone.findById(req.params.id)
-    if (!zone) return res.status(404).json({ error: 'Zone not found' })
-
-    const fields = ['name', 'description', 'centerLat', 'centerLng', 'radiusKm', 'severity', 'status', 'disasterType', 'affectedPopulation', 'notes']
-    for (const f of fields) {
+    if (!zone) return sendNotFound(res, 'Zone not found')
+    const allowedFields = ['name', 'description', 'centerLat', 'centerLng', 'radiusKm', 'severity', 'status', 'disasterType', 'affectedPopulation', 'notes']
+    for (const f of allowedFields) {
       if (req.body[f] !== undefined) zone[f] = req.body[f]
     }
     if (req.body.centerLat !== undefined && req.body.centerLng !== undefined) {
@@ -242,21 +151,21 @@ zonesRouter.put('/:id', requireAuth, requireAdmin, validateObjectId('id'), valid
       zone.location = { type: 'Point', coordinates: [req.body.centerLng, zone.centerLat] }
     }
     await zone.save()
-    return res.json({ item: zone })
+    return sendSuccess(res, { data: { item: zone } })
   } catch (err) {
     logger.error('[zones] update error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 zonesRouter.delete('/:id', requireAuth, requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const zone = await Zone.findById(req.params.id)
-    if (!zone) return res.status(404).json({ error: 'Zone not found' })
+    if (!zone) return sendNotFound(res, 'Zone not found')
     await zone.deleteOne()
-    return res.json({ ok: true })
+    return sendSuccess(res, { data: { ok: true } })
   } catch (err) {
     logger.error('[zones] delete error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })

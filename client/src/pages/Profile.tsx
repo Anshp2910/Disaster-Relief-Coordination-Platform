@@ -52,10 +52,41 @@ export default function Profile() {
     if (!selectedFile) return
     setLoading(true)
     try {
+      // Resize image client-side before upload (max 500px width/height)
+      let fileToUpload = selectedFile
+      if (selectedFile.type.startsWith('image/')) {
+        fileToUpload = await new Promise<File>((resolve) => {
+          const img = new Image()
+          img.onload = () => {
+            const maxDim = 500
+            let { width, height } = img
+            if (width > maxDim || height > maxDim) {
+              const ratio = Math.min(maxDim / width, maxDim / height)
+              width = Math.round(width * ratio)
+              height = Math.round(height * ratio)
+            }
+            const canvas = document.createElement('canvas')
+            canvas.width = width
+            canvas.height = height
+            const ctx = canvas.getContext('2d')!
+            ctx.drawImage(img, 0, 0, width, height)
+            URL.revokeObjectURL(img.src)
+            canvas.toBlob((blob) => {
+              if (blob) {
+                resolve(new File([blob], selectedFile.name, { type: 'image/jpeg', lastModified: Date.now() }))
+              } else {
+                resolve(selectedFile)
+              }
+            }, 'image/jpeg', 0.85)
+          }
+          img.src = URL.createObjectURL(selectedFile)
+        })
+      }
+
       const b64 = await new Promise<string>((resolve) => {
         const reader = new FileReader()
         reader.onload = () => resolve(reader.result as string)
-        reader.readAsDataURL(selectedFile)
+        reader.readAsDataURL(fileToUpload)
       })
       const data = await clientApi.updateProfile({ avatar: b64 }) as { user: Record<string, unknown> }
       updateUser(data.user)

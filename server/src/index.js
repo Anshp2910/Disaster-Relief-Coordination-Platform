@@ -20,6 +20,12 @@ async function start() {
   }
 
   const { connectDB } = await import('./config/db.js')
+  const { validateEnv } = await import('./config/env.js')
+  const envResult = validateEnv()
+  if (envResult.error) {
+    logger.error('Environment validation failed', { errors: envResult.error })
+    throw new Error(`Environment validation failed: ${envResult.error}`)
+  }
   const { seedAdmin } = await import('./seed.js')
   const { createApp } = await import('./app.js')
 

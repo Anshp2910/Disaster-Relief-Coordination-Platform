@@ -76,8 +76,8 @@ describe('Request API', () => {
       .get('/api/requests')
       .set('Authorization', `Bearer ${userToken}`)
     expect(res.status).toBe(200)
-    expect(res.body).toHaveProperty('items')
-    expect(res.body).toHaveProperty('total')
+    expect(Array.isArray(res.body.data)).toBe(true)
+    expect(res.body.meta).toHaveProperty('total')
   })
 
   it('creates a request', async () => {
@@ -96,8 +96,8 @@ describe('Request API', () => {
         peopleCount: 5,
       })
     expect(res.status).toBe(201)
-    expect(res.body.item).toHaveProperty('_id')
-    expect(res.body.item.title).toBe('Test Request')
+    expect(res.body.data.item).toHaveProperty('_id')
+    expect(res.body.data.item.title).toBe('Test Request')
   })
 
   it('rejects missing required fields', async () => {
@@ -130,8 +130,8 @@ describe('Auth API', () => {
         displayName: 'New User',
       })
     expect(res.status).toBe(201)
-    expect(res.body).toHaveProperty('token')
-    expect(res.body).toHaveProperty('user')
+    expect(res.body.data).toHaveProperty('token')
+    expect(res.body.data).toHaveProperty('user')
   })
 })
 
@@ -150,7 +150,7 @@ describe('Admin API', () => {
       .get('/api/admin/stats')
       .set('Authorization', `Bearer ${adminToken}`)
     expect(res.status).toBe(200)
-    expect(res.body).toHaveProperty('totalUsers')
-    expect(res.body).toHaveProperty('totalRequests')
+    expect(res.body.data).toHaveProperty('totalUsers')
+    expect(res.body.data).toHaveProperty('totalRequests')
   })
 })

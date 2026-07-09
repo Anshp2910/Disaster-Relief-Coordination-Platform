@@ -64,7 +64,7 @@
   --text: #0f172a;
   --text-secondary: #475569;
   --text-tertiary: #64748b;
-  --text-muted: #6b7280;
+  --text-muted: #4b5563;
   --text-disabled: #cbd5e1;
   --text-on-accent: #ffffff;
   --text-on-dark: #f1f5f9;
@@ -251,12 +251,12 @@
 
   --color-critical: var(--danger);
   --color-high: var(--amber-500);
-  --color-medium: #ca8a04;
+  --color-medium: var(--amber-600);
   --color-low: var(--success);
 
   --severity-critical: var(--danger);
   --severity-high: var(--amber-500);
-  --severity-medium: #ca8a04;
+  --severity-medium: var(--amber-600);
   --severity-low: var(--success);
   --severity-critical-stroke: #991b1b;
   --severity-high-stroke: #92400e;
@@ -265,7 +265,7 @@
 
   /* ── Coverage ── */
   --coverage-covered: var(--success);
-  --coverage-partial: #ca8a04;
+  --coverage-partial: var(--amber-600);
   --coverage-gap: var(--danger);
 
   /* ── Category Colors ── */
@@ -363,8 +363,6 @@
   --shadow-danger-md: var(--shadow-danger-lg);
 
   /* ── Legacy Radius ── */
-  --radius-5xs: 1px;
-
   /* ── Toast Tokens ── */
   --toast-radius: var(--radius-md);
 
@@ -464,13 +462,16 @@
 
   --color-critical: #f87171;
   --color-high: #fbbf24;
+  --color-medium: var(--amber-400);
   --color-low: #34d399;
 
   --severity-critical: #f87171;
   --severity-high: #fbbf24;
+  --severity-medium: var(--amber-400);
   --severity-low: #34d399;
   --severity-critical-stroke: #7f1d1d;
   --severity-high-stroke: #78350f;
+  --severity-medium-stroke: var(--amber-800);
   --severity-low-stroke: #14532d;
 
   --coverage-covered: #34d399;

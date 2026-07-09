@@ -41,18 +41,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id))
   }, [])
 
+  const toastMessagesRef = useRef<Set<string>>(new Set())
+
   const addToast = useCallback((message: string, type: string = 'info', duration: number = 4000) => {
     const id = ++toastId
+    if (toastMessagesRef.current.has(message + type)) return id
+    toastMessagesRef.current.add(message + type)
     setToasts((prev) => [...prev, { id, message, type }].slice(-5))
     if (duration > 0) {
-      timers.current[id] = setTimeout(() => removeToast(id), duration)
+      timers.current[id] = setTimeout(() => {
+        toastMessagesRef.current.delete(message + type)
+        removeToast(id)
+      }, duration)
     }
     return id
   }, [removeToast])
 
   const toast = useCallback((message: string, type?: ToastType) => addToast(message, type), [addToast]) as ToastFn
   toast.success = (msg: string) => addToast(msg, 'success')
-  toast.error = (msg: string) => addToast(msg, 'error')
+  toast.error = (msg: string) => addToast(msg, 'error', 6000)
   toast.warning = (msg: string) => addToast(msg, 'warning')
   toast.info = (msg: string) => addToast(msg, 'info')
 

@@ -21,12 +21,13 @@ export default function SocialCallback() {
     const error = searchParams.get('error')
 
     if (error) {
-      navigate(`/login?error=${encodeURIComponent(error)}`, { replace: true })
+      const errorMsg = error === 'access_denied' ? t('auth.socialLoginDenied') : error
+      navigate(`/login?error=${encodeURIComponent(errorMsg)}`, { replace: true })
       return
     }
 
     if (!token) {
-      navigate('/login?error=invalid-callback', { replace: true })
+      navigate('/login?error=' + encodeURIComponent(t('auth.invalidCallback') || 'Authentication failed. Please try again.'), { replace: true })
       return
     }
 

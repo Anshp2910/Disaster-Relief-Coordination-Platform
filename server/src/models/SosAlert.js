@@ -22,6 +22,7 @@ const SosAlertSchema = new mongoose.Schema(
 SosAlertSchema.index({ createdAt: -1 })
 SosAlertSchema.index({ status: 1 })
 SosAlertSchema.index({ location: '2dsphere' })
+SosAlertSchema.index({ status: 1, createdAt: -1 })
 
 SosAlertSchema.pre('save', function syncLocation() {
   if (this.lat != null && this.lng != null) {

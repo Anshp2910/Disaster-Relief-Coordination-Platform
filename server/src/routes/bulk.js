@@ -6,6 +6,7 @@ import { Resource } from '../models/Resource.js'
 import { Zone } from '../models/Zone.js'
 import { logger } from '../utils/logger.js'
 import { escCsv } from '../utils/csv.js'
+import { sendSuccess, sendCreated, sendBadRequest, sendServerError } from '../utils/response.js'
 
 export const bulkRouter = express.Router()
 
@@ -22,7 +23,7 @@ bulkRouter.get('/requests/export', requireAuth, requireAdmin, async (req, res) =
     return res.send(csv.join('\n'))
   } catch (err) {
     logger.error('[bulk] export requests error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -39,7 +40,7 @@ bulkRouter.get('/resources/export', requireAuth, requireAdmin, async (req, res) 
     return res.send(csv.join('\n'))
   } catch (err) {
     logger.error('[bulk] export resources error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
@@ -47,13 +48,11 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImp
   try {
     const { rows } = req.body
     if (!Array.isArray(rows) || rows.length === 0) {
-      return res.status(400).json({ error: 'No rows to import' })
+      return sendBadRequest(res, 'No rows to import')
     }
-
     const validCategories = ['Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Equipment', 'Other']
     const validStatuses = ['Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
     const validPriorities = ['Critical', 'High', 'Medium', 'Low']
-
     const imported = []
     const errors = []
     const docs = []
@@ -65,7 +64,7 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImp
       if (!row.category || !validCategories.includes(row.category)) rowErrors.push(`Invalid category: ${row.category}`)
       if (row.status && !validStatuses.includes(row.status)) rowErrors.push(`Invalid status: ${row.status}`)
       if (row.priority && !validPriorities.includes(row.priority)) rowErrors.push(`Invalid priority: ${row.priority}`)
-      
+
       let lat = row.lat != null && row.lat !== '' ? Number(row.lat) : null
       let lng = row.lng != null && row.lng !== '' ? Number(row.lng) : null
       if (lat == null || isNaN(lat) || lat < -90 || lat > 90) rowErrors.push('Invalid latitude')
@@ -75,20 +74,12 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImp
         errors.push({ row: i + 1, errors: rowErrors })
         continue
       }
-
       const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
       docs.push({
-        title: row.title.trim(),
-        description: row.description || row.desc || '',
-        category: row.category,
-        priority: row.priority || 'Medium',
-        status: row.status || 'Open',
-        locationName,
-        lat,
-        lng,
+        title: row.title.trim(), description: row.description || row.desc || '', category: row.category,
+        priority: row.priority || 'Medium', status: row.status || 'Open', locationName, lat, lng,
         location: { type: 'Point', coordinates: [lng, lat] },
-        createdBy: req.user._id,
-        auditLog: [{ action: 'created', by: req.user._id, timestamp: new Date() }],
+        createdBy: req.user._id, auditLog: [{ action: 'created', by: req.user._id, timestamp: new Date() }],
       })
     }
 
@@ -97,34 +88,27 @@ bulkRouter.post('/requests/import', requireAuth, requireAdmin, validate('bulkImp
         const result = await Request.insertMany(docs, { ordered: false })
         imported.push(...result.map((d) => d._id))
       } catch (batchErr) {
-        if (batchErr.insertedDocs) {
-          imported.push(...batchErr.insertedDocs.map((d) => d._id))
-        }
+        if (batchErr.insertedDocs) imported.push(...batchErr.insertedDocs.map((d) => d._id))
         if (batchErr.writeErrors) {
-          batchErr.writeErrors.forEach((we) => {
-            errors.push({ row: we.index + 1, errors: [we.errmsg] })
-          })
+          batchErr.writeErrors.forEach((we) => { errors.push({ row: we.index + 1, errors: [we.errmsg] }) })
         }
       }
     }
 
-    return res.status(201).json({ imported: imported.length, errors })
+    return sendCreated(res, { imported: imported.length, errors })
   } catch (err) {
     logger.error('[bulk] import requests error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkImportRows'), async (req, res) => {
   try {
     const { rows } = req.body
-    if (!Array.isArray(rows) || rows.length === 0) {
-      return res.status(400).json({ error: 'No rows to import' })
-    }
+    if (!Array.isArray(rows) || rows.length === 0) return sendBadRequest(res, 'No rows to import')
 
     const validCategories = ['Food', 'Water', 'Medical', 'Shelter', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Rescue', 'Equipment', 'Other']
     const validStatuses = ['Available', 'Low', 'Depleted', 'Reserved', 'In Transit', 'Low Stock', 'Deployed', 'Maintenance']
-
     const imported = []
     const errors = []
     const docs = []
@@ -135,31 +119,19 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkIm
       if (!row.name || !row.name.trim()) rowErrors.push('Name is required')
       if (!row.category || !validCategories.includes(row.category)) rowErrors.push(`Invalid category: ${row.category}`)
       if (row.status && !validStatuses.includes(row.status)) rowErrors.push(`Invalid status: ${row.status}`)
-      
       const quantity = row.quantity ? Number(row.quantity) : 0
       if (isNaN(quantity) || quantity < 0) rowErrors.push('Invalid quantity (must be non-negative)')
-      
       let lat = row.lat != null && row.lat !== '' ? Number(row.lat) : null
       let lng = row.lng != null && row.lng !== '' ? Number(row.lng) : null
       if (lat == null || isNaN(lat) || lat < -90 || lat > 90) rowErrors.push('Invalid latitude')
       if (lng == null || isNaN(lng) || lng < -180 || lng > 180) rowErrors.push('Invalid longitude')
-
-      if (rowErrors.length > 0) {
-        errors.push({ row: i + 1, errors: rowErrors })
-        continue
-      }
+      if (rowErrors.length > 0) { errors.push({ row: i + 1, errors: rowErrors }); continue }
 
       const locationName = row.locationName || row.location || row.city || row.address || row.place || ''
       const autoStatus = row.status || (quantity === 0 ? 'Depleted' : quantity <= 10 ? 'Low' : 'Available')
       docs.push({
-        name: row.name.trim(),
-        category: row.category,
-        quantity,
-        unit: row.unit || 'units',
-        status: autoStatus,
-        locationName,
-        lat,
-        lng,
+        name: row.name.trim(), category: row.category, quantity, unit: row.unit || 'units',
+        status: autoStatus, locationName, lat, lng,
         location: (lat != null && lng != null) ? { type: 'Point', coordinates: [lng, lat] } : undefined,
         updatedBy: req.user._id,
       })
@@ -170,20 +142,16 @@ bulkRouter.post('/resources/import', requireAuth, requireAdmin, validate('bulkIm
         const result = await Resource.insertMany(docs, { ordered: false })
         imported.push(...result.map((d) => d._id))
       } catch (batchErr) {
-        if (batchErr.insertedDocs) {
-          imported.push(...batchErr.insertedDocs.map((d) => d._id))
-        }
+        if (batchErr.insertedDocs) imported.push(...batchErr.insertedDocs.map((d) => d._id))
         if (batchErr.writeErrors) {
-          batchErr.writeErrors.forEach((we) => {
-            errors.push({ row: we.index + 1, errors: [we.errmsg] })
-          })
+          batchErr.writeErrors.forEach((we) => { errors.push({ row: we.index + 1, errors: [we.errmsg] }) })
         }
       }
     }
 
-    return res.status(201).json({ imported: imported.length, errors })
+    return sendCreated(res, { imported: imported.length, errors })
   } catch (err) {
     logger.error('[bulk] import resources error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })

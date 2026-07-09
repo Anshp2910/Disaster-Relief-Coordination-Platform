@@ -123,6 +123,7 @@ export const clientApi = {
   unclaimRequest: (id: string) => apiFetch(`/api/requests/${id}/unclaim`, { method: 'POST' }),
   addComment: (id: string, text: string) => apiFetch(`/api/requests/${id}/comments`, { method: 'POST', body: { text } }),
   deleteComment: (id: string, commentId: string) => apiFetch(`/api/requests/${id}/comments/${commentId}`, { method: 'DELETE' }),
+  updateComment: (id: string, commentId: string, text: string) => apiFetch(`/api/requests/${id}/comments/${commentId}`, { method: 'PUT', body: { text } }),
   deleteFile: (requestId: string, fileId: string) => apiFetch(`/api/requests/${requestId}/files/${fileId}`, { method: 'DELETE' }),
   uploadFiles: async (id: string, files: File[]) => {
     const formData = new FormData()

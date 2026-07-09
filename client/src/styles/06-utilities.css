@@ -14,7 +14,6 @@
 .flex-gap-sm { gap: var(--space-sm); }
 .flex-gap-md { gap: var(--space-md); }
 .flex-gap-lg { gap: var(--space-lg); }
-.flex-gap-lg { gap: var(--space-lg); }
 .gap-xs { gap: var(--space-xs); }
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }

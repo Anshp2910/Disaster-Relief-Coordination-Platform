@@ -50,14 +50,12 @@ describe('Requests Summary Endpoint', () => {
       .set('Authorization', 'Bearer test-token')
 
     expect(res.status).toBe(200)
-    expect(res.body.items).toBeDefined()
-    expect(res.body.total).toBeDefined()
-    expect(res.body.page).toBeDefined()
-    expect(res.body.pages).toBeDefined()
-    expect(res.body.byStatus).toBeDefined()
-    expect(res.body.byPriority).toBeDefined()
-    expect(res.body.byCategory).toBeDefined()
-    expect(res.body.dailyRequests).toBeDefined()
+    expect(Array.isArray(res.body.data)).toBe(true)
+    expect(res.body.meta.total).toBeDefined()
+    expect(res.body.meta.byStatus).toBeDefined()
+    expect(res.body.meta.byPriority).toBeDefined()
+    expect(res.body.meta.byCategory).toBeDefined()
+    expect(res.body.meta.dailyRequests).toBeDefined()
   })
 
   it('GET /api/requests without summary returns basic paginated response', async () => {
@@ -66,10 +64,10 @@ describe('Requests Summary Endpoint', () => {
       .set('Authorization', 'Bearer test-token')
 
     expect(res.status).toBe(200)
-    expect(res.body.items).toBeDefined()
-    expect(res.body.total).toBeDefined()
-    expect(res.body.byStatus).toBeUndefined()
-    expect(res.body.dailyRequests).toBeUndefined()
+    expect(Array.isArray(res.body.data)).toBe(true)
+    expect(res.body.meta.total).toBeDefined()
+    expect(res.body.meta.byStatus).toBeUndefined()
+    expect(res.body.meta.dailyRequests).toBeUndefined()
   })
 
   it('GET /api/admin/stats returns aggregated platform stats', async () => {
@@ -78,10 +76,10 @@ describe('Requests Summary Endpoint', () => {
       .set('Authorization', 'Bearer test-token')
 
     expect(res.status).toBe(200)
-    expect(res.body.totalUsers).toBeDefined()
-    expect(res.body.totalRequests).toBeDefined()
-    expect(res.body.byStatus).toBeDefined()
-    expect(res.body.byPriority).toBeDefined()
-    expect(res.body.byCategory).toBeDefined()
+    expect(res.body.data.totalUsers).toBeDefined()
+    expect(res.body.data.totalRequests).toBeDefined()
+    expect(res.body.data.byStatus).toBeDefined()
+    expect(res.body.data.byPriority).toBeDefined()
+    expect(res.body.data.byCategory).toBeDefined()
   })
 })

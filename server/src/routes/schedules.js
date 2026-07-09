@@ -2,8 +2,8 @@ import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
 import { validate, validateObjectId, validateQuery, querySchemas } from '../middleware/validate.js'
 import { Schedule } from '../models/Schedule.js'
-import { Zone } from '../models/Zone.js'
 import { logger } from '../utils/logger.js'
+import { sendSuccess, sendCreated, sendPaginated, sendNotFound, sendForbidden, sendServerError } from '../utils/response.js'
 
 export const schedulesRouter = express.Router()
 
@@ -19,77 +19,68 @@ schedulesRouter.get('/', requireAuth, validateQuery(querySchemas.schedulesList),
 
     const skip = (Math.max(1, Number(page)) - 1) * Number(limit)
     const [items, total] = await Promise.all([
-      Schedule.find(filter)
-        .sort({ startDate: -1 })
-        .skip(skip)
-        .limit(Number(limit))
+      Schedule.find(filter).sort({ startDate: -1 }).skip(skip).limit(Number(limit))
         .populate('userId', 'displayName email role skills')
-        .populate('zoneId', 'name severity disasterType')
-        .lean(),
+        .populate('zoneId', 'name severity disasterType').lean(),
       Schedule.countDocuments(filter),
     ])
-    res.json({ items, total, pages: Math.ceil(total / Number(limit)) })
+    return sendPaginated(res, { items, total, page: Number(page), pages: Math.ceil(total / Number(limit)) })
   } catch (err) {
     logger.error('[schedules] list error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 schedulesRouter.post('/', requireAuth, validate('createSchedule'), async (req, res) => {
   try {
     let targetUserId = req.user._id
-    if (req.body.userId && req.user.role === 'admin') {
-      targetUserId = req.body.userId
-    }
+    if (req.body.userId && req.user.role === 'admin') targetUserId = req.body.userId
     const { zoneId, startDate, endDate, shift, skills, notes } = req.body
-    const schedule = new Schedule({
-      zoneId, startDate, endDate, shift, skills, notes,
-      userId: targetUserId,
-    })
+    const schedule = new Schedule({ zoneId, startDate, endDate, shift, skills, notes, userId: targetUserId })
     await schedule.save()
     const populated = await schedule.populate('userId', 'displayName email role skills')
-    return res.status(201).json({ item: populated })
+    return sendCreated(res, { item: populated })
   } catch (err) {
     logger.error('[schedules] create error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 schedulesRouter.put('/:id', requireAuth, validateObjectId('id'), validate('updateSchedule'), async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id)
-    if (!schedule) return res.status(404).json({ error: 'Schedule not found' })
+    if (!schedule) return sendNotFound(res, 'Schedule not found')
 
     const isOwner = schedule.userId?.toString() === req.user._id.toString()
     const isAdmin = req.user.role === 'admin'
-    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+    if (!isOwner && !isAdmin) return sendForbidden(res)
 
-    const fields = ['startDate', 'endDate', 'shift', 'skills', 'status', 'notes']
-    for (const f of fields) {
+    const allowedFields = ['startDate', 'endDate', 'shift', 'skills', 'status', 'notes']
+    for (const f of allowedFields) {
       if (req.body[f] !== undefined) schedule[f] = req.body[f]
     }
     await schedule.save()
     const populated = await schedule.populate('userId', 'displayName email role skills')
-    return res.json({ item: populated })
+    return sendSuccess(res, { data: { item: populated } })
   } catch (err) {
     logger.error('[schedules] update error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })
 
 schedulesRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id)
-    if (!schedule) return res.status(404).json({ error: 'Schedule not found' })
+    if (!schedule) return sendNotFound(res, 'Schedule not found')
 
     const isOwner = schedule.userId?.toString() === req.user._id.toString()
     const isAdmin = req.user.role === 'admin'
-    if (!isOwner && !isAdmin) return res.status(403).json({ error: 'Forbidden' })
+    if (!isOwner && !isAdmin) return sendForbidden(res)
 
     await schedule.deleteOne()
-    return res.json({ ok: true })
+    return sendSuccess(res, { data: { ok: true } })
   } catch (err) {
     logger.error('[schedules] delete error', { message: err.message })
-    res.status(500).json({ error: 'Server error' })
+    return sendServerError(res)
   }
 })

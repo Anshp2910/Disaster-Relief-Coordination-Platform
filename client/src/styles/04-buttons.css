@@ -191,8 +191,21 @@ button.btn,
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
   white-space: nowrap;
-  min-height: 32px;
+  min-height: 44px;
 }
+
+/* ── Scrollable Filter Row ── */
+.filter-row {
+  display: flex;
+  gap: var(--space-xs);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: var(--space-2xs);
+  margin-bottom: 0;
+}
+.filter-row::-webkit-scrollbar { height: 3px; }
+.filter-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-3xs); }
 .btn-filter:hover:not(:disabled),
 .filter-pill:hover:not(:disabled) {
   border-color: var(--accent);

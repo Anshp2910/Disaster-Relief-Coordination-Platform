@@ -12,6 +12,7 @@ interface BadgeProps {
 }
 
 const Badge = memo(function Badge({ label, colors, colorKey, size = 'md', className = '', ribbon, severity }: BadgeProps) {
+  const severityLabel = severity ? `${severity} severity: ` : ''
   const c = (colors || {})[colorKey || label] || COLORS_FALLBACK
   const sizeClass = size === 'sm' ? 'govt-badge--sm' : size === 'lg' ? 'govt-badge--lg' : ''
 
@@ -24,7 +25,7 @@ const Badge = memo(function Badge({ label, colors, colorKey, size = 'md', classN
   }
 
   return (
-    <span className={`govt-badge ${sizeClass} ${className}`.trim()} role="status" style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
+    <span className={`govt-badge ${sizeClass} ${className}`.trim()} role="status" aria-label={`${severityLabel}${label}`} style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}>
       {label}
     </span>
   )

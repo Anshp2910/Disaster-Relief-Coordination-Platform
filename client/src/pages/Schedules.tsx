@@ -391,12 +391,22 @@ export default function Schedules() {
             <button onClick={() => setWeekOffset((p) => p - 1)} className="week-nav-btn" aria-label={t('common.previous')}>
               <ChevronLeft size={16} /> {t('common.previous')}
             </button>
-            <span className="week-nav-label">
-              <Calendar size={14} />
-              {weekStart.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
-              {' — '}
-              {weekEnd.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
-            </span>
+            <div className="week-nav-center">
+              <button
+                onClick={() => setWeekOffset(0)}
+                className="week-nav-today"
+                disabled={weekOffset === 0}
+                aria-label={t('schedules.today') || 'Today'}
+              >
+                {t('schedules.today') || 'Today'}
+              </button>
+              <span className="week-nav-label">
+                <Calendar size={14} />
+                {weekStart.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
+                {' — '}
+                {weekEnd.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
+            </div>
             <button onClick={() => setWeekOffset((p) => p + 1)} className="week-nav-btn" aria-label={t('common.next')}>
               {t('common.next')} <ChevronRight size={16} />
             </button>

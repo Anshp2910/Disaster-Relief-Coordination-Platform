@@ -24,5 +24,6 @@ const ScheduleSchema = new mongoose.Schema(
 
 ScheduleSchema.index({ userId: 1, startDate: -1 })
 ScheduleSchema.index({ zoneId: 1, startDate: -1 })
+ScheduleSchema.index({ userId: 1, status: 1, startDate: -1 })
 
 export const Schedule = mongoose.model('Schedule', ScheduleSchema)

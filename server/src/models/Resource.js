@@ -39,6 +39,7 @@ ResourceSchema.pre('save', function syncLocation() {
 
 ResourceSchema.index({ location: '2dsphere' })
 ResourceSchema.index({ category: 1, status: 1 })
+ResourceSchema.index({ status: 1, quantity: 1 })
 ResourceSchema.index({ locationName: 'text', name: 'text' })
 
 export const Resource = mongoose.model('Resource', ResourceSchema)

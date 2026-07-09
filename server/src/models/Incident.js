@@ -57,6 +57,7 @@ IncidentSchema.pre('save', function capAuditLog() {
 IncidentSchema.index({ location: '2dsphere' })
 IncidentSchema.index({ status: 1 })
 IncidentSchema.index({ disasterType: 1 })
+IncidentSchema.index({ status: 1, severity: 1, disasterType: 1 })
 IncidentSchema.index({ name: 'text', description: 'text' })
 
 export const Incident = mongoose.model('Incident', IncidentSchema)
