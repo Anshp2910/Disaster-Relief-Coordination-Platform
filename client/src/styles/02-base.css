@@ -22,13 +22,14 @@ body {
   font-family: var(--font);
   font-size: var(--text-base);
   font-weight: var(--font-weight-regular);
-  line-height: var(--leading-normal);
+  line-height: var(--leading-relaxed);
   color: var(--text);
   background: var(--bg);
   background-image: var(--gradient-bg);
   background-attachment: fixed;
   min-height: 100vh;
   overflow-x: hidden;
+  letter-spacing: 0.01em;
   transition: background var(--duration-slow) var(--ease-out),
               color var(--duration-slow) var(--ease-out);
 }

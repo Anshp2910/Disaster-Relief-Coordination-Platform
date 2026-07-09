@@ -14,6 +14,13 @@
   padding-bottom: var(--space-3xl);
 }
 
+/* ── Offset content when the sub-navigation bar is present ── */
+@media (min-width: 769px) {
+  .gov-layout:has(.gov-subnav) .gov-main {
+    padding-top: calc(var(--navbar-height) + var(--subnav-height));
+  }
+}
+
 .gov-main > .container,
 .gov-main > div > .container {
   padding-top: var(--space-lg);

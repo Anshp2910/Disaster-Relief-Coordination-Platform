@@ -1,5 +1,5 @@
 /* ================================================================
-   GOVERNMENT-GRADE ANIMATIONS — Subtle, purposeful, respectful
+   FRIENDLY ANIMATIONS — Warm, inviting, purposeful
    ================================================================ */
 
 /* ── Entry Animations ── */
@@ -83,11 +83,11 @@
   width: 16px; height: 16px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 0 rgba(37,99,235,0.5);
+  box-shadow: 0 0 0 0 rgba(79,110,247,0.5);
   animation: marker-pulse 2s infinite;
 }
 @keyframes marker-pulse {
-  0% { box-shadow: 0 0 0 0 var(--r, rgba(37,99,235,0.5)); }
+  0% { box-shadow: 0 0 0 0 var(--r, rgba(79,110,247,0.5)); }
   70% { box-shadow: 0 0 0 12px transparent; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }

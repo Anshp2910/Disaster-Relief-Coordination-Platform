@@ -32,6 +32,7 @@
   .container { padding: 0 var(--space-md); }
   .gov-main { padding-top: var(--navbar-height); }
 
+  .gov-subnav { display: none; }
   .gov-navbar-links { display: none; }
   .gov-navbar-hamburger { display: flex; }
   .gov-navbar-user-name { display: none; }

@@ -1,11 +1,10 @@
 /* ================================================================
-   GOVERNMENT-GRADE DESIGN TOKENS — v3.0
-   Inspired by GOV.UK, US Digital Service, NATO Emergency Systems,
-   IBM Carbon, Material Design 3, Singapore Government DS
+   FRIENDLY GOVERNMENT-GRADE DESIGN TOKENS — v4.0
+   Warm, approachable, modern gov-ui with human touch.
    ================================================================ */
 
 :root {
-  /* ── Core Palette — Professional Blue-Neutral ── */
+  /* ── Core Palette — Warm Professional Blue ── */
   --blue-50: #eff6ff;   --blue-100: #dbeafe;  --blue-200: #bfdbfe;
   --blue-300: #93c5fd;  --blue-400: #60a5fa;  --blue-500: #3b82f6;
   --blue-600: #2563eb;  --blue-700: #1d4ed8;  --blue-800: #1e40af;  --blue-900: #1e3a8a;
@@ -48,86 +47,86 @@
   --pri-600: var(--blue-600); --pri-700: var(--blue-700); --pri-800: var(--blue-800); --pri-900: var(--blue-900);
 
   /* ================================================================
-     LIGHT THEME — Professional Government Palette
-     High contrast, clean, authoritative
+     LIGHT THEME — Warm Approachable Palette
+     Friendly, human-centered, modern government
      ================================================================ */
 
   /* ── Surfaces ── */
-  --bg: #f8fafc;
+  --bg: #f5f7fb;
   --bg-elevated: #ffffff;
-  --bg-subtle: #f1f5f9;
+  --bg-subtle: #eef1f7;
   --bg-card: #ffffff;
-  --bg-inset: #e2e8f0;
-  --bg-toolbar: #f1f5f9;
+  --bg-inset: #e2e6ef;
+  --bg-toolbar: #eef1f7;
 
   /* ── Text ── */
-  --text: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
-  --text-muted: #4b5563;
-  --text-disabled: #cbd5e1;
+  --text: #1a1d2e;
+  --text-secondary: #4a4f6a;
+  --text-tertiary: #6b728c;
+  --text-muted: #6b7280;
+  --text-disabled: #c8cdd8;
   --text-on-accent: #ffffff;
   --text-on-dark: #f1f5f9;
 
   /* ── Borders ── */
-  --border: #e2e8f0;
-  --border-light: #f1f5f9;
-  --border-hover: #cbd5e1;
+  --border: #dce0e9;
+  --border-light: #eef1f7;
+  --border-hover: #c0c6d4;
   --border-accent: var(--blue-500);
 
   /* ── Semantic Colors ── */
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --accent-active: #1e40af;
-  --accent-soft: rgba(37, 99, 235, 0.08);
-  --accent-soft-hover: rgba(37, 99, 235, 0.12);
+  --accent: #4f6ef7;
+  --accent-hover: #3b5be5;
+  --accent-active: #2f4bd4;
+  --accent-soft: rgba(79, 110, 247, 0.08);
+  --accent-soft-hover: rgba(79, 110, 247, 0.14);
 
-  --danger: #dc2626;
-  --danger-hover: #b91c1c;
-  --danger-active: #991b1b;
-  --danger-soft: rgba(220, 38, 38, 0.08);
-  --danger-soft-hover: rgba(220, 38, 38, 0.12);
+  --danger: #e44a4a;
+  --danger-hover: #d03434;
+  --danger-active: #b82828;
+  --danger-soft: rgba(228, 74, 74, 0.08);
+  --danger-soft-hover: rgba(228, 74, 74, 0.14);
 
-  --success: #16a34a;
-  --success-hover: #15803d;
-  --success-active: #166534;
-  --success-soft: rgba(22, 163, 74, 0.08);
+  --success: #22a65e;
+  --success-hover: #1a8f4f;
+  --success-active: #147a42;
+  --success-soft: rgba(34, 166, 94, 0.08);
 
-  --warning: #d97706;
-  --warning-hover: #b45309;
-  --warning-active: #92400e;
-  --warning-soft: rgba(217, 119, 6, 0.08);
+  --warning: #e8951a;
+  --warning-hover: #d4840d;
+  --warning-active: #bf7306;
+  --warning-soft: rgba(232, 149, 26, 0.08);
 
   --info: var(--blue-600);
-  --info-soft: rgba(37, 99, 235, 0.08);
+  --info-soft: rgba(79, 110, 247, 0.08);
 
-  /* ── Gradients (Minimal, Professional) ── */
-  --gradient-bg: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-  --gradient-card: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  --gradient-accent: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-  --gradient-danger: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-  --gradient-success: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
-  --gradient-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+  /* ── Gradients (Warm, Approachable) ── */
+  --gradient-bg: linear-gradient(180deg, #f5f7fb 0%, #eef1f7 100%);
+  --gradient-card: linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+  --gradient-accent: linear-gradient(135deg, #4f6ef7 0%, #6d8aff 100%);
+  --gradient-danger: linear-gradient(135deg, #e44a4a 0%, #f06060 100%);
+  --gradient-success: linear-gradient(135deg, #22a65e 0%, #36bc72 100%);
+  --gradient-warning: linear-gradient(135deg, #e8951a 0%, #f0a530 100%);
 
-  /* ── Shadows (Clean, Professional) ── */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.06), 0 4px 6px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.08), 0 8px 10px rgba(0, 0, 0, 0.04);
-  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.1);
-  --shadow-3xl: 0 32px 64px rgba(0, 0, 0, 0.12);
+  /* ── Shadows (Soft, Warm) ── */
+  --shadow-xs: 0 1px 2px rgba(79, 110, 247, 0.04);
+  --shadow-sm: 0 1px 3px rgba(79, 110, 247, 0.06), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 8px rgba(79, 110, 247, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 20px rgba(79, 110, 247, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 30px rgba(79, 110, 247, 0.10), 0 8px 12px rgba(0, 0, 0, 0.05);
+  --shadow-2xl: 0 25px 50px rgba(79, 110, 247, 0.12);
+  --shadow-3xl: 0 32px 64px rgba(79, 110, 247, 0.14);
 
-  --shadow-accent: 0 2px 8px rgba(37, 99, 235, 0.15);
-  --shadow-accent-lg: 0 4px 16px rgba(37, 99, 235, 0.2);
-  --shadow-danger: 0 2px 8px rgba(220, 38, 38, 0.15);
-  --shadow-danger-lg: 0 4px 16px rgba(220, 38, 38, 0.2);
-  --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-accent: 0 2px 8px rgba(79, 110, 247, 0.18);
+  --shadow-accent-lg: 0 4px 16px rgba(79, 110, 247, 0.25);
+  --shadow-danger: 0 2px 8px rgba(228, 74, 74, 0.18);
+  --shadow-danger-lg: 0 4px 16px rgba(228, 74, 74, 0.25);
+  --shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.04);
 
 /* ================================================================
-TYPOGRAPHY — Government-Grade Font Stack
+TYPOGRAPHY — Friendly, Approachable Font Stack
 =============================================================== */
---font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Noto Sans', system-ui, sans-serif;
+--font: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', system-ui, sans-serif;
 --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
 
   --font-weight-light: 300;
@@ -190,20 +189,21 @@ TYPOGRAPHY — Government-Grade Font Stack
   --input-pad-y: 20px;
 
   --navbar-height: 56px;
+  --subnav-height: 48px;
 
   /* ================================================================
-     BORDER RADIUS — Consistent Scale
+     BORDER RADIUS — Friendly, Rounded Scale
      ================================================================ */
-  --radius-4xs: 2px;
-  --radius-3xs: 4px;
-  --radius-2xs: 6px;
-  --radius-xs: 8px;
-  --radius-sm: 10px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
-  --radius-3xl: 32px;
+  --radius-4xs: 3px;
+  --radius-3xs: 5px;
+  --radius-2xs: 8px;
+  --radius-xs: 10px;
+  --radius-sm: 12px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
+  --radius-3xl: 36px;
   --radius-full: 9999px;
   --radius-5xs: 1px;
 
@@ -337,10 +337,10 @@ TYPOGRAPHY — Government-Grade Font Stack
   --overlay-bg-strong: rgba(0, 0, 0, 0.75);
 
   /* ── Glows (Subtle) ── */
-  --glow-blue: 0 0 16px rgba(37, 99, 235, 0.08);
-  --glow-red: 0 0 16px rgba(220, 38, 38, 0.08);
-  --glow-green: 0 0 16px rgba(22, 163, 74, 0.08);
-  --glow-orange: 0 0 16px rgba(217, 119, 6, 0.08);
+  --glow-blue: 0 0 16px rgba(79, 110, 247, 0.08);
+  --glow-red: 0 0 16px rgba(228, 74, 74, 0.08);
+  --glow-green: 0 0 16px rgba(34, 166, 94, 0.08);
+  --glow-orange: 0 0 16px rgba(232, 149, 26, 0.08);
 
   /* ── Legacy Gradients ── */
   --gradient-main: var(--gradient-bg);
@@ -378,39 +378,39 @@ TYPOGRAPHY — Government-Grade Font Stack
 }
 
 /* ================================================================
-   DARK MODE — Government Enterprise Dark Theme
+   DARK MODE — Warm Dark Theme
    ================================================================ */
 [data-theme="dark"] {
-  --bg: #0f172a;
-  --bg-elevated: #1e293b;
-  --bg-subtle: #172033;
-  --bg-card: #1e293b;
-  --bg-inset: #0f172a;
-  --bg-toolbar: #172033;
+  --bg: #101728;
+  --bg-elevated: #1a2237;
+  --bg-subtle: #141c2f;
+  --bg-card: #1a2237;
+  --bg-inset: #101728;
+  --bg-toolbar: #141c2f;
 
-  --text: #f1f5f9;
+  --text: #eef1f8;
   --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  --text-muted: #64748b;
-  --text-disabled: #475569;
+  --text-tertiary: #6b7b94;
+  --text-muted: #6b7b94;
+  --text-disabled: #3d4a63;
   --text-on-accent: #ffffff;
 
-  --border: #334155;
-  --border-light: #1e293b;
-  --border-hover: #475569;
-  --border-accent: var(--blue-400);
+  --border: #2a334a;
+  --border-light: #1a2237;
+  --border-hover: #3d4a63;
+  --border-accent: #6d8aff;
 
-  --accent: var(--blue-500);
-  --accent-hover: var(--blue-400);
-  --accent-active: var(--blue-300);
-  --accent-soft: rgba(59, 130, 246, 0.1);
-  --accent-soft-hover: rgba(59, 130, 246, 0.15);
+  --accent: #6d8aff;
+  --accent-hover: #8aa3ff;
+  --accent-active: #a8bbff;
+  --accent-soft: rgba(109, 138, 255, 0.12);
+  --accent-soft-hover: rgba(109, 138, 255, 0.18);
 
   --danger: #f87171;
   --danger-hover: #fca5a5;
   --danger-active: #fecaca;
   --danger-soft: rgba(248, 113, 113, 0.1);
-  --danger-soft-hover: rgba(248, 113, 113, 0.15);
+  --danger-soft-hover: rgba(248, 113, 113, 0.16);
 
   --success: #4ade80;
   --success-hover: #34d399;
@@ -422,31 +422,35 @@ TYPOGRAPHY — Government-Grade Font Stack
   --warning-active: #fef3c7;
   --warning-soft: rgba(251, 191, 36, 0.1);
 
-  --gradient-bg: linear-gradient(180deg, #0f172a 0%, #172033 100%);
-  --gradient-card: linear-gradient(180deg, #1e293b 0%, #172033 100%);
+  --gradient-bg: linear-gradient(180deg, #101728 0%, #141c2f 100%);
+  --gradient-card: linear-gradient(180deg, #1a2237 0%, #141c2f 100%);
+  --gradient-accent: linear-gradient(135deg, #4f6ef7 0%, #6d8aff 100%);
+  --gradient-danger: linear-gradient(135deg, #e44a4a 0%, #f06060 100%);
+  --gradient-success: linear-gradient(135deg, #22a65e 0%, #36bc72 100%);
+  --gradient-warning: linear-gradient(135deg, #e8951a 0%, #f0a530 100%);
 
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.35), 0 4px 6px rgba(0, 0, 0, 0.25);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.4), 0 8px 10px rgba(0, 0, 0, 0.3);
-  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.45);
-  --shadow-3xl: 0 32px 64px rgba(0, 0, 0, 0.5);
-  --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 30px rgba(0, 0, 0, 0.45), 0 8px 12px rgba(0, 0, 0, 0.35);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.5);
+  --shadow-3xl: 0 32px 64px rgba(0, 0, 0, 0.55);
+  --shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.35);
 
-  --glass-bg: rgba(30, 41, 59, 0.85);
-  --glass-bg-strong: rgba(30, 41, 59, 0.95);
-  --glass-border: rgba(51, 65, 85, 0.8);
+  --glass-bg: rgba(26, 34, 55, 0.85);
+  --glass-bg-strong: rgba(26, 34, 55, 0.95);
+  --glass-border: rgba(42, 51, 74, 0.8);
 
   --overlay-bg: rgba(0, 0, 0, 0.7);
   --overlay-bg-strong: rgba(0, 0, 0, 0.85);
 
-  --shadow-accent: 0 2px 8px rgba(59, 130, 246, 0.15);
-  --shadow-accent-lg: 0 4px 16px rgba(59, 130, 246, 0.2);
+  --shadow-accent: 0 2px 8px rgba(109, 138, 255, 0.15);
+  --shadow-accent-lg: 0 4px 16px rgba(109, 138, 255, 0.2);
   --shadow-danger: 0 2px 8px rgba(248, 113, 113, 0.15);
   --shadow-danger-lg: 0 4px 16px rgba(248, 113, 113, 0.2);
 
-  --glow-blue: 0 0 16px rgba(59, 130, 246, 0.1);
+  --glow-blue: 0 0 16px rgba(109, 138, 255, 0.1);
   --glow-red: 0 0 16px rgba(248, 113, 113, 0.1);
   --glow-green: 0 0 16px rgba(74, 222, 128, 0.1);
   --glow-orange: 0 0 16px rgba(251, 191, 36, 0.1);
@@ -454,31 +458,31 @@ TYPOGRAPHY — Government-Grade Font Stack
   --gov-white: #e2e8f0;
   --gov-card-bg: var(--bg-card);
 
-  --color-open: var(--blue-400);
+  --color-open: #6d8aff;
   --color-pending: #a78bfa;
   --color-progress: #fbbf24;
-  --color-resolved: #34d399;
+  --color-resolved: #4ade80;
   --color-fulfilled: #34d399;
 
   --color-critical: #f87171;
   --color-high: #fbbf24;
   --color-medium: var(--amber-400);
-  --color-low: #34d399;
+  --color-low: #4ade80;
 
   --severity-critical: #f87171;
   --severity-high: #fbbf24;
   --severity-medium: var(--amber-400);
-  --severity-low: #34d399;
+  --severity-low: #4ade80;
   --severity-critical-stroke: #7f1d1d;
   --severity-high-stroke: #78350f;
   --severity-medium-stroke: var(--amber-800);
   --severity-low-stroke: #14532d;
 
-  --coverage-covered: #34d399;
+  --coverage-covered: #4ade80;
   --coverage-gap: #f87171;
 
-  --gradient-header: linear-gradient(90deg, #60a5fa, #a5b4fc, #c4b5fd, #60a5fa);
-  --gradient-login-hero: linear-gradient(135deg, #060b18 0%, #0c1a30 50%, #1e1b4b 100%);
+  --gradient-header: linear-gradient(90deg, #6d8aff, #a5b4fc, #c4b5fd, #6d8aff);
+  --gradient-login-hero: linear-gradient(135deg, #060b18 0%, #101728 50%, #1a1b3a 100%);
 
   --cat-water: #22d3ee;
   --cat-rescue: #f97316;

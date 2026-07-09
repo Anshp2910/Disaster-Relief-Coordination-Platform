@@ -57,7 +57,7 @@ export function NavBar() {
           </div>
         </button>
 
-        <FeatureNav showNav={showNav} />
+        <div className="gov-navbar-spacer" />
 
         <NavControls
           onToggleMenu={() => setMenuOpen(!menuOpen)}
@@ -65,6 +65,14 @@ export function NavBar() {
           showNav={showNav}
         />
       </div>
+
+      {showNav && (
+        <div className="gov-subnav" role="region" aria-label={t('nav.navigation')}>
+          <div className="gov-subnav-inner">
+            <FeatureNav showNav={showNav} />
+          </div>
+        </div>
+      )}
 
       {menuOpen && showNav && (
         <div className="gov-navbar-mobile" id="mobile-menu" role="region" aria-label={t('nav.mobileNavigation')}>

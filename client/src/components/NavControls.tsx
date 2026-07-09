@@ -96,7 +96,7 @@ export function NavControls({ mobile = false, onToggleMenu, menuOpen, showNav }:
 
           <div className="gov-navbar-divider" />
 
-          <div className="gov-navbar-btn-group">
+          <div className="gov-navbar-btn-group gov-navbar-tools">
             <button
               onClick={toggleTheme}
               className="gov-navbar-tool-btn"
