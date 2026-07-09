@@ -10,14 +10,12 @@ import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useConfirm } from '../hooks/useConfirm'
-import { PageHeader, ErrorState, DataTable, PageTransition, AnimatedCounter } from '../components/ui'
+import { PageHeader, ErrorState, DataTable, AnimatedCounter } from '../components/ui'
 import type { ColumnDef } from '../components/ui/DataTable'
 import Badge from '../components/Badge'
 import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS } from '../utils/constants'
 import { SkeletonList } from '../components/Skeleton'
 import { getErrorMessage } from '../utils/getErrorMessage'
-
-
 
 interface User {
   _id: string
@@ -61,7 +59,6 @@ const PIE_COLORS_STATUS = ['var(--color-open)', 'var(--color-progress)', 'var(--
 
 const PIE_COLORS_PRIORITY = ['var(--color-critical)', 'var(--color-high)', 'var(--color-medium)', 'var(--color-low)']
 
-const containerVariants = createStagger(0.05)
 const itemVariants = createListItem(12, 0.3)
 const fadeUp = createListItem(16, 0.3)
 
@@ -190,7 +187,7 @@ function BreakdownCard({ title, data, total, type }: BreakdownCardProps) {
   if (Object.keys(safeData).length === 0) return null
 
   return (
-    <motion.div className="admin-breakdown-card" variants={itemVariants}>
+    <div className="admin-breakdown-card">
       <div className="admin-breakdown-header">{title}</div>
       {Object.entries(safeData).map(([key, count], i) => {
         const numCount = typeof count === 'number' ? count : 0
@@ -212,7 +209,7 @@ function BreakdownCard({ title, data, total, type }: BreakdownCardProps) {
           </div>
         )
       })}
-    </motion.div>
+    </div>
   )
 }
 
@@ -251,13 +248,13 @@ function StatsPanel({ stats }: StatsPanelProps) {
   ]
 
   return (
-    <motion.div className="card" variants={containerVariants} initial="hidden" animate="visible">
+    <div className="card">
       <h3 className="m-0 text-bold text-accent">{t('admin.platformOverview')}</h3>
 
       <section aria-label={t('admin.statisticsLabel')}>
         <div className="admin-stats-grid">
           {summaryCards.map((c) => (
-            <motion.div key={c.label} className="bento-card" variants={itemVariants}>
+            <div key={c.label} className="bento-card">
               <div className="bento-header">
                 <span className="bento-title">{c.label}</span>
                 <div className="bento-icon" style={{ background: `${c.color}20`, color: c.color } as React.CSSProperties}>
@@ -268,36 +265,36 @@ function StatsPanel({ stats }: StatsPanelProps) {
                 <AnimatedCounter to={c.value} duration={1.8} />
               </div>
               {c.subtitle && <div className="mt-sm text-xs text-muted">{c.subtitle}</div>}
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
 
       <div className="admin-charts-grid">
-        <motion.div className="admin-chart-card" variants={itemVariants}>
+        <div className="admin-chart-card">
           <div className="text-semi mb-xs text-accent text-sm">{t('admin.requestsOverTime')}</div>
           <DailyRequestsChart data={stats.dailyRequests} />
-        </motion.div>
-        <motion.div className="admin-chart-card" variants={itemVariants}>
+        </div>
+        <div className="admin-chart-card">
           <div className="text-semi mb-xs text-accent text-sm">{t('admin.byStatus')}</div>
           <StatusPieChart data={stats.byStatus} />
-        </motion.div>
-        <motion.div className="admin-chart-card" variants={itemVariants}>
+        </div>
+        <div className="admin-chart-card">
           <div className="text-semi mb-xs text-accent text-sm">{t('admin.byPriority')}</div>
           <PriorityPieChart data={stats.byPriority} />
-        </motion.div>
-        <motion.div className="admin-chart-card admin-chart-card--wide" variants={itemVariants}>
+        </div>
+        <div className="admin-chart-card admin-chart-card--wide">
           <div className="text-semi mb-xs text-accent text-sm">{t('admin.byCategory')}</div>
           <CategoryBarChart data={stats.byCategory} total={stats.totalRequests} />
-        </motion.div>
+        </div>
       </div>
 
       {byPriority && Object.keys(byPriority).length > 0 && (
-        <motion.div className="mt-xl" variants={itemVariants}>
+        <div className="mt-xl">
           <BreakdownCard title={t('admin.byPriority')} data={stats.byPriority} total={stats.totalRequests} type="priorities" />
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   )
 }
 
@@ -321,7 +318,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   }, [safeUsers])
 
   const renderTop = useMemo(() => (
-    <motion.div className="flex gap-sm text-sm mb-md px-md" variants={itemVariants}>
+    <div className="flex gap-sm text-sm mb-md px-md">
       <span className="govt-badge govt-badge-blue">
         <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer', { count: roleCounts.volunteer })}
       </span>
@@ -331,7 +328,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
       <span className="govt-badge govt-badge-green">
         <Shield size={12} /> {roleCounts.admin} {t('nav.admin', { count: roleCounts.admin })}
       </span>
-    </motion.div>
+    </div>
   ), [roleCounts, t])
 
   const columns: ColumnDef<User>[] = useMemo(() => [
@@ -391,23 +388,21 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
 
   return (
     <section aria-label={t('admin.userManagementLabel')}>
-      <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <DataTable
-          columns={columns}
-          data={safeUsers}
-          keyExtractor={(u) => u._id}
-          searchable
-          searchPlaceholder={t('admin.searchUsers')}
-          sortable
-          filterable
-          exportable
-          columnVisibility
-          stickyHeader
-          emptyTitle={t('admin.noUsers')}
-          emptyDescription={t('admin.noUsersDesc')}
-          renderTop={renderTop}
-        />
-      </motion.div>
+      <DataTable
+        columns={columns}
+        data={safeUsers}
+        keyExtractor={(u) => u._id}
+        searchable
+        searchPlaceholder={t('admin.searchUsers')}
+        sortable
+        filterable
+        exportable
+        columnVisibility
+        stickyHeader
+        emptyTitle={t('admin.noUsers')}
+        emptyDescription={t('admin.noUsersDesc')}
+        renderTop={renderTop}
+      />
     </section>
   )
 }
@@ -502,22 +497,20 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
 
   return (
     <section aria-label={t('admin.requestManagementLabel')}>
-      <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <DataTable
-          columns={columns}
-          data={safeRequests}
-          keyExtractor={(r) => r._id}
-          searchable
-          searchPlaceholder={t('admin.searchRequests')}
-          sortable
-          filterable
-          exportable
-          columnVisibility
-          stickyHeader
-          emptyTitle={t('admin.noRequests')}
-          onRowClick={(r) => navigate(`/requests/${r._id}`)}
-        />
-      </motion.div>
+      <DataTable
+        columns={columns}
+        data={safeRequests}
+        keyExtractor={(r) => r._id}
+        searchable
+        searchPlaceholder={t('admin.searchRequests')}
+        sortable
+        filterable
+        exportable
+        columnVisibility
+        stickyHeader
+        emptyTitle={t('admin.noRequests')}
+        onRowClick={(r) => navigate(`/requests/${r._id}`)}
+      />
     </section>
   )
 }
@@ -628,8 +621,7 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <PageTransition>
-      <div className="container">
+    <div className="container">
       <PageHeader
         title={t('admin.title')}
         subtitle={t('admin.subtitle')}
@@ -650,13 +642,13 @@ export default function AdminDashboard() {
       />
 
       {error && (
-        <motion.div className="mb-md" variants={fadeUp} initial="hidden" animate="visible">
+        <div className="mb-md">
           <ErrorState message={error} onRetry={loadData} />
-        </motion.div>
+        </div>
       )}
 
-      <motion.div className="card mb-xl" variants={fadeUp} initial="hidden" animate="visible">
-          <nav aria-label={t('admin.title')}>
+      <div className="card mb-xl">
+        <nav aria-label={t('admin.title')}>
           <div className="flex gap-xs overflow-x-auto border-bottom" role="tablist">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id
@@ -680,18 +672,14 @@ export default function AdminDashboard() {
             })}
           </div>
         </nav>
-      </motion.div>
+      </div>
 
       {loading ? (
-        <motion.div className="card" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+        <div className="card">
           <SkeletonList count={6} lines={2} />
-        </motion.div>
+        </div>
       ) : (
-        <motion.div
-          key={activeTab}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+        <div
           role="tabpanel"
           id={`admin-panel-${activeTab}`}
           aria-label={tabs.find((t) => t.id === activeTab)?.label || activeTab}
@@ -703,10 +691,9 @@ export default function AdminDashboard() {
           ) : (
             <RequestsPanel requests={requests} onDelete={deleteRequest} />
           )}
-        </motion.div>
+        </div>
       )}
       {delConfirm.ConfirmDialog}
     </div>
-    </PageTransition>
   )
 }

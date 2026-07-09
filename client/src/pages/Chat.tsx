@@ -1,8 +1,6 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
 import { Send, Paperclip, User, ChevronLeft, ArrowDown, X } from 'lucide-react'
-import { RippleBtn } from '../components/ui'
 import { useSocket } from '../hooks/useSocket'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
@@ -299,27 +297,19 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
           if (isSystem) {
             return (
-              <motion.div
-                key={m._id || m.createdAt}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-              >
+              <div key={m._id || m.createdAt}>
                 <div className="flex flex-center">
                   <div className="text-xs text-muted bg-elevated rounded-xl p-xs">
                     {m.text}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )
           }
 
           return (
-            <motion.div
+            <div
               key={m._id || m.createdAt}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
               className={`flex ${isMe ? 'justify-end' : ''}`}
             >
               <div className="max-w-75p">
@@ -336,7 +326,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
                   {formatTime(m.createdAt)}
                 </div>
               </div>
-            </motion.div>
+            </div>
           )
         })}
 
@@ -379,7 +369,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <button
           type="button"
           onClick={handleFileClick}
-          className="bg-none border-none cursor-pointer text-base p-0"
+          className="btn-ghost btn-sm"
           aria-label={t('chat.attachFile')}
         >
           <Paperclip size={18} />
@@ -402,9 +392,9 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           </div>
         </div>
         <span className="text-xs text-muted self-center">{text.length}/2000</span>
-        <RippleBtn type="submit" className="text-xs p-sm flex items-center gap-xs" style={{ height: 44, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
+        <button type="submit" className="btn-primary btn-sm flex items-center gap-xs" style={{ height: 44, alignSelf: 'flex-end' }} disabled={(!text.trim() && !selectedFile) || sending}>
           {sending ? t('common.sending') : <><Send size={14} /> {t('chat.send')}</>}
-        </RippleBtn>
+        </button>
       </form>      </div>
     </>
   )

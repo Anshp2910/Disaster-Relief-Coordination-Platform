@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { AlertTriangle } from 'lucide-react'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
-import { PageTransition } from '../components/ui'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 export default function CreateRequest() {
@@ -24,22 +23,22 @@ export default function CreateRequest() {
   }
 
   return (
-    <PageTransition>
+    <div className="container">
       {error && (
-        <div className="container max-w-sm mb-md">
-          <div className="error-text flex items-center gap-xs" role="alert">
+        <div className="mb-md">
+          <div className="flex items-center gap-xs text-danger" role="alert">
             <AlertTriangle size={14} />
             {error}
           </div>
         </div>
       )}
       <RequestForm
-      title={t('createRequest.title')}
-      subtitle={t('createRequest.subtitle')}
-      submitLabel={t('createRequest.creating')}
-      submitButtonLabel={t('createRequest.createButton')}
-      onSubmit={onSubmit}
-    />
-    </PageTransition>
+        title={t('createRequest.title')}
+        subtitle={t('createRequest.subtitle')}
+        submitLabel={t('createRequest.creating')}
+        submitButtonLabel={t('createRequest.createButton')}
+        onSubmit={onSubmit}
+      />
+    </div>
   )
 }

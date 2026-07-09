@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { createStagger, createListItem } from '../utils/animations'
+import { createStagger } from '../utils/animations'
 import { ShieldCheck, Users, Eye, EyeOff, Loader2, GitBranch, Globe, User, Mail } from 'lucide-react'
 import { clientApi, API_BASE } from '../api/client'
 import { useAuth } from '../context/AuthContext'
@@ -16,7 +16,6 @@ const FALLBACK_STATS = [
 ]
 
 const container = createStagger(0.08, 0.1)
-const item = createListItem(20, 0.5)
 
 export default function Register() {
   useEffect(() => { document.title = 'Disaster Relief - Register' }, [])
@@ -79,42 +78,35 @@ export default function Register() {
 
   return (
     <motion.div className="auth-split" variants={container} initial="hidden" animate="visible">
-      {/* ── LEFT: Hero Panel (Government-grade, clean) ── */}
-      <motion.div className="auth-hero" variants={item}>
-        <div className="auth-hero-bg" />
-
+      {/* ── LEFT: Hero Panel ── */}
+      <div className="auth-hero">
         <div className="auth-hero-content">
-          <motion.div className="auth-emblem" variants={item} aria-hidden="true">
+          <div className="auth-emblem" aria-hidden="true">
             <ShieldCheck size={28} />
-          </motion.div>
-          <motion.h1 className="auth-hero-title" variants={item}>
-            {t('auth.registerHeroTitle')}
-          </motion.h1>
-          <motion.p className="auth-hero-sub" variants={item}>
-            {t('auth.registerHeroSub')}
-          </motion.p>
+          </div>
+          <h1 className="auth-hero-title">{t('auth.registerHeroTitle')}</h1>
+          <p className="auth-hero-sub">{t('auth.registerHeroSub')}</p>
 
-          <motion.div className="auth-hero-stats" variants={item}>
+          <div className="auth-hero-stats">
             {liveStats.map((s) => (
-              <motion.div key={s.key} className="auth-hero-stat">
+              <div key={s.key} className="auth-hero-stat">
                 <div className="auth-hero-stat-value">{s.value}</div>
                 <div className="auth-hero-stat-label">{t(s.key)}</div>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
 
-          <motion.div className="auth-hero-mission" variants={item}>
+          <div className="auth-hero-mission">
             <Users size={14} aria-hidden="true" />
             <span>{t('auth.registerMission')}</span>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* ── RIGHT: Register Card ── */}
-      <motion.div className="auth-card-wrap" variants={item}>
+      <div className="auth-card-wrap">
         <div className="auth-card-inner">
-          {/* Logo */}
-          <motion.div className="auth-logo-wrap" variants={item}>
+          <div className="auth-logo-wrap">
             <div className="auth-logo" aria-hidden="true">
               <ShieldCheck size={22} />
             </div>
@@ -122,45 +114,41 @@ export default function Register() {
               <div className="auth-logo-text">{t('auth.appName')}</div>
               <div className="auth-logo-sub">{t('auth.govtOfIndia')}</div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.h2 className="auth-title" variants={item}>{t('auth.registerTitle')}</motion.h2>
+          <h2 className="auth-title">{t('auth.registerTitle')}</h2>
 
-          {/* Social Login */}
-          <motion.div className="auth-social" variants={item}>
+          <div className="auth-social">
             <button className="auth-social-btn" aria-label={t('auth.signUpWithGoogle')} onClick={() => handleSocialLogin('google')}>
               <Globe size={18} aria-hidden="true" /> Google
             </button>
             <button className="auth-social-btn" aria-label={t('auth.signUpWithGitHub')} onClick={() => handleSocialLogin('github')}>
               <GitBranch size={18} aria-hidden="true" /> GitHub
             </button>
-          </motion.div>
+          </div>
 
-          <motion.div className="auth-divider" variants={item}>
-            <span>{t('auth.orEmail')}</span>
-          </motion.div>
+          <div className="auth-divider"><span>{t('auth.orEmail')}</span></div>
 
-          {/* Form */}
-          <motion.form onSubmit={onSubmit} variants={item}>
+          <form onSubmit={onSubmit}>
             {error && <div className="auth-error" id="register-error" role="alert">{error}</div>}
 
-            <motion.div className="auth-field" variants={item}>
+            <div className="auth-field">
               <label htmlFor="reg-name" className="auth-label">{t('auth.fullName')}</label>
               <div className="auth-input-wrap">
                 <input id="reg-name" name="name" type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={50} autoComplete="name" className="auth-input" placeholder={t('auth.fullName')} aria-describedby={error ? 'register-error' : undefined} />
                 <User size={16} className="auth-input-icon" aria-hidden="true" />
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div className="auth-field" variants={item}>
+            <div className="auth-field">
               <label htmlFor="reg-email" className="auth-label">{t('auth.email')}</label>
               <div className="auth-input-wrap">
                 <input id="reg-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required maxLength={128} autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-describedby={error ? 'register-error' : undefined} />
                 <Mail size={16} className="auth-input-icon" aria-hidden="true" />
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div className="auth-field" variants={item}>
+            <div className="auth-field">
               <label htmlFor="reg-password" className="auth-label">{t('auth.password')}</label>
               <div className="auth-input-wrap">
                 <input id="reg-password" name="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} maxLength={128} autoComplete="new-password" className="auth-input" placeholder={t('auth.password')} aria-describedby={error ? 'register-error' : undefined} />
@@ -168,20 +156,20 @@ export default function Register() {
                   {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                 </button>
               </div>
-            </motion.div>
+            </div>
 
             {strength && (
-              <motion.div variants={item}>
+              <div>
                 <div className="password-strength">
                   {[0, 1, 2, 3].map((i) => (
                     <div key={i} className={`password-strength-bar ${strength.className}`} />
                   ))}
                 </div>
                 <div className="password-strength-label">{t(strength.labelKey)}</div>
-              </motion.div>
+              </div>
             )}
 
-            <motion.div className="auth-field" variants={item}>
+            <div className="auth-field">
               <label htmlFor="reg-confirm-password" className="auth-label">{t('auth.confirmPassword')}</label>
               <div className="auth-input-wrap">
                 <input id="reg-confirm-password" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={8} maxLength={128} autoComplete="new-password" className="auth-input" placeholder={t('auth.confirmPassword')} aria-describedby={error ? 'register-error' : undefined} />
@@ -189,9 +177,9 @@ export default function Register() {
                   {showConfirmPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                 </button>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div className="auth-field" variants={item}>
+            <div className="auth-field">
               <label htmlFor="reg-role" className="auth-label">{t('auth.role')}</label>
               <div className="auth-input-wrap">
                 <select id="reg-role" value={role} onChange={(e) => setRole(e.target.value)} required className="auth-input">
@@ -199,27 +187,23 @@ export default function Register() {
                   <option value="ngo">{t('auth.ngo')}</option>
                 </select>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.button
-              disabled={loading}
-              type="submit"
-              className="auth-submit"
-            >
+            <button disabled={loading} type="submit" className="auth-submit">
               {loading ? (
                 <span className="flex items-center justify-center gap-sm">
                   <Loader2 size={18} className="spinner" aria-hidden="true" />
                   {t('auth.creating')}
                 </span>
               ) : t('auth.createAccount')}
-            </motion.button>
-          </motion.form>
+            </button>
+          </form>
 
-          <motion.div className="auth-alt" variants={item}>
+          <div className="auth-alt">
             {t('auth.hasAccount')} <Link to="/login">{t('auth.loginLink')}</Link>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   )
 }

@@ -2,13 +2,13 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { createStagger, createListItem } from '../utils/animations'
+import { createStagger } from '../utils/animations'
 import { ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2, Star } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
-import { Modal, ErrorState, PageHeader, RippleBtn, PageTransition } from '../components/ui'
+import { Modal, ErrorState, PageHeader } from '../components/ui'
 import Badge from '../components/Badge'
 import SteppedProgress from '../components/SteppedProgress'
 import { SkeletonCard } from '../components/Skeleton'
@@ -100,7 +100,6 @@ interface RequestDetailItem {
 }
 
 const containerVariants = createStagger(0.08)
-const itemVariants = createListItem(12, 0.35)
 
 export default function RequestDetail() {
   useEffect(() => { document.title = 'Disaster Relief - Request Details' }, [])
@@ -342,7 +341,6 @@ export default function RequestDetail() {
       toast.success(t('requestDetail.commentUpdated') || 'Comment updated')
     } catch (err) {
       const msg = getErrorMessage(err)
-      // If the edit window expired, show a friendlier message
       if (msg.toLowerCase().includes('5 minutes') || msg.toLowerCase().includes('edited within')) {
         toast.warning(t('requestDetail.editTimeExpired') || 'Edit window expired (5 minutes)')
       } else {
@@ -354,7 +352,6 @@ export default function RequestDetail() {
   }
 
   function canEdit(c: CommentItem): boolean {
-    // Check if within 5-minute edit window (client-side check)
     const commentDate = c.createdAt ? new Date(c.createdAt).getTime() : 0
     const fiveMinAgo = Date.now() - 5 * 60 * 1000
     return commentDate > fiveMinAgo
@@ -391,28 +388,23 @@ export default function RequestDetail() {
   }
 
   if (loading) return (
-    <PageTransition>
-      <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
-    </PageTransition>
+    <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
   )
 
   if (error) return (
-    <PageTransition>
-      <div className="container">
-        <ErrorState message={error} onRetry={load} />
-      </div>
-    </PageTransition>
+    <div className="container">
+      <ErrorState message={error} onRetry={load} />
+    </div>
   )
 
   if (!item) return null
 
   return (
-    <PageTransition>
-      <article className="container" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
+    <article className="container" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
       <PageHeader
         title={item.title || ''}
         actions={
-          <button onClick={() => navigate('/dashboard')} className="flex-center gap-xs" aria-label={t('admin.backToDashboard')}>
+          <button type="button" onClick={() => navigate('/dashboard')} className="flex-center gap-xs" aria-label={t('admin.backToDashboard')}>
             <ArrowLeft size={16} />
             {t('admin.backToDashboard')}
           </button>
@@ -420,7 +412,7 @@ export default function RequestDetail() {
       />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <motion.div variants={itemVariants} className="flex gap-xs mb-lg flex-wrap items-center" role="group" aria-label="Status and priority badges">
+        <div className="flex gap-xs mb-lg flex-wrap items-center" role="group" aria-label="Status and priority badges">
           <Badge label={t(`statuses.${item.status}`)} colors={STATUS_COLORS} colorKey={item.status} />
           {(currentUser?.role === 'admin' || currentUser?._id === item.createdBy?._id) && (
             <div className="flex items-center gap-xs ml-xs">
@@ -442,15 +434,15 @@ export default function RequestDetail() {
           )}
           <Badge label={t(`priorities.${item.priority}`)} colors={PRIORITY_COLORS} colorKey={item.priority} />
           <Badge label={t(`categories.${item.category}`)} colors={CATEGORY_COLORS} colorKey={item.category} />
-        </motion.div>
+        </div>
 
-        <motion.div variants={itemVariants} className="mb-lg">
+        <div className="mb-lg">
           <SteppedProgress currentStatus={item.status || 'Open'} />
-        </motion.div>
+        </div>
 
-        <div className="grid-3-responsive gap-16">
-          <motion.div variants={itemVariants} className="card">
-            <h3 className="text-base text-bold text-accent" style={{ margin: '0 0 var(--space-sm)' }}>{t('editRequest.subtitle')}</h3>
+        <div className="grid-3-responsive gap-md">
+          <div className="card">
+            <h3 className="text-base text-bold text-accent m-0 mb-sm">{t('editRequest.subtitle')}</h3>
             <p className="text-base m-0 leading-normal">{item.description}</p>
 
             <div className="mt-lg text-sm">
@@ -486,31 +478,31 @@ export default function RequestDetail() {
 
             <div className="flex gap-sm mt">
               {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
-                <RippleBtn className="btn-secondary" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
+                <button type="button" className="btn-secondary" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
                   {claiming ? '...' : t('dashboard.claim')}
-                </RippleBtn>
+                </button>
               )}
               {item.claimedBy?._id === currentUser?.id && (
-                <button className="btn-danger" onClick={handleUnclaim} disabled={claiming} aria-label={t('dashboard.unclaim')}>
+                <button type="button" className="btn-danger" onClick={handleUnclaim} disabled={claiming} aria-label={t('dashboard.unclaim')}>
                   {claiming ? '...' : t('dashboard.unclaim')}
                 </button>
               )}
               {(currentUser?.id === item.createdBy?._id || currentUser?.role === 'admin') && (
-                <button onClick={() => navigate(`/requests/${id}/edit`)} className="btn-ghost btn-sm flex-center gap-xs" aria-label={t('dashboard.edit')}>
+                <button type="button" onClick={() => navigate(`/requests/${id}/edit`)} className="btn-ghost btn-sm flex-center gap-xs" aria-label={t('dashboard.edit')}>
                   <Edit size={14} />
                   {t('dashboard.edit')}
                 </button>
               )}
               {(currentUser?.role === 'admin' || currentUser?.id === item.createdBy?._id) && (
-                <button className="btn-danger flex-center gap-xs" onClick={handleDelete} aria-label={t('dashboard.delete')}>
+                <button type="button" className="btn-danger flex-center gap-xs" onClick={handleDelete} aria-label={t('dashboard.delete')}>
                   <Trash2 size={14} />
                   {t('dashboard.delete')}
                 </button>
               )}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div variants={itemVariants} className="card">
+          <div className="card">
             <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Paperclip size={16} aria-hidden="true" />
               {t('requestDetail.files')}
@@ -535,13 +527,13 @@ export default function RequestDetail() {
                       <div className="small muted">{f.uploadedAt ? new Date(f.uploadedAt).toLocaleDateString() : ''}</div>
                     </div>
                     {(f.mimetype?.startsWith('image/') || f.mimetype === 'application/pdf') && (
-                      <button onClick={() => setPreviewFile(f)} className="text-xs p-xs">{t('requestDetail.preview') || 'Preview'}</button>
+                      <button type="button" onClick={() => setPreviewFile(f)} className="text-xs p-xs">{t('requestDetail.preview') || 'Preview'}</button>
                     )}
                     <a href={`${API_BASE}${f.url}`} target="_blank" rel="noopener noreferrer" className="text-sm text-accent" aria-label={`${t('requestDetail.open')} ${f.filename}`}>
                       <Download size={14} />
                     </a>
                     {(f.uploadedBy && (currentUser?._id === f.uploadedBy || currentUser?.role === 'admin')) && (
-                      <button onClick={() => handleDeleteFile(f._id ?? '')} className="text-xs p-xs text-danger" aria-label={`${t('common.delete')} ${f.filename}`}><Trash2 size={14} /></button>
+                      <button type="button" onClick={() => handleDeleteFile(f._id ?? '')} className="text-xs p-xs text-danger" aria-label={`${t('common.delete')} ${f.filename}`}><Trash2 size={14} /></button>
                     )}
                   </div>
                 ))}
@@ -551,13 +543,13 @@ export default function RequestDetail() {
             )}
             <div className="mt">
               <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" className="hidden" onChange={handleFileUpload} id="file-upload" aria-label={t('requestDetail.uploadFiles')} />
-              <RippleBtn onClick={() => document.getElementById('file-upload')?.click()} className="inline-block cursor-pointer text-12 p-sm">
+              <button type="button" onClick={() => document.getElementById('file-upload')?.click()} className="btn-ghost btn-sm">
                 {uploading ? t('editRequest.saving') : t('requestDetail.uploadFiles')}
-              </RippleBtn>
+              </button>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div variants={itemVariants} className="card">
+          <div className="card">
             <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Package size={16} aria-hidden="true" />
               {t('requestDetail.allocateResources')}
@@ -574,18 +566,18 @@ export default function RequestDetail() {
               </div>
               <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
               <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
-              <RippleBtn type="submit" disabled={allocating || !allocResource || !allocQty} className="btn-primary btn-sm">
+              <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btn-primary btn-sm">
                 {allocating ? '...' : t('requestDetail.allocate')}
-              </RippleBtn>
+              </button>
             </form>
             {resources.length === 0 && (
               <div className="muted small mt-sm">{t('requestDetail.noAvailableResources')}</div>
             )}
-          </motion.div>
+          </div>
         </div>
 
         {matches.length > 0 && (
-          <motion.div variants={itemVariants} className="card mt-lg">
+          <div className="card mt-lg">
             <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Share2 size={16} aria-hidden="true" />
               {t('requestDetail.suggestedResources') || 'Suggested Resources'} ({matches.length})
@@ -604,16 +596,16 @@ export default function RequestDetail() {
                       {m.categoryMatch && <span className="govt-badge govt-badge-green ml-sm text-10 flex-center gap-xs"><CheckCircle size={10} /> {t('matching.exactMatch')}</span>}
                     </div>
                   </div>
-                  <RippleBtn onClick={() => quickAllocate(m)} className="text-xs flex-shrink-0 p-xs">
+                  <button type="button" onClick={() => quickAllocate(m)} className="btn-ghost btn-sm flex-shrink-0">
                     {t('requestDetail.quickAllocate')}
-                  </RippleBtn>
+                  </button>
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
-        <motion.section variants={itemVariants} aria-label={t('requestDetail.comments')} aria-live="polite" className="card mt-lg">
+        <section aria-label={t('requestDetail.comments')} aria-live="polite" className="card mt-lg">
           <h3 className="m-0 mb text-base text-accent flex gap-xs">
             <MessageSquare size={16} aria-hidden="true" />
             {t('requestDetail.comments')} ({item.comments?.length || 0})
@@ -637,9 +629,9 @@ export default function RequestDetail() {
                 </label>
               </div>
             </div>
-            <RippleBtn type="submit" className="btn-primary btn-sm" style={{ height: 40, alignSelf: 'flex-end' }} disabled={posting}>
+            <button type="submit" className="btn-primary btn-sm" disabled={posting}>
               {posting ? '...' : t('requestDetail.post')}
-            </RippleBtn>
+            </button>
           </form>
 
           {item.comments && item.comments.length > 0 ? (
@@ -678,15 +670,16 @@ export default function RequestDetail() {
                           </div>
                         </div>
                         <div className="flex gap-sm mt-xs">
-                          <RippleBtn
+                          <button
+                            type="button"
                             onClick={() => handleUpdateComment(c._id)}
                             disabled={!editCommentText.trim()}
-                            className="text-xs p-xs"
+                            className="btn-sm btn-primary"
                           >
                             <CheckCircle size={12} />
                             {t('common.save') || 'Save'}
-                          </RippleBtn>
-                          <button onClick={handleCancelEdit} className="text-xs btn-ghost">{t('common.cancel') || 'Cancel'}</button>
+                          </button>
+                          <button type="button" onClick={handleCancelEdit} className="text-xs btn-ghost">{t('common.cancel') || 'Cancel'}</button>
                         </div>
                       </>
                     ) : (
@@ -699,16 +692,16 @@ export default function RequestDetail() {
                             </span>
                             {isAuthorOrAdmin && withinEditWindow && (
                               <button
+                                type="button"
                                 onClick={() => handleStartEdit(c)}
-                                className="bg-none border-none text-xs p-0 cursor-pointer flex-center gap-xs"
-                                style={{ color: 'var(--accent)' }}
+                                className="bg-none border-none text-xs p-0 cursor-pointer flex-center gap-xs text-accent"
                                 aria-label={t('requestDetail.edit') || 'Edit'}
                               >
                                 {t('requestDetail.edit') || 'Edit'}
                               </button>
                             )}
                             {isAuthorOrAdmin && (
-                              <button onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0 text-red cursor-pointer flex-center gap-xs" aria-label={t('requestDetail.delete')}>
+                              <button type="button" onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0 text-red cursor-pointer flex-center gap-xs" aria-label={t('requestDetail.delete')}>
                                 <Trash2 size={12} />
                                 {t('requestDetail.delete')}
                               </button>
@@ -728,10 +721,10 @@ export default function RequestDetail() {
           ) : (
             <div className="muted text-sm">{t('requestDetail.noComments')}</div>
           )}
-        </motion.section>
+        </section>
 
         {item.auditLog && item.auditLog.length > 0 && (
-          <motion.aside variants={itemVariants} aria-label={t('requestDetail.activityLog')} className="card mt-lg">
+          <aside aria-label={t('requestDetail.activityLog')} className="card mt-lg">
             <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Clock size={16} aria-hidden="true" />
               {t('requestDetail.activityLog')}
@@ -746,16 +739,16 @@ export default function RequestDetail() {
                 </div>
               ))}
             </div>
-          </motion.aside>
+          </aside>
         )}
 
-        <motion.div variants={itemVariants} className="card mt-lg">
+        <div className="card mt-lg">
           <div className={`flex-between ${showChat ? 'mb-sm' : 'mb-0'}`}>
             <h3 className="m-0 text-base text-accent flex gap-xs">
               <MessageSquare size={16} aria-hidden="true" />
               {t('requestDetail.realTimeChat')}
             </h3>
-            <button onClick={() => setShowChat(!showChat)} className="text-sm p-xs" aria-expanded={showChat} aria-controls="chat-panel">
+            <button type="button" onClick={() => setShowChat(!showChat)} className="text-sm p-xs" aria-expanded={showChat} aria-controls="chat-panel">
               {showChat ? t('requestDetail.hideChat') : t('requestDetail.openChat')}
             </button>
           </div>
@@ -764,17 +757,17 @@ export default function RequestDetail() {
               <Chat requestId={id || ''} onClose={() => setShowChat(false)} />
             </div>
           )}
-        </motion.div>
+        </div>
 
-        <motion.div variants={itemVariants} className="card mt-lg">
+        <div className="card mt-lg">
           <div className="flex-between mb">
             <h3 className="m-0 text-base text-accent">
               {t('requestDetail.feedback')} ({feedbackList.length})
             </h3>
             {!showFeedbackForm && (
-              <RippleBtn onClick={() => setShowFeedbackForm(true)} className="text-sm p-xs">
+              <button type="button" onClick={() => setShowFeedbackForm(true)} className="btn-ghost btn-sm">
                 {t('requestDetail.giveFeedback')}
-              </RippleBtn>
+              </button>
             )}
           </div>
 
@@ -807,9 +800,9 @@ export default function RequestDetail() {
                 </div>
               </div>
               <div className="flex gap-sm mt-sm">
-                <RippleBtn type="submit" disabled={feedbackLoading} className="text-sm p-sm">
+                <button type="submit" disabled={feedbackLoading} className="btn-primary btn-sm">
                   {feedbackLoading ? '...' : t('requestDetail.submit')}
-                </RippleBtn>
+                </button>
                 <button type="button" onClick={() => setShowFeedbackForm(false)} className="text-sm">{t('editRequest.cancel')}</button>
               </div>
             </form>
@@ -838,30 +831,29 @@ export default function RequestDetail() {
           ) : (
             !showFeedbackForm && <div className="muted text-sm">{t('requestDetail.noFeedback')}</div>
           )}
-        </motion.div>
+        </div>
       </motion.div>
 
       <Modal open={!!previewFile} onClose={() => setPreviewFile(null)} title={previewFile?.filename || ''}>
         {previewFile?.mimetype?.startsWith('image/') ? (
-          <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} loading="lazy" className="rounded" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+          <img src={`${API_BASE}${previewFile.url}`} alt={previewFile.filename} loading="lazy" className="rounded" style={{ maxHeight: '80vh' }} />
         ) : previewFile?.mimetype === 'application/pdf' ? (
-          <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile?.filename} className="border-none rounded bg-gov-white" style={{ width: '100%', height: '80vh' }} />
+          <iframe src={`${API_BASE}${previewFile.url}`} title={previewFile?.filename} className="w-full border-none rounded bg-gov-white" style={{ height: '80vh' }} />
         ) : (
-          <div className="text-center p-xl" style={{ borderRadius: 8 }}>
-            <div className="mb-lg" style={{ color: 'var(--text-muted)' }}>
+          <div className="text-center p-xl rounded">
+            <div className="mb-lg text-muted">
               <Paperclip size={48} />
             </div>
             <div className="text-base mb-lg">{previewFile?.filename}</div>
-            <RippleBtn onClick={() => window.open(`${API_BASE}${previewFile?.url}`, '_blank', 'noopener,noreferrer')} className="text-sm p-sm inline-flex-center gap-xs" aria-label={`${t('common.download')} ${previewFile?.filename}`}>
+            <button type="button" onClick={() => window.open(`${API_BASE}${previewFile?.url}`, '_blank', 'noopener,noreferrer')} className="btn-primary btn-sm flex-center gap-xs" aria-label={`${t('common.download')} ${previewFile?.filename}`}>
               <Download size={14} />
               {t('common.download')}
-            </RippleBtn>
+            </button>
           </div>
         )}
       </Modal>
 
       {ConfirmDialog}
     </article>
-    </PageTransition>
   )
 }

@@ -1,8 +1,7 @@
 ﻿import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
 import { Search, AlertTriangle, ArrowUp, ArrowDown } from 'lucide-react'
-import { PageHeader, ErrorState, FilterBar, PageTransition } from '../components/ui'
+import { PageHeader, ErrorState, FilterBar } from '../components/ui'
 import DataList from '../components/ui/DataList'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
@@ -133,14 +132,8 @@ export default function Escalation() {
   }
 
   return (
-    <PageTransition>
-      <div className="container">
-      <motion.div
-        className="card"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      >
+    <div className="container">
+      <div className="card">
         <PageHeader
           title={t('nav.escalation') || 'Request Escalation Pipeline'}
           subtitle={t('escalation.subtitle')}
@@ -187,11 +180,11 @@ export default function Escalation() {
                 />
               </div>
               {showReqDropdown && (
-                <div className="ms-dropdown mt-xs" style={{ left: 0, right: 0, top: '100%', maxHeight: 280 }}>
+                <div className="ms-dropdown mt-xs">
                   {filteredRequests.length === 0 ? (
                     <div className="ms-no-options">{t('common.noResults') || 'No matching requests'}</div>
                   ) : (
-                    <div className="overflow-y-auto p-xs" style={{ maxHeight: 240 }}>
+                    <div className="overflow-y-auto p-xs">
                       {filteredRequests.map((r, idx) => (
                         <div
                           key={r._id}
@@ -244,7 +237,7 @@ export default function Escalation() {
           searchPlaceholder={t('escalation.searchPlaceholder') || 'Search by title, reason, or user...'}
           filters={[]}
         />
-      </motion.div>
+      </div>
 
       <DataList
         items={filteredItems}
@@ -255,16 +248,16 @@ export default function Escalation() {
             <div className="flex-between">
               <div className="flex-1">
                 <div className="text-bold text-base text-accent">{item.title}</div>
-                <div className="text-sm text-red mt-xs">
+                <div className="text-sm text-danger mt-xs">
                   <AlertTriangle size={14} className="inline-block mr-xs" aria-hidden="true" />
                   {t('escalation.escalated')} {new Date(item.escalatedAt).toLocaleString()}
                 </div>
-                <div className="mt-xs text-13">{item.escalationReason}</div>
-                <div className="small muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || t('common.unknown')}</div>
+                <div className="mt-xs text-sm">{item.escalationReason}</div>
+                <div className="text-xs text-muted mt-xs">{t('escalation.by')} {item.createdBy?.displayName || t('common.unknown')}</div>
               </div>
               <button
                 onClick={() => handleDeescalate(item._id)}
-                className="btn-deescalate flex items-center gap-xs"
+                className="btn-danger btn-sm flex items-center gap-xs"
                 aria-label={`${t('escalation.deEscalate')} ${item.title}`}
               >
                 <ArrowDown size={14} />
@@ -280,6 +273,5 @@ export default function Escalation() {
 
       {ConfirmDialog}
     </div>
-    </PageTransition>
   )
 }

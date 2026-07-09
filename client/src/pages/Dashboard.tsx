@@ -3,17 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger, createListItem } from '../utils/animations'
-import { RippleBtn, PageTransition } from '../components/ui'
 import {
-  AlertTriangle,
-  ClipboardList,
-  MapPin,
-  Users,
-  RefreshCw,
-  Plus,
-  ArrowRight,
-  BarChart3,
-  LayoutDashboard,
+  AlertTriangle, ClipboardList, MapPin, Users, BarChart3,
+  RefreshCw, Plus, ArrowRight,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
@@ -38,10 +30,6 @@ interface Item {
   matchedResources?: unknown[]
 }
 
-function formatDate(i18nLng: string): string {
-  return new Date().toLocaleDateString(i18nLng, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-}
-
 const containerVariants = createStagger(0.05)
 const fadeUp = createListItem(16, 0.3)
 
@@ -59,7 +47,6 @@ export default function Dashboard() {
 
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
-  const currentDate = formatDate(i18n.language)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -98,295 +85,178 @@ export default function Dashboard() {
     { key: 'Low', label: t('priorities.Low') },
   ], [t])
 
-  const categoryOptions = useMemo(() => [
-    { key: 'All', label: t('dashboard.filterAll') },
-    ...CATEGORY_OPTIONS.map((c) => ({ key: c, label: t(`categories.${c}`) })),
-  ], [t])
-
-  const sortOptions = useMemo(() => [
-    { key: '-createdAt', label: t('dashboard.sortNewest') },
-    { key: 'createdAt', label: t('dashboard.sortOldest') },
-    { key: '-priority', label: t('dashboard.sortPriorityDesc') },
-    { key: 'priority', label: t('dashboard.sortPriorityAsc') },
-    { key: 'title', label: t('dashboard.sortTitleAsc') },
-    { key: '-title', label: t('dashboard.sortTitleDesc') },
-  ], [t])
-
   return (
-    <PageTransition>
-      <motion.div
-        className="container"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* ── PAGE HEADER ── */}
-        <motion.div className="flex-between mb-md" variants={fadeUp}>
-          <div>                <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
-            <p className="text-sm text-muted mt-xs">{currentDate}</p>
+    <div className="container">
+      <motion.div variants={containerVariants} initial="hidden" animate="visible">
+        <div className="flex-between mb-md" style={{ marginTop: 'var(--space-md)' }}>
+          <div>
+            <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
+            <p className="text-sm text-muted mt-xs">
+              {new Date().toLocaleDateString(i18n.language, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
           </div>
-          <div className="flex gap-sm items-center">            <RippleBtn onClick={load}
-              className="btn-secondary btn-sm"
-              aria-label={t('dashboard.refresh')}
-            >
+          <div className="flex gap-sm items-center">
+            <button onClick={load} className="btn-secondary btn-sm" aria-label={t('dashboard.refresh')}>
               <RefreshCw size={14} />
               <span>{t('dashboard.refresh') || 'Refresh'}</span>
-            </RippleBtn>
-            <RippleBtn
-              onClick={() => navigate('/requests/new')}
-              className="btn-primary btn-sm"
-              aria-label={t('dashboard.createRequest')}
-            >
+            </button>
+            <button onClick={() => navigate('/requests/new')} className="btn-primary btn-sm" aria-label={t('dashboard.createRequest')}>
               <Plus size={14} />
               <span>{t('dashboard.createRequest') || 'New Request'}</span>
-            </RippleBtn>
-          </div>
-        </motion.div>
-
-        {/* ── QUICK ACTION NAV ── */}
-        <motion.div className="mb-sm" variants={fadeUp}>
-          <div className="quick-actions">
-            <button
-              type="button"
-              onClick={() => navigate('/map')}
-              className="quick-action-card"
-              aria-label={t('common.viewMap')}
-            >
-              <MapPin size={20} />
-              <span>{t('common.viewMap') || 'View Map'}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/resources')}
-              className="quick-action-card"
-              aria-label={t('common.resources')}
-            >
-              <Users size={20} />
-              <span>{t('common.resources') || 'Resources'}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/incidents')}
-              className="quick-action-card"
-              aria-label={t('nav.incidents')}
-            >
-              <AlertTriangle size={20} />
-              <span>{t('nav.incidents') || 'Incidents'}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/admin')}
-              className="quick-action-card"
-              aria-label={t('admin.title')}
-            >
-              <BarChart3 size={20} />
-              <span>{t('admin.title') || 'Admin'}</span>
             </button>
           </div>
-        </motion.div>
+        </div>
 
-        {/* ── REQUESTS SECTION ── */}
-        <motion.div className="card dashboard-list-constrained" variants={fadeUp}>
+        <div className="quick-actions mb-md">
+          <button type="button" onClick={() => navigate('/map')} className="quick-action-card">
+            <MapPin size={20} />
+            <span>{t('common.viewMap') || 'View Map'}</span>
+          </button>
+          <button type="button" onClick={() => navigate('/resources')} className="quick-action-card">
+            <Users size={20} />
+            <span>{t('common.resources') || 'Resources'}</span>
+          </button>
+          <button type="button" onClick={() => navigate('/incidents')} className="quick-action-card">
+            <AlertTriangle size={20} />
+            <span>{t('nav.incidents') || 'Incidents'}</span>
+          </button>
+          <button type="button" onClick={() => navigate('/admin')} className="quick-action-card">
+            <BarChart3 size={20} />
+            <span>{t('admin.title') || 'Admin'}</span>
+          </button>
+        </div>
+
+        <div className="card">
           <div className="flex-between mb-sm">
-            <div className="flex items-center gap-xs">
-              <LayoutDashboard size={18} className="text-accent" />
-              <h2 className="pageTitle-sm">
-                {t('dashboard.allRequests') || 'All Requests'}
-              </h2>
-            </div>
+            <h2 className="pageTitle-sm flex items-center gap-xs">
+              <ClipboardList size={18} />
+              {t('dashboard.allRequests') || 'All Requests'}
+            </h2>
           </div>
 
           {error && (
-            <div className="error-text mb-md">
+            <div className="error-text mb-sm">
               <AlertTriangle size={14} />
               {error}
             </div>
           )}
 
-          {/* ── Filters ── */}
-          <nav aria-label={t('dashboard.filters') || 'Filters'}>
-            <div className="flex gap-sm flex-wrap mb-sm">
-              {filterOptions.map((f) => (
-                <button
-                  key={f.key}
-                  onClick={() => { setFilterStatus(f.key); setPage(1) }}
-                  className={`btn-filter ${filterStatus === f.key ? 'active' : ''}`}
-                  aria-label={f.label}
-                  aria-pressed={filterStatus === f.key}
+          <div className="flex gap-sm flex-wrap items-center mb-sm">
+            {filterOptions.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => { setFilterStatus(f.key); setPage(1) }}
+                className={`btn-filter ${filterStatus === f.key ? 'active' : ''}`}
+                aria-pressed={filterStatus === f.key}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-sm flex-wrap items-center mb-sm">
+            {priorityOptions.map((p) => (
+              <button
+                key={p.key}
+                onClick={() => { setFilterPriority(p.key); setPage(1) }}
+                className={`btn-filter text-xs ${filterPriority === p.key ? 'active' : ''}`}
+                aria-pressed={filterPriority === p.key}
+              >
+                {p.label}
+              </button>
+            ))}
+            <div className="filter-group ml-auto">
+              <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="filter-select">
+                <option value="All">{t('dashboard.allCategories') || 'All Categories'}</option>
+                {CATEGORY_OPTIONS.map((c) => (
+                  <option key={c} value={c}>{t(`categories.${c}`)}</option>
+                ))}
+              </select>
+            </div>
+            <div className="filter-group">
+              <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="filter-select">
+                <option value="-createdAt">{t('dashboard.sortNewest')}</option>
+                <option value="createdAt">{t('dashboard.sortOldest')}</option>
+                <option value="-priority">{t('dashboard.sortPriorityDesc')}</option>
+                <option value="priority">{t('dashboard.sortPriorityAsc')}</option>
+                <option value="title">{t('dashboard.sortTitleAsc')}</option>
+                <option value="-title">{t('dashboard.sortTitleDesc')}</option>
+              </select>
+            </div>
+          </div>
+
+          {loading ? (
+            <SkeletonList count={4} lines={3} />
+          ) : items.length === 0 ? (
+            <EmptyState
+              icon={<ClipboardList size={32} />}
+              title={t('dashboard.noRequests')}
+              description={t('dashboard.noRequestsDesc') || 'No requests match your filters.'}
+              action={{ onClick: () => navigate('/requests/new'), label: t('dashboard.createRequest') || 'New Request' }}
+            />
+          ) : (
+            <div className="gridGap">
+              {items.map((it) => (
+                <div
+                  key={it._id}
+                  className="listCard"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => navigate(`/requests/${it._id}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      navigate(`/requests/${it._id}`)
+                    }
+                  }}
                 >
-                  {f.label}
-                </button>
+                  <div className="flex-between gap-sm">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-xs mb-xs">
+                        <span className="text-bold text-accent">{it.title}</span>
+                        {it.priority === 'Critical' && (
+                          <AlertTriangle size={14} className="text-danger flex-shrink-0" />
+                        )}
+                      </div>
+                      <div className="flex gap-sm flex-wrap mb-xs">
+                        <Badge label={t(`statuses.${it.status || 'Open'}`)} colors={STATUS_COLORS} colorKey={it.status || 'Open'} />
+                        <Badge label={t(`priorities.${it.priority || 'Medium'}`)} colors={PRIORITY_COLORS} colorKey={it.priority || 'Medium'} />
+                        <Badge label={t(`categories.${it.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={it.category || 'Other'} />
+                        {it.matchedResources && it.matchedResources.length > 0 && (
+                          <span className="govt-badge govt-badge-green">{it.matchedResources.length} Resource{it.matchedResources.length > 1 ? 's' : ''}</span>
+                        )}
+                      </div>
+                      {it.description && (
+                        <p className="text-sm text-secondary mt-xs">
+                          {it.description.length > 120 ? it.description.slice(0, 120) + '...' : it.description}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-sm mt-xs">
+                        {it.locationName && <span className="text-xs text-muted">{it.locationName}</span>}
+                        {it.createdBy && <span className="text-xs text-muted">{it.createdBy.displayName || it.createdBy.email || ''}</span>}
+                        {it.claimedBy && <span className="text-xs text-warning">{t('dashboard.claimedBy') || 'Claimed'}: {it.claimedBy.displayName || it.claimedBy.email}</span>}
+                      </div>
+                    </div>
+                    <ArrowRight size={16} className="text-muted flex-shrink-0" />
+                  </div>
+                </div>
               ))}
             </div>
-            <div className="flex gap-sm flex-wrap items-center">
-              <div className="flex gap-sm flex-wrap">
-                {priorityOptions.map((p) => (
-                  <button
-                    key={p.key}
-                    onClick={() => { setFilterPriority(p.key); setPage(1) }}
-                    className={`btn-filter text-xs ${filterPriority === p.key ? 'active' : ''}`}
-                    aria-label={p.label}
-                    aria-pressed={filterPriority === p.key}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-              <div className="flex gap-sm items-center ml-auto">
-                <div className="filter-group">
-                  <select
-                    value={filterCategory}
-                    onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }}
-                    className="filter-select"
-                    aria-label={t('dashboard.filterCategory') || 'Category'}
-                  >
-                    {categoryOptions.map((c) => (
-                      <option key={c.key} value={c.key}>
-                        {c.key === 'All' ? (t('dashboard.allCategories') || 'All Categories') : c.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="filter-group">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => { setSortBy(e.target.value); setPage(1) }}
-                    className="filter-select"
-                    aria-label={t('dashboard.sortBy') || 'Sort by'}
-                  >
-                    {sortOptions.map((s) => (
-                      <option key={s.key} value={s.key}>{s.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-sm mt-lg">
+              <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-ghost btn-sm" aria-label={t('dashboard.previous') || 'Previous'}>
+                {t('dashboard.previous') || 'Previous'}
+              </button>
+              <span className="text-sm text-muted">{page} / {totalPages}</span>
+              <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="btn-ghost btn-sm" aria-label={t('dashboard.next') || 'Next'}>
+                {t('dashboard.next') || 'Next'}
+              </button>
             </div>
-          </nav>
-
-          {/* ── Request List ── */}
-          <section aria-label={t('dashboard.title')}>
-            {loading ? (
-              <SkeletonList count={4} lines={3} />
-            ) : (
-              <>
-                <div className="gridGap mt-lg">
-                  {items.length === 0 ? (                      <div className="grid-full">
-                      <EmptyState
-                        icon={<ClipboardList size={32} />}
-                        title={t('dashboard.noRequests')}
-                        description={t('dashboard.noRequestsDesc') || 'No requests match your filters. Create a new request or adjust your filters.'}
-                        action={{ onClick: () => navigate('/requests/new'), label: t('dashboard.createRequest') || 'New Request' }}
-                      />
-                    </div>
-                  ) : (
-                    items.map((it) => (
-                      <motion.div
-                        key={it._id}
-                        className="listCard"
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => navigate(`/requests/${it._id}`)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            navigate(`/requests/${it._id}`)
-                          }
-                        }}
-                        whileHover={{ scale: 1.01 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <div className="flex-between gap-sm">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-xs mb-xs">
-                              <span className="text-bold text-accent">{it.title}</span>
-                              {it.priority === 'Critical' && (
-                                <AlertTriangle size={14} className="text-danger flex-shrink-0" />
-                              )}
-                            </div>
-                            <div className="flex gap-sm flex-wrap mb-xs">
-                              <Badge
-                                label={t(`statuses.${it.status || 'Open'}`)}
-                                colors={STATUS_COLORS}
-                                colorKey={it.status || 'Open'}
-                              />
-                              <Badge
-                                label={t(`priorities.${it.priority || 'Medium'}`)}
-                                colors={PRIORITY_COLORS}
-                                colorKey={it.priority || 'Medium'}
-                              />
-                              <Badge
-                                label={t(`categories.${it.category || 'Other'}`)}
-                                colors={CATEGORY_COLORS}
-                                colorKey={it.category || 'Other'}
-                              />
-                              {it.matchedResources && it.matchedResources.length > 0 && (
-                                <span className="govt-badge govt-badge-green">
-                                  {it.matchedResources.length} Resource{it.matchedResources.length > 1 ? 's' : ''}
-                                </span>
-                              )}
-                            </div>
-                            {it.description && (
-                              <p className="text-sm text-secondary mt-xs">
-                                {it.description.length > 120
-                                  ? it.description.slice(0, 120) + '...'
-                                  : it.description}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-sm mt-xs">
-                              {it.locationName && (
-                                <span className="text-xs text-muted flex items-center gap-2xs">
-                                  <MapPin size={10} />
-                                  {it.locationName}
-                                </span>
-                              )}
-                              {it.createdBy && (
-                                <span className="text-xs text-muted">
-                                  {it.createdBy.displayName || it.createdBy.email || ''}
-                                </span>
-                              )}
-                              {it.claimedBy && (
-                                <span className="text-xs text-warning">
-                                  {t('dashboard.claimedBy') || 'Claimed'}: {it.claimedBy.displayName || it.claimedBy.email}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <ArrowRight size={16} className="text-muted flex-shrink-0" />
-                        </div>
-                      </motion.div>
-                    ))
-                  )}
-                </div>
-
-                {/* ── Pagination ── */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-sm mt-lg">
-                    <button
-                      disabled={page <= 1}
-                      onClick={() => setPage((p) => p - 1)}
-                      className="btn-ghost btn-sm"
-                      aria-label={t('dashboard.previous') || 'Previous'}
-                    >
-                      {t('dashboard.previous') || 'Previous'}
-                    </button>
-                    <span className="text-sm text-muted">
-                      {page} / {totalPages}
-                    </span>
-                    <button
-                      disabled={page >= totalPages}
-                      onClick={() => setPage((p) => p + 1)}
-                      className="btn-ghost btn-sm"
-                      aria-label={t('dashboard.next') || 'Next'}
-                    >
-                      {t('dashboard.next') || 'Next'}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </section>
-        </motion.div>
+          )}
+        </div>
       </motion.div>
-    </PageTransition>
+    </div>
   )
 }
