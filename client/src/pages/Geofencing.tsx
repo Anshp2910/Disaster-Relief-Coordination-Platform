@@ -326,10 +326,10 @@ export default function Geofencing() {
             variants={{ hidden: { opacity: 0 }, show: { opacity: 1 } }}
           >
             <div
+              className="rounded-full"
               style={{
                 width: 10,
                 height: 10,
-                borderRadius: '50%',
                 background: 'var(--gov-danger)',
                 animation: 'geofencePulse 1.5s ease-in-out infinite',
               }}

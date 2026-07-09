@@ -46,10 +46,10 @@ export default function NotFound() {
       >
         404
       </motion.h1>
-      <p className="text-lg font-semibold m-0 mb-sm" style={{ color: 'var(--text)' }}>
+      <p className="text-lg font-semibold m-0 mb-sm">
         {t('notFound.title') || 'Page Not Found'}
       </p>
-      <p className="text-sm m-0 mb-lg" style={{ color: 'var(--text-muted)', maxWidth: 400 }}>
+      <p className="text-sm text-muted m-0 mb-lg" style={{ maxWidth: 400 }}>
         {t('notFound.description') || 'The page you are looking for doesn\'t exist or has been moved.'}
       </p>
       <div className="flex-center gap-sm">

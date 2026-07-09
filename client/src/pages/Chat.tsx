@@ -368,7 +368,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       {selectedFile && (
         <div className="flex gap-sm p-xs border-top bg-elevated items-center">
           <Paperclip size={14} aria-hidden="true" />
-          <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedFile.name}</span>
+          <span className="text-xs flex-1 text-ellipsis">{selectedFile.name}</span>
           <button onClick={() => setSelectedFile(null)} className="btn-ghost" aria-label={t('common.close')}><X size={14} /></button>
         </div>
       )}

@@ -354,7 +354,7 @@ export default function BulkImport() {
                 </div>
                 <div className="text-base mb-sm text-accent">{t('bulkImport.importFromCSV', { tab })}</div>
                 <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
-                <div className="small muted mb" style={{ fontSize: 'var(--text-xs)' }}>{t('bulkImport.dragDropHint') || 'Drag & drop a CSV file here or click to browse'}</div>
+                <div className="small muted mb text-xs">{t('bulkImport.dragDropHint') || 'Drag & drop a CSV file here or click to browse'}</div>
                 <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label={t('bulkImport.uploadCSV')} />
                 <RippleBtn onClick={() => document.getElementById('csv-upload')?.click()} className="cursor-pointer inline-block text-13 p-sm">
                   {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}

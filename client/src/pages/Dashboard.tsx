@@ -89,7 +89,7 @@ export default function Dashboard() {
   return (
     <div className="container">
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <div className="flex-between mb-md" style={{ marginTop: 'var(--space-md)' }}>
+        <div className="flex-between mb-md mt-md">
           <div>
             <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
             <p className="text-sm text-muted mt-xs">

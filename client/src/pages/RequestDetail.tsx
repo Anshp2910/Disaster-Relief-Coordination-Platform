@@ -395,7 +395,7 @@ export default function RequestDetail() {
     return (
       <div className="container">
         <div className="flex-center flex-col text-center" style={{ padding: 'var(--space-2xl)' }}>
-          <AlertCircle size={48} style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-sm)' }} />
+          <AlertCircle size={48} className="text-muted mb-sm" />
           <h2 className="text-lg text-bold">Request not found</h2>
           <p className="text-sm text-muted mb-md">This request may have been removed or you may not have access.</p>
           <button className="btn-primary" onClick={() => navigate('/dashboard')}>Back to Dashboard</button>

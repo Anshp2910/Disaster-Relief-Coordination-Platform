@@ -176,8 +176,8 @@ export default function Schedules() {
 
       <div className="schedule-extra-controls">
         <div className="flex gap-md items-center flex-wrap">
-          <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.from')}:</span><input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} className="filter-select" style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-2xs)', padding: 'var(--space-2xs) var(--space-sm)' }} /></div>
-          <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.to')}:</span><input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} className="filter-select" style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-2xs)', padding: 'var(--space-2xs) var(--space-sm)' }} /></div>
+          <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.from')}:</span><input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} className="auth-input" /></div>
+          <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.to')}:</span><input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} className="auth-input" /></div>
         </div>
         <div className="schedule-view-toggle">
           <button onClick={() => setViewMode('list')} className={viewMode === 'list' ? 'active' : ''} aria-pressed={viewMode === 'list'}><List size={16} /> {t('schedules.listView') || 'List'}</button>
@@ -213,7 +213,7 @@ export default function Schedules() {
                           {(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}
                         </div>
                         {selectedDaySchedule?._id === s._id && (
-                          <div className="card" style={{ padding: 'var(--space-2xs)', fontSize: 'var(--text-3xs)', position: 'absolute', zIndex: 10, width: 200 }}>
+                          <div className="card p-xs text-3xs absolute z-10" style={{ width: 200 }}>
                             <div><strong>{(typeof s.userId === 'object' && s.userId) ? s.userId.displayName : t('schedules.volunteer')}</strong> &mdash; {s.shift}</div>
                             <div className="muted">{s.startDate ? new Date(s.startDate).toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : ''}</div>
                           </div>
@@ -234,7 +234,7 @@ export default function Schedules() {
             const shiftC = SHIFT_COLORS[item.shift || 'Full Day'] ?? SHIFT_COLORS['Full Day']!
             const statusC = SCHEDULE_STATUS_COLORS[item.status || 'Scheduled'] ?? SCHEDULE_STATUS_COLORS.Scheduled!
             return (
-              <div className="listCard" style={{ cursor: 'default' }}>
+              <div className="listCard cursor-default">
                 <div className="flex gap-sm flex-wrap">
                   <span className="text-bold">{typeof item.userId === 'object' && item.userId ? item.userId.displayName : t('schedules.volunteer')}</span>
                   <span className="status-badge" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}><Clock size={14} /> {item.shift}</span>
@@ -242,7 +242,7 @@ export default function Schedules() {
                 </div>
                 <div className="text-sm text-muted mt-xs">{item.startDate ? new Date(item.startDate).toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : ''} &rarr; {item.endDate ? new Date(item.endDate).toLocaleDateString(i18n.language, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : ''}</div>
                 {item.zoneId && <div className="text-xs muted mt-xs"><MapPin size={12} /> {t('schedules.zone')} {(typeof item.zoneId === 'object' && item.zoneId) ? item.zoneId.name : t('common.unknown')}</div>}
-                {item.skills && item.skills.length > 0 && <div className="flex gap-xs mt-xs flex-wrap">{item.skills.map((s) => <span key={s} className="text-xs p-xs" style={{ borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--violet-500)' }}>{s}</span>)}</div>}
+                {item.skills && item.skills.length > 0 && <div className="flex gap-xs mt-xs flex-wrap">{item.skills.map((s) => <span key={s} className="text-xs p-xs rounded-sm text-accent" style={{ background: 'rgba(107,127,181,.08)' }}>{s}</span>)}</div>}
                 {item.notes && <div className="text-xs muted mt-xs">{item.notes}</div>}
                 <div className="flex flex-wrap gap-xs mt-sm">
                   <StatusButton currentStatus={item.status || 'Scheduled'} expectedStatus="Scheduled" nextStatus="Active" label={t('schedules.startButton')} color={SCHEDULE_STATUS_COLORS.Active!} scheduleId={item._id} onStatusChange={handleStatusChange} />

@@ -197,7 +197,7 @@ export default function Incidents() {
               </div>
               <div className="flex gap-sm mb-sm flex-wrap">
                 <span className="status-badge" style={{ color: SEVERITY_COLORS[selectedIncident.severity || ''] || 'var(--text-muted)', background: 'var(--bg-subtle)' }}>{selectedIncident.severity}</span>
-                <span className="status-badge" style={{ background: 'var(--bg-subtle)', color: 'var(--accent)' }}>{selectedIncident.status}</span>
+                <span className="status-badge bg-subtle text-accent">{selectedIncident.status}</span>
               </div>
               {selectedIncident.description && <div className="mb-sm text-base">{selectedIncident.description}</div>}
               <div className="text-sm" style={{ lineHeight: 2 }}>

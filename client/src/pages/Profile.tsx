@@ -194,7 +194,7 @@ export default function Profile() {
             type="file"
             accept=".png,.jpg,.jpeg,.webp"
             onChange={handleFileSelect}
-            style={{ display: 'none' }}
+            className="hidden"
           />
           <div className="flex gap-sm mt-sm">
             <RippleBtn type="button" className="text-xs" onClick={handleUploadAvatar} disabled={!selectedFile} aria-label="Upload photo">
