@@ -215,11 +215,7 @@
     "loadingRequest": "ਬੇਨਤੀ ਲੋਡ ਹੋ ਰਹੀ ਹੈ...",
     "saveChanges": "ਤਬਦੀਲੀਆਂ ਸੰਭਾਲੋ",
     "saving": "ਸੰਭਾਲ ਰਹੇ ਹਾਂ...",
-    "selectLocationFirst": "ਪਹਿਲਾਂ ਥਾਂ ਚੁਣੋ",
-    "cancel": "ਰੱਦ ਕਰੋ",
-    "locationError": "ਕਿਰਪਾ ਕਰਕੇ ਨਕਸ਼ੇ ਉੱਤੇ ਕਲਿੱਕ ਕਰਕੇ ਜਾਂ ਖੋਜ ਕਰਕੇ ਥਾਂ ਚੁਣੋ.",
-    "geolocationNotSupported": "ਤੁਹਾਡਾ ਬ੍ਰਾਊਜ਼ਰ ਭੂਗੋਲਿਕ ਥਾਂ ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਕਰਦਾ.",
-    "unableToRetrieve": "ਤੁਹਾਡੀ ਥਾਂ ਪ੍ਰਾਪਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ."
+    "cancel": "ਰੱਦ ਕਰੋ"
   },
   "requestDetail": {
     "files": "ਫਾਈਲਾਂ",

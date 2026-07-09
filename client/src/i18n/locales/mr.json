@@ -218,11 +218,7 @@
     "loadingRequest": "स्थिती",
     "saveChanges": "विनंती लोड करत आहे...",
     "saving": "बदल जतन करा",
-    "selectLocationFirst": "विनंती तयार करा",
-    "cancel": "प्रथम स्थान निवडा",
-    "locationError": "रद्द करा",
-    "geolocationNotSupported": "कृपया नकाशावर क्लिक करून किंवा शोधून एक स्थान निवडा.",
-    "unableToRetrieve": "तुमच्या ब्राउझरद्वारे भौगोलिक स्थान समर्थित नाही."
+    "cancel": "प्रथम स्थान निवडा"
   },
   "requestDetail": {
     "files": "सेव्ह करत आहे...",

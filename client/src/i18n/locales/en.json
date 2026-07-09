@@ -187,6 +187,7 @@
     "unclaimConfirm": "Are you sure you want to unclaim this request?",
     "live": "Live",
     "offline": "Offline",
+    "filters": "Filters",
     "allRequests": "All Requests",
     "recentActivity": "Recent Activity",
     "latestRequest": "Latest Request",

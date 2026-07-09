@@ -218,11 +218,7 @@
     "loadingRequest": "स्थिति",
     "saveChanges": "अनुरोध लोड हो रहा है...",
     "saving": "परिवर्तन सहेजें",
-    "selectLocationFirst": "अनुरोध बनाएँ",
-    "cancel": "पहले एक स्थान च���नें",
-    "locationError": "रद्द करें",
-    "geolocationNotSupported": "कृपया मानचित्र पर क्लिक करके या खोज कर एक स्थान चुनें।",
-    "unableToRetrieve": "जियोलोकेशन आपके ब्राउज़र द्वारा समर्थित नहीं है."
+    "cancel": "पहले एक स्थान च���नें"
   },
   "requestDetail": {
     "files": "सहेजा जा रहा है...",

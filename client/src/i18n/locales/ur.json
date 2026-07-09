@@ -264,11 +264,7 @@
     "loadingRequest": "Loading request...",
     "saveChanges": "Save Changes",
     "saving": "Saving...",
-    "selectLocationFirst": "Select a location first",
-    "cancel": "Cancel",
-    "locationError": "Please select a location by clicking on the map or searching.",
-    "geolocationNotSupported": "Geolocation is not supported by your browser.",
-    "unableToRetrieve": "Unable to retrieve your location."
+    "cancel": "Cancel"
   },
   "requestDetail": {
     "files": "Files",
