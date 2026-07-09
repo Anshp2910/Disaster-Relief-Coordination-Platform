@@ -5,13 +5,17 @@
 .gov-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .gov-main {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
   padding-top: var(--navbar-height, 56px);
-  padding-bottom: var(--space-3xl);
+  padding-bottom: var(--space-lg);
 }
 
 /* ── Offset content when the sub-navigation bar is present ── */
@@ -23,7 +27,7 @@
 
 .gov-main > .container,
 .gov-main > div > .container {
-  padding-top: var(--space-md);
+  padding-top: var(--space-sm);
 }
 
 /* ── Container Scale ── */

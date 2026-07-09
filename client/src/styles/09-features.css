@@ -849,3 +849,43 @@
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* ── Dashboard List Constrained ── */
+.dashboard-list-constrained {
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+.dashboard-list-constrained .gridGap {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Dashboard Map Constrained ── */
+@media (max-width: 768px) {
+  .bento-card-scroll-content { max-height: 200px; }
+}
+@media (min-height: 900px) {
+  .bento-card-scroll-content { max-height: 320px; }
+}
+
+/* ── Dashboard Map Constrained ── */
+.dashboard-map {
+  height: 200px;
+  border-radius: var(--radius-2xs);
+  overflow: hidden;
+}
+@media (min-width: 1200px) {
+  .dashboard-map { height: 260px; }
+}
+
+/* ── Bento Card Content Scroll ── */
+.bento-card-scroll-content {
+  max-height: 260px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}

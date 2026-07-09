@@ -10,7 +10,7 @@ interface PageHeaderProps {
 export default function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   return (
     <motion.div
-      className="flex-between mb-lg flex-wrap gap-sm"
+      className="flex-between mb-md flex-wrap gap-sm"
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}

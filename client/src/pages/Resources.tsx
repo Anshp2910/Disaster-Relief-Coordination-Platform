@@ -355,7 +355,7 @@ export default function Resources() {
       {error && <ErrorState message={error} onRetry={load} />}
 
       {summaryCards.length > 0 && (
-        <div className="grid-auto-sm gap-md mb-lg">
+        <div className="grid-auto-sm gap-md mb-md">
           {summaryCards}
         </div>
       )}

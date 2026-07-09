@@ -119,6 +119,13 @@
 }
 .bento--wide { grid-column: span 2; }
 
+.bento-card-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+
 .bento-header {
   display: flex;
   justify-content: space-between;

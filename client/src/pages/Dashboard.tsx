@@ -255,7 +255,7 @@ export default function Dashboard() {
         {(loading || stats) && <KpiCards stats={stats} loading={loading} />}
 
         {/* ── VISUALIZATION BENTO GRID ── */}
-        <motion.div className="bento-grid mb-lg" variants={fadeUp}>
+        <motion.div className="bento-grid mb-sm" variants={fadeUp}>
           {(loading || stats) && (
             <div className="bento-card">
               <RiskWidget stats={stats} loading={loading} />
@@ -268,17 +268,21 @@ export default function Dashboard() {
             <WeatherWidget weather={weather} loading={weatherLoading} />
           </div>
           <div className="bento-card bento--wide">
-            <ActivityFeed compact limit={8} />
+            <div className="bento-card-scroll-content">
+              <ActivityFeed compact limit={8} />
+            </div>
           </div>
           <div className="bento-card bento--wide">
-            <TaskList requests={items} loading={loading} />
+            <div className="bento-card-scroll-content">
+              <TaskList requests={items} loading={loading} />
+            </div>
           </div>
         </motion.div>
 
         <DashboardMap />
 
         {/* ── QUICK ACTION NAV ── */}
-        <motion.div className="mb-lg" variants={fadeUp}>
+        <motion.div className="mb-sm" variants={fadeUp}>
           <div className="quick-actions">
             <button
               type="button"
@@ -320,8 +324,8 @@ export default function Dashboard() {
         </motion.div>
 
         {/* ── REQUESTS SECTION ── */}
-        <motion.div className="card" variants={fadeUp}>
-          <div className="flex-between mb-md">
+        <motion.div className="card dashboard-list-constrained" variants={fadeUp}>
+          <div className="flex-between mb-sm">
             <div className="flex items-center gap-xs">
               <LayoutDashboard size={18} className="text-accent" />
               <h2 className="pageTitle-sm">

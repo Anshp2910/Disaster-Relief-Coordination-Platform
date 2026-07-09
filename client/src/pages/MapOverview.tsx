@@ -163,7 +163,7 @@ export default function MapOverview() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-      <div className="card mb-lg">
+      <div className="card mb-md">
         <PageHeader
           title={t('dashboard.mapView')}
           actions={<button onClick={() => navigate('/dashboard')} aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
