@@ -387,17 +387,11 @@ export default function RequestDetail() {
     }
   }
 
-  if (loading) return (
-    <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
-  )
 
-  if (error) return (
-    <div className="container">
-      <ErrorState message={error} onRetry={load} />
-    </div>
-  )
 
-  if (!item && !loading && !error) {
+  if (!item) {
+    if (loading) return <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
+    if (error) return <div className="container"><ErrorState message={error} onRetry={load} /></div>
     return (
       <div className="container">
         <div className="flex-center flex-col text-center" style={{ padding: 'var(--space-2xl)' }}>

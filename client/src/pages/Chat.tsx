@@ -291,7 +291,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         )}
         {loading && <SkeletonList count={4} lines={1} />}
         {!loading && messages.length === 0 && !messageError && <EmptyState icon={<MessageSquare size={32} />} title="No messages yet" description="Start the conversation by sending a message below" compact />}
-        {messageError && <ErrorState message={messageError} onRetry={loadMessages} />}
+        {messageError && <ErrorState message={messageError} onRetry={() => loadMessages(1)} />}
 
         {messages.map((m) => {
           const isMe = m.sender?.id === currentUser?.id || m.sender?._id === currentUser?.id

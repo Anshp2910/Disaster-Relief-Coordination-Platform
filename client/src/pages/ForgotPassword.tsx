@@ -106,7 +106,7 @@ export default function ForgotPassword() {
                 <div className="auth-field">
                   <label htmlFor="email" className="auth-label">{t('auth.email')}</label>
                   <div className="auth-input-wrap">
-                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} className="auth-input" placeholder=" " aria-describedby={error ? 'forgot-error' : undefined} autoFocus />
+                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} className="auth-input" placeholder=" " aria-describedby={error ? 'forgot-error' : undefined} />
                     <Mail size={16} className="auth-input-icon" aria-hidden="true" />
                   </div>
                 </div>

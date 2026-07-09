@@ -97,7 +97,7 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex gap-sm items-center">
-            <button onClick={() => { setRefreshLoading(true); load().finally(() => setRefreshLoading(false)) }} className="btn-secondary btn-sm" aria-label={t('dashboard.refresh')} autoFocus>
+            <button onClick={() => { setRefreshLoading(true); load().finally(() => setRefreshLoading(false)) }} className="btn-secondary btn-sm" aria-label={t('dashboard.refresh')}>
               {refreshLoading ? <span className="spinner-sm" /> : <RefreshCw size={14} />}
               <span>{t('dashboard.refresh') || 'Refresh'}</span>
             </button>

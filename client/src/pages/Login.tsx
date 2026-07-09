@@ -30,7 +30,7 @@ export default function Login() {
         { value: `${(d.activeIncidents as number) || 0}+`, key: 'auth.statNgos' },
         { value: '98.2%', key: 'auth.statResponse' },
       ])
-    }).catch(() => {})
+    }).catch(() => {/* silent - use fallback */})
   }, [])
 
   const [email, setEmail] = useState(() => { try { return localStorage.getItem('rememberedEmail') || '' } catch { return '' } })
@@ -104,7 +104,7 @@ export default function Login() {
             {error && <div className="auth-error" id="login-error" role="alert">{error}</div>}
             <div className="mb-md">
               <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
-              <input id="login-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-invalid={error ? 'true' : 'false'} autoFocus />
+              <input id="login-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-invalid={error ? 'true' : 'false'} />
             </div>
             <div className="mb-md">
               <label htmlFor="login-password" className="auth-label">{t('auth.password')}</label>
