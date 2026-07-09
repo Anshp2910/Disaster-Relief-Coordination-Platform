@@ -420,7 +420,7 @@ export default function RequestDetail() {
       />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <motion.div variants={itemVariants} className="flex flex-gap-xs mb-lg flex-wrap items-center" role="group" aria-label="Status and priority badges">
+        <motion.div variants={itemVariants} className="flex gap-xs mb-lg flex-wrap items-center" role="group" aria-label="Status and priority badges">
           <Badge label={t(`statuses.${item.status}`)} colors={STATUS_COLORS} colorKey={item.status} />
           {(currentUser?.role === 'admin' || currentUser?._id === item.createdBy?._id) && (
             <div className="flex items-center gap-xs ml-xs">
@@ -454,7 +454,7 @@ export default function RequestDetail() {
             <p className="text-base m-0 leading-normal">{item.description}</p>
 
             <div className="mt-lg text-sm">
-              <div className="mb-xs flex flex-gap-xs">
+              <div className="mb-xs flex gap-xs">
                 <MapPin size={14} className="flex-shrink-0" aria-hidden="true" />
                 <span>{item.locationName}</span>
               </div>
@@ -462,20 +462,20 @@ export default function RequestDetail() {
             </div>
 
             {(item.peopleCount ?? 0) > 1 && (
-              <div className="mt-sm text-sm flex flex-gap-xs">
+              <div className="mt-sm text-sm flex gap-xs">
                 <User size={14} className="flex-shrink-0" aria-hidden="true" />
                 <span>{t('requestDetail.peopleAffected')} <strong>{item.peopleCount}</strong></span>
               </div>
             )}
 
-            <div className="mt text-sm flex flex-gap-xs">
+            <div className="mt text-sm flex gap-xs">
               <User size={14} className="flex-shrink-0" aria-hidden="true" />
               <span className="small muted">{t('dashboard.postedBy')}</span>{' '}
               <strong>{item.createdBy?.displayName || item.createdBy?.email}</strong>
             </div>
 
             {item.claimedBy && (
-              <div className="mt-sm text-sm p-sm bg-elevated rounded-sm flex flex-gap-xs">
+              <div className="mt-sm text-sm p-sm bg-elevated rounded-sm flex gap-xs">
                 <Activity size={14} className="flex-shrink-0" aria-hidden="true" />
                 <span>
                   {t('requestDetail.claimedBy')} <strong>{item.claimedBy.displayName || item.claimedBy.email}</strong>
@@ -484,7 +484,7 @@ export default function RequestDetail() {
               </div>
             )}
 
-            <div className="flex flex-gap-sm mt">
+            <div className="flex gap-sm mt">
               {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
                 <RippleBtn className="btn-secondary" onClick={handleClaim} disabled={claiming} aria-label={t('dashboard.claim')}>
                   {claiming ? '...' : t('dashboard.claim')}
@@ -511,14 +511,14 @@ export default function RequestDetail() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="card">
-            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Paperclip size={16} aria-hidden="true" />
               {t('requestDetail.files')}
             </h3>
             {item.files?.length ? (
-              <div className="flex-col flex-gap-sm">
+              <div className="flex-col gap-sm">
                 {item.files.map((f) => (
-                  <div key={f._id || f.id || f.url} className="flex flex-gap-sm p-xs bg-card rounded-sm">
+                  <div key={f._id || f.id || f.url} className="flex gap-sm p-xs bg-card rounded-sm">
                     {f.mimetype?.startsWith('image/') ? (
                       <button type="button" className="bg-none border-none cursor-pointer p-0" onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }}>
                         <img src={`${API_BASE}${f.url}`} alt={f.filename} loading="lazy" className="object-cover rounded-sm w-40 h-40" />
@@ -558,11 +558,11 @@ export default function RequestDetail() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="card">
-            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Package size={16} aria-hidden="true" />
               {t('requestDetail.allocateResources')}
             </h3>
-            <form onSubmit={handleAllocate} className="flex flex-gap-sm flex-wrap">
+            <form onSubmit={handleAllocate} className="flex gap-sm flex-wrap">
               <label htmlFor="rd-resource" className="sr-only">{t('requestDetail.selectResource')}</label>
               <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="filter-select">
                 <option value="">{t('requestDetail.selectResource')}</option>
@@ -584,14 +584,14 @@ export default function RequestDetail() {
 
         {matches.length > 0 && (
           <motion.div variants={itemVariants} className="card mt-lg">
-            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Share2 size={16} aria-hidden="true" />
               {t('requestDetail.suggestedResources') || 'Suggested Resources'} ({matches.length})
             </h3>
             <div className="text-sm text-muted-extra mb-xs">
               {t('requestDetail.autoMatched')}
             </div>
-            <div className="flex-col flex-gap-sm">
+            <div className="flex-col gap-sm">
               {matches.map((m) => (
                 <div key={m._id} className="flex-between text-sm p-sm bg-card rounded-sm">
                   <div className="flex-1 min-w-0">
@@ -612,12 +612,12 @@ export default function RequestDetail() {
         )}
 
         <motion.section variants={itemVariants} aria-label={t('requestDetail.comments')} aria-live="polite" className="card mt-lg">
-          <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
+          <h3 className="m-0 mb text-base text-accent flex gap-xs">
             <MessageSquare size={16} aria-hidden="true" />
             {t('requestDetail.comments')} ({item.comments?.length || 0})
           </h3>
 
-          <form onSubmit={handleComment} className="flex flex-gap-sm mb-lg">
+          <form onSubmit={handleComment} className="flex gap-sm mb-lg">
             <div className="ff-group flex-1 m-0">
               <div className={`ff-wrap ${comment ? 'ff-focused' : ''}`}>
                 <input
@@ -641,7 +641,7 @@ export default function RequestDetail() {
           </form>
 
           {item.comments && item.comments.length > 0 ? (
-            <div className="flex-col flex-gap-xs">
+            <div className="flex-col gap-xs">
               {[...item.comments].reverse().map((c) => {
                 const isEditing = editingCommentId === c._id
                 const isAuthorOrAdmin = currentUser?.id === c.createdBy?._id || currentUser?.role === 'admin'
@@ -676,7 +676,7 @@ export default function RequestDetail() {
                             </label>
                           </div>
                         </div>
-                        <div className="flex flex-gap-sm mt-xs">
+                        <div className="flex gap-sm mt-xs">
                           <RippleBtn
                             onClick={() => handleUpdateComment(c._id)}
                             disabled={!editCommentText.trim()}
@@ -692,7 +692,7 @@ export default function RequestDetail() {
                       <>
                         <div className="flex-between mb-xs">
                           <strong className="text-sm">{c.createdBy?.displayName || c.createdBy?.email}</strong>
-                          <div className="flex flex-gap-sm">
+                          <div className="flex gap-sm">
                             <span className="small muted">
                               {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
                             </span>
@@ -731,13 +731,13 @@ export default function RequestDetail() {
 
         {item.auditLog && item.auditLog.length > 0 && (
           <motion.aside variants={itemVariants} aria-label={t('requestDetail.activityLog')} className="card mt-lg">
-            <h3 className="m-0 mb text-base text-accent flex flex-gap-xs">
+            <h3 className="m-0 mb text-base text-accent flex gap-xs">
               <Clock size={16} aria-hidden="true" />
               {t('requestDetail.activityLog')}
             </h3>
-            <div className="flex-col flex-gap-xs">
+            <div className="flex-col gap-xs">
               {[...item.auditLog].reverse().map((entry, idx) => (
-                <div key={`${entry.timestamp}-${entry.action}-${idx}`} className="flex flex-gap-sm text-sm text-muted-extra">
+                <div key={`${entry.timestamp}-${entry.action}-${idx}`} className="flex gap-sm text-sm text-muted-extra">
                   <span>{entry.timestamp ? new Date(entry.timestamp).toLocaleString() : ''}</span>
                   <span>-</span>
                   <span>{entry.action}</span>
@@ -750,7 +750,7 @@ export default function RequestDetail() {
 
         <motion.div variants={itemVariants} className="card mt-lg">
           <div className={`flex-between ${showChat ? 'mb-sm' : 'mb-0'}`}>
-            <h3 className="m-0 text-base text-accent flex flex-gap-xs">
+            <h3 className="m-0 text-base text-accent flex gap-xs">
               <MessageSquare size={16} aria-hidden="true" />
               {t('requestDetail.realTimeChat')}
             </h3>
@@ -778,10 +778,10 @@ export default function RequestDetail() {
           </div>
 
           {showFeedbackForm && (
-            <form onSubmit={handleFeedbackSubmit} className="card p-sm mb" style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border)', borderRadius: 10 }}>
+            <form onSubmit={handleFeedbackSubmit} className="feedback-card p-sm mb">
               <div className="ff-group">
                 <div className="ff-label-text mb-xs">{t('requestDetail.rating')}</div>
-                <div className="flex flex-gap-xs">
+                <div className="flex gap-xs">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--border)' }} aria-label={`${star} ${star === 1 ? t('requestDetail.star') || 'star' : t('requestDetail.stars') || 'stars'}`}>
                       <Star size={18} fill={star <= feedbackRating ? 'var(--gov-saffron)' : 'transparent'} />
@@ -805,7 +805,7 @@ export default function RequestDetail() {
                   </label>
                 </div>
               </div>
-              <div className="flex flex-gap-sm mt-sm">
+              <div className="flex gap-sm mt-sm">
                 <RippleBtn type="submit" disabled={feedbackLoading} className="text-sm p-sm">
                   {feedbackLoading ? '...' : t('requestDetail.submit')}
                 </RippleBtn>
@@ -815,10 +815,10 @@ export default function RequestDetail() {
           )}
 
           {feedbackList.length > 0 ? (
-            <div className="flex-col flex-gap-sm">
+            <div className="flex-col gap-sm">
               {feedbackList.map((f) => (
                 <div key={f._id} className="text-sm p-sm bg-card rounded-sm">
-                  <div className="flex flex-gap-xs mb-xs">
+                  <div className="flex gap-xs mb-xs">
                     {[1, 2, 3, 4, 5].map((s) => (
                       <span key={s} style={{ color: s <= (f.rating ?? 0) ? 'var(--gov-saffron)' : 'var(--border)' }}><Star size={14} fill={s <= (f.rating ?? 0) ? 'var(--gov-saffron)' : 'transparent'} /></span>
                     ))}
@@ -826,7 +826,7 @@ export default function RequestDetail() {
                   </div>
                   {f.comment && <div>{f.comment}</div>}
                   {f.deliveryConfirmed && (
-                    <div className="small mt-xs flex flex-gap-xs" style={{ color: 'var(--color-resolved)' }}>
+                    <div className="small mt-xs flex gap-xs text-success">
                       <CheckCircle size={12} />
                       {t('requestDetail.deliveryConfirmed')}
                     </div>

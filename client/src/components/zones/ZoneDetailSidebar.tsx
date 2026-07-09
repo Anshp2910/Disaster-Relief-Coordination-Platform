@@ -29,7 +29,7 @@ export default function ZoneDetailSidebar({ zone, onClose, onEdit, onDelete }: Z
         <button onClick={onClose} className="bg-none border-none cursor-pointer p-0" aria-label={t('common.close')}><X size={18} /></button>
       </div>
 
-      <div className="flex flex-gap-xs mb-sm flex-wrap">
+      <div className="flex gap-xs mb-sm flex-wrap">
         <span className="severity-badge" data-severity={zone.severity}>
           {zone.severity}
         </span>
@@ -67,7 +67,7 @@ export default function ZoneDetailSidebar({ zone, onClose, onEdit, onDelete }: Z
       )}
 
       {currentUser?.role === 'admin' && (
-        <div className="flex flex-gap-sm mt-md">
+        <div className="flex gap-sm mt-md">
           <button onClick={() => onEdit(zone)} className="btn-ghost btn-sm" aria-label={t('common.edit')}>
             <Edit size={14} />
             {t('common.edit')}

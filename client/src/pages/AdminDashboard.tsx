@@ -321,7 +321,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
   }, [safeUsers])
 
   const renderTop = useMemo(() => (
-    <motion.div className="flex flex-gap-sm text-sm mb-md px-md" variants={itemVariants}>
+    <motion.div className="flex gap-sm text-sm mb-md px-md" variants={itemVariants}>
       <span className="govt-badge govt-badge-blue">
         <Users size={12} /> {roleCounts.volunteer} {t('auth.volunteer', { count: roleCounts.volunteer })}
       </span>
@@ -657,7 +657,7 @@ export default function AdminDashboard() {
 
       <motion.div className="card mb-xl" variants={fadeUp} initial="hidden" animate="visible">
           <nav aria-label={t('admin.title')}>
-          <div className="flex flex-gap-xs overflow-x-auto border-bottom" role="tablist">
+          <div className="flex gap-xs overflow-x-auto border-bottom" role="tablist">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id
               return (

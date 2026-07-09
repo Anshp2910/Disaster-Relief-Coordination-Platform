@@ -295,8 +295,7 @@ export default function BulkImport() {
   return (
     <PageTransition>
       <div className="container">
-      <div className="card">
-        <PageHeader title={t('bulkImport.title')} />
+      <PageHeader title={t('bulkImport.title')} />
 
         <motion.div
           initial="hidden"
@@ -312,7 +311,7 @@ export default function BulkImport() {
 
           {step === 'upload' && (
             <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-              <div className="flex flex-gap-sm mb-lg">
+              <div className="flex gap-sm mb-lg">
                 <RippleBtn onClick={downloadTemplate} className="btn-ghost btn-sm" aria-label={t('bulkImport.downloadTemplate')}>
                   <Download size={16} />
                   {t('bulkImport.downloadTemplate')}
@@ -414,7 +413,7 @@ export default function BulkImport() {
                 </div>
               </div>
 
-              <div className="flex flex-gap-sm">
+              <div className="flex gap-sm">
                 <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
                 <RippleBtn onClick={confirmMapping} className="text-sm p-sm flex items-center gap-xs">
                   {t('bulkImport.confirmMapping')} <ArrowRight size={14} />
@@ -427,7 +426,7 @@ export default function BulkImport() {
             <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
               <div className="flex-between mb">
                 <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
-                <div className="flex flex-gap-sm">
+                <div className="flex gap-sm">
                   <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
                   <RippleBtn
                     onClick={handleSubmitImport}
@@ -502,7 +501,7 @@ export default function BulkImport() {
                 const totalPages = Math.ceil(preview.length / PREVIEW_PAGE_SIZE)
                 if (totalPages <= 1) return null
                 return (
-                  <div className="flex flex-center flex-gap-sm mt-sm">
+                  <div className="flex flex-center gap-sm mt-sm">
                     <button
                       disabled={previewPage <= 1}
                       onClick={() => setPreviewPage((p) => Math.max(1, p - 1))}
@@ -550,7 +549,6 @@ export default function BulkImport() {
             </motion.div>
           )}
         </motion.div>
-      </div>
     </div>
     </PageTransition>
   )

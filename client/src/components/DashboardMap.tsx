@@ -108,7 +108,7 @@ function DashboardMapInner() {
         {!mapLoading && mapItems.length === 0 && (
           <EmptyState icon={<MapIcon size={32} />} title={t('dashboard.noRequests')} />
         )}
-        <div className="flex flex-gap-sm mt-sm flex-wrap">
+        <div className="flex gap-sm mt-sm flex-wrap">
           {Object.entries(MAP_MARKER_COLORS).map(([status, color]) => (
             <div key={status} className="gap-row-xs text-xs">
               <div className="icon-12" style={{ background: color }} />

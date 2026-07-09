@@ -338,7 +338,7 @@ export default function Incidents() {
                   <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer" aria-label={t('common.close')}><X size={18} /></button>
                 </div>
 
-                <div className="flex flex-gap-sm mb-sm flex-wrap">
+                <div className="flex gap-sm mb-sm flex-wrap">
                   <span className="text-xs text-semi severity-badge" data-severity={selectedIncident.severity}>
                     {selectedIncident.severity}
                   </span>
@@ -377,7 +377,7 @@ export default function Incidents() {
                 </div>
 
                 {currentUser?.role === 'admin' && (
-                  <div className="flex flex-gap-sm mt-md">
+                  <div className="flex gap-sm mt-md">
                     <button onClick={() => openEdit(selectedIncident)} className="text-sm p-xs flex items-center gap-xs" aria-label={t('common.edit')}>
                       <Edit size={14} />
                       {t('common.edit')}
@@ -418,7 +418,7 @@ export default function Incidents() {
             </div>
           </div>
 
-          <div className="flex flex-gap-sm">
+          <div className="flex gap-sm">
             <div className="ff-group flex-1">
               <ModernSelect
                 label={t('incidents.disasterType') || 'Disaster type'}
@@ -445,7 +445,7 @@ export default function Incidents() {
             </div>
           </div>
 
-          <div className="flex flex-gap-sm">
+          <div className="flex gap-sm">
             <div className="ff-group flex-1">
               <div className={`ff-wrap ${form.centerLat ? 'ff-focused' : ''}`}>
                 <input
@@ -515,7 +515,7 @@ export default function Incidents() {
             </div>
           </div>
 
-          <div className="flex flex-gap-sm mt">
+          <div className="flex gap-sm mt">
             <RippleBtn type="submit" className="btn-primary btn-sm">{editIncident ? t('incidents.update') : t('incidents.create')}</RippleBtn>
             <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm" aria-label={t('incidents.cancel')}>{t('incidents.cancel')}</button>
           </div>

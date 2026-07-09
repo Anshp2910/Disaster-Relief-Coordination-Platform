@@ -280,7 +280,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-auto flex flex-col flex-gap-sm p-sm relative"
+        className="flex-1 overflow-auto flex flex-col gap-sm p-sm relative"
         role="log"
         aria-live="polite"
       >
@@ -361,14 +361,14 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       )}
 
       {selectedFile && (
-        <div className="flex flex-gap-sm p-xs border-top bg-elevated items-center">
+        <div className="flex gap-sm p-xs border-top bg-elevated items-center">
           <Paperclip size={14} aria-hidden="true" />
           <span className="text-xs flex-1" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedFile.name}</span>
           <button onClick={() => setSelectedFile(null)} className="bg-none border-none cursor-pointer" aria-label={t('common.close')}><X size={14} /></button>
         </div>
       )}
 
-      <form onSubmit={handleSend} className="flex flex-gap-sm p-sm border-top">
+      <form onSubmit={handleSend} className="flex gap-sm p-sm border-top">
         <input
           ref={fileInputRef}
           type="file"

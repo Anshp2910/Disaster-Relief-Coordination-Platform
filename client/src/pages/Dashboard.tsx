@@ -216,7 +216,7 @@ export default function Dashboard() {
             <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
             <p className="text-sm text-muted mt-xs">{currentDate}</p>
           </div>
-          <div className="flex flex-gap-sm items-center">            <RippleBtn onClick={load}
+          <div className="flex gap-sm items-center">            <RippleBtn onClick={load}
               className="btn-secondary btn-sm"
               aria-label={t('dashboard.refresh')}
             >
@@ -235,7 +235,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* ── COMMAND CENTER STATUS BAR ── */}
-        <motion.div className="flex flex-gap-sm items-center mb-md" variants={fadeUp}>
+        <motion.div className="flex gap-sm items-center mb-md" variants={fadeUp}>
           <span className={`live-dot ${connected ? '' : 'live-dot--disconnected'}`}>
             {connected ? (t('dashboard.live') || 'Live') : (t('dashboard.offline') || 'Offline')}
           </span>
@@ -278,7 +278,7 @@ export default function Dashboard() {
         <DashboardMap />
 
         {/* ── QUICK ACTION NAV ── */}
-        <motion.div className="flex flex-gap-sm flex-wrap mb-lg" variants={fadeUp}>
+        <motion.div className="flex gap-sm flex-wrap mb-lg" variants={fadeUp}>
           <button
             onClick={() => navigate('/map')}
             className="btn-secondary btn-sm"
@@ -333,7 +333,7 @@ export default function Dashboard() {
 
           {/* ── Filters ── */}
           <nav aria-label={t('dashboard.filters') || 'Filters'}>
-            <div className="flex flex-gap-sm flex-wrap mb-sm">
+            <div className="flex gap-sm flex-wrap mb-sm">
               {filterOptions.map((f) => (
                 <button
                   key={f.key}
@@ -346,8 +346,8 @@ export default function Dashboard() {
                 </button>
               ))}
             </div>
-            <div className="flex flex-gap-sm flex-wrap items-center">
-              <div className="flex flex-gap-sm flex-wrap">
+            <div className="flex gap-sm flex-wrap items-center">
+              <div className="flex gap-sm flex-wrap">
                 {priorityOptions.map((p) => (
                   <button
                     key={p.key}
@@ -360,7 +360,7 @@ export default function Dashboard() {
                   </button>
                 ))}
               </div>
-              <div className="flex flex-gap-sm items-center ml-auto">
+              <div className="flex gap-sm items-center ml-auto">
                 <select
                   value={filterCategory}
                   onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }}
@@ -420,7 +420,7 @@ export default function Dashboard() {
                         whileHover={{ scale: 1.01 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div className="flex-between flex-gap-sm">
+                        <div className="flex-between gap-sm">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-xs mb-xs">
                               <span className="text-bold text-accent">{it.title}</span>
@@ -428,7 +428,7 @@ export default function Dashboard() {
                                 <AlertTriangle size={14} className="text-danger flex-shrink-0" />
                               )}
                             </div>
-                            <div className="flex flex-gap-sm flex-wrap mb-xs">
+                            <div className="flex gap-sm flex-wrap mb-xs">
                               <Badge
                                 label={t(`statuses.${it.status || 'Open'}`)}
                                 colors={STATUS_COLORS}

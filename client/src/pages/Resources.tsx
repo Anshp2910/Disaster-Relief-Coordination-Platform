@@ -415,7 +415,7 @@ export default function Resources() {
             />
           </div>
 
-          <div className="flex flex-gap-sm">
+          <div className="flex gap-sm">
             <div className="ff-group flex-1">
               <div className={`ff-wrap ${form.quantity ? 'ff-focused' : ''}`}>
                 <input
@@ -484,7 +484,7 @@ export default function Resources() {
             </div>
           </div>
 
-          <div className="flex flex-gap-sm mt">
+          <div className="flex gap-sm mt">
             <RippleBtn type="submit" className="btn-primary btn-sm" aria-label={editItem ? t('resources.update') : t('resources.create')}>
               <CheckCircle size={16} />
               <span className="ml-xs">{editItem ? t('resources.update') : t('resources.create')}</span>
@@ -497,7 +497,7 @@ export default function Resources() {
       <section aria-label={t('nav.resources')}>
         {selectMode && items.length > 0 && (
           <label
-            className="listCard flex flex-gap-sm items-center cursor-pointer p-sm border-bottom"
+            className="listCard flex gap-sm items-center cursor-pointer p-sm border-bottom"
           >
             <input
               type="checkbox"
@@ -520,7 +520,7 @@ export default function Resources() {
           keyExtractor={(r) => r._id}
           renderItem={(r) => (
             <div className={`listCard ${selectMode ? 'p-sm' : ''}`}>
-              <div className="flex flex-between flex-gap-sm">
+              <div className="flex flex-between gap-sm">
                 {selectMode && (
                   <label className="flex items-center cursor-pointer pr-sm">
                     <input
@@ -533,7 +533,7 @@ export default function Resources() {
                   </label>
                 )}
                 <div className="flex-1">
-                  <div className="flex flex-gap-sm flex-wrap">
+                  <div className="flex gap-sm flex-wrap">
                     <span className="text-bold text-lg">{r.name}</span>
                   <Badge label={t(`categories.${r.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={r.category} />
                   <Badge label={r.status || 'Available'} colors={RESOURCE_STATUS_COLORS} colorKey={r.status} />
@@ -549,7 +549,7 @@ export default function Resources() {
                   )}
                   {r.notes && <div className="small muted mt-xs">{r.notes}</div>}
                 </div>
-                <div className="flex flex-col flex-gap-xs">
+                <div className="flex flex-col gap-xs">
                   {r.status === 'Available' && (r.quantity ?? 0) > 0 && (
                     <button
                       onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
@@ -616,7 +616,7 @@ export default function Resources() {
               onChange={(v) => setBulkEditCategory(v)}
             />
           </div>
-          <div className="flex flex-gap-sm">
+          <div className="flex gap-sm">
             <RippleBtn type="submit" disabled={bulkUpdating} className="btn-primary btn-sm" aria-label={t('resources.apply') || 'Apply'}>
               <CheckCircle size={16} />
               <span className="ml-xs">{t('resources.apply') || 'Apply'}</span>
@@ -751,7 +751,7 @@ export default function Resources() {
                   </label>
                 </div>
               </div>
-              <div className="flex flex-gap-sm">
+              <div className="flex gap-sm">
                 <RippleBtn type="submit" disabled={allocating} className="btn-primary btn-sm" aria-label={t('resources.allocate')}>
                   {allocating ? '...' : (
                     <><CheckCircle size={16} /><span className="ml-xs">{t('resources.allocate')}</span></>

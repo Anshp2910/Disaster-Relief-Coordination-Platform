@@ -477,7 +477,7 @@ export default function Schedules() {
               const statusC = STATUS_COLORS[item.status || 'Scheduled'] ?? STATUS_COLORS.Scheduled!
               return (
                 <div className="listCard" style={{ cursor: 'default' }}>
-                  <div className="flex flex-gap-sm flex-wrap">
+                  <div className="flex gap-sm flex-wrap">
                     <span className="text-bold text-base flex items-center gap-xs">
                       <User size={16} className="text-muted" />
                       {(typeof item.userId === 'object' && item.userId) ? item.userId.displayName : t('schedules.volunteer')}
@@ -503,7 +503,7 @@ export default function Schedules() {
                   )}
 
                   {item.skills && item.skills.length > 0 && (
-                    <div className="flex flex-gap-xs mt-xs flex-wrap">
+                    <div className="flex gap-xs mt-xs flex-wrap">
                       {item.skills.map((s) => (
                         <span key={s} className="text-xs p-xs" style={{ borderRadius: 3, background: 'rgba(107,127,181,.08)', color: 'var(--accent-indigo)' }}>{s}</span>
                       ))}
@@ -578,7 +578,7 @@ export default function Schedules() {
             />
           </div>
 
-          <div className="flex flex-gap-sm">
+          <div className="flex gap-sm">
             <div className="ff-group flex-1">
               <div className={`ff-wrap ${form.startDate ? 'ff-focused' : ''}`}>
                 <input
@@ -624,7 +624,7 @@ export default function Schedules() {
 
           <div className="ff-group">
             <div className="ff-label-text mb-xs">{t('schedules.skills')}</div>
-            <div className="flex flex-gap-xs flex-wrap">
+            <div className="flex gap-xs flex-wrap">
               {SKILL_OPTIONS.map((s) => {
                 const active = form.skills.includes(s)
                 return (
@@ -657,7 +657,7 @@ export default function Schedules() {
             </div>
           </div>
 
-          <div className="flex flex-gap-sm mt">
+          <div className="flex gap-sm mt">
             <RippleBtn type="submit" className="flex items-center gap-xs" aria-label={t('common.submit')}>
               <CheckCircle size={16} />
               <span>{editItem ? t('schedules.update') : t('schedules.create')}</span>

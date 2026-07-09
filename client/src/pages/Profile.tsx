@@ -163,12 +163,10 @@ export default function Profile() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-      <div className="card mb-lg">
-        <PageHeader
-          title={t('profile.title')}
-          actions={<button onClick={() => navigate('/dashboard')} aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
-        />
-      </div>
+      <PageHeader
+        title={t('profile.title')}
+        actions={<button onClick={() => navigate('/dashboard')} className="btn-ghost btn-sm" aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
+      />
 
       <motion.div
         className="card mb-lg"
@@ -198,7 +196,7 @@ export default function Profile() {
             onChange={handleFileSelect}
             style={{ display: 'none' }}
           />
-          <div className="flex flex-gap-sm mt-sm">
+          <div className="flex gap-sm mt-sm">
             <RippleBtn type="button" className="text-xs" onClick={handleUploadAvatar} disabled={!selectedFile} aria-label="Upload photo">
               {t('profile.uploadPhoto')}
             </RippleBtn>
@@ -269,7 +267,7 @@ export default function Profile() {
               <Award size={14} aria-hidden="true" />
               {t('profile.skills')}
             </div>
-            <div className="flex flex-gap-xs flex-wrap mb">
+            <div className="flex gap-xs flex-wrap mb">
               {SKILL_OPTIONS.map((s) => (
                 <button
                   key={s}
@@ -289,24 +287,24 @@ export default function Profile() {
               <Bell size={14} aria-hidden="true" />
               {t('profile.notificationPreferences')}
             </div>
-            <div className="flex-col flex-gap-sm text-sm">
-              <div className="flex flex-gap-lg">
-                <label className="flex flex-gap-xs cursor-pointer">
+            <div className="flex-col gap-sm text-sm">
+              <div className="flex gap-lg">
+                <label className="flex gap-xs cursor-pointer">
                   <input type="checkbox" className="input-checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
                 </label>
-                <label className="flex flex-gap-xs cursor-pointer">
+                <label className="flex gap-xs cursor-pointer">
                   <input type="checkbox" className="input-checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
                 </label>
               </div>
               <div className="text-sm text-muted-extra">{t('profile.eventSubscriptions')}</div>
-              <div className="flex flex-gap-lg flex-wrap">
-                <label className="flex flex-gap-xs cursor-pointer">
+              <div className="flex gap-lg flex-wrap">
+                <label className="flex gap-xs cursor-pointer">
                   <input type="checkbox" className="input-checkbox" checked={notifications.newRequest === true} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
                 </label>
-                <label className="flex flex-gap-xs cursor-pointer">
+                <label className="flex gap-xs cursor-pointer">
                   <input type="checkbox" className="input-checkbox" checked={notifications.statusChange === true} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
                 </label>
-                <label className="flex flex-gap-xs cursor-pointer">
+                <label className="flex gap-xs cursor-pointer">
                   <input type="checkbox" className="input-checkbox" checked={notifications.newComment === true} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
                 </label>
               </div>

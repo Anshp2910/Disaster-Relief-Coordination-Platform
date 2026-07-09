@@ -230,7 +230,7 @@ export default function MapOverview() {
         )}
       </div>
 
-      <div className="flex flex-gap-lg mt flex-wrap">
+      <div className="flex gap-lg mt flex-wrap">
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
           <div key={status} className="flex text-sm gap-6 items-center">
             <MapPin size={14} style={{ color }} aria-hidden="true" />

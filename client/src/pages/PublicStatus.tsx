@@ -92,7 +92,7 @@ export default function PublicStatus() {
       ) : null}
 
       <motion.div
-        className="grid-4-responsive flex-gap-md"
+        className="grid-4-responsive gap-md"
         initial="hidden"
         animate="show"
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
@@ -123,9 +123,9 @@ export default function PublicStatus() {
           transition={{ delay: 0.15 }}
         >
           <h3 className="m-0 mb-sm text-base">{t('public.byStatus')}</h3>
-          <div className="flex flex-gap-lg flex-wrap">
+          <div className="flex gap-lg flex-wrap">
             {Object.entries(data.statusBreakdown as Record<string, number>).map(([status, count]) => (
-              <div key={status} className="flex flex-gap-xs items-center" aria-label={`${status}: ${count}`}>
+              <div key={status} className="flex gap-xs items-center" aria-label={`${status}: ${count}`}>
                 <div className="w-10 h-10 rounded-full flex-shrink-0" style={{ background: STATUS_COLORS[status] || 'var(--text-muted)' }} aria-hidden="true" />
                 <span className="text-sm">{status}: <strong>{count}</strong></span>
               </div>

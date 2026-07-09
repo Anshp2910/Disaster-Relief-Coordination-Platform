@@ -364,7 +364,7 @@ export default function RequestForm({
         {showRestore && (
           <div className="draft-banner">
             <span className="text-sm">{t('createRequest.draftFound') || 'You have an unsaved draft'}</span>
-            <div className="flex flex-gap-xs">
+            <div className="flex gap-xs">
               <RippleBtn type="button" onClick={restoreDraft} className="btn-secondary btn-sm">{t('createRequest.restore') || 'Restore'}</RippleBtn>
               <button type="button" onClick={dismissRestore} className="btn-ghost btn-sm">{t('createRequest.dismiss') || 'Dismiss'}</button>
             </div>
@@ -423,7 +423,7 @@ export default function RequestForm({
                 </div>
               </div>
 
-              <div className="flex flex-gap-sm">
+              <div className="flex gap-sm">
                 <div className="ff-group flex-1">
                   <ModernSelect
                     label={t('createRequest.categoryLabel')}
@@ -482,7 +482,7 @@ export default function RequestForm({
                 </div>
               </div>
 
-              <div className="flex flex-gap-sm mb-sm">
+              <div className="flex gap-sm mb-sm">
                 <button
                   type="button"
                   onClick={useMyLocation}
@@ -543,7 +543,7 @@ export default function RequestForm({
 
           {currentStep === 2 && (
             <div>
-              <div className="flex-col flex-gap-md py-sm">
+              <div className="flex-col gap-md py-sm">
                 <div className="ff-label-text">{t('createRequest.review') || 'Review your request'}</div>
                 <div className="review-card">
                   <div className="text-sm review-grid">

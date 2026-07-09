@@ -38,7 +38,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
           </div>
         </div>
 
-        <div className="flex flex-gap-sm">
+        <div className="flex gap-sm">
           <div className="ff-group flex-1">
             <ModernSelect
               label={t('zones.disasterType') || 'Disaster type'}
@@ -65,7 +65,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
           </div>
         </div>
 
-        <div className="flex flex-gap-sm">
+        <div className="flex gap-sm">
           <div className="ff-group flex-1">
             <div className={`ff-wrap ${form.centerLat ? 'ff-focused' : ''}`}>
               <input
@@ -102,7 +102,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
           </div>
         </div>
 
-        <div className="flex flex-gap-sm">
+        <div className="flex gap-sm">
           <div className="ff-group flex-1">
             <div className={`ff-wrap ${form.radiusKm ? 'ff-focused' : ''}`}>
               <input
@@ -171,7 +171,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
           </div>
         </div>
 
-        <div className="flex flex-gap-sm mt">
+        <div className="flex gap-sm mt">
           <RippleBtn type="submit" className="" disabled={saving} aria-label={t('common.submit')}>
             {saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}
           </RippleBtn>

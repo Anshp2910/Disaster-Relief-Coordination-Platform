@@ -263,7 +263,7 @@ export default function Geofencing() {
 
         {error && <ErrorState message={error} />}
 
-        <motion.div className="flex flex-gap-sm mt items-center flex-wrap" variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+        <motion.div className="flex gap-sm mt items-center flex-wrap" variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
           <label className="small text-nowrap" htmlFor="geo-radius">{t('geofencing.radiusLabel')}</label>
           <input
             id="geo-radius"
@@ -322,7 +322,7 @@ export default function Geofencing() {
 
         {monitoring && (
           <motion.div
-            className="flex flex-gap-sm mt-sm items-center"
+            className="flex gap-sm mt-sm items-center"
             variants={{ hidden: { opacity: 0 }, show: { opacity: 1 } }}
           >
             <div

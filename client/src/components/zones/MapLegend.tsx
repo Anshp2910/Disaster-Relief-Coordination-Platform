@@ -5,7 +5,7 @@ export default function MapLegend() {
   const { t } = useTranslation()
 
   return (
-    <div className="flex flex-gap-lg mt-sm flex-wrap">
+    <div className="flex gap-lg mt-sm flex-wrap">
       {Object.entries(SEVERITY_COLORS).map(([sev, c]) => (
         <div key={sev} className="gap-row-xs text-sm flex items-center gap-xs">
           <div className="w-3 h-3 rounded-sm" style={{ background: c.fill, border: `2px solid ${c.stroke}` }} />
