@@ -55,10 +55,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAdmin = user?.role === 'admin'
 
   const login = useCallback((tokenVal: string, userObj: User) => {
+    // Normalize: ensure `id` is populated from `_id` so that all permission checks
+    // (currentUser?.id === someOtherId) work correctly regardless of whether the
+    // server returns `_id` or `id`.
+    const normalized = { ...userObj }
+    if (normalized._id && !normalized.id) {
+      normalized.id = normalized._id as string
+    }
     safeSetItem('token', tokenVal)
-    safeSetItem('user', JSON.stringify(userObj))
+    safeSetItem('user', JSON.stringify(normalized))
     setToken(tokenVal)
-    setUser(userObj)
+    setUser(normalized)
     window.dispatchEvent(new Event('authchange'))
   }, [])
 

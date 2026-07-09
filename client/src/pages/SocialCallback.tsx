@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { safeSetItem } from '../utils/storage'
-import { API_BASE } from '../api/client'
+import { clientApi, API_BASE } from '../api/client'
 
 export default function SocialCallback() {
   useEffect(() => { document.title = 'Disaster Relief - Signing In...' }, [])
@@ -34,26 +34,19 @@ export default function SocialCallback() {
     // Store the auth token
     safeSetItem('token', token)
 
-    // Fetch user info from /me endpoint, then store and redirect
-    fetch(`${API_BASE}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+    // Fetch user info from /me endpoint using clientApi (handles envelope unwrapping), then store and redirect
+    clientApi.me().then((data) => {
+      const userData = (data as Record<string, unknown>).user
+      if (userData) {
+        safeSetItem('user', JSON.stringify(userData))
+      }
+      window.dispatchEvent(new Event('authchange'))
+      navigate('/dashboard', { replace: true })
+    }).catch(() => {
+      // If /me fails, token may still be valid — authchange lets AuthContext re-read from storage
+      window.dispatchEvent(new Event('authchange'))
+      navigate('/dashboard', { replace: true })
     })
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch user')
-        return res.json()
-      })
-      .then((data) => {
-        if (data.user) {
-          safeSetItem('user', JSON.stringify(data.user))
-        }
-        window.dispatchEvent(new Event('authchange'))
-        navigate('/dashboard', { replace: true })
-      })
-      .catch(() => {
-        // If /me fails, token may still be valid — authchange lets AuthContext re-read from storage
-        window.dispatchEvent(new Event('authchange'))
-        navigate('/dashboard', { replace: true })
-      })
   }, [navigate, searchParams])
 
   return (
