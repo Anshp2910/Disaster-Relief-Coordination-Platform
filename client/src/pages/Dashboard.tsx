@@ -17,16 +17,10 @@ import {
 } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { SkeletonList } from '../components/Skeleton'
-import { registerRefreshListener } from '../hooks/useSocket'
-import { useAuth } from '../context/AuthContext'
 import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, CATEGORY_OPTIONS } from '../utils/constants'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
-import RiskWidget from '../components/RiskWidget'
-import RequestsChart from '../components/RequestsChart'
-import DashboardMap from '../components/DashboardMap'
-import TaskList from '../components/TaskList'
 
 interface Item {
   _id: string
@@ -44,15 +38,6 @@ interface Item {
   matchedResources?: unknown[]
 }
 
-interface Stats {
-  totalUsers: number
-  totalRequests: number
-  byStatus?: Record<string, number>
-  byCategory?: Record<string, number>
-  byPriority?: Record<string, number>
-  dailyRequests?: Array<{ date: string; count: number }>
-}
-
 function formatDate(i18nLng: string): string {
   return new Date().toLocaleDateString(i18nLng, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
@@ -63,7 +48,6 @@ const fadeUp = createListItem(16, 0.3)
 export default function Dashboard() {
   useEffect(() => { document.title = 'Disaster Relief - Dashboard' }, [])
   const [items, setItems] = useState<Item[]>([])
-  const [stats, setStats] = useState<Stats | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState('All')
@@ -77,10 +61,6 @@ export default function Dashboard() {
   const { t, i18n } = useTranslation()
   const currentDate = formatDate(i18n.language)
 
-  const { user: currentUser } = useAuth()
-
-  const chartData = useMemo(() => stats?.dailyRequests?.map((d) => ({ date: d.date, count: d.count })) || [], [stats?.dailyRequests])
-
   const load = useCallback(async () => {
     setLoading(true)
     setError('')
@@ -89,32 +69,17 @@ export default function Dashboard() {
       if (filterStatus !== 'All') params.status = filterStatus
       if (filterPriority !== 'All') params.priority = filterPriority
       if (filterCategory !== 'All') params.category = filterCategory
-      const data = await clientApi.getRequests(params) as { items?: Item[]; pages?: number; total?: number; byStatus?: Record<string, number>; byPriority?: Record<string, number>; byCategory?: Record<string, number>; dailyRequests?: Array<{ date: string; count: number }> }
+      const data = await clientApi.getRequests(params) as { items?: Item[]; pages?: number }
       setItems(data.items || [])
       setTotalPages(data.pages || 1)
-      setStats({
-        totalRequests: data.total || 0,
-        byStatus: data.byStatus,
-        byPriority: data.byPriority,
-        byCategory: data.byCategory,
-        dailyRequests: data.dailyRequests?.map((d) => ({ date: d.date, count: d.count })),
-        totalUsers: currentUser ? 1 : 0,
-      })
     } catch (e) {
       setError(getErrorMessage(e) || t('dashboard.failedToLoad'))
     } finally {
       setLoading(false)
     }
-  }, [page, filterStatus, filterPriority, filterCategory, sortBy, t, currentUser])
+  }, [page, filterStatus, filterPriority, filterCategory, sortBy, t])
 
   useEffect(() => { load() }, [load])
-
-  useEffect(() => {
-    return registerRefreshListener(
-      ['request:created', 'request:updated', 'request:deleted', 'request:commented', 'resource:allocated'],
-      () => { load() }
-    )
-  }, [load])
 
   const filterOptions = useMemo(() => [
     { key: 'All', label: t('dashboard.filterAll') },
@@ -177,23 +142,6 @@ export default function Dashboard() {
             </RippleBtn>
           </div>
         </motion.div>
-
-        {/* ── VISUALIZATION GRID ── */}
-        <motion.div className="bento-grid mb-sm" variants={fadeUp}>
-          {(loading || stats) && (
-            <div className="bento-card">
-              <RiskWidget stats={stats} loading={loading} />
-            </div>
-          )}
-          <div className="bento-card bento--wide">
-            <RequestsChart data={chartData} />
-          </div>
-          <div className="bento-card bento--wide">
-            <TaskList requests={items} loading={loading} />
-          </div>
-        </motion.div>
-
-        <DashboardMap />
 
         {/* ── QUICK ACTION NAV ── */}
         <motion.div className="mb-sm" variants={fadeUp}>
