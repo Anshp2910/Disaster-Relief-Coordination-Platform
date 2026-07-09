@@ -157,8 +157,7 @@ export default function Dashboard() {
       >
         {/* ── PAGE HEADER ── */}
         <motion.div className="flex-between mb-md" variants={fadeUp}>
-          <div>
-            <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
+          <div>                <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
             <p className="text-sm text-muted mt-xs">{currentDate}</p>
           </div>
           <div className="flex gap-sm items-center">            <RippleBtn onClick={load}
@@ -179,7 +178,7 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* ── VISUALIZATION BENTO GRID ── */}
+        {/* ── VISUALIZATION GRID ── */}
         <motion.div className="bento-grid mb-sm" variants={fadeUp}>
           {(loading || stats) && (
             <div className="bento-card">
@@ -190,9 +189,7 @@ export default function Dashboard() {
             <RequestsChart data={chartData} />
           </div>
           <div className="bento-card bento--wide">
-            <div className="bento-card-scroll-content">
-              <TaskList requests={items} loading={loading} />
-            </div>
+            <TaskList requests={items} loading={loading} />
           </div>
         </motion.div>
 
@@ -325,8 +322,7 @@ export default function Dashboard() {
             ) : (
               <>
                 <div className="gridGap mt-lg">
-                  {items.length === 0 ? (
-                    <div style={{ gridColumn: '1 / -1' }}>
+                  {items.length === 0 ? (                      <div className="grid-full">
                       <EmptyState
                         icon={<ClipboardList size={32} />}
                         title={t('dashboard.noRequests')}

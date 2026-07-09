@@ -33,11 +33,6 @@ function timeSince(dateStr: string, tr: (key: string, opts?: Record<string, unkn
   return tr('taskList.daysAgo', { count: days })
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
-}
-
 function TaskListInner({ requests, loading = false }: TaskListProps) {
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -58,9 +53,9 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
 
   if (loading) {
     return (
-    <motion.div className="bento-card mb-md" variants={reduced ? {} : cardVariants}>
-      <div className="bento-header">
-        <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
+      <>
+        <div className="bento-header">
+          <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
           {Array.from({ length: 4 }).map((_, i) => (
@@ -70,17 +65,17 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
             </div>
           ))}
         </div>
-      </motion.div>
+      </>
     )
   }
 
   return (
-    <motion.div className="bento-card mb-md" variants={cardVariants}>
+    <>
       <div className="bento-header">
         <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
         <span className="text-xs text-muted">{t('taskList.openCount', { count: tasks.length })}</span>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+      <div className="bento-card-scroll-content">
         {tasks.length === 0 ? (
           <div className="text-sm text-muted p-md text-center">{t('taskList.noOpenTasks')}</div>
         ) : (
@@ -114,7 +109,7 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
           ))
         )}
       </div>
-    </motion.div>
+    </>
   )
 }
 

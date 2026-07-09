@@ -35,11 +35,11 @@ interface FeatureNavProps {
 }
 
 export function FeatureNav({ mobile = false, showNav = true }: FeatureNavProps) {
-  if (!showNav) return null
   const location = useLocation()
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
+  if (!showNav) return null
 
   const isActive = (path: string) => {
     if (path === '/dashboard') return location.pathname === '/dashboard'
@@ -64,7 +64,7 @@ export function FeatureNav({ mobile = false, showNav = true }: FeatureNavProps) 
     return (
       <>
         <div className="gov-navbar-mobile-section-label">{t('nav.navigation')}</div>
-        {links}
+        <div className="gov-navbar-mobile-links">{links}</div>
       </>
     )
   }

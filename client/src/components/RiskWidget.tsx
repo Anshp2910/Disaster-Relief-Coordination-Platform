@@ -38,18 +38,13 @@ function calcRisk(stats: AdminStats | null, t: (key: string) => string): RiskInf
   return { level: t('risk.low'), score, color: '#22c55e' }
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
-}
-
 function RiskWidgetInner({ stats, loading = false }: RiskWidgetProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
   const risk = useMemo(() => calcRisk(stats, t), [stats, t])
 
   return (
-    <motion.div className="bento-card" variants={reduced ? {} : cardVariants}>
+    <>
       <div className="flex-between mb-sm">
         <span className="bento-title">{t('risk.title')}</span>
         {loading ? <div className="sk-line" style={{ width: 18, height: 18, borderRadius: '50%' }} /> : <AlertTriangle size={18} style={{ color: risk.color }} />}
@@ -75,7 +70,7 @@ function RiskWidgetInner({ stats, loading = false }: RiskWidgetProps) {
           </div>
         </>
       )}
-    </motion.div>
+    </>
   )
 }
 

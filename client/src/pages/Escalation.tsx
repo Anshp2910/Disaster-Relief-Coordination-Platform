@@ -232,7 +232,7 @@ export default function Escalation() {
               </label>
             </div>
           </div>
-          <button type="submit" className="sf-btn sf-btn-next" aria-label={t('escalation.escalateRequest')}>
+          <button type="submit" className="btn-primary btn-sm" aria-label={t('escalation.escalateRequest')}>
             <ArrowUp size={16} />
             {t('escalation.escalateRequest')}
           </button>
@@ -251,7 +251,7 @@ export default function Escalation() {
         loading={loading}
         emptyTitle={search ? t('escalation.noMatch') : t('escalation.noEscalated')}
         renderItem={(item) => (
-          <div className="listCard border-l-4" style={{ borderLeftColor: 'var(--gov-danger)' }}>
+          <div className="listCard border-l-4 border-l-danger">
             <div className="flex-between">
               <div className="flex-1">
                 <div className="text-bold text-base text-accent">{item.title}</div>

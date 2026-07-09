@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -7,7 +7,7 @@ import { ShieldCheck, Activity, Eye, EyeOff, Loader2, GitBranch, Globe } from 'l
 import { clientApi, API_BASE } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
-const STATS = [
+const FALLBACK_STATS = [
   { value: '12,450+', key: 'auth.statOps' },
   { value: '2,800+', key: 'auth.statVolunteers' },
   { value: '340+', key: 'auth.statNgos' },
@@ -19,6 +19,21 @@ const item = createListItem(20, 0.5)
 
 export default function Login() {
   useEffect(() => { document.title = 'Disaster Relief - Login' }, [])
+  const [liveStats, setLiveStats] = useState(FALLBACK_STATS)
+  const fetchedRef = useRef(false)
+  useEffect(() => {
+    if (fetchedRef.current) return
+    fetchedRef.current = true
+    clientApi.getPublicOverview().then((res) => {
+      const d = res as Record<string, unknown>
+      setLiveStats([
+        { value: `${(d.activeRequests as number) || 0}+`, key: 'auth.statOps' },
+        { value: `${(d.totalResources as number) || 0}+`, key: 'auth.statVolunteers' },
+        { value: `${(d.activeIncidents as number) || 0}+`, key: 'auth.statNgos' },
+        { value: '98.2%', key: 'auth.statResponse' },
+      ])
+    }).catch(() => { /* use fallback */ })
+  }, [])
   const [email, setEmail] = useState(() => {
     try { return localStorage.getItem('rememberedEmail') || '' } catch { return '' }
   })
@@ -76,7 +91,7 @@ export default function Login() {
           </motion.p>
 
           <motion.div className="auth-hero-stats" variants={item}>
-            {STATS.map((s) => (
+            {liveStats.map((s) => (
               <motion.div key={s.key} className="auth-hero-stat">
                 <div className="auth-hero-stat-value">{s.value}</div>
                 <div className="auth-hero-stat-label">{t(s.key)}</div>

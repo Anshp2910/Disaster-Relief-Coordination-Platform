@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
@@ -8,7 +8,7 @@ import { clientApi, API_BASE } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import { evaluatePasswordStrength } from '../utils/passwordStrength'
 
-const STATS = [
+const FALLBACK_STATS = [
   { value: '12,450+', key: 'auth.statOps' },
   { value: '2,800+', key: 'auth.statVolunteers' },
   { value: '340+', key: 'auth.statNgos' },
@@ -20,9 +20,26 @@ const item = createListItem(20, 0.5)
 
 export default function Register() {
   useEffect(() => { document.title = 'Disaster Relief - Register' }, [])
+  const [liveStats, setLiveStats] = useState(FALLBACK_STATS)
+  const fetchedRef = useRef(false)
+  useEffect(() => {
+    if (fetchedRef.current) return
+    fetchedRef.current = true
+    clientApi.getPublicOverview().then((res) => {
+      const d = res as Record<string, unknown>
+      setLiveStats([
+        { value: `${(d.activeRequests as number) || 0}+`, key: 'auth.statOps' },
+        { value: `${(d.totalResources as number) || 0}+`, key: 'auth.statVolunteers' },
+        { value: `${(d.activeIncidents as number) || 0}+`, key: 'auth.statNgos' },
+        { value: '98.2%', key: 'auth.statResponse' },
+      ])
+    }).catch(() => { /* use fallback */ })
+  }, [])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [role, setRole] = useState('volunteer')
   const [displayName, setDisplayName] = useState('')
   const [error, setError] = useState('')
@@ -43,6 +60,10 @@ export default function Register() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    if (password !== confirmPassword) {
+      setError(t('auth.passwordsDoNotMatch'))
+      return
+    }
     setLoading(true)
     try {
       const { token, user } = (await clientApi.register({ email, password, role, displayName })) as { token: string; user: Record<string, unknown> }
@@ -74,7 +95,7 @@ export default function Register() {
           </motion.p>
 
           <motion.div className="auth-hero-stats" variants={item}>
-            {STATS.map((s) => (
+            {liveStats.map((s) => (
               <motion.div key={s.key} className="auth-hero-stat">
                 <div className="auth-hero-stat-value">{s.value}</div>
                 <div className="auth-hero-stat-label">{t(s.key)}</div>
@@ -159,6 +180,16 @@ export default function Register() {
                 <div className="password-strength-label">{t(strength.labelKey)}</div>
               </motion.div>
             )}
+
+            <motion.div className="auth-field" variants={item}>
+              <label htmlFor="reg-confirm-password" className="auth-label">{t('auth.confirmPassword')}</label>
+              <div className="auth-input-wrap">
+                <input id="reg-confirm-password" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={8} maxLength={128} autoComplete="new-password" className="auth-input" placeholder={t('auth.confirmPassword')} aria-describedby={error ? 'register-error' : undefined} />
+                <button type="button" className="auth-pw-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-label={showConfirmPassword ? t('auth.hidePassword') : t('auth.showPassword')} tabIndex={0}>
+                  {showConfirmPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+                </button>
+              </div>
+            </motion.div>
 
             <motion.div className="auth-field" variants={item}>
               <label htmlFor="reg-role" className="auth-label">{t('auth.role')}</label>

@@ -367,6 +367,9 @@ TYPOGRAPHY — Friendly, Approachable Font Stack
   /* ── Toast Tokens ── */
   --toast-radius: var(--radius-md);
 
+  /* ── Chat Tokens ── */
+  --chat-max-height: 500px;
+
   /* ── Skeleton Tokens ── */
   --sk-shimmer-speed: 1.5s;
   --sk-shimmer-ease: var(--ease-in-out);

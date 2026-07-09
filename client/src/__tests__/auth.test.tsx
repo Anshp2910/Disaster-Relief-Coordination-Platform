@@ -14,6 +14,7 @@ vi.mock('../api/client', () => ({
     login: vi.fn(),
     register: vi.fn(),
     socialLogin: vi.fn(),
+    getPublicOverview: vi.fn().mockResolvedValue({}),
   },
 }))
 

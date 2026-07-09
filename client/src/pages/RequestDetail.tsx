@@ -662,7 +662,6 @@ export default function RequestDetail() {
                               maxLength={2000}
                               className={`ff-input ${editCommentText ? 'ff-input-filled' : ''}`}
                               placeholder={t('requestDetail.editComment') || 'Edit your comment...'}
-                              autoFocus
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                   e.preventDefault()

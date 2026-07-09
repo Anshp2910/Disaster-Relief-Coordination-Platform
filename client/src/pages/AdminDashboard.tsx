@@ -387,7 +387,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
         </button>
       ),
     },
-  ], [t])
+  ], [t, onChangeRole, onDelete])
 
   return (
     <section aria-label={t('admin.userManagementLabel')}>
@@ -498,7 +498,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
         </button>
       ),
     },
-  ], [t, navigate])
+  ], [t, onDelete])
 
   return (
     <section aria-label={t('admin.requestManagementLabel')}>

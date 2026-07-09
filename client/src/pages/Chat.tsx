@@ -265,7 +265,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
 
   return (
     <>
-      <div className="flex flex-col h-100" style={{ maxHeight: 500 }}>
+      <div className="flex flex-col h-100 chat-container">
       <div className="flex flex-between flex-center p-sm border-bottom">
         <h3 className="m-0 text-sm text-accent">{t('chat.title')}</h3>
         <div className="flex items-center gap-xs">

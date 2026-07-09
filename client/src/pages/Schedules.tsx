@@ -150,7 +150,7 @@ export default function Schedules() {
     }
   }, [page, filterStatus, filterShift, filterZone, dateFrom, dateTo, debouncedSearch])
 
-  async function loadDropdowns() {
+  const loadDropdowns = useCallback(async () => {
     try {
       const zonesData = await clientApi.getZones() as { items?: Zone[] }
       setZones(zonesData.items || [])
@@ -167,10 +167,10 @@ export default function Schedules() {
     } else {
       setUsers([{ _id: currentUser?.id || '', displayName: currentUser?.displayName || currentUser?.email, role: currentUser?.role }])
     }
-  }
+  }, [currentUser])
 
   useEffect(() => { load() }, [load])
-  useEffect(() => { loadDropdowns() }, [currentUser])
+  useEffect(() => { loadDropdowns() }, [loadDropdowns])
 
   useAutoRefresh(load, { interval: 20000 })
 

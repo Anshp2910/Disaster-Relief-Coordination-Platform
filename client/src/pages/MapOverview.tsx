@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Filter, MapPin } from 'lucide-react'
+import { MapPin, ListFilter } from 'lucide-react'
 import { PageHeader, ErrorState, PageTransition } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
@@ -59,7 +59,7 @@ export default function MapOverview() {
 
   const load = useCallback(async () => {
     try {
-      const data = await clientApi.getRequests({ limit: '1000' }) as { items?: Item[] }
+      const data = await clientApi.getRequests({ limit: 200, sort: '-createdAt' }) as { items?: Item[] }
       setItems(data.items || [])
       setLoading(false)
     } catch (e) {
@@ -166,47 +166,51 @@ export default function MapOverview() {
       <div className="card mb-md">
         <PageHeader
           title={t('dashboard.mapView')}
-          actions={<button onClick={() => navigate('/dashboard')} aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
+          actions={<button onClick={() => navigate('/dashboard')} className="btn-ghost btn-sm" aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
         />
-        <div className="filter-row">
-          <Filter size={16} className="text-muted flex-shrink-0 self-center" aria-hidden="true" />
-          {filterOptions.map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setFilterStatus(f.key)}
-              className={`filter-pill flex-shrink-0 ${filterStatus === f.key ? 'active' : ''}`}
-              aria-label={t('map.filterByStatus') + ': ' + f.label}
+        <div className="flex gap-sm flex-wrap items-center">
+          <div className="flex items-center gap-xs text-muted text-xs font-semibold flex-shrink-0" aria-hidden="true">
+            <ListFilter size={14} />
+          </div>
+          <div className="flex gap-2xs flex-wrap">
+            {filterOptions.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilterStatus(f.key)}
+                className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
+                aria-label={t('map.filterByStatus') + ': ' + f.label}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-2xs flex-wrap">
+            {PRIORITY_FILTER_KEYS.map((p) => (
+              <button
+                key={p}
+                onClick={() => setFilterPriority(p)}
+                className={`filter-pill text-xs ${filterPriority === p ? 'active' : ''}`}
+                style={p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : undefined}
+                aria-label={`${t('map.filterByPriority')}: ${p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}`}
+              >
+                {p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}
+              </button>
+            ))}
+          </div>
+          <div className="filter-group">
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="filter-select"
+              aria-label={t('map.filterByCategory')}
             >
-              {f.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="filter-row mt-sm">
-          {PRIORITY_FILTER_KEYS.map((p) => (
-            <button
-              key={p}
-              onClick={() => setFilterPriority(p)}
-              className={`filter-pill text-xs flex-shrink-0 ${filterPriority === p ? 'active' : ''}`}
-              style={p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : undefined}
-              aria-label={`${t('map.filterByPriority')}: ${p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}`}
-            >
-              {p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}
-            </button>
-          ))}
-        </div>
-
-        <div className="filter-row mt-sm">
-          {CATEGORY_FILTER_KEYS.map((c) => (
-            <button
-              key={c}
-              onClick={() => setFilterCategory(c)}
-              className={`filter-pill text-xs flex-shrink-0 ${filterCategory === c ? 'active' : ''}`}
-              aria-label={`${t('map.filterByCategory')}: ${c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}`}
-            >
-              {c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}
-            </button>
-          ))}
+              {CATEGORY_FILTER_KEYS.map((c) => (
+                <option key={c} value={c}>
+                  {c === 'All' ? t('dashboard.filterAll') : t(`categories.${c}`)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -234,7 +238,7 @@ export default function MapOverview() {
         {Object.entries(STATUS_COLORS).map(([status, color]) => (
           <div key={status} className="flex text-sm gap-6 items-center">
             <MapPin size={14} style={{ color }} aria-hidden="true" />
-            <span>{t(`statuses.${status}`)}</span>
+            <span className="text-xs text-muted">{t(`statuses.${status}`)}</span>
           </div>
         ))}
       </div>

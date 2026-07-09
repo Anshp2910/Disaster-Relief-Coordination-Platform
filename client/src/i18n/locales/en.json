@@ -143,6 +143,7 @@
   },
   "dashboard": {
     "greeting": "Welcome",
+    "emergencyCommandCenter": "Emergency Command Center",
     "createRequest": "New Request",
     "filterCategory": "Category",
     "sortBy": "Sort by",

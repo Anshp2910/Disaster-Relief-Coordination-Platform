@@ -11,11 +11,9 @@
 .gov-main {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   padding-top: var(--navbar-height, 56px);
-  padding-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
 }
 
 /* ── Offset content when the sub-navigation bar is present ── */
@@ -27,7 +25,8 @@
 
 .gov-main > .container,
 .gov-main > div > .container {
-  padding-top: var(--space-sm);
+  padding-top: var(--space-2xs);
+  padding-bottom: var(--space-2xs);
 }
 
 /* ── Container Scale ── */
@@ -35,7 +34,7 @@
   width: 100%;
   max-width: min(var(--shell-max), 100% - 2rem);
   margin: 0 auto;
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-md);
   box-sizing: border-box;
 }
 
@@ -52,7 +51,7 @@
 
 /* ── Page Sections ── */
 .page-section {
-  padding: var(--space-lg) 0;
+  padding: var(--space-sm) 0;
 }
 
 .page-section + .page-section {

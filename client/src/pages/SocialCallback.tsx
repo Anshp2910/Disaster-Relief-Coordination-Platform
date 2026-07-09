@@ -47,7 +47,7 @@ export default function SocialCallback() {
       window.dispatchEvent(new Event('authchange'))
       navigate('/dashboard', { replace: true })
     })
-  }, [navigate, searchParams])
+  }, [navigate, searchParams, t])
 
   return (
     <motion.div

@@ -21,8 +21,11 @@ const ROUTE_LABELS: Record<string, string> = {
   'geofencing': 'nav.geofencing',
   'escalation': 'nav.escalation',
   'bulk-import': 'nav.bulkImport',
+  'bulk': 'nav.bulkImport',
   'new': 'common.new',
   'edit': 'common.edit',
+  'public': 'public.title',
+  'social-callback': 'auth.socialCallback',
 }
 
 export default function Breadcrumbs() {

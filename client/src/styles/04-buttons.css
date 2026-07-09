@@ -203,7 +203,7 @@ button.btn,
   background: var(--bg-card);
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: all var(--duration-normal) var(--ease-spring);
   white-space: nowrap;
   min-height: 44px;
 }
@@ -225,15 +225,20 @@ button.btn,
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-soft);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-xs);
 }
 .btn-filter.active,
 .filter-pill.active {
   background: var(--accent);
   color: var(--text-on-accent);
   border-color: var(--accent);
+  box-shadow: var(--shadow-accent);
 }
 .btn-filter:focus-visible,
 .filter-pill:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-ring-offset); }
+
+
 
 /* ── De-escalate Button ── */
 .btn-deescalate {

@@ -324,6 +324,9 @@ export default function BulkImport() {
 
               <div
                 className="p-2xl text-center border-dashed-2 rounded"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('file-upload-input')?.click() } }}
                 onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-soft)' }}
                 onDragLeave={(e) => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = '' }}
                 onDrop={async (e) => {

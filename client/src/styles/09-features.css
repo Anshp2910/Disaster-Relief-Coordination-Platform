@@ -3,7 +3,7 @@
    ================================================================ */
 
 /* ── 1. Map Styles ── */
-.mapBox { min-height: 360px; height: 40vh; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); transition: all var(--duration-normal) var(--ease-out); }
+.mapBox { min-height: 280px; height: 35vh; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); transition: all var(--duration-normal) var(--ease-out); }
 
 /* ── 3. Chat UI ── */
 .typing-indicator { display: flex; align-items: center; gap: var(--space-4xs); padding: var(--space-3xs) var(--space-xsml); font-style: italic; animation: fadeIn var(--duration-normal) var(--ease-out); }
@@ -339,6 +339,35 @@
     min-height: 80px;
     padding: var(--space-2xs);
   }
+}/* ── Map Legend Dot ── */
+.legend-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+.legend-dot::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dot-color, var(--text-muted));
+  flex-shrink: 0;
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 0 1px var(--border);
+}
+
+/* ── Map Legend Row ── */
+.map-legend-row {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
 }
 
 /* ── 5. Severity Badge ── */
@@ -514,8 +543,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-xs);
-  padding: var(--space-lg) var(--space-md);
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--space-md);
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -852,40 +881,35 @@
 
 /* ── Dashboard List Constrained ── */
 .dashboard-list-constrained {
-  max-height: 480px;
+  max-height: 280px;
   display: flex;
   flex-direction: column;
 }
 .dashboard-list-constrained .gridGap {
   overflow-y: auto;
   scrollbar-gutter: stable;
-  -webkit-overflow-scrolling: touch;
   flex: 1;
   min-height: 0;
 }
 
 /* ── Dashboard Map Constrained ── */
-@media (max-width: 768px) {
-  .bento-card-scroll-content { max-height: 200px; }
-}
-@media (min-height: 900px) {
-  .bento-card-scroll-content { max-height: 320px; }
-}
-
-/* ── Dashboard Map Constrained ── */
 .dashboard-map {
-  height: 200px;
+  height: 160px;
   border-radius: var(--radius-2xs);
   overflow: hidden;
 }
 @media (min-width: 1200px) {
-  .dashboard-map { height: 260px; }
+  .dashboard-map { height: 200px; }
+}
+
+/* ── Chat Container ── */
+.chat-container {
+  max-height: var(--chat-max-height, 500px);
 }
 
 /* ── Bento Card Content Scroll ── */
 .bento-card-scroll-content {
-  max-height: 260px;
+  max-height: 160px;
   overflow-y: auto;
   scrollbar-gutter: stable;
-  -webkit-overflow-scrolling: touch;
 }
