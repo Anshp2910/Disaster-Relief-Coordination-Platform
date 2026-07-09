@@ -81,7 +81,7 @@ export default function ForgotPassword() {
     <div className="auth-page">
       <div className="auth-card">
         <motion.form className="auth-content" variants={container} initial="hidden" animate="visible" onSubmit={handleSubmit}>
-          <motion.div className="flex-center" style={{ fontSize: '3rem', color: 'var(--primary)' }} variants={item}>
+           <motion.div className="flex-center" style={{ fontSize: '3rem', color: 'var(--accent)' }} variants={item}>
             <Mail size={48} />
           </motion.div>
           <motion.h1 className="auth-title" variants={item}>{t('auth.forgotPassword')}</motion.h1>
