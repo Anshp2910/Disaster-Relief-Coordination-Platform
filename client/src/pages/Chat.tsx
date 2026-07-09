@@ -297,7 +297,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
       >
         {hasMore && (
           <button onClick={() => loadMessages(page + 1)} className="text-xs btn-ghost text-accent" disabled={loading}>
-            {loading ? <span className="spinner-sm" /> : t('chat.loadEarlier')}
+            {loading ? <span className="spinner-sm" aria-hidden="true" /> : t('chat.loadEarlier')}
           </button>
         )}
         {loading && <SkeletonList count={4} lines={1} />}
@@ -353,7 +353,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         <div ref={bottomRef} />
       </div>
 
-      {!connected && <div className="text-xs text-muted flex items-center gap-xs mt-xs"><span className="spinner-sm" /> Connecting...</div>}
+      {!connected && <div className="text-xs text-muted flex items-center gap-xs mt-xs"><span className="spinner-sm" aria-hidden="true" /> Connecting...</div>}
 
       {showScrollBtn && (
         <button
@@ -408,7 +408,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
         </div>
         <span className={`text-xs self-center ${text.length > 1800 ? 'text-warning' : ''} ${text.length >= 2000 ? 'text-danger' : ''}`}>{text.length}/2000</span>
         <button type="submit" className="btn-primary btn-sm flex items-center gap-xs h-auto" disabled={(!text.trim() && !selectedFile) || sending}>
-          {sending ? <><span className="spinner-sm" /> Sending...</> : <><Send size={14} /> {t('chat.send')}</>}
+          {sending ? <><span className="spinner-sm" aria-hidden="true" /> Sending...</> : <><Send size={14} /> {t('chat.send')}</>}
         </button>
       </form>      </div>
     </>

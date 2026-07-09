@@ -250,7 +250,7 @@ export default function Escalation() {
             </div>
           </div>
           <button type="submit" className="btn-primary btn-sm" aria-label={t('escalation.escalateRequest')} disabled={escalating}>
-            {escalating ? <span className="spinner-sm" /> : <ArrowUp size={16} />}
+            {escalating ? <span className="spinner-sm" aria-hidden="true" /> : <ArrowUp size={16} />}
             {escalating ? 'Escalating...' : t('escalation.escalateRequest')}
           </button>
         </form>

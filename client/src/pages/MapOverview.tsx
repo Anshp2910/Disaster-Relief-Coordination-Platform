@@ -225,7 +225,7 @@ export default function MapOverview() {
 
         {!loading && error && (
           <div className="flex flex-col flex-center inset-0 bg-elevated">
-            <ErrorState message={error} />
+            <ErrorState message={error} onRetry={load} />
           </div>
         )}
 

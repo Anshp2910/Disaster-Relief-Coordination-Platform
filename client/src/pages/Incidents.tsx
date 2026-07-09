@@ -185,7 +185,7 @@ export default function Incidents() {
         <div className="flex gap-md flex-wrap">
           <div className="flex-1 min-w-0">
             <div className="card p-0">
-              <div ref={mapRef} className="map-container-full w-full" style={{ minHeight: '55vh' }} />
+              <div ref={mapRef} className="map-container-full w-full" style={{ minHeight: '55vh' }} aria-label="Incident map" />
             </div>
           </div>
 
@@ -193,7 +193,7 @@ export default function Incidents() {
             <div className="card w-320">
               <div className="flex-between mb-sm">
                 <h3 className="m-0 text-accent flex items-center gap-xs"><AlertTriangle size={16} /> {selectedIncident.name}</h3>
-                <button onClick={() => setSelectedIncident(null)} className="bg-none border-none cursor-pointer" aria-label="Close sidebar"><X size={18} /></button>
+                <button onClick={() => setSelectedIncident(null)} className="btn-ghost" aria-label="Close sidebar"><X size={18} /></button>
               </div>
               <div className="flex gap-sm mb-sm flex-wrap">
                 <span className="status-badge" style={{ color: SEVERITY_COLORS[selectedIncident.severity || ''] || 'var(--text-muted)', background: 'var(--bg-subtle)' }}>{selectedIncident.severity}</span>
@@ -267,7 +267,7 @@ export default function Incidents() {
             </div>
           </div>
           <div className="flex gap-sm mt-sm">
-            <button type="submit" className="btn-primary btn-sm" disabled={submitting}>{submitting ? <span className="spinner-sm" /> : (editIncident ? t('incidents.update') : t('incidents.create'))}</button>
+            <button type="submit" className="btn-primary btn-sm" disabled={submitting}>{submitting ? <span className="spinner-sm" aria-hidden="true" /> : (editIncident ? t('incidents.update') : t('incidents.create'))}</button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm">{t('incidents.cancel')}</button>
           </div>
         </form>

@@ -371,7 +371,7 @@ export default function RequestForm({
           </div>
         )}
 
-        {error && <div className="error-text mt-sm mb-sm" role="alert" aria-live="polite" id="rf-error">{error}</div>}
+        {error && <div className="error-text animate-shake mt-sm mb-sm" role="alert" aria-live="polite" id="rf-error">{error}</div>}
 
         <StepForm
           steps={STEPS}

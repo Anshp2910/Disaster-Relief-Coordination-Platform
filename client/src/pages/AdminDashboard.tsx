@@ -642,7 +642,7 @@ export default function AdminDashboard() {
               aria-label={t('common.exportCSV')}
               disabled={exporting}
             >
-              {exporting ? <span className="spinner-sm" /> : <Download size={14} />} {t('common.exportCSV')}
+              {exporting ? <span className="spinner-sm" aria-hidden="true" /> : <Download size={14} />} {t('common.exportCSV')}
             </button>
           </div>
         }

@@ -434,7 +434,7 @@ export default function RequestDetail() {
                   <option key={s} value={s} disabled={item.status === 'Resolved' && s !== 'Resolved' && currentUser?.role !== 'admin'}>{t(`statuses.${s}`)}</option>
                 ))}
               </select>
-              {statusUpdating && <span className="spinner-sm" aria-label={t('common.loading')} />}
+              {statusUpdating && <span className="spinner-sm" aria-hidden="true" />}
             </div>
           )}
           <Badge label={t(`priorities.${item.priority}`)} colors={PRIORITY_COLORS} colorKey={item.priority} />
@@ -484,12 +484,12 @@ export default function RequestDetail() {
             <div className="flex gap-sm mt">
               {!item.claimedBy && item.status === 'Open' && currentUser?.id !== item.createdBy?._id && (
                 <button type="button" className="btn-secondary" onClick={handleClaim} disabled={claiming} aria-label="Claim this request">
-                  {claiming && <span className="spinner-sm" />} {claiming ? 'Claiming...' : t('dashboard.claim')}
+                  {claiming && <span className="spinner-sm" aria-hidden="true" />} {claiming ? 'Claiming...' : t('dashboard.claim')}
                 </button>
               )}
               {item.claimedBy?._id === currentUser?.id && (
                 <button type="button" className="btn-danger" onClick={handleUnclaim} disabled={claiming} aria-label="Unclaim this request">
-                  {claiming && <span className="spinner-sm" />} {claiming ? 'Unclaiming...' : t('dashboard.unclaim')}
+                  {claiming && <span className="spinner-sm" aria-hidden="true" />} {claiming ? 'Unclaiming...' : t('dashboard.unclaim')}
                 </button>
               )}
               {(currentUser?.id === item.createdBy?._id || currentUser?.role === 'admin') && (
@@ -517,7 +517,7 @@ export default function RequestDetail() {
                 {item.files.map((f) => (
                   <div key={f._id || f.id || f.url} className="flex gap-sm p-xs bg-card rounded-sm">
                     {f.mimetype?.startsWith('image/') ? (
-                      <button type="button" className="bg-none border-none cursor-pointer p-0" onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }}>
+                      <button type="button" className="btn-ghost p-0" onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }}>
                         <img src={`${API_BASE}${f.url}`} alt={f.filename} loading="lazy" className="object-cover rounded-sm w-40 h-40" />
                       </button>
                     ) : f.mimetype === 'application/pdf' ? (
@@ -572,7 +572,7 @@ export default function RequestDetail() {
               <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
               <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
               <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btn-primary btn-sm">
-                {allocating && <span className="spinner-sm" />} {allocating ? 'Allocating...' : t('requestDetail.allocate')}
+                {allocating && <span className="spinner-sm" aria-hidden="true" />} {allocating ? 'Allocating...' : t('requestDetail.allocate')}
               </button>
             </form>
             {resources.length === 0 && (
@@ -635,7 +635,7 @@ export default function RequestDetail() {
               </div>
             </div>
             <button type="submit" className="btn-primary btn-sm" disabled={posting}>
-              {posting && <span className="spinner-sm" />} {posting ? 'Posting...' : t('requestDetail.post')}
+              {posting && <span className="spinner-sm" aria-hidden="true" />} {posting ? 'Posting...' : t('requestDetail.post')}
             </button>
           </form>
 
@@ -699,14 +699,14 @@ export default function RequestDetail() {
                               <button
                                 type="button"
                                 onClick={() => handleStartEdit(c)}
-                                className="bg-none border-none text-xs p-0 cursor-pointer flex-center gap-xs text-accent"
+                                className="btn-ghost text-xs p-0 flex-center gap-xs text-accent"
                                 aria-label={t('requestDetail.edit') || 'Edit'}
                               >
                                 {t('requestDetail.edit') || 'Edit'}
                               </button>
                             )}
                             {isAuthorOrAdmin && (
-                              <button type="button" onClick={() => handleDeleteComment(c._id)} className="bg-none border-none text-xs p-0 text-red cursor-pointer flex-center gap-xs" aria-label={t('requestDetail.delete')}>
+                              <button type="button" onClick={() => handleDeleteComment(c._id)} className="btn-ghost text-xs p-0 text-red flex-center gap-xs" aria-label={t('requestDetail.delete')}>
                                 <Trash2 size={12} />
                                 {t('requestDetail.delete')}
                               </button>
@@ -782,7 +782,7 @@ export default function RequestDetail() {
                 <div className="ff-label-text mb-xs">{t('requestDetail.rating')}</div>
                 <div className="flex gap-xs">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="bg-none border-none cursor-pointer p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--border)' }} aria-label={`${star} ${star === 1 ? t('requestDetail.star') || 'star' : t('requestDetail.stars') || 'stars'}`}>
+                    <button key={star} type="button" onClick={() => setFeedbackRating(star)} className="btn-ghost p-0" style={{ color: star <= feedbackRating ? 'var(--gov-saffron)' : 'var(--border)' }} aria-label={`${star} ${star === 1 ? t('requestDetail.star') || 'star' : t('requestDetail.stars') || 'stars'}`}>
                       <Star size={18} fill={star <= feedbackRating ? 'var(--gov-saffron)' : 'transparent'} />
                     </button>
                   ))}
@@ -806,7 +806,7 @@ export default function RequestDetail() {
               </div>
               <div className="flex gap-sm mt-sm">
                 <button type="submit" disabled={feedbackLoading} className="btn-primary btn-sm">
-                  {feedbackLoading && <span className="spinner-sm" />} {feedbackLoading ? 'Submitting...' : t('requestDetail.submit')}
+                  {feedbackLoading && <span className="spinner-sm" aria-hidden="true" />} {feedbackLoading ? 'Submitting...' : t('requestDetail.submit')}
                 </button>
                 <button type="button" onClick={() => setShowFeedbackForm(false)} className="text-sm">{t('editRequest.cancel')}</button>
               </div>

@@ -27,16 +27,11 @@ export default function ErrorState({ message, onRetry, fullPage = false, onHomeC
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1], delay: 0.1 }}
+        className="mb-md text-danger flex-center rounded-full"
         style={{
-          marginBottom: 'var(--space-md)',
-          color: 'var(--danger)',
           opacity: 0.7,
           width: 48,
           height: 48,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 'var(--radius-full)',
           background: 'var(--danger-soft)',
         }}
       >
@@ -46,10 +41,9 @@ export default function ErrorState({ message, onRetry, fullPage = false, onHomeC
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.15 }}
+        className="text-sm m-0 mb-xs"
         style={{
-          fontSize: 'var(--text-sm)',
           fontWeight: 500,
-          margin: '0 0 var(--space-xs)',
           color: 'var(--text)',
           maxWidth: 400,
           lineHeight: 1.6,

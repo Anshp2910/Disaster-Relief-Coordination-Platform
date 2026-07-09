@@ -98,7 +98,7 @@ export default function Dashboard() {
           </div>
           <div className="flex gap-sm items-center">
             <button onClick={() => { setRefreshLoading(true); load().finally(() => setRefreshLoading(false)) }} className="btn-secondary btn-sm" aria-label={t('dashboard.refresh')}>
-              {refreshLoading ? <span className="spinner-sm" /> : <RefreshCw size={14} />}
+              {refreshLoading ? <span className="spinner-sm" aria-hidden="true" /> : <RefreshCw size={14} />}
               <span>{t('dashboard.refresh') || 'Refresh'}</span>
             </button>
             <button onClick={() => navigate('/requests/new')} className="btn-primary btn-sm" aria-label={t('dashboard.createRequest')}>

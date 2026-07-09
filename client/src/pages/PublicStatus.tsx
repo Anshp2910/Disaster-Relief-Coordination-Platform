@@ -2,7 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Activity, Users, CheckCircle, AlertTriangle, Clock, BarChart3, TrendingUp } from 'lucide-react'
-import { PageHeader, DataCard, PageTransition } from '../components/ui'
+import { PageHeader, DataCard, PageTransition, ErrorState } from '../components/ui'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 
@@ -61,7 +61,7 @@ export default function PublicStatus() {
 
   if (loading) return (
     <PageTransition>
-      <div className="max-w-lg mx-auto p-xl">
+      <div className="max-w-lg mx-auto p-xl" aria-hidden="true">
         <div className="grid-4-responsive gap-md">
           {[1,2,3,4,5,6,7].map((i) => (
             <div key={i} className="bento-card">
@@ -76,7 +76,11 @@ export default function PublicStatus() {
       </div>
     </PageTransition>
   )
-  if (error) return <div className="text-center p-lg" role="alert"><div className="muted">{t('public.error')}</div><div className="small muted">{error}</div></div>
+  if (error) return (
+    <PageTransition>
+      <ErrorState message={error} onRetry={load} />
+    </PageTransition>
+  )
 
   return (
     <PageTransition>

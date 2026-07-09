@@ -307,7 +307,7 @@ export default function BulkImport() {
             <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`} aria-label={t('bulkImport.resourcesTab')}>{t('bulkImport.resourcesTab')}</button>
           </motion.div>
 
-          {error && <ErrorState message={error} />}
+          {error && <ErrorState message={error} onRetry={cancelPreview} />}
 
           {step === 'upload' && (
             <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
@@ -488,7 +488,7 @@ export default function BulkImport() {
                       <div className="dt-inline-cell text-center dt-inline-shrink" role="gridcell">
                         <button
                           onClick={() => setEditingRow(isEditing ? null : rowId)}
-                          className="bg-none border-none cursor-pointer text-sm p-xs text-accent"
+                          className="btn-ghost text-sm p-xs text-accent"
                           aria-label={isEditing ? t('bulkImport.doneEditing') : t('bulkImport.editRow', { num: rowOffset + idx + 1 })}
                         >
                           {isEditing ? t('bulkImport.done') : t('bulkImport.edit')}
@@ -531,8 +531,7 @@ export default function BulkImport() {
           {result && (
             <motion.div
               variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
-              className="mt-lg p rounded-sm"
-              style={{ background: 'var(--success-soft)', border: '1px solid rgba(34,197,94,.2)' }}
+              className="mt-lg p rounded-sm bg-subtle border-gov"
             >
               <div className="text-semi text-13 text-accent-green flex items-center gap-xs">
                 <CheckCircle size={16} />

@@ -1,66 +1,69 @@
-﻿import { useState, useEffect } from 'react'
+﻿import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Edit, AlertTriangle } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { clientApi } from '../api/client'
 import RequestForm from '../components/RequestForm'
-import { PageTransition } from '../components/ui'
+import { PageTransition, ErrorState } from '../components/ui'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import { SkeletonCard } from '../components/Skeleton'
+import { useToast } from '../components/Toast'
 
 export default function EditRequest() {
   useEffect(() => { document.title = 'Disaster Relief - Edit Request' }, [])
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const toast = useToast()
+  const cancelledRef = useRef(false)
 
   const [fetching, setFetching] = useState(true)
   const [loadedRequest, setLoadedRequest] = useState<Record<string, unknown> | null>(null)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    let cancelled = false
-    async function load() {
-      if (!id) return
-      try {
-        const { item } = (await clientApi.getRequest(id)) as { item: Record<string, unknown> }
-        if (cancelled) return
-        setLoadedRequest({
-          title: item.title,
-          description: item.description,
-          status: item.status || 'Open',
-          category: item.category || 'Other',
-          priority: item.priority || 'Medium',
-          peopleCount: item.peopleCount || 1,
-          locationName: item.locationName,
-          lat: item.lat,
-          lng: item.lng,
-        })
-      } catch (err) {
-        if (!cancelled) setError(getErrorMessage(err) || 'Failed to load request')
-      } finally {
-        if (!cancelled) setFetching(false)
-      }
+  const load = useCallback(async () => {
+    cancelledRef.current = false
+    setFetching(true)
+    setError('')
+    if (!id) return
+    try {
+      const { item } = (await clientApi.getRequest(id)) as { item: Record<string, unknown> }
+      if (cancelledRef.current) return
+      setLoadedRequest({
+        title: item.title,
+        description: item.description,
+        status: item.status || 'Open',
+        category: item.category || 'Other',
+        priority: item.priority || 'Medium',
+        peopleCount: item.peopleCount || 1,
+        locationName: item.locationName,
+        lat: item.lat,
+        lng: item.lng,
+      })
+    } catch (err) {
+      if (cancelledRef.current) return
+      const msg = getErrorMessage(err) || 'Failed to load request'
+      setError(msg)
+      toast.error(msg)
+    } finally {
+      if (!cancelledRef.current) setFetching(false)
     }
-    load()
-    return () => { cancelled = true }
   }, [id])
+
+  useEffect(() => {
+    load()
+    return () => { cancelledRef.current = true }
+  }, [load])
 
   if (fetching) {
     return (
       <PageTransition>
-        <motion.div
-          className="container max-w-sm"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        >
+        <div className="container">
           <div className="card">
-            <div className="small muted flex items-center gap-xs">
-              <Edit size={14} /> {t('editRequest.loadingRequest')}
-            </div>
+            <SkeletonCard lines={4} />
           </div>
-        </motion.div>
+        </div>
       </PageTransition>
     )
   }
@@ -68,16 +71,7 @@ export default function EditRequest() {
   if (error) {
     return (
       <PageTransition>
-        <motion.div
-          className="container max-w-sm"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="card">
-            <div className="error-text flex items-center gap-xs" role="alert"><AlertTriangle size={14} /> {error}</div>
-          </div>
-        </motion.div>
+        <ErrorState message={error} onRetry={load} />
       </PageTransition>
     )
   }
@@ -103,7 +97,16 @@ export default function EditRequest() {
         subtitle={t('editRequest.subtitle')}
         submitLabel={t('editRequest.saving')}
         submitButtonLabel={t('editRequest.saveChanges')}
-        onSubmit={async (data) => { if (!id) return; await clientApi.updateRequest(id, data); navigate('/dashboard') }}
+        onSubmit={async (data) => {
+          if (!id) return
+          try {
+            await clientApi.updateRequest(id, data)
+            toast.success('Request updated successfully')
+            navigate('/dashboard')
+          } catch (err) {
+            toast.error(getErrorMessage(err) || 'Failed to update request')
+          }
+        }}
         showStatus
       />
     </motion.div>

@@ -377,7 +377,7 @@ export default function Resources() {
             <ModernSelect label={t('resources.category') || 'Category'} options={[{ label: t('common.noChange') || 'No change', value: '' }, ...CATEGORIES.filter((c) => c !== 'All').map((c) => ({ label: c, value: c }))]} value={bulkEditCategory} onChange={(v) => setBulkEditCategory(v)} />
           </div>
           <div className="flex gap-sm">
-            <button type="submit" disabled={bulkUpdating} className="btn-primary btn-sm">{bulkUpdating ? <><span className="spinner-sm" /> {t('resources.applying') || 'Applying...'}</> : <>{t('resources.apply') || 'Apply'}</>}</button>
+            <button type="submit" disabled={bulkUpdating} className="btn-primary btn-sm">{bulkUpdating ? <><span className="spinner-sm" aria-hidden="true" /> {t('resources.applying') || 'Applying...'}</> : <>{t('resources.apply') || 'Apply'}</>}</button>
             <button type="button" onClick={() => setBulkEditOpen(false)} className="btn-ghost btn-sm">{t('resources.cancel')}</button>
             {bulkUpdating && <span className="text-sm text-muted">{bulkProgress.current}/{bulkProgress.total}</span>}
           </div>
@@ -428,7 +428,7 @@ export default function Resources() {
                 </div>
               </div>
               <div className="flex gap-sm">
-                <button type="submit" disabled={allocating} className="btn-primary btn-sm">{allocating ? <><span className="spinner-sm" /> Allocating...</> : <><CheckCircle size={16} /> {t('resources.allocate')}</>}</button>
+                <button type="submit" disabled={allocating} className="btn-primary btn-sm">{allocating ? <><span className="spinner-sm" aria-hidden="true" /> Allocating...</> : <><CheckCircle size={16} /> {t('resources.allocate')}</>}</button>
                 <button type="button" onClick={() => { setShowAllocModal(null); setAllocQty('') }} className="btn-ghost btn-sm">{t('resources.cancel')}</button>
               </div>
             </form>

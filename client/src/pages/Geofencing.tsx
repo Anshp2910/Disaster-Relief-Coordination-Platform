@@ -261,7 +261,7 @@ export default function Geofencing() {
       >
         <PageHeader title={t('nav.geofencing') || 'Geofencing Alerts'} subtitle={t('geofencing.subtitle')} />
 
-        {error && <ErrorState message={error} />}
+        {error && <ErrorState message={error} onRetry={checkArea} />}
 
         <motion.div className="flex gap-sm mt items-center flex-wrap" variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
           <label className="small text-nowrap" htmlFor="geo-radius">{t('geofencing.radiusLabel')}</label>

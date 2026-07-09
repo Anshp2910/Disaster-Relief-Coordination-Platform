@@ -287,7 +287,7 @@ export default function Schedules() {
             </div>
           </div>
           <div className="flex gap-sm mt-sm">
-            <button type="submit" className="btn-primary btn-sm" disabled={submitting}>{submitting ? <span className="spinner-sm" /> : <><CheckCircle size={16} /> {editItem ? t('schedules.update') : t('schedules.create')}</>}</button>
+            <button type="submit" className="btn-primary btn-sm" disabled={submitting}>{submitting ? <span className="spinner-sm" aria-hidden="true" /> : <><CheckCircle size={16} /> {editItem ? t('schedules.update') : t('schedules.create')}</>}</button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-ghost btn-sm">{t('schedules.cancel')}</button>
           </div>
         </form>
