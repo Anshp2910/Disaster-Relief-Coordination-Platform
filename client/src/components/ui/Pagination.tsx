@@ -11,7 +11,7 @@ export default function Pagination({ page, totalPages, onChange }: PaginationPro
   const { t } = useTranslation()
   if (totalPages <= 1) return null
   return (
-    <nav className="flex items-center gap-sm mt-lg" aria-label={t('pagination.page', { page })}>
+    <nav className="pagination-root" aria-label={t('pagination.page', { page })}>
       <button
         className="btn-ghost btn-sm"
         disabled={page <= 1}
@@ -20,7 +20,7 @@ export default function Pagination({ page, totalPages, onChange }: PaginationPro
       >
         <ChevronLeft size={16} />
       </button>
-      <span className="text-sm px-sm" style={{ color: 'var(--text-muted)', minWidth: 60, textAlign: 'center' }}>
+      <span className="pagination-info">
         {page} / {totalPages}
       </span>
       <button

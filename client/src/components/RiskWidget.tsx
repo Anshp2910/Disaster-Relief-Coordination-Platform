@@ -25,17 +25,17 @@ interface RiskInfo {
 }
 
 function calcRisk(stats: AdminStats | null, t: (key: string) => string): RiskInfo {
-  if (!stats) return { level: t('risk.unknown'), score: 0, color: '#64748b' }
+  if (!stats) return { level: t('risk.unknown'), score: 0, color: 'var(--text-muted)' }
   const total = stats.totalRequests || 1
   const open = stats.byStatus?.Open ?? 0
   const critical = stats.byPriority?.Critical ?? 0
   const ratio = (open + critical * 2) / total
   const score = Math.min(Math.round(ratio * 100), 100)
 
-  if (score >= 70) return { level: t('risk.critical'), score, color: '#ef4444' }
-  if (score >= 40) return { level: t('risk.high'), score, color: '#f97316' }
-  if (score >= 20) return { level: t('risk.moderate'), score, color: '#eab308' }
-  return { level: t('risk.low'), score, color: '#22c55e' }
+  if (score >= 70) return { level: t('risk.critical'), score, color: 'var(--danger)' }
+  if (score >= 40) return { level: t('risk.high'), score, color: 'var(--warning)' }
+  if (score >= 20) return { level: t('risk.moderate'), score, color: 'var(--warning)' }
+  return { level: t('risk.low'), score, color: 'var(--success)' }
 }
 
 function RiskWidgetInner({ stats, loading = false }: RiskWidgetProps) {

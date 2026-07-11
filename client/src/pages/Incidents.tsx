@@ -52,7 +52,7 @@ function buildIncidentPopup(inc: Incident, t: (k: string) => string) {
 }
 
 function buildIncidentIcon(inc: Incident) {
-  const color = SEVERITY_COLORS[inc.severity || ''] || '#999'
+  const color = SEVERITY_COLORS[inc.severity || ''] || 'var(--text-muted)'
   return L.divIcon({
     className: '',
     html: `<div style="width:28px;height:28px;background:${color};border:2px solid var(--bg-card);border-radius:50%;box-shadow:var(--shadow-md)"></div>`,

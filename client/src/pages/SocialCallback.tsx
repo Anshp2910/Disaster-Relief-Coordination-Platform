@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import PageTransition from '../components/ui/PageTransition'
 import { Loader2 } from 'lucide-react'
 import { safeSetItem } from '../utils/storage'
 import { clientApi } from '../api/client'
@@ -50,12 +51,7 @@ export default function SocialCallback() {
   }, [navigate, searchParams, t])
 
   return (
-    <motion.div
-      className="flex-center min-h-screen"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-    >
+    <PageTransition className="flex-center min-h-screen">
       <motion.div
         className="flex flex-col items-center gap-lg text-center p-xl"
         initial={{ scale: 0.9, opacity: 0 }}
@@ -71,6 +67,6 @@ export default function SocialCallback() {
         <h2 className="text-xl font-semibold">{t('auth.signingIn')}</h2>
         <p className="text-muted text-sm">{t('auth.redirecting')}</p>
       </motion.div>
-    </motion.div>
+    </PageTransition>
   )
 }

@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import PageTransition from '../components/ui/PageTransition'
 import { createStagger } from '../utils/animations'
-import { AlertCircle, ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2, Star } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2, Star, Inbox } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { Modal, ErrorState, PageHeader } from '../components/ui'
 import Badge from '../components/Badge'
+import EmptyState from '../components/EmptyState'
 import SteppedProgress from '../components/SteppedProgress'
 import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
@@ -393,12 +394,12 @@ export default function RequestDetail() {
     if (error) return <div className="container"><ErrorState message={error} onRetry={load} /></div>
     return (
       <div className="container">
-        <div className="flex-center flex-col text-center" style={{ padding: 'var(--space-2xl)' }}>
-          <AlertCircle size={48} className="text-muted mb-sm" />
-          <h2 className="text-lg text-bold">Request not found</h2>
-          <p className="text-sm text-muted mb-md">This request may have been removed or you may not have access.</p>
-          <button className="btn-primary" onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
-        </div>
+        <EmptyState
+          icon={<Inbox size={48} />}
+          title="Request not found"
+          description="This request may have been removed or you may not have access."
+          action={{ onClick: () => navigate('/dashboard'), label: 'Back to Dashboard' }}
+        />
       </div>
     )
   }
