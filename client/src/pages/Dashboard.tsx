@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger } from '../utils/animations'
 import {
-  AlertTriangle, ClipboardList, MapPin, Users, BarChart3,
+  AlertTriangle, ClipboardList, Users, BarChart3,
   RefreshCw, Plus, ArrowRight,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
@@ -108,24 +108,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="quick-actions mb-md">
-          <button type="button" onClick={() => navigate('/map')} className="quick-action-card">
-            <MapPin size={20} />
-            <span>{t('common.viewMap') || 'View Map'}</span>
-          </button>
-          <button type="button" onClick={() => navigate('/resources')} className="quick-action-card">
-            <Users size={20} />
-            <span>{t('common.resources') || 'Resources'}</span>
-          </button>
-          <button type="button" onClick={() => navigate('/incidents')} className="quick-action-card">
-            <AlertTriangle size={20} />
-            <span>{t('nav.incidents') || 'Incidents'}</span>
-          </button>
-          <button type="button" onClick={() => navigate('/admin')} className="quick-action-card">
-            <BarChart3 size={20} />
-            <span>{t('admin.title') || 'Admin'}</span>
-          </button>
-        </div>
+
 
         <div className="card">
           <div className="flex-between mb-sm">
