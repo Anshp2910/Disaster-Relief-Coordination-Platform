@@ -171,7 +171,8 @@
     "greeting": "Welcome",
     "createRequest": "New Request",
     "filterCategory": "Category",
-    "sortBy": "Sort by"
+    "sortBy": "Sort by",
+    "emergencyCommandCenter": "Emergency Command Center"
   },
   "createRequest": {
     "title": "આપત્તિ રાહત વિનંતી બનાવો",
@@ -270,7 +271,9 @@
     "commentUpdated": "Comment updated",
     "editTimeExpired": "Edit window expired (5 minutes)",
     "editWindowExpired": "Edit window closed (5 min)",
-    "edit": "Edit"
+    "edit": "Edit",
+    "changeStatus": "Change status",
+    "statusUpdated": "Status updated"
   },
   "admin": {
     "title": "સંચાલન ડેશબોર્ડ",

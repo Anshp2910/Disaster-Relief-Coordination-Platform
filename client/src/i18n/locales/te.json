@@ -174,7 +174,8 @@
     "greeting": "Welcome",
     "createRequest": "New Request",
     "filterCategory": "Category",
-    "sortBy": "Sort by"
+    "sortBy": "Sort by",
+    "emergencyCommandCenter": "Emergency Command Center"
   },
   "createRequest": {
     "title": "విపత్తు సహాయ అభ్యర్థనను సృష్టించండి",
@@ -273,7 +274,9 @@
     "commentUpdated": "Comment updated",
     "editTimeExpired": "Edit window expired (5 minutes)",
     "editWindowExpired": "Edit window closed (5 min)",
-    "edit": "Edit"
+    "edit": "Edit",
+    "changeStatus": "Change status",
+    "statusUpdated": "Status updated"
   },
   "admin": {
     "title": "అడ్మిన్ డాష్‌బోర్డ్",
