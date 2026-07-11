@@ -582,12 +582,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   max-height: calc(100vh - var(--navbar-height));
   overflow-y: auto;
 }
-  border-top: 1px solid var(--border);
-  padding: var(--space-sm) var(--space-md) var(--space-md);
-  background: var(--bg-elevated);
-  max-height: calc(100vh - var(--navbar-height));
-  overflow-y: auto;
-}
 
 .gov-navbar-mobile-link {
   display: flex;

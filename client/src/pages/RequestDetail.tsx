@@ -387,8 +387,6 @@ export default function RequestDetail() {
     }
   }
 
-
-
   if (!item) {
     if (loading) return <div className="container"><div className="card"><SkeletonCard lines={4} /></div></div>
     if (error) return <div className="container"><ErrorState message={error} onRetry={load} /></div>
