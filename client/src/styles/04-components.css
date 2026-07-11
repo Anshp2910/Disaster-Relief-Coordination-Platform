@@ -1889,7 +1889,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Responsive Extensions ── */
 @media (max-width: 768px) {
-  .admin-charts-grid { grid-template-columns: 1fr; }
   .week-grid { overflow-x: auto; grid-template-columns: repeat(7, minmax(120px, 1fr)); }
   .schedule-week-container { overflow-x: auto; }
   .dt-toolbar { flex-direction: column; align-items: stretch; }
