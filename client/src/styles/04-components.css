@@ -320,7 +320,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   align-items: center;
   gap: var(--space-2xs);
   overflow-x: auto;
-  scrollbar-width: none;
 }
 .gov-navbar-links::-webkit-scrollbar { display: none; }
 
@@ -785,7 +784,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   display: flex;
   gap: var(--space-xs);
   overflow-x: auto;
-  scrollbar-width: thin;
   padding-bottom: var(--space-2xs);
 }
 .filter-row::-webkit-scrollbar {
