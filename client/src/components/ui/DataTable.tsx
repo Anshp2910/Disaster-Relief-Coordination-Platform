@@ -373,7 +373,7 @@ function DataTable<T>({
                 {visibleCols.map(col => (
                   <div
                     key={col.id}
-                    className={`dt-th ${col.sortable !== false && globalSortable ? 'dt-th-sortable' : ''}`}
+                    className={`dt-th ${col.width ? 'dt-th-fixed' : ''} ${col.sortable !== false && globalSortable ? 'dt-th-sortable' : ''}`}
                     style={col.width ? { width: col.width, minWidth: col.width } : undefined}
                     role="columnheader"
                     onClick={() => { if (col.sortable !== false && globalSortable) toggleSort(col.id) }}
@@ -431,7 +431,7 @@ function DataTable<T>({
                       return (
                         <div
                           key={col.id}
-                          className={`dt-td ${getCellClass ? getCellClass(row, col) : ''}`}
+                          className={`dt-td ${col.width ? 'dt-td-fixed' : ''} ${getCellClass ? getCellClass(row, col) : ''}`}
                           role="gridcell"
                           style={col.width ? { width: col.width, minWidth: col.width } : undefined}
                         >
