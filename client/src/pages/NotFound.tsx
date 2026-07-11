@@ -39,7 +39,8 @@ export default function NotFound() {
       </motion.svg>
 
       <motion.h1
-        className="text-5xl font-extrabold m-0 mb-sm text-gradient"
+        className="text-xl m-0 mb-sm"
+        style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 800, background: 'var(--gradient-accent)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}

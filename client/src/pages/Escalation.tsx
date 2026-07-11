@@ -167,7 +167,7 @@ export default function Escalation() {
 
         <form onSubmit={handleEscalate} className="mb-lg">
           <div className="ff-group">
-            <div className="ff-label-text mb-xs flex items-center gap-xs">
+            <div className="text-sm text-semi mb-xs flex items-center gap-xs">
               <Search size={14} />
               {t('escalation.searchRequest') || 'Search for a request...'}
             </div>
@@ -244,7 +244,7 @@ export default function Escalation() {
                 placeholder={t('escalation.reasonForEscalation')}
                 aria-label={t('escalation.reasonForEscalation')}
               />
-              <label htmlFor="esc-reason" className={`ff-label ff-label-with-icon ${reason ? 'ff-label-float' : ''}`}>
+              <label htmlFor="esc-reason" className={`ff-label ${reason ? 'ff-label-float' : ''}`}>
                 {t('escalation.reasonForEscalation')}
               </label>
             </div>

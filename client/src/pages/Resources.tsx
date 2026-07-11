@@ -327,7 +327,7 @@ export default function Resources() {
         skeletonLines={3}
         keyExtractor={(r) => r._id}
         renderItem={(r) => (
-          <div className={`listCard ${selectMode ? 'p-sm' : ''}${!selectMode ? ' cursor-default' : ''}`}>
+          <div className={`listCard ${selectMode ? 'p-sm' : ''}`}>
             <div className="flex-between gap-sm">
               {selectMode && (
                 <input id={`res-check-${r._id}`} type="checkbox" checked={selectedIds.has(r._id)} onChange={() => handleSelectOne(r._id)} className="cursor-pointer" aria-label={`${t('resources.select') || 'Select'} ${r.name || r._id}`} />

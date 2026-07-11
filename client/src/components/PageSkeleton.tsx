@@ -123,7 +123,7 @@ export function PageSkeleton({ type = 'default' }: { type?: 'default' | 'table' 
         >
           <SkeletonHeader />
           <motion.div variants={itemVariants}>
-            <div className="sk-map" style={{ height: '60vh', borderRadius: 'var(--radius-sm)' }} />
+            <div className="sk-map" style={{ height: '60vh' }} />
           </motion.div>
         </motion.div>
       </div>

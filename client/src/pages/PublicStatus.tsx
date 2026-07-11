@@ -61,13 +61,13 @@ export default function PublicStatus() {
 
   if (loading) return (
     <PageTransition>
-      <div className="max-w-lg mx-auto p-xl" aria-hidden="true">
-        <div className="grid-4-responsive gap-md">
+      <div className="container" aria-hidden="true">
+        <div className="grid-3-responsive gap-md">
           {[1,2,3,4,5,6,7].map((i) => (
             <div key={i} className="bento-card">
               <div className="bento-header">
                 <div className="sk-line" style={{ width: '60%', height: 12 }} />
-                <div className="sk-circle" style={{ width: 32, height: 32 }} />
+                <div className="rounded-full" style={{ width: 32, height: 32, background: 'var(--border-light)' }} />
               </div>
               <div className="sk-line" style={{ width: '40%', height: 24, marginTop: 8 }} />
             </div>
@@ -85,7 +85,7 @@ export default function PublicStatus() {
   return (
     <PageTransition>
       <motion.div
-        className="max-w-lg mx-auto p-xl"
+        className="container max-w-sm"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -96,7 +96,7 @@ export default function PublicStatus() {
       ) : null}
 
       <motion.div
-        className="grid-4-responsive gap-md"
+        className="grid-3-responsive gap-md"
         initial="hidden"
         animate="show"
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
@@ -130,7 +130,7 @@ export default function PublicStatus() {
           <div className="flex gap-lg flex-wrap">
             {Object.entries(data.statusBreakdown as Record<string, number>).map(([status, count]) => (
               <div key={status} className="flex gap-xs items-center" aria-label={`${status}: ${count}`}>
-                <div className="w-10 h-10 rounded-full flex-shrink-0" style={{ background: STATUS_COLORS[status] || 'var(--text-muted)' }} aria-hidden="true" />
+                <div style={{ width: 10, height: 10, borderRadius: '50%', flexShrink: 0, background: STATUS_COLORS[status] || 'var(--text-muted)' }} aria-hidden="true" />
                 <span className="text-sm">{status}: <strong>{count}</strong></span>
               </div>
             ))}

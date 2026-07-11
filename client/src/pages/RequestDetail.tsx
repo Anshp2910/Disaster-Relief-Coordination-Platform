@@ -463,7 +463,7 @@ export default function RequestDetail() {
               </div>
             )}
 
-            <div className="mt text-sm flex gap-xs">
+            <div className="mt-sm text-sm flex gap-xs">
               <User size={14} className="flex-shrink-0" aria-hidden="true" />
               <span className="small muted">{t('dashboard.postedBy')}</span>{' '}
               <strong>{item.createdBy?.displayName || item.createdBy?.email}</strong>
@@ -515,8 +515,7 @@ export default function RequestDetail() {
                 {item.files.map((f) => (
                   <div key={f._id || f.id || f.url} className="flex gap-sm p-xs bg-card rounded-sm">
                     {f.mimetype?.startsWith('image/') ? (
-                      <button type="button" className="btn-ghost p-0" onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }}>
-                        <img src={`${API_BASE}${f.url}`} alt={f.filename} loading="lazy" className="object-cover rounded-sm w-40 h-40" />
+                      <button type="button" className="btn-ghost p-0" onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }}>                          <img src={`${API_BASE}${f.url}`} alt={f.filename} loading="lazy" className="object-cover rounded-sm" style={{ width: 40, height: 40 }} />
                       </button>
                     ) : f.mimetype === 'application/pdf' ? (
                       <span className="text-xl cursor-pointer" role="button" tabIndex={0} onClick={() => setPreviewFile(f)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPreviewFile(f) } }} aria-label={f.filename}>
@@ -595,8 +594,7 @@ export default function RequestDetail() {
                     <div className="text-semi">{m.name}</div>
                     <div className="text-sm text-muted-extra mt-xs">
                       {m.quantity} {m.unit} {t('requestDetail.available')}
-                      {m.distanceKm != null && <span> &mdash; {m.distanceKm} {t('requestDetail.kmAway')}</span>}
-                      {m.categoryMatch && <span className="govt-badge govt-badge-green ml-sm text-10 flex-center gap-xs"><CheckCircle size={10} /> {t('matching.exactMatch')}</span>}
+                      {m.distanceKm != null && <span> &mdash; {m.distanceKm} {t('requestDetail.kmAway')}</span>}                            {m.categoryMatch && <span className="govt-badge govt-badge-green ml-sm text-xs flex-center gap-xs"><CheckCircle size={10} /> {t('matching.exactMatch')}</span>}
                     </div>
                   </div>
                   <button type="button" onClick={() => quickAllocate(m)} className="btn-ghost btn-sm flex-shrink-0">
@@ -797,7 +795,7 @@ export default function RequestDetail() {
                     className="ff-input ff-textarea"
                     placeholder={t('requestDetail.feedbackPlaceholder')}
                   />
-                  <label htmlFor="rd-feedback" className={`ff-label ff-label-with-icon ${feedbackComment ? 'ff-label-float' : ''}`}>
+                  <label htmlFor="rd-feedback" className={`ff-label ${feedbackComment ? 'ff-label-float' : ''}`}>
                     {t('requestDetail.feedbackPlaceholder')}
                   </label>
                 </div>
