@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import PageTransition from '../components/ui/PageTransition'
-import { Users, FileText, Activity, CheckCircle, Shield, Trash2, Download, ArrowLeft } from 'lucide-react'
+import { Users, FileText, Activity, CheckCircle, Shield, Trash2, Download, ArrowLeft, BarChart3, ChartPie } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
@@ -81,10 +81,10 @@ function DailyRequestsChart({ data }: { data?: DailyRequest[] }) {
         <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
         <YAxis tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
         <Tooltip
-          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+          contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
           labelStyle={{ fontWeight: 600, marginBottom: 4 }}
         />
-        <Bar dataKey="count" fill="var(--accent)" fillOpacity={0.6} radius={[2, 2, 0, 0]} />
+        <Bar dataKey="count" fill="var(--accent)" fillOpacity={0.6} radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )
@@ -110,7 +110,7 @@ function StatusPieChart({ data }: { data?: Record<string, number> }) {
           ))}
         </Pie>
         <Tooltip
-          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+          contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
         />
         <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
       </PieChart>
@@ -138,7 +138,7 @@ function PriorityPieChart({ data }: { data?: Record<string, number> }) {
           ))}
         </Pie>
         <Tooltip
-          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+          contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
         />
         <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
       </PieChart>
@@ -163,9 +163,9 @@ function CategoryBarChart({ data, total: _total }: { data?: Record<string, numbe
         <XAxis type="number" tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
         <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} width={80} />
         <Tooltip
-          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
+          contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
         />
-        <Bar dataKey="count" fill="var(--accent-indigo)" fillOpacity={0.7} radius={[0, 2, 2, 0]} />
+        <Bar dataKey="count" fill="var(--accent-indigo)" fillOpacity={0.8} radius={[0, 4, 4, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )
@@ -268,21 +268,21 @@ function StatsPanel({ stats }: StatsPanelProps) {
         </div>
       </section>
 
-      <div className="admin-charts-grid">
-        <div className="admin-chart-card">
-          <div className="text-semi mb-xs text-accent text-sm">{t('admin.requestsOverTime')}</div>
+      <div className="chart-grid">
+        <div className="chart-card">
+          <div className="chart-header"><BarChart3 size={14} />{t('admin.requestsOverTime')}</div>
           <DailyRequestsChart data={stats.dailyRequests} />
         </div>
-        <div className="admin-chart-card">
-          <div className="text-semi mb-xs text-accent text-sm">{t('admin.byStatus')}</div>
+        <div className="chart-card">
+          <div className="chart-header"><ChartPie size={14} />{t('admin.byStatus')}</div>
           <StatusPieChart data={stats.byStatus} />
         </div>
-        <div className="admin-chart-card">
-          <div className="text-semi mb-xs text-accent text-sm">{t('admin.byPriority')}</div>
+        <div className="chart-card">
+          <div className="chart-header"><ChartPie size={14} />{t('admin.byPriority')}</div>
           <PriorityPieChart data={stats.byPriority} />
         </div>
-        <div className="admin-chart-card admin-chart-card--wide">
-          <div className="text-semi mb-xs text-accent text-sm">{t('admin.byCategory')}</div>
+        <div className="chart-card chart-grid--wide">
+          <div className="chart-header"><BarChart3 size={14} />{t('admin.byCategory')}</div>
           <CategoryBarChart data={stats.byCategory} total={stats.totalRequests} />
         </div>
       </div>

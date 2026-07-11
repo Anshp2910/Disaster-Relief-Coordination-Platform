@@ -27,7 +27,7 @@ const RequestsChart = memo(function RequestsChart({ data }: RequestsChartProps) 
             <BarChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
               <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={{ stroke: 'var(--border)' }} tickLine={false} />
               <YAxis tick={{ fontSize: 9, fill: 'var(--gov-muted)' }} axisLine={false} tickLine={false} allowDecimals={false} />
-              <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 11, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }} />
+              <Tooltip contentClassName="chart-tooltip" />
               <Bar dataKey="count" fill="var(--accent)" fillOpacity={0.6} radius={[2, 2, 0, 0]} animationBegin={reduced ? 0 : 200} animationDuration={reduced ? 0 : 800} animationEasing="ease-out" />
             </BarChart>
           </ResponsiveContainer>

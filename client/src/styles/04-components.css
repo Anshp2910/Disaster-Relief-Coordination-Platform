@@ -1165,21 +1165,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   gap: var(--space-md);
 }
 
-.admin-charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-  margin-top: var(--space-lg);
-}
-
-.admin-chart-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-md);
-}
-.admin-chart-card--wide { grid-column: 1 / -1; }
-
 .admin-breakdown-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -1774,6 +1759,100 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 /* ── Stack / Column layouts ── */
 .stack-xs { display: flex; flex-direction: column; gap: var(--space-xs); }
 .stack-sm { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+/* ── Chart Styling ── */
+.chart-tooltip {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-xs);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-2xs) var(--space-xs);
+}
+.chart-tooltip-label {
+  font-weight: 600;
+  margin-bottom: var(--space-4xs);
+  color: var(--text);
+}
+
+.chart-header {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  transition: box-shadow var(--duration-normal) var(--ease-out);
+}
+.chart-card:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+.chart-grid--wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .chart-grid { grid-template-columns: 1fr; }
+}
+
+/* ── KPI Card Polish ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-md);
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  transition: box-shadow var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+}
+.kpi-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-2xs);
+}
+.kpi-label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.kpi-value {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.kpi-change {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4xs);
+  font-size: var(--text-3xs);
+  font-weight: 600;
+  margin-top: var(--space-2xs);
+}
 
 /* ── Update banner (main.tsx) ── */
 .update-banner {
