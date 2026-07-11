@@ -49,8 +49,7 @@ export default function EditRequest() {
     } finally {
       if (!cancelledRef.current) setFetching(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, toast])
 
   useEffect(() => {
     load()

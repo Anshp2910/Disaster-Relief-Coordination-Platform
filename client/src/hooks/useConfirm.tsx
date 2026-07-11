@@ -60,6 +60,7 @@ export function useConfirm() {
 
   const ConfirmDialog = state.open
     ? createPortal(
+        // role=alertdialog is interactive — a11y rule doesn't account for ARIA roles
         // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
         <div className="modal-overlay" ref={trapRef} role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message" onKeyDown={handleKeyDown}>
           <div className="modal-card text-center">

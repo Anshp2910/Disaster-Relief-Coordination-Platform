@@ -248,6 +248,7 @@ export default function RequestForm({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, currentStep, placeMarker])
+  // Map effect ^ intentionally stable — adding deps like initialData would cause map re-init
 
   function useMyLocation() {
     if (!navigator.geolocation) {

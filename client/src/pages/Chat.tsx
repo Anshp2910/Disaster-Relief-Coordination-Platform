@@ -91,8 +91,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     } finally {
       setLoading(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestId])
+  }, [requestId, t])
 
   useEffect(() => {
     loadMessages(1)

@@ -66,8 +66,7 @@ export default function MapOverview() {
       setError(getErrorMessage(e) || t('map.failedToLoad'))
       setLoading(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [t])
 
   useEffect(() => { load() }, [load])
 
@@ -147,8 +146,7 @@ export default function MapOverview() {
         if (bounds.isValid()) map.fitBounds(bounds, { padding: [40, 40] })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, filterStatus, filterPriority, filterCategory])
+  }, [items, filterStatus, filterPriority, filterCategory, t])
 
   const filterOptions = useMemo(() => FILTER_OPTIONS_KEYS.map((key) => ({
     key,
