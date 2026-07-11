@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Inbox } from 'lucide-react'
 import Pagination from './Pagination'
 import ErrorState from './ErrorState'
-import { SkeletonList } from '../Skeleton'
+import { SkeletonCard } from '../Skeleton'
 import EmptyState from '../EmptyState'
 
 interface DataListProps<T> {
@@ -31,14 +31,35 @@ function DataList<T>({
   keyExtractor, skeletonCount = 4, skeletonLines = 3,
 }: DataListProps<T>) {
   const { t } = useTranslation()
+
   if (error) return <ErrorState message={error} onRetry={onRetry} />
-  if (loading) return <SkeletonList count={skeletonCount} lines={skeletonLines} />
-  if (items.length === 0) return <EmptyState icon={emptyIcon || <Inbox size={32} />} title={emptyTitle || t('dataList.noItems')} description={emptyDescription} />
+
+  if (loading) {
+    return (
+      <div className="data-list-root">
+        <div className="data-list-skeleton" aria-hidden="true">
+          {Array.from({ length: skeletonCount }).map((_, i) => (
+            <SkeletonCard key={i} lines={skeletonLines} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="data-list-root">
+        <div className="data-list-empty">
+          <EmptyState icon={emptyIcon || <Inbox size={32} />} title={emptyTitle || t('dataList.noItems')} description={emptyDescription} />
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <>
+    <div className="data-list-root">
       <motion.div
-        className="grid-gap mt-lg"
+        className="data-list-grid"
         initial="hidden"
         animate="show"
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04 } } }}
@@ -55,7 +76,7 @@ function DataList<T>({
       {page !== undefined && totalPages !== undefined && onPageChange && (
         <Pagination page={page} totalPages={totalPages} onChange={onPageChange} />
       )}
-    </>
+    </div>
   )
 }
 

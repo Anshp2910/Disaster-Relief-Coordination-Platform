@@ -1955,6 +1955,31 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   gap: var(--space-2xs);
 }
 
+/* ── DataList ── */
+.data-list-root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.data-list-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+}
+
+.data-list-empty {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-lg);
+}
+
+.data-list-skeleton {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+}
+
 /* ── Pagination ── */
 .pagination-root {
   display: flex;
