@@ -534,9 +534,9 @@ export default function AdminDashboard() {
         clientApi.adminStats(),
         clientApi.adminUsers(),
         clientApi.adminRequests({ limit: '100' }),
-      ]) as unknown as [Stats, { users: User[] }, { items: Request[] }]
+      ]) as unknown as [Stats, { items: User[] }, { items: Request[] }]
       setStats(s)
-      setUsers(u.users || [])
+      setUsers(u.items || [])
       setRequests(r.items || [])
     } catch (e) {
       setError(getErrorMessage(e) || t('admin.loadFailed'))

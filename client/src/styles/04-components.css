@@ -480,8 +480,8 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 .gov-navbar-lang-select {
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: var(--radius-2xs);
@@ -788,6 +788,16 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   scrollbar-width: thin;
   padding-bottom: var(--space-2xs);
 }
+.filter-row::-webkit-scrollbar {
+  height: 6px;
+}
+.filter-row::-webkit-scrollbar-track {
+  background: transparent;
+}
+.filter-row::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
+}
 .filter-select {
   border: none;
   background: transparent;
@@ -962,7 +972,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 /* ── ModernSelect ── */
-.ms-wrap { cursor: pointer; user-select: none; position: relative; z-index: 40; }
+.ms-wrap { cursor: pointer; -webkit-user-select: none; user-select: none; position: relative; z-index: 40; }
 .ms-open { z-index: 60; }
 .ms-trigger {
   display: flex;
@@ -1651,6 +1661,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .gov-navbar-bottom-dot {
   color: var(--border);
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -1879,8 +1890,8 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .opacity-100 { opacity: 1; }
 .cursor-default { cursor: default; }
 .cursor-not-allowed { cursor: not-allowed; }
-.select-none { user-select: none; }
-.select-text { user-select: text; }
+.select-none { -webkit-user-select: none; user-select: none; }
+.select-text { -webkit-user-select: text; user-select: text; }
 .pointer-events-none { pointer-events: none; }
 .overflow-hidden { overflow: hidden; }
 .overflow-visible { overflow: visible; }
