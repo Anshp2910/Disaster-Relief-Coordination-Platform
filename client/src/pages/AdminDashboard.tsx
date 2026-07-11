@@ -638,7 +638,7 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => handleExport('csv')}
-              className="btn-success btn-sm"
+              className="btn-primary btn-sm"
               aria-label={t('common.exportCSV')}
               disabled={exporting}
             >

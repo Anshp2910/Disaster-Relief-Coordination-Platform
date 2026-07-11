@@ -242,7 +242,7 @@ export default function MapOverview() {
           </div>
         ))}
       </div>
-    </motion.div>
+      </motion.div>
     </PageTransition>
   )
 }

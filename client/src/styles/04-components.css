@@ -288,7 +288,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-md);
   height: var(--navbar-height);
   max-width: var(--shell-max);
   margin: 0 auto;
@@ -531,17 +531,12 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .gov-subnav-inner {
   max-width: var(--shell-max);
   margin: 0 auto;
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-md);
 }
 
 @media (max-width: 768px) {
   .gov-subnav {
     display: none;
-  }
-}
-@media (max-width: 480px) {
-  .gov-subnav-inner {
-    padding: 0 var(--space-md);
   }
 }
 
@@ -611,7 +606,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-md) var(--space-md);
   font-size: var(--text-xs);
   color: var(--text-muted);
   max-width: var(--shell-max);
@@ -620,12 +615,12 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 @media (max-width: 768px) {
   .gov-navbar-hamburger { display: flex; }
-  .gov-navbar-inner { padding: 0 var(--space-md); }
+  .gov-navbar-inner { padding: 0 var(--space-sm); }
   .gov-navbar-bottom-inner { flex-direction: column; gap: var(--space-xs); text-align: center; }
   .gov-main { padding-top: calc(var(--navbar-height) + var(--space-sm)); }
 }
 @media (max-width: 480px) {
-  .gov-navbar-inner { padding: 0 var(--space-sm); gap: var(--space-2xs); }
+  .gov-navbar-inner { padding: 0 var(--space-2xs); gap: var(--space-2xs); }
 }
 
 /* ── Breadcrumbs ── */
@@ -1821,6 +1816,62 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ── Avatar Styles ── */
+.avatar-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--text-on-accent);
+  background: var(--gradient-accent);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.avatar-circle-initial {
+  background: var(--gradient-accent);
+}
+.avatar-camera-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+.avatar-circle:hover .avatar-camera-overlay {
+  opacity: 1;
+}
+
+/* ── Custom Checkbox ── */
+.checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-3xs);
+  background: var(--bg-card);
+  cursor: pointer;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+.checkbox-custom:checked {
+  border-color: var(--accent);
+}
+
+/* ── Dashed Border ── */
+.border-dashed-2 {
+  border: 2px dashed var(--border);
+  transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
 }
 
 /* ── Additional Utilities ── */

@@ -263,8 +263,7 @@ export default function Geofencing() {
 
         {error && <ErrorState message={error} onRetry={checkArea} />}
 
-        <motion.div className="flex gap-sm mt items-center flex-wrap" variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-          <label className="small text-nowrap" htmlFor="geo-radius">{t('geofencing.radiusLabel')}</label>
+        <motion.div className="flex gap-sm mt items-center flex-wrap" variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>            <label className="small ws-nowrap" htmlFor="geo-radius">{t('geofencing.radiusLabel')}</label>
           <input
             id="geo-radius"
             type="number"
@@ -281,8 +280,8 @@ export default function Geofencing() {
             onChange={(e) => setRadius(Number(e.target.value))}
             min="1"
             max="500"
-            className="w-160"
-            style={{ accentColor: 'var(--gov-blue)' }}
+            className="w-80"
+            style={{ accentColor: 'var(--gov-blue)', flex: 1, maxWidth: 240 }}
             aria-label={t('geofencing.radiusSlider')}
           />
           {position && (
@@ -335,7 +334,7 @@ export default function Geofencing() {
               }}
               aria-hidden="true"
             />
-            <span className="small muted text-12">{t('geofencing.autoRefresh')}</span>
+            <span className="small muted text-xs">{t('geofencing.autoRefresh')}</span>
           </motion.div>
         )}
       </motion.div>
@@ -409,7 +408,7 @@ export default function Geofencing() {
           />
         </motion.div>
       )}
-    </div>
+      </div>
     </PageTransition>
   )
 }

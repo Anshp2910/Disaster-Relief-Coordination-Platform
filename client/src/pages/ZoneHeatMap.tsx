@@ -269,16 +269,16 @@ export default function ZoneHeatMap() {
         title={t('zones.title')}
         subtitle={`${zones.length} ${t('zones.zonesCount')} \u00B7 ${totalOpen} ${t('zones.openRequests')} \u00B7 ${totalGap} ${t('zones.coverageGaps')} \u00B7 ${totalAffected.toLocaleString()} ${t('zones.affected')}`}
         actions={
-          <div className="btnRow">
+          <div className="flex gap-sm items-center">
             {currentUser?.role === 'admin' && (
               <RippleBtn className="btn-primary btn-sm" onClick={openCreate} aria-label={t('zones.addZone')}>
                 <Plus size={16} />
-                <span className="ml-xs">{t('zones.addZone')}</span>
+                <span>{t('zones.addZone')}</span>
               </RippleBtn>
             )}
             <button className="btn-secondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
               <Thermometer size={16} />
-              <span className="ml-xs">{weatherLoading ? t('common.loading') : (t('zones.weather') || 'Weather')}</span>
+              <span>{weatherLoading ? t('common.loading') : (t('zones.weather') || 'Weather')}</span>
             </button>
           </div>
         }
@@ -316,7 +316,7 @@ export default function ZoneHeatMap() {
       />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        <motion.div className="flex flex-gap mt-md flex-wrap" variants={itemVariants}>
+        <motion.div className="flex gap-md mt-md flex-wrap" variants={itemVariants}>
           <div className="flex-1">
             <div className="card p-0 relative">
               {loading && (
@@ -369,7 +369,7 @@ export default function ZoneHeatMap() {
         onClose={() => setShowForm(false)}
       />
       {ConfirmDialog}
-    </motion.div>
+      </motion.div>
     </PageTransition>
   )
 }

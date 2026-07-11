@@ -302,7 +302,7 @@ export default function BulkImport() {
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
         >
-          <motion.div className="flex mb-lg gap-6" variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } }}>
+          <motion.div className="flex mb-lg gap-md" variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } }}>
             <button onClick={() => switchTab('requests')} className={`filter-pill ${tab === 'requests' ? 'active' : ''}`} aria-label={t('bulkImport.requestsTab')}>{t('bulkImport.requestsTab')}</button>
             <button onClick={() => switchTab('resources')} className={`filter-pill ${tab === 'resources' ? 'active' : ''}`} aria-label={t('bulkImport.resourcesTab')}>{t('bulkImport.resourcesTab')}</button>
           </motion.div>
@@ -316,14 +316,14 @@ export default function BulkImport() {
                   <Download size={16} />
                   {t('bulkImport.downloadTemplate')}
                 </RippleBtn>
-                <RippleBtn onClick={exportData} className="text-13 p-sm flex items-center gap-xs" aria-label={t('bulkImport.exportCSV')}>
+                <RippleBtn onClick={exportData} className="text-xs p-sm flex items-center gap-xs" aria-label={t('bulkImport.exportCSV')}>
                   <Download size={16} />
                   {t('bulkImport.exportCSV')}
                 </RippleBtn>
               </div>
 
               <div
-                className="p-2xl text-center border-dashed-2 rounded"
+                className="p-md text-center border-dashed-2 rounded-sm"
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('file-upload-input')?.click() } }}
@@ -356,7 +356,7 @@ export default function BulkImport() {
                 <div className="small muted mb">{t('bulkImport.uploadHint')}</div>
                 <div className="small muted mb text-xs">{t('bulkImport.dragDropHint') || 'Drag & drop a CSV file here or click to browse'}</div>
                 <input ref={fileRef} type="file" accept=".csv" onChange={handleImport} className="hidden" id="csv-upload" aria-label={t('bulkImport.uploadCSV')} />
-                <RippleBtn onClick={() => document.getElementById('csv-upload')?.click()} className="cursor-pointer inline-block text-13 p-sm">
+                <RippleBtn onClick={() => document.getElementById('csv-upload')?.click()} className="cursor-pointer inline-block text-xs p-sm">
                   {importing ? t('bulkImport.loading') : t('bulkImport.chooseFile')}
                 </RippleBtn>
               </div>
@@ -365,7 +365,7 @@ export default function BulkImport() {
 
           {step === 'mapping' && (
             <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-              <div className="flex-between mb">
+              <div className="flex-between mb-sm">
                 <div className="text-base text-semi flex items-center gap-xs">
                   <FileText size={16} aria-hidden="true" />
                   {t('bulkImport.columnMapping')}
@@ -387,7 +387,7 @@ export default function BulkImport() {
                 </div>
               )}
 
-              <div className="overflow-x-auto rounded-sm border-gov mb">
+              <div className="overflow-x-auto rounded-sm border-gov mb-sm">
                 <div className="w-full text-sm dt-inline-table" role="grid" aria-label={t('bulkImport.columnMapping')}>
                   <div className="dt-inline-row dt-inline-header" role="row">
                     <div className="dt-inline-cell text-left" role="columnheader">{t('bulkImport.csvColumn')}</div>
@@ -418,7 +418,7 @@ export default function BulkImport() {
 
               <div className="flex gap-sm">
                 <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
-                <RippleBtn onClick={confirmMapping} className="text-sm p-sm flex items-center gap-xs">
+                <RippleBtn onClick={confirmMapping} className="btn-primary btn-sm flex items-center gap-xs">
                   {t('bulkImport.confirmMapping')} <ArrowRight size={14} />
                 </RippleBtn>
               </div>
@@ -427,14 +427,14 @@ export default function BulkImport() {
 
           {step === 'preview' && preview && (
             <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-              <div className="flex-between mb">
+              <div className="flex-between mb-sm">
                 <div className="text-base text-semi">{t('bulkImport.rowsParsed', { count: preview.length })}</div>
                 <div className="flex gap-sm">
                   <button onClick={cancelPreview} className="text-sm btn-pill">{t('bulkImport.cancel')}</button>
                   <RippleBtn
                     onClick={handleSubmitImport}
                     disabled={importing || selected.size === 0}
-                    className="text-sm p-xs flex items-center gap-xs"
+                    className="btn-primary btn-sm"
                   >
                     {importing ? t('bulkImport.importing') : t('bulkImport.importRows', { count: selected.size })}
                   </RippleBtn>
@@ -551,7 +551,7 @@ export default function BulkImport() {
             </motion.div>
           )}
         </motion.div>
-    </div>
+      </div>
     </PageTransition>
   )
 }

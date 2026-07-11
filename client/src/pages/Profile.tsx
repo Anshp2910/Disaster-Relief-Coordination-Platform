@@ -174,7 +174,7 @@ export default function Profile() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
       >
-        <div className="flex flex-col flex-align-center mb-lg">
+        <div className="flex flex-col items-center mb-lg">
           <div
             onClick={handleAvatarClick}
             role="button"
@@ -263,7 +263,7 @@ export default function Profile() {
           </div>
 
           <div className="ff-group">
-            <div className="ff-label-text mb-xs flex items-center gap-xs">
+            <div className="text-sm text-semi mb-xs flex items-center gap-xs">
               <Award size={14} aria-hidden="true" />
               {t('profile.skills')}
             </div>
@@ -283,29 +283,29 @@ export default function Profile() {
           </div>
 
           <div className="ff-group">
-            <div className="ff-label-text mb-xs flex items-center gap-xs">
+            <div className="text-sm text-semi mb-xs flex items-center gap-xs">
               <Bell size={14} aria-hidden="true" />
               {t('profile.notificationPreferences')}
             </div>
             <div className="flex-col gap-sm text-sm">
               <div className="flex gap-lg">
                 <label className="flex gap-xs cursor-pointer">
-                  <input type="checkbox" className="input-checkbox" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
+                  <input type="checkbox" className="checkbox-custom" checked={!!notifications.email} onChange={(e) => setNotifications({ ...notifications, email: e.target.checked })} /> {t('profile.emailNotification')}
                 </label>
                 <label className="flex gap-xs cursor-pointer">
-                  <input type="checkbox" className="input-checkbox" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
+                  <input type="checkbox" className="checkbox-custom" checked={!!notifications.sms} onChange={(e) => setNotifications({ ...notifications, sms: e.target.checked })} /> {t('profile.smsNotification')}
                 </label>
               </div>
               <div className="text-sm text-muted-extra">{t('profile.eventSubscriptions')}</div>
               <div className="flex gap-lg flex-wrap">
                 <label className="flex gap-xs cursor-pointer">
-                  <input type="checkbox" className="input-checkbox" checked={notifications.newRequest === true} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
+                  <input type="checkbox" className="checkbox-custom" checked={notifications.newRequest === true} onChange={(e) => setNotifications({ ...notifications, newRequest: e.target.checked })} /> {t('profile.notifyNewRequest')}
                 </label>
                 <label className="flex gap-xs cursor-pointer">
-                  <input type="checkbox" className="input-checkbox" checked={notifications.statusChange === true} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
+                  <input type="checkbox" className="checkbox-custom" checked={notifications.statusChange === true} onChange={(e) => setNotifications({ ...notifications, statusChange: e.target.checked })} /> {t('profile.notifyStatusChange')}
                 </label>
                 <label className="flex gap-xs cursor-pointer">
-                  <input type="checkbox" className="input-checkbox" checked={notifications.newComment === true} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
+                  <input type="checkbox" className="checkbox-custom" checked={notifications.newComment === true} onChange={(e) => setNotifications({ ...notifications, newComment: e.target.checked })} /> {t('profile.notifyNewComment')}
                 </label>
               </div>
             </div>
@@ -400,7 +400,7 @@ export default function Profile() {
           </RippleBtn>
         </form>
       </motion.div>
-    </motion.div>
+      </motion.div>
     </PageTransition>
   )
 }
