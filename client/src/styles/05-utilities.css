@@ -28,9 +28,9 @@
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
-.text-bold { font-weight: 700; }
-.text-semi { font-weight: 600; }
-.text-medium { font-weight: 500; }
+.text-bold { font-weight: var(--font-weight-bold); }
+.text-semi { font-weight: var(--font-weight-semibold); }
+.text-medium { font-weight: var(--font-weight-medium); }
 .text-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .text-muted { color: var(--text-muted); }
 .text-accent { color: var(--accent); }
