@@ -10,20 +10,8 @@ export function validateEnv() {
   const schema = Joi.object({
     NODE_ENV:        Joi.string().valid('development', 'production', 'test').default('development'),
     PORT:            Joi.number().port().default(5001),
-    MONGODB_URI:     Joi.string().optional().allow('').custom((value, helpers) => {
-      if (!value) return value
-      const validSchemes = ['mongodb:', 'mongodb+srv:']
-      try {
-        const url = new URL(value)
-        if (!validSchemes.includes(url.protocol)) {
-          return helpers.error('any.invalid')
-        }
-        return value
-      } catch {
-        return helpers.error('any.invalid')
-      }
-    }, 'MongoDB URI validation').messages({
-      'any.invalid': 'MONGODB_URI must be a valid MongoDB connection string (mongodb:// or mongodb+srv://)',
+    MONGODB_URI:     Joi.string().optional().allow('').pattern(/^mongodb(\+srv)?:\/\/.+/).messages({
+      'string.pattern.base': 'MONGODB_URI must be a valid MongoDB connection string starting with mongodb:// or mongodb+srv://',
     }),
     JWT_SECRET:      Joi.string().min(32).required().messages({
       'string.min': 'JWT_SECRET must be at least 32 characters long',
