@@ -957,8 +957,8 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .dt-tr-header {
   border-bottom: 1px solid var(--border);
 }
-.dt-tr-selected {
-  background: rgba(79, 110, 247, 0.04) !important;
+.dt-tbody .dt-tr-selected {
+  background: var(--accent-soft);
 }
 .dt-tr-clickable { cursor: pointer; }
 .dt-tr-ctx { cursor: context-menu; }
@@ -977,8 +977,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   font-weight: var(--font-weight-semibold);
   color: var(--text-muted);
   font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   gap: var(--space-2xs);
   position: relative;
@@ -993,6 +992,12 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   width: 40px;
   justify-content: center;
   padding: var(--space-xs) var(--space-2xs);
+}
+
+/* For columns with explicit width (actions column, etc.) */
+.dt-th-fixed,
+.dt-td-fixed {
+  flex: none;
 }
 
 .dt-th-text {
