@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import PageTransition from '../components/ui/PageTransition'
 import { Users, FileText, Activity, CheckCircle, Shield, Trash2, Download, ArrowLeft } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { clientApi } from '../api/client'
@@ -626,7 +627,8 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <PageHeader
         title={t('admin.title')}
         subtitle={t('admin.subtitle')}
@@ -704,5 +706,6 @@ export default function AdminDashboard() {
       )}
       {delConfirm.ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

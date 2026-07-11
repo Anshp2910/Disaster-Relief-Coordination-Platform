@@ -82,7 +82,7 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
           tasks.map((task) => (
             <motion.div
               key={task._id}
-              className="listCard px-md py-sm cursor-pointer"
+              className="list-card px-md py-sm cursor-pointer"
               whileHover={reduced ? {} : { scale: 1.01 }}
               onClick={() => navigate(`/requests/${task._id}`)}
               role="button"

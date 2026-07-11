@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Search, AlertTriangle, ArrowUp, ArrowDown } from 'lucide-react'
 import { PageHeader, ErrorState, FilterBar } from '../components/ui'
@@ -9,6 +9,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
 import { useConfirm } from '../hooks/useConfirm'
 import { useToast } from '../components/Toast'
+import PageTransition from '../components/ui/PageTransition'
 
 interface EscalatedItem {
   _id: string
@@ -156,7 +157,8 @@ export default function Escalation() {
   }
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <div className="card">
         <PageHeader
           title={t('nav.escalation') || 'Request Escalation Pipeline'}
@@ -268,7 +270,7 @@ export default function Escalation() {
         loading={loading}
         emptyTitle={search ? t('escalation.noMatch') : t('escalation.noEscalated')}
         renderItem={(item) => (
-          <div className="listCard border-l-4 border-l-danger">
+          <div className="list-card border-l-4 border-l-danger">
             <div className="flex-between">
               <div className="flex-1">
                 <div className="text-bold text-base text-accent">{item.title}</div>
@@ -297,5 +299,6 @@ export default function Escalation() {
 
       {ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

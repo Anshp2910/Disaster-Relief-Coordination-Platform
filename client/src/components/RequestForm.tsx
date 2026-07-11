@@ -356,7 +356,7 @@ export default function RequestForm({
       <div className="card border-gov rounded-lg px-lg py-md">
         <div className="flex-between items-center">
           <div>
-            <h1 className="pageTitle text-2xl">{title}</h1>
+            <h1 className="page-title text-2xl">{title}</h1>
             {subtitle && <div className="small muted mt-xs">{subtitle}</div>}
           </div>
           <AutoSaveIndicator status={autoSaveStatus} />

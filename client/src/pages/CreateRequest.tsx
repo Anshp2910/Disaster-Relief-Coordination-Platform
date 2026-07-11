@@ -6,6 +6,7 @@ import RequestForm from '../components/RequestForm'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { ErrorState } from '../components/ui'
 import { useToast } from '../components/Toast'
+import PageTransition from '../components/ui/PageTransition'
 
 export default function CreateRequest() {
   useEffect(() => { document.title = 'Disaster Relief - New Request' }, [])
@@ -27,7 +28,8 @@ export default function CreateRequest() {
   }
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       {error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
       <RequestForm
         title={t('createRequest.title')}
@@ -37,5 +39,6 @@ export default function CreateRequest() {
         onSubmit={onSubmit}
       />
     </div>
+    </PageTransition>
   )
 }

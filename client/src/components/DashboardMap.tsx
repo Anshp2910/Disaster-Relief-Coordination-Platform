@@ -66,7 +66,7 @@ function DashboardMapInner() {
     return () => {
       window.removeEventListener('resize', onResize)
       if (window.visualViewport) (window.visualViewport as EventTarget).removeEventListener('resize', onResize)
-      if (map) cleanupLeafletMap(map); mapInstanceRef.current = null
+      if (map) { cleanupLeafletMap(map); mapInstanceRef.current = null }
     }
   }, [])
 

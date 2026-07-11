@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disaster Relief Coordination Platform - Promo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #050a16;
+  --bg-elevated: #0b1428;
+  --bg-card: rgba(15, 27, 48, 0.8);
+  --text: #dce5f5;
+  --text-secondary: #7a93b8;
+  --accent: #3b82f6;
+  --accent-glow: rgba(59, 130, 246, 0.3);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: rgba(255,255,255,0.06);
+  --saffron: #FF9933;
+  --green: #138808;
+  --glass: rgba(255,255,255,0.03);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+}
+
+/* ─── PARTICLES ─── */
+#particles {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: rgba(59, 130, 246, 0.4);
+  border-radius: 50%;
+  animation: float linear infinite;
+}
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+}
+
+/* ─── GRID OVERLAY ─── */
+.grid-overlay {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0; pointer-events: none;
+}
+
+/* ─── SLIDE CONTAINER ─── */
+.slide-container {
+  position: fixed; inset: 0;
+  z-index: 1;
+}
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 60px 80px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  pointer-events: none;
+}
+.slide.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.slide.exit {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #06b6d4);
+  width: 0%;
+  transition: width 0.3s linear;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ─── SLIDE INDICATOR ─── */
+.slide-indicator {
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 100;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.4s ease;
+}
+.dot.active {
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  width: 24px; border-radius: 4px;
+}
+
+/* ─── TYPING EFFECT ─── */
+.typing-cursor::after {
+  content: '|';
+  animation: blink 0.8s step-end infinite;
+  color: var(--accent);
+  font-weight: 300;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ─── COUNTER ─── */
+.counter {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── KEYFRAMES ─── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow); }
+}
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2); opacity: 0; }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── UTILITY ─── */
+.animate-fade-up { animation: fadeInUp 0.8s ease both; }
+.animate-fade-scale { animation: fadeInScale 0.8s ease both; }
+.animate-slide-left { animation: slideInLeft 0.8s ease both; }
+.animate-slide-right { animation: slideInRight 0.8s ease both; }
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+.delay-4 { animation-delay: 0.8s; }
+.delay-5 { animation-delay: 1.0s; }
+
+.shimmer-text {
+  background: linear-gradient(90deg, var(--text) 0%, var(--accent) 50%, var(--text) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s ease infinite;
+}
+
+.glow-box {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* ─── SLIDE 1: TITLE ─── */
+#slide-1 {
+  background: radial-gradient(ellipse at center, rgba(59,130,246,0.08) 0%, transparent 70%);
+}
+.title-logo {
+  width: 90px; height: 90px;
+  margin-bottom: 16px;
+  animation: fadeInScale 1s ease both;
+}
+.title-logo svg { width: 100%; height: 100%; }
+.title-main {
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin-bottom: 12px;
+}
+.title-main span {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.title-sub {
+  font-size: clamp(16px, 2vw, 24px);
+  color: var(--text-secondary);
+  text-align: center;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+.gov-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 20px;
+  border: 1px solid rgba(255,153,51,0.3);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--saffron);
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+.gov-badge span:nth-child(2) { color: #fff; opacity: 0.5; }
+.gov-badge span:nth-child(3) { color: var(--green); }
+
+/* ─── SLIDE 2: PROBLEM ─── */
+#slide-2 {
+  background: radial-gradient(ellipse at center, rgba(239,68,68,0.06) 0%, transparent 70%);
+}
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 800px;
+  width: 100%;
+}
+.problem-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+.problem-item .icon {
+  font-size: 36px; margin-bottom: 8px;
+}
+.problem-item h3 {
+  font-size: 16px; font-weight: 600; margin-bottom: 4px;
+}
+.problem-item p {
+  font-size: 13px; color: var(--text-secondary);
+}
+
+/* ─── SLIDE 3: SOLUTION ─── */
+#slide-3 {
+  background: radial-gradient(ellipse at center, rgba(34,197,94,0.06) 0%, transparent 70%);
+}
+.stats-row {
+  display: flex; gap: 24px;
+  margin-top: 32px;
+  flex-wrap: wrap; justify-content: center;
+}
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 36px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  min-width: 160px;
+}
+.stat-number {
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* ─── SLIDE 4: DASHBOARD ─── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 960px;
+  width: 100%;
+}
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+.f-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 20px;
+}
+.f-icon.blue { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.f-icon.amber { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.f-icon.green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.f-icon.red { background: rgba(239,68,68,0.15); color: #ef4444; }
+.f-icon.purple { background: rgba(124,58,237,0.15); color: #7c3aed; }
+.f-icon.cyan { background: rgba(6,182,212,0.15); color: #06b6d4; }
+
+.feature-card h4 {
+  font-size: 14px; font-weight: 600; margin-bottom: 4px;
+}
+.feature-card p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ─── SLIDE 5: MAP ─── */
+#slide-5 {
+  background: radial-gradient(ellipse at center, rgba(6,182,212,0.06) 0%, transparent 70%);
+}
+.map-preview {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 340px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #0a1628 0%, #0f1b30 50%, #0a1628 100%);
+}
+.map-preview canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.map-marker {
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 12px currentColor;
+}
+.map-marker::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  animation: pulseRing 2s ease-out infinite;
+  border: 2px solid currentColor;
+}
+.marker-label {
+  position: absolute;
+  transform: translate(-50%, 6px);
+  font-size: 9px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  background: rgba(11,20,40,0.85);
+  padding: 2px 6px;
+  border-radius: 4px;
+  top: 100%;
+}
+
+/* ─── SLIDE 8: SOS ─── */
+.sos-circle {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239,68,68,0.3), transparent);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  animation: pulseGlow 1.5s ease-in-out infinite;
+  margin: 0 auto 20px;
+}
+.sos-circle-inner {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: var(--danger);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800; letter-spacing: 2px;
+  color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+.sos-ring {
+  position: absolute; inset: -10px;
+  border-radius: 50%;
+  border: 2px solid var(--danger);
+  animation: pulseRing 2s ease-out infinite;
+}
+.sos-ring:nth-child(2) { animation-delay: 0.5s; }
+.sos-ring:nth-child(3) { animation-delay: 1s; }
+
+/* ─── SLIDE: FEATURE LIST WITH ICONS ─── */
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  max-width: 960px;
+  width: 100%;
+}
+.feature-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  backdrop-filter: blur(8px);
+}
+.f-item-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.f-item-icon.blue { background: rgba(59,130,246,0.15); }
+.f-item-icon.green { background: rgba(34,197,94,0.15); }
+.f-item-icon.amber { background: rgba(245,158,11,0.15); }
+.f-item-icon.red { background: rgba(239,68,68,0.15); }
+.f-item-icon.purple { background: rgba(124,58,237,0.15); }
+.f-item-icon.cyan { background: rgba(6,182,212,0.15); }
+
+.feature-item span {
+  font-size: 13px; font-weight: 500; line-height: 1.3;
+}
+
+/* ─── SLIDE: CTA ─── */
+#slide-15 {
+  background: radial-gradient(ellipse at center, rgba(59,130,246,0.1) 0%, transparent 70%);
+}
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none; border-radius: 100px;
+  color: #fff; font-size: 18px; font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 4px 30px var(--accent-glow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px var(--accent-glow);
+}
+
+/* ─── SECTION TITLE ─── */
+.section-title {
+  font-size: clamp(24px, 3.5vw, 42px);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.section-subtitle {
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 28px;
+  max-width: 600px;
+}
+.section-subtitle-wide {
+  max-width: 750px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .slide { padding: 30px 24px; }
+  .feature-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .problem-grid { grid-template-columns: 1fr; gap: 10px; }
+  .stats-row { gap: 12px; }
+  .stat-box { padding: 18px 20px; min-width: 120px; }
+  .stat-number { font-size: 32px; }
+  .feature-list { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- PARTICLES -->
+<div id="particles"></div>
+<div class="grid-overlay"></div>
+
+<!-- PROGRESS -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- SLIDES -->
+<div class="slide-container" id="slideContainer">
+
+<!-- 1: TITLE -->
+<div class="slide active" id="slide-1">
+  <div class="title-logo">
+    <svg viewBox="0 0 48 48" fill="none">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="48" y2="48"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs>
+      <path d="M24 3L42 11v17c0 9-8 15-18 18C14 43 6 37 6 28V11L24 3z" fill="url(#g)"/>
+      <rect x="21.5" y="14" width="5" height="20" rx="2" fill="#fff"/>
+      <rect x="14" y="21.5" width="20" height="5" rx="2" fill="#fff"/>
+    </svg>
+  </div>
+  <h1 class="title-main"><span>Disaster Relief<br>Coordination Platform</span></h1>
+  <p class="title-sub">Connecting those in need with those who can help</p>
+  <div class="gov-badge">
+    <span>&#127987;&#65039;</span><span>Government of India Initiative</span><span>&#127987;&#65039;</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box animate-fade-up delay-2">
+      <div class="stat-number"><span class="counter" data-target="22">0</span></div>
+      <div class="stat-label">Pages</div>
+    </div>
+    <div class="stat-box animate-fade-up delay-3">
+      <div class="stat-number"><span class="counter" data-target="70">0</span>+</div>
+      <div class="stat-label">API Endpoints</div>
+    </div>
+    <div class="stat-box animate-fade-up delay-4">
+      <div class="stat-number"><span class="counter" data-target="10">0</span></div>
+      <div class="stat-label">Languages</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2: THE CHALLENGE -->
+<div class="slide" id="slide-2">
+  <h2 class="section-title">When Disaster Strikes...</h2>
+  <p class="section-subtitle">Every second counts. Chaos, confusion, and lack of coordination cost lives.</p>
+  <div class="problem-grid">
+    <div class="problem-item animate-fade-up delay-1">
+      <div class="icon">&#128200;</div>
+      <h3>Fragmented Data</h3>
+      <p>Situational awareness scattered across spreadsheets, calls, and paper logs</p>
+    </div>
+    <div class="problem-item animate-fade-up delay-2">
+      <div class="icon">&#128680;</div>
+      <h3>Delayed Response</h3>
+      <p>Critical requests buried in message overload, no prioritization</p>
+    </div>
+    <div class="problem-item animate-fade-up delay-3">
+      <div class="icon">&#128101;</div>
+      <h3>Poor Coordination</h3>
+      <p>NGOs, volunteers, and agencies working in silos with no unified view</p>
+    </div>
+    <div class="problem-item animate-fade-up delay-4">
+      <div class="icon">&#127758;</div>
+      <h3>No Real-Time Visibility</h3>
+      <p>Command centers operate blind without live maps, zones, and resource tracking</p>
+    </div>
+  </div>
+</div>
+
+<!-- 3: THE SOLUTION -->
+<div class="slide" id="slide-3">
+  <h2 class="section-title">One Platform. Total Command.</h2>
+  <p class="section-subtitle section-subtitle-wide">A government-grade, real-time disaster relief operating system for the modern era</p>
+  <div class="stats-row">
+    <div class="stat-box animate-fade-up delay-1">
+      <div class="stat-number"><span class="counter" data-target="100">0</span>%</div>
+      <div class="stat-label">Real-Time Sync</div>
+    </div>
+    <div class="stat-box animate-fade-up delay-2">
+      <div class="stat-number"><span class="counter" data-target="175">0</span>+</div>
+      <div class="stat-label">Tests Passed</div>
+    </div>
+    <div class="stat-box animate-fade-up delay-3">
+      <div class="stat-number">WCAG<br><span style="font-size:28px">AA</span></div>
+      <div class="stat-label">Accessibility</div>
+    </div>
+    <div class="stat-box animate-fade-up delay-4">
+      <div class="stat-number">PWA</div>
+      <div class="stat-label">Offline Ready</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4: DASHBOARD & REQUESTS -->
+<div class="slide" id="slide-4">
+  <h2 class="section-title">&#128202; Smart Dashboard</h2>
+  <p class="section-subtitle">Intelligent request management with real-time filtering, prioritization, and tracking</p>
+  <div class="feature-grid">
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="f-icon blue">&#128220;</div>
+      <h4>Request Management</h4>
+      <p>Create, filter, claim &amp; track relief requests with priority levels</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="f-icon red">&#9888;&#65039;</div>
+      <h4>Priority System</h4>
+      <p>Critical, High, Medium, Low — triage what matters most</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="f-icon green">&#9989;</div>
+      <h4>Status Workflow</h4>
+      <p>Open → In Progress → Resolved → Fulfilled with progress tracking</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-4">
+      <div class="f-icon amber">&#128196;</div>
+      <h4>File Attachments</h4>
+      <p>Upload, preview &amp; manage images, PDFs, and documents</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon purple">&#128172;</div>
+      <h4>Comments &amp; Feedback</h4>
+      <p>Collaborate with comments, ratings, and delivery confirmation</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon cyan">&#128200;</div>
+      <h4>Activity Log</h4>
+      <p>Full audit trail of every change, claim, and action</p>
+    </div>
+  </div>
+</div>
+
+<!-- 5: GIS MAP -->
+<div class="slide" id="slide-5">
+  <h2 class="section-title">&#127758; Real-Time GIS Mapping</h2>
+  <p class="section-subtitle">Full-screen interactive map with live status markers, zones, and geofencing</p>
+  <div class="map-preview" id="mapCanvas">
+    <canvas id="mapAnim"></canvas>
+  </div>
+</div>
+
+<!-- 6: DISASTER ZONES -->
+<div class="slide" id="slide-6">
+  <h2 class="section-title">&#128204; Disaster Zone Heat Map</h2>
+  <p class="section-subtitle">Visualize severity, track coverage gaps, and monitor affected populations</p>
+  <div class="feature-grid">
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="f-icon red">&#128721;</div>
+      <h4>Severity Overlay</h4>
+      <p>Critical, High, Medium, Low zone coloring with heat map</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="f-icon green">&#9989;</div>
+      <h4>Coverage Tracking</h4>
+      <p>Covered, Partial, Gap — know where help has reached</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="f-icon amber">&#127783;&#65039;</div>
+      <h4>Weather Integration</h4>
+      <p>Live temperature, humidity, wind from Open-Meteo API</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-4">
+      <div class="f-icon cyan">&#128200;</div>
+      <h4>Population Metrics</h4>
+      <p>Track affected population &amp; resource needs per zone</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon purple">&#128270;</div>
+      <h4>Zone Search &amp; Filter</h4>
+      <p>Filter by severity, disaster type, coverage status</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon blue">&#128196;</div>
+      <h4>CRUD Operations</h4>
+      <p>Create, edit, delete disaster zones with modal forms</p>
+    </div>
+  </div>
+</div>
+
+<!-- 7: INCIDENT MANAGEMENT -->
+<div class="slide" id="slide-7">
+  <h2 class="section-title">&#128293; Incident Management</h2>
+  <p class="section-subtitle">Group incidents, link requests, and track resolution end-to-end</p>
+  <div class="feature-list">
+    <div class="feature-item animate-slide-left delay-1">
+      <div class="f-item-icon red">&#128293;</div>
+      <span>Grouped incident cards with linked relief requests</span>
+    </div>
+    <div class="feature-item animate-slide-left delay-2">
+      <div class="f-item-icon amber">&#127919;</div>
+      <span>6 disaster types: Flood, Earthquake, Cyclone, Drought, Fire, Landslide</span>
+    </div>
+    <div class="feature-item animate-slide-left delay-3">
+      <div class="f-item-icon blue">&#128200;</div>
+      <span>Severity levels with color-coded indicators</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-1">
+      <div class="f-item-icon green">&#128195;</div>
+      <span>Audit log for tracking all incident changes</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-2">
+      <div class="f-item-icon purple">&#128101;</div>
+      <span>Affected population metrics per incident</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-3">
+      <div class="f-item-icon cyan">&#128204;</div>
+      <span>Active, Monitoring, Resolved, Closed status workflow</span>
+    </div>
+  </div>
+</div>
+
+<!-- 8: RESOURCE MANAGEMENT -->
+<div class="slide" id="slide-8">
+  <h2 class="section-title">&#128230; Resource Management</h2>
+  <p class="section-subtitle">Full inventory control with smart allocation, bulk operations, and demand forecasting</p>
+  <div class="feature-grid">
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="f-icon green">&#128221;</div>
+      <h4>CRUD Inventory</h4>
+      <p>14 categories: Food, Water, Medical, Shelter, Equipment &amp; more</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="f-icon amber">&#128200;</div>
+      <h4>Stock Tracking</h4>
+      <p>Available, Low, Depleted, Reserved, In Transit statuses</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="f-icon blue">&#128260;</div>
+      <h4>Smart Allocation</h4>
+      <p>Auto-suggest resources matching request category &amp; location</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-4">
+      <div class="f-icon purple">&#128203;</div>
+      <h4>Bulk Operations</h4>
+      <p>Bulk select, edit status/category, and manage at scale</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon cyan">&#128269;</div>
+      <h4>Search &amp; Filter</h4>
+      <p>Debounced search with category and status filters</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon red">&#128202;</div>
+      <h4>Stock Summary</h4>
+      <p>Category-wise stock overview with allocation insights</p>
+    </div>
+  </div>
+</div>
+
+<!-- 9: SOS EMERGENCY -->
+<div class="slide" id="slide-9">
+  <h2 class="section-title">&#128680; SOS Emergency Broadcast</h2>
+  <p class="section-subtitle">Instant emergency alerting with real-time acknowledgement and resolution workflow</p>
+  <div class="sos-circle">
+    <div class="sos-ring"></div>
+    <div class="sos-ring"></div>
+    <div class="sos-circle-inner">SOS</div>
+  </div>
+  <div class="feature-list" style="max-width:700px">
+    <div class="feature-item animate-slide-left delay-1">
+      <div class="f-item-icon red">&#128680;</div>
+      <span>Floating SOS button available on every page</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-2">
+      <div class="f-item-icon amber">&#9201;&#65039;</div>
+      <span>5-second cooldown between broadcasts</span>
+    </div>
+    <div class="feature-item animate-slide-left delay-3">
+      <div class="f-item-icon blue">&#128274;</div>
+      <span>Rate limited — max 5 SOS per minute per user</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-4">
+      <div class="f-item-icon green">&#9989;</div>
+      <span>Real-time alerts with acknowledgement &amp; resolution</span>
+    </div>
+  </div>
+</div>
+
+<!-- 10: REAL-TIME CHAT -->
+<div class="slide" id="slide-10">
+  <h2 class="section-title">&#128172; Real-Time Communication</h2>
+  <p class="section-subtitle">Instant messaging, live alerts, and seamless team coordination</p>
+  <div class="feature-grid">
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="f-icon blue">&#128172;</div>
+      <h4>Per-Request Chat</h4>
+      <p>Socket.io-powered real-time messaging per relief request</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="f-icon amber">&#128276;</div>
+      <h4>Live Notifications</h4>
+      <p>Instant alerts on claim, status change, and new comments</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="f-icon green">&#128101;</div>
+      <h4>Team Collaboration</h4>
+      <p>Join/leave chat rooms with auth-protected sockets</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-4">
+      <div class="f-icon purple">&#128682;</div>
+      <h4>Push Notifications</h4>
+      <p>Offline alerts via service worker push integration</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon cyan">&#128260;</div>
+      <h4>Real-Time Sync</h4>
+      <p>Auto-refresh every 20 seconds across all views</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon red">&#128200;</div>
+      <h4>Activity Feed</h4>
+      <p>Live stream of all platform actions and updates</p>
+    </div>
+  </div>
+</div>
+
+<!-- 11: VOLUNTEER MANAGEMENT -->
+<div class="slide" id="slide-11">
+  <h2 class="section-title">&#129309; Volunteer Management</h2>
+  <p class="section-subtitle">Schedule shifts, track skills, and deploy the right people to the right place</p>
+  <div class="feature-list">
+    <div class="feature-item animate-slide-left delay-1">
+      <div class="f-item-icon blue">&#128197;</div>
+      <span>Interactive shift calendar with create/edit/complete</span>
+    </div>
+    <div class="feature-item animate-slide-left delay-2">
+      <div class="f-item-icon green">&#127891;</div>
+      <span>Skills selection: Medical, Rescue, Logistics, Communication, Shelter</span>
+    </div>
+    <div class="feature-item animate-slide-left delay-3">
+      <div class="f-item-icon amber">&#128100;</div>
+      <span>User profiles with role-based access (Volunteer, NGO, Admin)</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-1">
+      <div class="f-item-icon purple">&#128222;</div>
+      <span>Notification preferences — email and SMS integration</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-2">
+      <div class="f-item-icon cyan">&#128274;</div>
+      <span>Secure authentication with JWT, social login &amp; password reset</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-3">
+      <div class="f-item-icon red">&#9203;</div>
+      <span>Idle detection — auto-logout after 11 min inactivity</span>
+    </div>
+  </div>
+</div>
+
+<!-- 12: ADMIN DASHBOARD -->
+<div class="slide" id="slide-12">
+  <h2 class="section-title">&#128202; Command Center Analytics</h2>
+  <p class="section-subtitle">Powerful admin dashboard with charts, user management, and system-wide control</p>
+  <div class="feature-grid">
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="f-icon blue">&#128200;</div>
+      <h4>Stats Overview</h4>
+      <p>Total users, requests, resources with live counters</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="f-icon amber">&#128202;</div>
+      <h4>Interactive Charts</h4>
+      <p>Bar charts by day, pie charts by status &amp; priority</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="f-icon green">&#128101;</div>
+      <h4>User Management</h4>
+      <p>Search, paginate, edit roles, and manage all users</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-4">
+      <div class="f-icon red">&#128196;</div>
+      <h4>Request Oversight</h4>
+      <p>Full table with search, pagination, and deletion</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon purple">&#128230;</div>
+      <h4>Bulk Import/Export</h4>
+      <p>CSV upload and download with formula injection protection</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon cyan">&#128200;</div>
+      <h4>Seed Data</h4>
+      <p>One-click demo data generation for testing &amp; training</p>
+    </div>
+  </div>
+</div>
+
+<!-- 13: GEOFENCING & ESCALATION -->
+<div class="slide" id="slide-13">
+  <h2 class="section-title">&#127759; Geofencing &amp; Escalation</h2>
+  <p class="section-subtitle">Advanced spatial intelligence and automated escalation workflows</p>
+  <div class="feature-grid">
+    <div class="feature-card animate-fade-up delay-1">
+      <div class="f-icon cyan">&#127758;</div>
+      <h4>Geofencing</h4>
+      <p>Click map → radius selection → shows zones, requests &amp; resources within range</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-2">
+      <div class="f-icon red">&#128240;</div>
+      <h4>Escalation System</h4>
+      <p>Escalate requests with reason, de-escalate when resolved</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-3">
+      <div class="f-icon blue">&#128752;</div>
+      <h4>Real-Time Subscriptions</h4>
+      <p>Live geofencing updates via Socket.io</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-4">
+      <div class="f-icon amber">&#128269;</div>
+      <h4>Escalation Search</h4>
+      <p>Full search across escalated requests (Admin only)</p>
+    </div>
+    <div class="feature-card animate-fade-up delay-5">
+      <div class="f-icon purple">&#128220;</div>
+      <h4>Request List</h4>
+      <p>Complete escalated requests with status tracking</p>
+    </div>
+  </div>
+</div>
+
+<!-- 14: i18n, PWA, SECURITY -->
+<div class="slide" id="slide-14">
+  <h2 class="section-title">&#127760; Enterprise-Grade Platform</h2>
+  <p class="section-subtitle">Built for scale, security, and universal accessibility</p>
+  <div class="feature-list">
+    <div class="feature-item animate-slide-left delay-1">
+      <div class="f-item-icon green">&#127760;</div>
+      <span>10 Languages — English, Hindi, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Punjabi, Urdu (RTL)</span>
+    </div>
+    <div class="feature-item animate-slide-left delay-2">
+      <div class="f-item-icon blue">&#128241;</div>
+      <span>Progressive Web App — Installable, offline-capable, standalone mode</span>
+    </div>
+    <div class="feature-item animate-slide-left delay-3">
+      <div class="f-item-icon amber">&#128274;</div>
+      <span>Enterprise Security — CSP, Helmet, JWT, bcrypt, rate limiting, CORS</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-1">
+      <div class="f-item-icon purple">&#127912;</div>
+      <span>3 Themes — Dark (default), Light, Neon with emergency &amp; high-contrast modes</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-2">
+      <div class="f-item-icon cyan">&#128083;</div>
+      <span>WCAG AA+ — Screen reader support, focus traps, keyboard navigation, RTL</span>
+    </div>
+    <div class="feature-item animate-slide-right delay-3">
+      <div class="f-item-icon red">&#128295;</div>
+      <span>175+ Unit Tests, 13 E2E Tests, Playwright visual regression, Docker deploy</span>
+    </div>
+  </div>
+</div>
+
+<!-- 15: CTA -->
+<div class="slide" id="slide-15">
+  <h2 class="section-title" style="font-size:clamp(28px,4vw,52px)">Ready to <span class="shimmer-text">Transform</span> Disaster Response?</h2>
+  <p class="section-subtitle" style="max-width:600px">Join the government agencies, NGOs, and volunteers already using the platform to coordinate relief efforts across India</p>
+  <div style="margin-top:20px; text-align:center">
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap">
+      <div class="stat-box animate-fade-up delay-2">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Free for NGOs &amp; Volunteers</div>
+      </div>
+      <div class="stat-box animate-fade-up delay-3">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Real-Time Operations</div>
+      </div>
+    </div>
+    <div style="margin-top:32px">
+      <a class="cta-btn" href="https://disasterhelper.dpdns.org" target="_blank">
+        &#127760; Visit Live Demo
+      </a>
+    </div>
+    <p style="margin-top:16px; font-size:13px; color:var(--text-secondary)">
+      Disaster Relief Coordination Platform &mdash; Government of India Initiative
+    </p>
+  </div>
+</div>
+
+</div>
+
+<!-- DOTS -->
+<div class="slide-indicator" id="dots"></div>
+
+<script>
+// ─── SETUP ───
+const TOTAL_SLIDES = 15;
+const SLIDE_DURATION = 8000; // 8s per slide = 2 min total
+let currentSlide = 0;
+let isTransitioning = false;
+let autoTimer = null;
+
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+const dotsContainer = document.getElementById('dots');
+
+for (let i = 0; i < TOTAL_SLIDES; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.dataset.index = i;
+  dot.addEventListener('click', () => goToSlide(i));
+  dotsContainer.appendChild(dot);
+}
+
+function goToSlide(index) {
+  if (isTransitioning || index === currentSlide || index < 0 || index >= TOTAL_SLIDES) return;
+  isTransitioning = true;
+
+  slides[currentSlide].classList.remove('active');
+  slides[currentSlide].classList.add('exit');
+  document.querySelectorAll('.dot')[currentSlide].classList.remove('active');
+
+  setTimeout(() => {
+    slides[currentSlide].classList.remove('exit');
+  }, 800);
+
+  currentSlide = index;
+  slides[currentSlide].classList.add('active');
+  document.querySelectorAll('.dot')[currentSlide].classList.add('active');
+
+  progressFill.style.width = '0%';
+
+  if (currentSlide === 0) {
+    animateCounters();
+  }
+
+  setTimeout(() => { isTransitioning = false; }, 800);
+}
+
+function nextSlide() {
+  goToSlide((currentSlide + 1) % TOTAL_SLIDES);
+}
+
+function startAutoPlay() {
+  if (autoTimer) clearInterval(autoTimer);
+  let progress = 0;
+  const tick = 50;
+
+  autoTimer = setInterval(() => {
+    progress += tick;
+    const pct = Math.min((progress / SLIDE_DURATION) * 100, 100);
+    progressFill.style.width = pct + '%';
+
+    if (progress >= SLIDE_DURATION) {
+      progress = 0;
+      nextSlide();
+    }
+  }, tick);
+}
+
+// ─── COUNTER ANIMATION ───
+function animateCounters() {
+  document.querySelectorAll('.counter').forEach(counter => {
+    const target = parseInt(counter.dataset.target);
+    let current = 0;
+    const increment = Math.ceil(target / 40);
+    const interval = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        current = target;
+        clearInterval(interval);
+      }
+      counter.textContent = current;
+    }, 50);
+  });
+}
+
+// ─── PARTICLE GENERATION ───
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 50; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    p.style.animationDuration = (15 + Math.random() * 25) + 's';
+    p.style.animationDelay = (Math.random() * 20) + 's';
+    p.style.opacity = 0.2 + Math.random() * 0.5;
+    container.appendChild(p);
+  }
+}
+
+// ─── MAP CANVAS ANIMATION ───
+function drawMap() {
+  const canvas = document.getElementById('mapAnim');
+  if (!canvas) return;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * devicePixelRatio;
+  canvas.height = rect.height * devicePixelRatio;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const w = rect.width, h = rect.height;
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(59,130,246,0.08)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+  }
+  for (let y = 0; y < h; y += 40) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+
+  // Animated dots on map
+  const t = Date.now() / 1000;
+  const markers = [
+    { x: 0.25, y: 0.35, color: '#ef4444', label: 'Critical' },
+    { x: 0.55, y: 0.25, color: '#f59e0b', label: 'In Progress' },
+    { x: 0.75, y: 0.55, color: '#3b82f6', label: 'Open' },
+    { x: 0.35, y: 0.65, color: '#22c55e', label: 'Resolved' },
+    { x: 0.65, y: 0.75, color: '#f59e0b', label: 'High Priority' },
+    { x: 0.15, y: 0.50, color: '#3b82f6', label: 'Open' },
+    { x: 0.85, y: 0.30, color: '#ef4444', label: 'SOS' },
+    { x: 0.45, y: 0.80, color: '#22c55e', label: 'Resolved' },
+  ];
+
+  markers.forEach((m, i) => {
+    const x = m.x * w, y = m.y * h;
+    const pulse = 1 + 0.3 * Math.sin(t * 2 + i);
+    const r = 6 * pulse;
+
+    // Glow
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
+    grad.addColorStop(0, m.color + '40');
+    grad.addColorStop(1, m.color + '00');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(x, y, r * 4, 0, Math.PI * 2); ctx.fill();
+
+    // Ring
+    ctx.strokeStyle = m.color + '60';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(x, y, r * 2, 0, Math.PI * 2); ctx.stroke();
+
+    // Dot
+    ctx.fillStyle = m.color;
+    ctx.shadowColor = m.color;
+    ctx.shadowBlur = 15;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+
+  requestAnimationFrame(drawMap);
+}
+
+// ─── KEYBOARD NAV ───
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    nextSlide();
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    goToSlide((currentSlide - 1 + TOTAL_SLIDES) % TOTAL_SLIDES);
+  }
+});
+
+// ─── INIT ───
+createParticles();
+startAutoPlay();
+drawMap();
+animateCounters();
+</script>
+</body>
+</html>

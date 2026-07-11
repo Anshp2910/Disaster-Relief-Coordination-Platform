@@ -38,7 +38,7 @@ function DataList<T>({
   return (
     <>
       <motion.div
-        className="gridGap mt-lg"
+        className="grid-gap mt-lg"
         initial="hidden"
         animate="show"
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04 } } }}

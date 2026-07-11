@@ -11,6 +11,7 @@ import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useConfirm } from '../hooks/useConfirm'
 import { getErrorMessage } from '../utils/getErrorMessage'
+import PageTransition from '../components/ui/PageTransition'
 import { CATEGORY_COLORS, RESOURCE_STATUS_COLORS, CATEGORY_OPTIONS, RESOURCE_STATUS_OPTIONS } from '../utils/constants'
 
 interface ResourceItem {
@@ -208,7 +209,8 @@ export default function Resources() {
   function exportCSV() { clientApi.exportResourcesCSV().catch((err: Error) => toast.error(err.message)) }
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <PageHeader
         title={t('nav.resources') || 'Resource Inventory'}
         subtitle={`${total} ${t('resources.resourcesTracked')}`}
@@ -327,7 +329,7 @@ export default function Resources() {
         skeletonLines={3}
         keyExtractor={(r) => r._id}
         renderItem={(r) => (
-          <div className={`listCard ${selectMode ? 'p-sm' : ''}`}>
+          <div className={`list-card ${selectMode ? 'p-sm' : ''}`}>
             <div className="flex-between gap-sm">
               {selectMode && (
                 <input id={`res-check-${r._id}`} type="checkbox" checked={selectedIds.has(r._id)} onChange={() => handleSelectOne(r._id)} className="cursor-pointer" aria-label={`${t('resources.select') || 'Select'} ${r.name || r._id}`} />
@@ -449,5 +451,6 @@ export default function Resources() {
 
       {ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

@@ -12,6 +12,7 @@ import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { useToast } from '../components/Toast'
+import PageTransition from '../components/ui/PageTransition'
 
 interface ScheduleItem {
   _id: string
@@ -162,7 +163,8 @@ export default function Schedules() {
   const schedulesByDay = useMemo(() => { const groups: Record<string, ScheduleItem[]> = {}; weekDays.forEach((day) => { groups[day.toDateString()] = [] }); weekSchedules.forEach((item) => { if (!item.startDate) return; const d = new Date(item.startDate); const key = d.toDateString(); if (groups[key]) groups[key].push(item) }); return groups }, [weekSchedules, weekDays])
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <PageHeader title={t('nav.schedules') || 'Volunteer Scheduling'} subtitle={`${items.length} ${t('schedules.schedulesCount')}`} actions={<button className="btn-primary btn-sm" onClick={openCreate}><Plus size={16} /> {t('schedules.createSchedule')}</button>} />
       {error && <ErrorState message={error} onRetry={load} />}
 
@@ -234,7 +236,7 @@ export default function Schedules() {
             const shiftC = SHIFT_COLORS[item.shift || 'Full Day'] ?? SHIFT_COLORS['Full Day']!
             const statusC = SCHEDULE_STATUS_COLORS[item.status || 'Scheduled'] ?? SCHEDULE_STATUS_COLORS.Scheduled!
             return (
-              <div className="listCard cursor-default">
+              <div className="list-card cursor-default">
                 <div className="flex gap-sm flex-wrap">
                   <span className="text-bold">{typeof item.userId === 'object' && item.userId ? item.userId.displayName : t('schedules.volunteer')}</span>
                   <span className="status-badge" style={{ background: shiftC.bg, color: shiftC.text, border: `1px solid ${shiftC.border}` }}><Clock size={14} /> {item.shift}</span>
@@ -294,5 +296,6 @@ export default function Schedules() {
       </Modal>
       {ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

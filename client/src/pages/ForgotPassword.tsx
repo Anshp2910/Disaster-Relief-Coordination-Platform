@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import PageTransition from '../components/ui/PageTransition'
 import { ShieldCheck, Mail, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { getErrorMessage } from '../utils/getErrorMessage'
@@ -43,7 +44,8 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="auth-split">
+    <PageTransition>
+      <div className="auth-split">
       <div className="auth-hero">
         <div className="auth-hero-content">
           <div className="auth-emblem" aria-hidden="true">
@@ -127,5 +129,6 @@ export default function ForgotPassword() {
         </div>
       </div>
     </div>
+    </PageTransition>
   )
 }

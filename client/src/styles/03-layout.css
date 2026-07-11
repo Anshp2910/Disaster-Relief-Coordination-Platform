@@ -22,7 +22,7 @@
   gap: var(--space-md);
 }
 
-.gridGap {
+.grid-gap {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-sm);

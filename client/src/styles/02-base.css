@@ -65,7 +65,7 @@ img { max-width: 100%; height: auto; }
   position: absolute;
   top: -100%;
   left: var(--space-sm);
-  z-index: 999999;
+  z-index: var(--z-skip-link);
   padding: var(--space-2xs) var(--space-sm);
   background: var(--accent);
   color: var(--text-on-accent);

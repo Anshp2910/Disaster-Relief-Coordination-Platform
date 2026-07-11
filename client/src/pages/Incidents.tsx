@@ -15,6 +15,7 @@ import { useAuth } from '../context/AuthContext'
 import EmptyState from '../components/EmptyState'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { useToast } from '../components/Toast'
+import PageTransition from '../components/ui/PageTransition'
 
 interface Incident {
   _id: string
@@ -160,7 +161,8 @@ export default function Incidents() {
   const disasterTypeOptions = useMemo(() => Object.keys(DISASTER_ICONS).map((d) => ({ label: d, value: d })), [])
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <PageHeader
         title={t('nav.incidents') || 'Incident Grouping'}
         subtitle={`${incidents.length} ${t('incidents.incidentsTracked')}`}
@@ -282,5 +284,6 @@ export default function Incidents() {
       )}
       {ConfirmDialog}
     </div>
+    </PageTransition>
   )
 }

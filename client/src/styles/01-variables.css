@@ -1,7 +1,7 @@
 :root {
-  --pri-50: #eff6ff; --pri-100: #dbeafe; --pri-200: #bfdbfe;
-  --pri-300: #93c5fd; --pri-400: #60a5fa; --pri-500: #3b82f6;
-  --pri-600: #2563eb; --pri-700: #1d4ed8; --pri-800: #1e40af; --pri-900: #1e3a8a;
+  --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-200: #bfdbfe;
+  --blue-300: #93c5fd; --blue-400: #60a5fa; --blue-500: #3b82f6;
+  --blue-600: #2563eb; --blue-700: #1d4ed8; --blue-800: #1e40af; --blue-900: #1e3a8a;
 
   --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0;
   --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
@@ -31,6 +31,12 @@
   --violet-300: #c4b5fd; --violet-400: #a78bfa; --violet-500: #8b5cf6;
   --violet-600: #7c3aed; --violet-700: #6d28d9; --violet-800: #5b21b6; --violet-900: #4c1d95;
 
+  /* Legacy pri-* alias for backward compat */
+  --pri-50: var(--blue-50); --pri-100: var(--blue-100); --pri-200: var(--blue-200);
+  --pri-300: var(--blue-300); --pri-400: var(--blue-400); --pri-500: var(--blue-500);
+  --pri-600: var(--blue-600); --pri-700: var(--blue-700); --pri-800: var(--blue-800); --pri-900: var(--blue-900);
+
+  /* ── Theme Colors ── */
   --bg: #f5f7fb;
   --bg-elevated: #ffffff;
   --bg-subtle: #eef1f7;
@@ -65,17 +71,24 @@
   --gradient-accent: linear-gradient(135deg, #3b5be5, #4f6ef7);
   --gradient-danger: linear-gradient(135deg, #d03434, #e44a4a);
 
+  /* ── Shadows ── */
   --shadow-xs: 0 1px 2px rgba(79, 110, 247, 0.04);
   --shadow-sm: 0 1px 3px rgba(79, 110, 247, 0.06), 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-md: 0 4px 8px rgba(79, 110, 247, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 10px 20px rgba(79, 110, 247, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
   --shadow-xl: 0 20px 30px rgba(79, 110, 247, 0.10), 0 8px 12px rgba(0, 0, 0, 0.05);
-
   --shadow-accent: 0 2px 8px rgba(79, 110, 247, 0.18);
   --shadow-danger: 0 2px 8px rgba(228, 74, 74, 0.18);
 
+  /* ── Typography ── */
   --font: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
 
   --text-3xs: 0.6875rem;
   --text-2xs: 0.75rem;
@@ -91,6 +104,11 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
 
+  --tracking-tight: -0.03em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+
+  /* ── Spacing ── */
   --space-4xs: 2px;
   --space-3xs: 4px;
   --space-2xs: 8px;
@@ -100,10 +118,13 @@
   --space-lg: 24px;
   --space-xl: 40px;
   --space-2xl: 64px;
+  --space-px: 1px;
 
   --navbar-height: 48px;
   --shell-max: 1280px;
 
+  /* ── Border Radius ── */
+  --radius-4xs: 2px;
   --radius-3xs: 4px;
   --radius-2xs: 8px;
   --radius-xs: 10px;
@@ -112,67 +133,62 @@
   --radius-lg: 18px;
   --radius-full: 9999px;
 
+  /* ── Easing ── */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 100ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;
 
+  /* ── Z-Index ── */
   --z-sticky: 50;
   --z-dropdown: 100;
+  --z-skip-link: 999;
   --z-modal-backdrop: 800;
   --z-modal: 900;
   --z-toast: 1000;
 
-  --color-open: var(--pri-600);
+  /* ── Status Colors ── */
+  --color-open: var(--blue-600);
+  --color-pending: #8b5cf6;
   --color-progress: var(--amber-500);
   --color-resolved: var(--success);
+  --color-fulfilled: #2dd4bf;
   --color-critical: var(--danger);
   --color-high: var(--amber-500);
   --color-medium: var(--amber-600);
   --color-low: var(--success);
 
-  --cat-medical: #ef4444; --cat-food: var(--amber-500);
-  --cat-shelter: var(--pri-500); --cat-water: #06b6d4;
-  --cat-rescue: #ea580c; --cat-supplies: #818cf8;
-  --cat-healthcare: #ec4899; --cat-sanitation: #14b8a6;
-  --cat-clothing: #a855f7; --cat-transportation: #6366f1;
-  --cat-communication: #0ea5e9; --cat-power: #eab308;
-  --cat-infrastructure: #64748b; --cat-equipment: #e11d48;
-  --cat-other: #9ca3af;
+  /* ── Category Colors ── */
+  --cat-medical: var(--red-500);
+  --cat-food: var(--amber-500);
+  --cat-shelter: var(--blue-500);
+  --cat-water: #06b6d4;
+  --cat-rescue: #ea580c;
+  --cat-supplies: #818cf8;
+  --cat-healthcare: #ec4899;
+  --cat-sanitation: var(--teal-500);
+  --cat-clothing: #a855f7;
+  --cat-transportation: #6366f1;
+  --cat-communication: #0ea5e9;
+  --cat-power: #eab308;
+  --cat-infrastructure: var(--slate-500);
+  --cat-equipment: #e11d48;
+  --cat-other: var(--gray-400);
 
-  /* Legacy gov-* variables (backward compat) */
+  /* ── Legacy gov-* (backward compat) ── */
   --gov-muted: var(--text-muted);
   --gov-blue: var(--accent);
   --gov-danger: var(--danger);
   --gov-green: var(--success);
-  --gov-saffron: #f59e0b;
+  --gov-saffron: var(--amber-500);
   --gov-white: #ffffff;
 
-  /* Additional status colors */
-  --color-pending: #8b5cf6;
-  --color-fulfilled: #2dd4bf;
-
-  /* Accent variants */
+  /* ── Accent Variants ── */
   --accent-indigo: #818cf8;
   --accent-purple: #a78bfa;
 
-  /* Letter spacing */
-  --tracking-tight: -0.03em;
-
-  /* Font weights */
-  --font-weight-bold: 700;
-  --font-weight-semibold: 600;
-
-  /* Border radius */
-  --radius-4xs: 2px;
-
-  /* Space values */
-  --space-xsml: 14px;
-  --space-px: 1px;
-
-  /* Blue shades */
-  --blue-300: #93c5fd;
-  --blue-500: #3b82f6;
+  /* Modal backdrop */
+  --modal-backdrop: rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="dark"] {
@@ -194,14 +210,19 @@
   --accent-hover: #8aa3ff;
   --accent-soft: rgba(109, 138, 255, 0.12);
   --danger: #f87171;
+  --danger-hover: #ef4444;
   --danger-soft: rgba(248, 113, 113, 0.1);
   --success: #4ade80;
   --success-soft: rgba(74, 222, 128, 0.1);
   --warning: #fbbf24;
   --warning-soft: rgba(251, 191, 36, 0.1);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.2);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 30px rgba(0, 0, 0, 0.5), 0 8px 12px rgba(0, 0, 0, 0.4);
+  --shadow-accent: 0 2px 8px rgba(109, 138, 255, 0.25);
+  --shadow-danger: 0 2px 8px rgba(248, 113, 113, 0.25);
   --color-open: #6d8aff;
   --color-progress: #fbbf24;
   --color-resolved: #4ade80;
@@ -209,4 +230,5 @@
   --color-high: #fbbf24;
   --color-medium: var(--amber-400);
   --color-low: #4ade80;
+  --modal-backdrop: rgba(0, 0, 0, 0.7);
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import PageTransition from '../components/ui/PageTransition'
 import { createStagger, createListItem } from '../utils/animations'
 import { Lock, ArrowLeft, Loader2, CheckCircle, Eye, EyeOff } from 'lucide-react'
 import { clientApi } from '../api/client'
@@ -41,6 +42,7 @@ export default function ResetPassword() {
 
   if (done) {
     return (
+      <PageTransition>
       <div className="auth-page">
         <div className="auth-card">
           <motion.div className="auth-content" variants={container} initial="hidden" animate="visible">
@@ -55,11 +57,13 @@ export default function ResetPassword() {
           </motion.div>
         </div>
       </div>
+    </PageTransition>
     )
   }
 
   return (
-    <div className="auth-page">
+    <PageTransition>
+      <div className="auth-page">
       <div className="auth-card">
         <motion.form className="auth-content" variants={container} initial="hidden" animate="visible" onSubmit={handleSubmit}>
            <motion.div className="flex-center text-accent" style={{ fontSize: '3rem' }} variants={item}>
@@ -105,5 +109,6 @@ export default function ResetPassword() {
         </motion.form>
       </div>
     </div>
+    </PageTransition>
   )
 }

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import PageTransition from '../components/ui/PageTransition'
 import { createStagger } from '../utils/animations'
 import { AlertCircle, ArrowLeft, Edit, Trash2, MessageSquare, Paperclip, Download, CheckCircle, Clock, MapPin, User, Package, Activity, Share2, Star } from 'lucide-react'
 import { clientApi } from '../api/client'
@@ -14,7 +15,7 @@ import SteppedProgress from '../components/SteppedProgress'
 import { SkeletonCard } from '../components/Skeleton'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
-import Chat from './Chat'
+import Chat from '../components/ChatPanel'
 import { STATUS_COLORS, PRIORITY_COLORS, CATEGORY_COLORS, STATUS_OPTIONS } from '../utils/constants'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { API_BASE } from '../api/client'
@@ -403,7 +404,8 @@ export default function RequestDetail() {
   }
 
   return (
-    <article className="container" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
+    <PageTransition>
+      <article className="container" aria-label={`${t('requestDetail.pageTitle') || 'Request Detail'}: ${item.title}`}>
       <PageHeader
         title={item.title || ''}
         actions={
@@ -856,5 +858,6 @@ export default function RequestDetail() {
 
       {ConfirmDialog}
     </article>
+    </PageTransition>
   )
 }

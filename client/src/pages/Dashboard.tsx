@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import PageTransition from '../components/ui/PageTransition'
 import { createStagger } from '../utils/animations'
 import {
   AlertTriangle, ClipboardList,
@@ -87,11 +88,12 @@ export default function Dashboard() {
   ], [t])
 
   return (
-    <div className="container">
+    <PageTransition>
+      <div className="container">
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
         <div className="flex-between mb-md mt-md">
           <div>
-            <h1 className="pageTitle">{t('dashboard.title') || 'Emergency Command Center'}</h1>
+            <h1 className="page-title">{t('dashboard.title') || 'Emergency Command Center'}</h1>
             <p className="text-sm text-muted mt-xs">
               {new Date().toLocaleDateString(i18n.language, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
@@ -110,7 +112,7 @@ export default function Dashboard() {
 
         <div className="card">
           <div className="flex-between mb-sm">
-            <h2 className="pageTitle-sm flex items-center gap-xs">
+            <h2 className="page-title-sm flex items-center gap-xs">
               <ClipboardList size={18} />
               {t('dashboard.allRequests') || 'All Requests'}
             </h2>
@@ -172,11 +174,11 @@ export default function Dashboard() {
               action={{ onClick: () => navigate('/requests/new'), label: t('dashboard.createRequest') || 'New Request' }}
             />
           ) : (
-            <div className="gridGap">
+            <div className="grid-gap">
               {items.map((it) => (
                 <div
                   key={it._id}
-                  className="listCard"
+                  className="list-card"
                   role="button"
                   tabIndex={0}
                   onClick={() => navigate(`/requests/${it._id}`)}
@@ -235,5 +237,6 @@ export default function Dashboard() {
         </div>
       </motion.div>
     </div>
+    </PageTransition>
   )
 }

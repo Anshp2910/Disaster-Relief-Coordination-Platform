@@ -1,7 +1,6 @@
 import { RippleBtn } from '../components/ui'
 import { Component, type ReactNode, type ErrorInfo } from 'react'
 import i18n from '../i18n'
-const t = i18n.t.bind(i18n)
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -100,7 +99,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               <RippleBtn
                 onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload() }}
                 className="error-btn error-btn-secondary"
-                aria-label={t('errorBoundary.refreshPage')}
+                aria-label={i18n.t('errorBoundary.refreshPage')}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <polyline points="23 4 23 10 17 10" />
