@@ -1869,6 +1869,65 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
 }
 
+/* ── Gradient text ── */
+.text-gradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Icon sizing ── */
+.icon-48 {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Max width utilities ── */
+.max-w-400 { max-width: 400px; }
+.max-w-240 { max-width: 240px; }
+
+/* ── Stack / Column layouts ── */
+.stack-xs { display: flex; flex-direction: column; gap: var(--space-xs); }
+.stack-sm { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+/* ── Update banner (main.tsx) ── */
+.update-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: var(--accent);
+  color: #fff;
+  padding: var(--space-2xs) var(--space-sm);
+  text-align: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+.update-banner-btn {
+  background: #fff;
+  color: var(--accent);
+  border: none;
+  border-radius: var(--radius-4xs);
+  padding: var(--space-3xs) var(--space-xs);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: var(--text-xs);
+  font-family: var(--font);
+}
+.update-banner-btn:hover {
+  filter: brightness(0.95);
+}
+
 /* ── Additional Utilities ── */
 .absolute { position: absolute; }
 .fixed { position: fixed; }

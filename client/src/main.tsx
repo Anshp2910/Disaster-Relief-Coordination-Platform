@@ -24,37 +24,12 @@ function UpdateBanner() {
       <div
         role="alert"
         aria-live="polite"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 99999,
-          background: 'var(--accent, #3b82f6)',
-          color: '#fff',
-          padding: 'var(--space-2xs) var(--space-sm)',
-          textAlign: 'center',
-          fontSize: 'var(--text-sm)',
-          fontWeight: 'var(--font-weight-semibold)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 'var(--space-xs)',
-        }}
+        className="update-banner"
       >
         <span>A new version is available</span>
         <button
           onClick={(e) => { e.stopPropagation(); applyUpdate() }}
-          style={{
-            background: '#fff',
-            color: 'var(--accent, #3b82f6)',
-            border: 'none',
-            borderRadius: 'var(--radius-4xs)',
-            padding: 'var(--space-3xs) var(--space-xs)',
-            fontWeight: 'var(--font-weight-bold)',
-            cursor: 'pointer',
-            fontSize: 'var(--text-xs)',
-          }}
+          className="update-banner-btn"
         >
           Refresh now
         </button>

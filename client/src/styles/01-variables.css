@@ -134,6 +134,45 @@
   --cat-medical: #ef4444; --cat-food: var(--amber-500);
   --cat-shelter: var(--pri-500); --cat-water: #06b6d4;
   --cat-rescue: #ea580c; --cat-supplies: #818cf8;
+  --cat-healthcare: #ec4899; --cat-sanitation: #14b8a6;
+  --cat-clothing: #a855f7; --cat-transportation: #6366f1;
+  --cat-communication: #0ea5e9; --cat-power: #eab308;
+  --cat-infrastructure: #64748b; --cat-equipment: #e11d48;
+  --cat-other: #9ca3af;
+
+  /* Legacy gov-* variables (backward compat) */
+  --gov-muted: var(--text-muted);
+  --gov-blue: var(--accent);
+  --gov-danger: var(--danger);
+  --gov-green: var(--success);
+  --gov-saffron: #f59e0b;
+  --gov-white: #ffffff;
+
+  /* Additional status colors */
+  --color-pending: #8b5cf6;
+  --color-fulfilled: #2dd4bf;
+
+  /* Accent variants */
+  --accent-indigo: #818cf8;
+  --accent-purple: #a78bfa;
+
+  /* Letter spacing */
+  --tracking-tight: -0.03em;
+
+  /* Font weights */
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+
+  /* Border radius */
+  --radius-4xs: 2px;
+
+  /* Space values */
+  --space-xsml: 14px;
+  --space-px: 1px;
+
+  /* Blue shades */
+  --blue-300: #93c5fd;
+  --blue-500: #3b82f6;
 }
 
 [data-theme="dark"] {

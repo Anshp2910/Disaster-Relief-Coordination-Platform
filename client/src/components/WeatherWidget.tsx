@@ -45,7 +45,7 @@ function WeatherWidgetInner({ weather, loading = false }: WeatherWidgetProps) {
         {loading ? <div className="sk-line" style={{ width: 18, height: 18, borderRadius: '50%' }} /> : conditionIcon}
       </div>
       {loading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+        <div className="stack-xs">
           <div className="sk-line" style={{ width: '40%', height: 32 }} />
           <div className="sk-line" style={{ width: '60%', height: 14 }} />
         </div>

@@ -50,7 +50,7 @@ function RiskWidgetInner({ stats, loading = false }: RiskWidgetProps) {
         {loading ? <div className="sk-line" style={{ width: 18, height: 18, borderRadius: '50%' }} /> : <AlertTriangle size={18} style={{ color: risk.color }} />}
       </div>
       {loading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+        <div className="stack-xs">
           <div className="sk-line" style={{ width: '30%', height: 32 }} />
           <div className="sk-line" style={{ width: '100%', height: 4, borderRadius: 4 }} />
         </div>

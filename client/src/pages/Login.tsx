@@ -63,7 +63,7 @@ export default function Login() {
       <motion.div className="auth-hero" variants={item}>
         <div className="auth-hero-content">
           <motion.div className="flex items-center gap-sm mb-lg" variants={item}>
-            <div className="flex-center rounded-sm bg-accent" style={{ width: 48, height: 48 }}><ShieldCheck size={28} color="#fff" /></div>
+            <div className="icon-48 rounded-sm bg-accent"><ShieldCheck size={28} color="#fff" /></div>
           </motion.div>
           <motion.h1 className="auth-hero-title" variants={item}>{t('appTitle')}</motion.h1>
           <motion.p className="auth-hero-sub" variants={item}>{t('auth.heroSubtitle')}</motion.p>

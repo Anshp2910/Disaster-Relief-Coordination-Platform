@@ -39,8 +39,8 @@ export default function NotFound() {
       </motion.svg>
 
       <motion.h1
-        className="text-xl m-0 mb-sm"
-        style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 800, background: 'var(--gradient-accent)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+        className="text-gradient text-xl m-0 mb-sm"
+        style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 800 }}
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
@@ -50,7 +50,7 @@ export default function NotFound() {
       <p className="text-lg font-semibold m-0 mb-sm">
         {t('notFound.title') || 'Page Not Found'}
       </p>
-      <p className="text-sm text-muted m-0 mb-lg" style={{ maxWidth: 400 }}>
+      <p className="text-sm text-muted m-0 mb-lg max-w-400">
         {t('notFound.description') || 'The page you are looking for doesn\'t exist or has been moved.'}
       </p>
       <div className="flex-center gap-sm">

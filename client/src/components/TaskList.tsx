@@ -57,7 +57,7 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
         <div className="bento-header">
           <span className="bento-title"><ListChecks size={14} /> {t('taskList.title')}</span>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+        <div className="stack-xs">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="sk-card" style={{ padding: 'var(--space-xsml) var(--space-sm)' }}>
               <div className="sk-line" style={{ width: '70%', height: 14, marginBottom: 'var(--space-2xs)' }} />
@@ -92,7 +92,7 @@ function TaskListInner({ requests, loading = false }: TaskListProps) {
               <div className="flex-between gap-sm">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-bold">{task.title}</div>
-                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-xs text-muted">
                     {task.createdAt ? timeSince(task.createdAt, t) : ''}
                     {task.status ? ` · ${t(`statuses.${task.status}`)}` : ''}
                   </div>
