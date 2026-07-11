@@ -372,7 +372,216 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .gov-navbar-hamburger:hover { background: var(--accent-soft); color: var(--accent); }
 
+/* ── Navbar Logo & Title Group ── */
+.gov-navbar-logo {
+  flex-shrink: 0;
+  display: block;
+}
+
+.gov-navbar-title-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+/* ── Navbar Button Groups ── */
+.gov-navbar-btn-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.gov-navbar-btn-group.gov-navbar-tools {
+  gap: var(--space-4xs);
+}
+
+/* ── Navbar Tool Buttons ── */
+.gov-navbar-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-2xs);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.gov-navbar-tool-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.gov-navbar-tool-btn:active {
+  transform: scale(0.92);
+}
+.gov-navbar-tool-btn.premium-active {
+  color: var(--warning);
+}
+.gov-navbar-tool-btn.emergency-active {
+  color: var(--danger);
+  animation: pulse-emergency 2s ease-in-out infinite;
+}
+
+@keyframes pulse-emergency {
+  0%, 100% { box-shadow: 0 0 0 0 var(--danger-soft); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+
+.gov-navbar-emergency-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: ping 1.5s ease-out infinite;
+}
+
+/* ── Navbar User Button ── */
+.gov-navbar-user-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-xs);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-2xs);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.gov-navbar-user-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.gov-navbar-user-btn:active {
+  transform: scale(0.97);
+}
+
+.gov-navbar-user-name {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .gov-navbar-user-name {
+    display: inline;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* ── Navbar Divider ── */
+.gov-navbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Navbar Language Select ── */
+.gov-navbar-lang {
+  display: flex;
+  align-items: center;
+}
+
+.gov-navbar-lang-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xs);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-family: var(--font);
+  padding: var(--space-3xs) var(--space-sm) var(--space-3xs) var(--space-2xs);
+  cursor: pointer;
+  outline: none;
+  min-height: 32px;
+  min-width: 90px;
+  transition: all var(--duration-fast) var(--ease-out);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 24px;
+}
+.gov-navbar-lang-select:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+.gov-navbar-lang-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* ── Sub-Navigation ── */
+.gov-subnav {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.gov-subnav-inner {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .gov-subnav {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .gov-subnav-inner {
+    padding: 0 var(--space-md);
+  }
+}
+
+/* ── Mobile Menu ── */
+.gov-navbar-mobile-divider {
+  height: 1px;
+  background: var(--border);
+  margin: var(--space-2xs) 0;
+}
+
+.gov-navbar-mobile-section-label {
+  font-size: var(--text-3xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: var(--space-3xs) var(--space-sm) var(--space-2xs);
+}
+
+.gov-navbar-mobile-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: 0 var(--space-sm) var(--space-2xs);
+}
+
+.gov-navbar-mobile-theme {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) 0;
+}
+
 .gov-navbar-mobile {
+  border-top: 1px solid var(--border);
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  background: var(--bg-elevated);
+  max-height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;
+}
   border-top: 1px solid var(--border);
   padding: var(--space-sm) var(--space-md) var(--space-md);
   background: var(--bg-elevated);
@@ -1473,7 +1682,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .gov-navbar-mobile-links {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4xs);
+  gap: var(--space-2xs);
 }
 
 /* ── Inline Data Table (Bulk Import) ── */
@@ -1502,7 +1711,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   background: var(--accent-soft);
 }
 .dt-inline-editing .dt-inline-cell {
-  background: rgba(109, 138, 255, 0.06);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 .dt-inline-selected .dt-inline-cell {
   background: var(--accent-soft);

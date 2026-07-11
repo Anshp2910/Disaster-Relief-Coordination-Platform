@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { createStagger } from '../utils/animations'
 import {
-  AlertTriangle, ClipboardList, Users, BarChart3,
+  AlertTriangle, ClipboardList,
   RefreshCw, Plus, ArrowRight,
 } from 'lucide-react'
 import { clientApi } from '../api/client'
@@ -107,8 +107,6 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
-
-
 
         <div className="card">
           <div className="flex-between mb-sm">
