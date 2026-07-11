@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
 import { FeatureNav } from './FeatureNav'
 import { NavControls } from './NavControls'
 
@@ -12,27 +11,11 @@ export function NavBar() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { isAuthenticated } = useAuth()
-  const { toggleEmergency, togglePremiumTheme } = useTheme()
 
   // Close mobile menu on route change
   useEffect(() => {
     setMenuOpen(false)
   }, [location.pathname])
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.altKey && e.key === 'E') {
-        e.preventDefault()
-        toggleEmergency()
-      }
-      if (e.altKey && e.key === 'N') {
-        e.preventDefault()
-        togglePremiumTheme()
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [toggleEmergency, togglePremiumTheme])
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
   const showNav = isAuthenticated && !isAuthPage

@@ -417,9 +417,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .gov-navbar-tool-btn:active {
   transform: scale(0.92);
 }
-.gov-navbar-tool-btn.premium-active {
-  color: var(--warning);
-}
 .gov-navbar-tool-btn.emergency-active {
   color: var(--danger);
   animation: pulse-emergency 2s ease-in-out infinite;
@@ -428,17 +425,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 @keyframes pulse-emergency {
   0%, 100% { box-shadow: 0 0 0 0 var(--danger-soft); }
   50% { box-shadow: 0 0 0 6px transparent; }
-}
-
-.gov-navbar-emergency-dot {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--danger);
-  animation: ping 1.5s ease-out infinite;
 }
 
 /* ── Navbar User Button ── */

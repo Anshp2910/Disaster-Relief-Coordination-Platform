@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
-import { Sun, Moon, User, LogOut, AlertTriangle, Zap, Menu, X } from 'lucide-react'
+import { Sun, Moon, User, LogOut, Menu, X } from 'lucide-react'
 import NotificationBell from './NotificationBell'
 
 interface Language {
@@ -34,7 +34,7 @@ export function NavControls({ mobile = false, onToggleMenu, menuOpen, showNav }:
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const { user: currentUser, logout: authLogout } = useAuth()
-  const { theme, toggleTheme, togglePremiumTheme, isPremium, isEmergency, toggleEmergency } = useTheme()
+  const { theme, toggleTheme } = useTheme()
 
   function changeLanguage(langCode: string) {
     i18n.changeLanguage(langCode)
@@ -62,12 +62,6 @@ export function NavControls({ mobile = false, onToggleMenu, menuOpen, showNav }:
           <div className="gov-navbar-mobile-theme">
             <button onClick={toggleTheme} className="gov-navbar-tool-btn" aria-label={t('nav.toggleTheme')}>
               {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-            </button>
-            <button onClick={togglePremiumTheme} className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`} aria-label={t('nav.togglePremiumTheme')} title={t('nav.premiumThemeHint')}>
-              <Zap size={14} />
-            </button>
-            <button onClick={toggleEmergency} className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`} aria-label={isEmergency ? t('nav.disableEmergencyMode') : t('nav.activateEmergencyMode')} title={t('nav.emergencyModeHint')}>
-              <AlertTriangle size={14} />
             </button>
           </div>
         </div>
@@ -104,23 +98,6 @@ export function NavControls({ mobile = false, onToggleMenu, menuOpen, showNav }:
               title={theme === 'light' ? t('nav.darkMode') : t('nav.lightMode')}
             >
               {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-            </button>
-            <button
-              onClick={togglePremiumTheme}
-              className={`gov-navbar-tool-btn ${isPremium ? 'premium-active' : ''}`}
-              aria-label={isPremium ? t('nav.disablePremiumTheme') : t('nav.activatePremiumTheme')}
-              title={t('nav.premiumThemeHint')}
-            >
-              <Zap size={14} />
-            </button>
-            <button
-              onClick={toggleEmergency}
-              className={`gov-navbar-tool-btn ${isEmergency ? 'emergency-active' : ''}`}
-              aria-label={isEmergency ? t('nav.disableEmergencyMode') : t('nav.activateEmergencyMode')}
-              title={t('nav.emergencyModeHint')}
-            >
-              <AlertTriangle size={14} />
-              {isEmergency && <span className="gov-navbar-emergency-dot" />}
             </button>
           </div>
 
