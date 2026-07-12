@@ -533,10 +533,10 @@ export default function BulkImport() {
               variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
               className="mt-lg p rounded-sm bg-subtle border-gov"
             >
-              <div className="text-semi text-13 text-accent-green flex items-center gap-xs">
-                <CheckCircle size={16} />
-                {t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: result.imported })}
-              </div>
+<div className="text-semi text-13 text-accent-green flex items-center gap-xs">
+  <CheckCircle size={16} />
+  {t('bulkImport.importComplete')} {t('bulkImport.recordsImported', { count: Number(result.imported) || 0 })}
+</div>
               {(result.errors as Array<Record<string, unknown>>)?.length > 0 && (
                 <div className="mt-sm">
                   <div className="text-sm text-semi text-red flex items-center gap-xs">

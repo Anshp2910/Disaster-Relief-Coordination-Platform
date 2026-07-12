@@ -52,9 +52,10 @@ export default function Login() {
     try {
       const { token, user } = (await clientApi.login({ email, password })) as { token: string; user: Record<string, unknown> }
       if (remember) { try { localStorage.setItem('rememberedEmail', email) } catch {/* silent */} } else { try { localStorage.removeItem('rememberedEmail') } catch {/* silent */} }
-      login(token, user)
-      const from = (location.state as { from?: string })?.from || '/dashboard'
-      navigate(from, { replace: true })
+  login(token, user)
+  await new Promise(r => requestAnimationFrame(r))
+  const from = (location.state as { from?: string })?.from || '/dashboard'
+  navigate(from, { replace: true })
     } catch (err) { setError((err as Error).message || t('common.loginFailed')) }
     finally { setLoading(false) }
   }
