@@ -291,6 +291,7 @@
     "kmAway": "km away",
     "deleted": "Request deleted",
     "pageTitle": "Request Detail",
+    "status": "Status",
     "star": "star",
     "stars": "stars",
     "suggestedResources": "Suggested Resources",
@@ -573,6 +574,7 @@
     "editSelected": "Edit Selected",
     "exportSelected": "Export Selected",
     "apply": "Apply",
+    "applying": "Applying...",
     "select": "Select",
     "bulkActions": "Bulk actions",
     "selectAll": "Select All"
@@ -801,6 +803,7 @@
     "escalated": "Escalated:",
     "by": "By:",
     "deEscalate": "De-escalate",
+    "deEscalated": "De-escalated successfully",
     "deEscalateConfirm": "De-escalate this request?",
     "selectRequest": "Select a request...",
     "searchPlaceholder": "Search by title, reason, or user...",
