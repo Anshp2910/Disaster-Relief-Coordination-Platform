@@ -666,7 +666,7 @@ async function handleAllocate(e: React.FormEvent) {
                 const withinEditWindow = canEdit(c)
 
                 return (
-                  <div key={c._id} className={`text-sm p-sm bg-card rounded-sm ${isEditing ? 'border-gov' : ''}`} style={{ border: isEditing ? '1px solid var(--accent)' : '1px solid transparent' }}>
+                  <div key={c._id} className={`text-sm p-sm bg-card rounded-sm ${isEditing ? 'comment-editing' : ''}`}>
                     {isEditing ? (
                       <>
                         <div className="ff-group m-0">

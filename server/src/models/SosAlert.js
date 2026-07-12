@@ -27,6 +27,10 @@ SosAlertSchema.index({ status: 1, createdAt: -1 })
 SosAlertSchema.pre('save', function syncLocation() {
   if (this.lat != null && this.lng != null) {
     this.location = { type: 'Point', coordinates: [this.lng, this.lat] }
+  } else {
+    // Clear location to prevent partial GeoJSON ({ type: 'Point' } without
+    // coordinates) from being rejected by the 2dsphere index.
+    this.$set('location', undefined)
   }
 })
 

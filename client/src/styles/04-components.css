@@ -1879,6 +1879,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   margin-top: 6px;
 }
 
+.comment-editing {
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+}
+
 /* ── SOS FAB ── */
 .sos-fab {
   position: fixed;

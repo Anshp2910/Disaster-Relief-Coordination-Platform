@@ -46,8 +46,6 @@ export default function Escalation() {
   const [reqActiveIndex, setReqActiveIndex] = useState(-1)
   const reqSearchRef = useRef<HTMLDivElement>(null)
   const [escalating, setEscalating] = useState(false)
-  const [escalationSuccess, setEscalationSuccess] = useState(false)
-  const [deEscalationSuccess, setDeEscalationSuccess] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -68,23 +66,9 @@ export default function Escalation() {
     ;(clientApi.getRequests({ limit: '1000' }) as Promise<{ items: RequestOption[] }>).then((data) => {
       setAllRequests(data.items || [])
     }).catch(() => { setAllRequests([]) })
-  }, [load])
+}, [load])
 
-  useEffect(() => {
-    if (escalationSuccess) {
-      toast.success(t('escalation.escalated') || 'Escalation submitted')
-      setEscalationSuccess(false)
-    }
-  }, [escalationSuccess, toast, t])
-
-  useEffect(() => {
-    if (deEscalationSuccess) {
-      toast.success(t('escalation.deEscalated') || 'De-escalation completed')
-      setDeEscalationSuccess(false)
-    }
-  }, [deEscalationSuccess, toast, t])
-
-  useAutoRefresh(load, { interval: 20000 })
+useAutoRefresh(load, { interval: 20000 })
 
   useEffect(() => {
     return registerRefreshListener(['request:escalated', 'request:updated'], load)
@@ -129,32 +113,32 @@ export default function Escalation() {
     e.preventDefault()
     setError('')
     setEscalating(true)
-    try {
-      await clientApi.escalateRequest(requestId, reason)
-      setRequestId('')
-      setReason('')
-      setEscalationSuccess(true)
-      load()
-    } catch (e) {
-      const err = e as Error
-      setError(err.message)
-    } finally {
-      setEscalating(false)
-    }
+  try {
+    await clientApi.escalateRequest(requestId, reason)
+    setRequestId('')
+    setReason('')
+    toast.success(t('escalation.escalated') || 'Escalation submitted')
+    load()
+  } catch (e) {
+    const err = e as Error
+    setError(err.message)
+  } finally {
+    setEscalating(false)
   }
+}
 
-  async function handleDeescalate(id: string) {
-    const ok = await confirm({ message: t('escalation.deEscalateConfirm'), danger: true })
-    if (!ok) return
-    try {
-      await clientApi.deescalateRequest(id)
-      setDeEscalationSuccess(true)
-      load()
-    } catch (e) {
-      const err = e as Error
-      setError(err.message)
-    }
+async function handleDeescalate(id: string) {
+  const ok = await confirm({ message: t('escalation.deEscalateConfirm'), danger: true })
+  if (!ok) return
+  try {
+    await clientApi.deescalateRequest(id)
+    toast.success(t('escalation.deEscalated') || 'De-escalation completed')
+    load()
+  } catch (e) {
+    const err = e as Error
+    setError(err.message)
   }
+}
 
   return (
     <PageTransition>
