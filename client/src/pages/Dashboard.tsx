@@ -145,7 +145,7 @@ export default function Dashboard() {
               </button>
             ))}
             <div className="filter-group ml-auto">
-              <select value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="filter-select">
+              <select id="filter-category" name="category" value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="filter-select">
                 <option value="All">{t('dashboard.allCategories') || 'All Categories'}</option>
                 {CATEGORY_OPTIONS.map((c) => (
                   <option key={c} value={c}>{t(`categories.${c}`)}</option>
@@ -153,7 +153,7 @@ export default function Dashboard() {
               </select>
             </div>
             <div className="filter-group">
-              <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="filter-select">
+              <select id="sort-by" name="sortBy" value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1) }} className="filter-select">
                 <option value="-createdAt">{t('dashboard.sortNewest')}</option>
                 <option value="createdAt">{t('dashboard.sortOldest')}</option>
                 <option value="-priority">{t('dashboard.sortPriorityDesc')}</option>

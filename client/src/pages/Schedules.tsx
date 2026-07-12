@@ -178,8 +178,8 @@ export default function Schedules() {
 
       <div className="schedule-extra-controls">
           <div className="flex gap-md items-center flex-wrap">
-            <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.from')}:</span><input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} className="ff-date-input" /></div>
-            <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.to')}:</span><input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} className="ff-date-input" /></div>
+            <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.from')}:</span><input id="schedule-date-from" name="dateFrom" type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setPage(1) }} className="ff-date-input" /></div>
+            <div className="flex items-center gap-xs"><span className="text-sm text-muted">{t('schedules.to')}:</span><input id="schedule-date-to" name="dateTo" type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setPage(1) }} className="ff-date-input" /></div>
           </div>
         <div className="schedule-view-toggle">
           <button onClick={() => setViewMode('list')} className={viewMode === 'list' ? 'active' : ''} aria-pressed={viewMode === 'list'}><List size={16} /> {t('schedules.listView') || 'List'}</button>
