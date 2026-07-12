@@ -13,31 +13,36 @@ export default function CreateRequest() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const [error, setError] = useState('')
+  const [formLoading, setFormLoading] = useState(false)
 
   const toast = useToast()
 
   const onSubmit = async (data: Record<string, unknown>) => {
-    setError('')
-    try {
-      await clientApi.createRequest(data)
-      toast.success('Request created successfully')
-      navigate('/dashboard')
-    } catch (e) {
-      setError(getErrorMessage(e) || t('createRequest.failed'))
-    }
+  setError('')
+  setFormLoading(true)
+  try {
+    await clientApi.createRequest(data)
+    toast.success('Request created successfully')
+    navigate('/dashboard')
+  } catch (e) {
+    setError(getErrorMessage(e) || t('createRequest.failed'))
+  } finally {
+    setFormLoading(false)
   }
+}
 
   return (
     <PageTransition>
       <div className="container">
       {error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
-      <RequestForm
-        title={t('createRequest.title')}
-        subtitle={t('createRequest.subtitle')}
-        submitLabel={t('createRequest.creating')}
-        submitButtonLabel={t('createRequest.createButton')}
-        onSubmit={onSubmit}
-      />
+<RequestForm
+  title={t('createRequest.title')}
+  subtitle={t('createRequest.subtitle')}
+  submitLabel={t('createRequest.creating')}
+  submitButtonLabel={t('createRequest.createButton')}
+  loading={formLoading}
+  onSubmit={onSubmit}
+/>
     </div>
     </PageTransition>
   )

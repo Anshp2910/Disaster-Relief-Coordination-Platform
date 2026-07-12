@@ -98,8 +98,8 @@ export default function Resources() {
 
   const loadSummary = useCallback(async () => {
     try {
-      const statsData = await clientApi.getResourceStats() as { items?: SummaryItem[] }
-      setSummary(statsData.items || [])
+  const statsData = await clientApi.getResourceStats() as { stats?: SummaryItem[] }
+  setSummary(statsData.stats || [])
     } catch { /* silent */ }
   }, [])
 

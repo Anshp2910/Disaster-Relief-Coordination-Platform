@@ -78,6 +78,10 @@ schedulesRouter.delete('/:id', requireAuth, validateObjectId('id'), async (req, 
     if (!isOwner && !isAdmin) return sendForbidden(res)
 
     await schedule.deleteOne()
+    const io = req.app.get('io')
+    if (io) {
+      try { io.emit('schedule:deleted', { scheduleId: req.params.id }) } catch (err) { logger.error('[ws] emit error', { message: err.message }) }
+    }
     return sendSuccess(res, { data: { ok: true } })
   } catch (err) {
     logger.error('[schedules] delete error', { message: err.message })

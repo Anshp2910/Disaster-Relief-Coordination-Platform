@@ -116,7 +116,7 @@ incidentsRouter.delete('/:id', requireAuth, requireAdmin, validateObjectId('id')
     const incident = await Incident.findById(req.params.id)
     if (!incident) return sendNotFound(res, 'Incident not found')
     incident.auditLog.push({ action: 'deleted', by: req.user._id, details: incident.name })
-    await incident.save()
+    logger.info('[audit] incident deleted', { incidentId: incident._id, name: incident.name, by: req.user._id })
     await incident.deleteOne()
     return sendSuccess(res, { data: { ok: true } })
   } catch (err) {

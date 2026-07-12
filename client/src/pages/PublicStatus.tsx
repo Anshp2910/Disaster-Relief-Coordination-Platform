@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Activity, Users, CheckCircle, AlertTriangle, Clock, BarChart3, TrendingUp } from 'lucide-react'
 import { PageHeader, DataCard, PageTransition, ErrorState } from '../components/ui'
+import { SkeletonCard } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 
@@ -59,23 +60,13 @@ export default function PublicStatus() {
 
   useAutoRefresh(load, { interval: 30000 })
 
-  if (loading) return (
-    <PageTransition>
-      <div className="container" aria-hidden="true">
-        <div className="grid-3-responsive gap-md">
-          {[1,2,3,4,5,6,7].map((i) => (
-            <div key={i} className="bento-card">
-              <div className="bento-header">
-                <div className="sk-line" style={{ width: '60%', height: 12 }} />
-                <div className="rounded-full" style={{ width: 32, height: 32, background: 'var(--border-light)' }} />
-              </div>
-              <div className="sk-line" style={{ width: '40%', height: 24, marginTop: 8 }} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </PageTransition>
-  )
+if (loading) return (
+  <PageTransition>
+    <div className="container" aria-hidden="true">
+      <SkeletonCard lines={3} />
+    </div>
+  </PageTransition>
+)
   if (error) return (
     <PageTransition>
       <ErrorState message={error} onRetry={load} />
