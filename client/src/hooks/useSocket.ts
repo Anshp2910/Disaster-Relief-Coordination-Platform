@@ -140,9 +140,11 @@ export function useSocket() {
 
     window.addEventListener('authchange', onAuthChange)
 
+    let didIncrementRefCount = false
     const s = (() => { connectSocket(); return socket })()
     if (s) {
       socketRefCount++
+      didIncrementRefCount = true
       registerSocketHandlers(s)
     }
 
@@ -161,11 +163,13 @@ export function useSocket() {
         s.off('request:escalated', onRequestEscalated)
         s.off('request:deleted', onRequestDeleted)
       }
-      socketRefCount--
-      if (socketRefCount <= 0) {
-        disconnectSocket()
-        socket = null
-        setConnected(false)
+      if (didIncrementRefCount) {
+        socketRefCount--
+        if (socketRefCount <= 0) {
+          disconnectSocket()
+          socket = null
+          setConnected(false)
+        }
       }
       window.removeEventListener('authchange', onAuthChange)
     }

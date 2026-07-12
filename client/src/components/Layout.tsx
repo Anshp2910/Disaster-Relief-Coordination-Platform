@@ -31,13 +31,13 @@ function Layout({ children }: LayoutProps) {
       </main>
       <footer className="gov-navbar-bottom">
         <div className="gov-navbar-bottom-inner">
-          <span>&copy; {new Date().getFullYear()} {t('footer.appName')}</span>
+          <span>&copy; 2026 Disaster Relief Coordination Platform</span>
           <span className="gov-navbar-bottom-links">
             <a href="/privacy" className="link-as-button">{t('footer.privacy')}</a>
             <span className="gov-navbar-bottom-dot">&middot;</span>
             <a href="/terms" className="link-as-button">{t('footer.terms')}</a>
             <span className="gov-navbar-bottom-dot">&middot;</span>
-            <span>{t('footer.emergencyHelpline')}: {t('footer.emergencyNumber')}</span>
+            <span>Emergency Helpline: 112</span>
           </span>
         </div>
       </footer>

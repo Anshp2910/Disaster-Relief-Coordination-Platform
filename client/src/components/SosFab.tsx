@@ -28,7 +28,7 @@ export function SosFab() {
 
   async function handleSOS() {
     if (loading || cooldown > 0) return
-    const ok = await confirm({ message: t('sos.confirm'), danger: true })
+    const ok = await confirm({ message: t('sos.confirm'), danger: true, confirmText: 'Send SOS' })
     if (!ok) return
     setLoading(true)
     try {

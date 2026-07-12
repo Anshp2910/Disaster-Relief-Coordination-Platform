@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Bell, BellRing, AlertTriangle, TrendingUp, Info, ArrowUp } from 'lucide-react'
 import { useSocket } from '../hooks/useSocket'
+import useFocusTrap from '../hooks/useFocusTrap'
 
 interface NotificationItem {
   id: number
@@ -56,18 +57,27 @@ export default function NotificationBell() {
   const { notifications, unreadCount, markAsRead, markAllRead, clearAll } = useSocket()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement | null>(null)
+  const trapRef = useFocusTrap(open)
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   useEffect(() => {
+    if (!open) return
     function handleClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false)
       }
     }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false)
+    }
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open])
 
   const NOTIF_TIERS = useNotifTiers()
   const grouped = useMemo<GroupData[]>(() => {
@@ -111,7 +121,7 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="notification-dropdown">
+        <div className="notification-dropdown" ref={trapRef}>
           <div className="notification-header">
             <span className="notification-header-title">
               {t('notifications.title')} {unreadCount > 0 && `(${unreadCount})`}
