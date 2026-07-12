@@ -56,7 +56,8 @@ export function useConfirm() {
 
   useEffect(() => {
     return () => { resolveRef.current?.(false); resolveRef.current = null }
-  }, [state.open])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally only runs cleanup on unmount
+  }, [])
 
   const ConfirmDialog = state.open
     ? createPortal(
