@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import useReducedMotion from '../../hooks/useReducedMotion'
+import useFocusTrap from '../../hooks/useFocusTrap'
 
 interface ModalProps {
   open: boolean
@@ -24,35 +25,21 @@ function getStableId(title: string | undefined): string | undefined {
 export default function Modal({ open, onClose, title, children, maxWidth = 500 }: ModalProps) {
   const { t } = useTranslation()
   const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
+  const trapRef = useFocusTrap(open)
   const [announce, setAnnounce] = useState('')
   const titleId = getStableId(title)
 
   useEffect(() => {
     if (!open) return
     const prev = document.activeElement as HTMLElement
-    ref.current?.focus()
     setAnnounce('Dialog opened')
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
-      if (e.key === 'Tab' && ref.current) {
-        const focusable = ref.current.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-        if (focusable.length === 0) return
-        const first = focusable[0]
-        const last = focusable[focusable.length - 1]
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last!.focus() }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first!.focus() }
-      }
-    }
-    document.addEventListener('keydown', handleKey)
     document.body.style.overflow = 'hidden'
     return () => {
-      document.removeEventListener('keydown', handleKey)
       document.body.style.overflow = ''
       prev?.focus()
       setAnnounce('')
     }
-  }, [open, onClose, title])
+  }, [open])
 
   return (
     <AnimatePresence>
@@ -65,9 +52,9 @@ export default function Modal({ open, onClose, title, children, maxWidth = 500 }
           transition={reduced ? { duration: 0 } : { duration: 0.15 }}
           onClick={onClose}
         >
-          <motion.div
-            ref={ref}
-            className="modal-card"
+<motion.div
+        ref={trapRef}
+        className="modal-card"
             style={{ maxWidth }}
             role="dialog"
             aria-modal="true"
