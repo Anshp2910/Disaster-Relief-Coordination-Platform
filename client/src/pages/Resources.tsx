@@ -149,8 +149,8 @@ export default function Resources() {
   async function handleDelete(id: string) {
     const ok = await confirm({ message: t('resources.deleteConfirm'), danger: true })
     if (!ok) return
-    try { await clientApi.deleteResource(id); load() }
-    catch (err) { setError(getErrorMessage(err)) }
+    try { await clientApi.deleteResource(id); toast.success(t('resources.resourceDeleted') || 'Resource deleted'); load() }
+    catch (err) { toast.error(getErrorMessage(err)) }
   }
 
   async function handleAllocate(e: React.FormEvent) {

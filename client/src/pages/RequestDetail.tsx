@@ -120,20 +120,24 @@ export default function RequestDetail() {
   const [uploading, setUploading] = useState(false)
   const [resources, setResources] = useState<Resource[]>([])
   const [allocating, setAllocating] = useState(false)
+const [deleting, setDeleting] = useState(false)
   const [allocResource, setAllocResource] = useState('')
   const [allocQty, setAllocQty] = useState('')
-  const [matches, setMatches] = useState<Match[]>([])
-  const [showChat, setShowChat] = useState(false)
+const [matches, setMatches] = useState<Match[]>([])
+const [quickAllocatingId, setQuickAllocatingId] = useState<string | null>(null)
+const [showChat, setShowChat] = useState(false)
   const [feedbackList, setFeedbackList] = useState<Feedback[]>([])
   const [feedbackRating, setFeedbackRating] = useState(5)
   const [feedbackComment, setFeedbackComment] = useState('')
   const [feedbackLoading, setFeedbackLoading] = useState(false)
   const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   const [claiming, setClaiming] = useState(false)
+  const [unclaiming, setUnclaiming] = useState(false)
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
-  const [editCommentText, setEditCommentText] = useState('')
-  const [statusUpdating, setStatusUpdating] = useState(false)
+const [editCommentText, setEditCommentText] = useState('')
+const [editError, setEditError] = useState<string | null>(null)
+const [statusUpdating, setStatusUpdating] = useState(false)
   const { confirm, ConfirmDialog } = useConfirm()
 
   async function handleStatusChange(newStatus: string) {
@@ -220,18 +224,21 @@ export default function RequestDetail() {
     }
   }
 
-  async function handleDelete() {
-    const ok = await confirm({ message: t('dashboard.deleteConfirm') || 'Are you sure you want to delete this request?', confirmText: t('dashboard.delete'), danger: true })
-    if (!ok) return
-    try {
-      if (!id) return
-      await clientApi.deleteRequest(id)
-      toast.success(t('requestDetail.deleted') || 'Request deleted')
-      navigate('/')
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    }
+async function handleDelete() {
+  const ok = await confirm({ message: t('dashboard.deleteConfirm') || 'Are you sure you want to delete this request?', confirmText: t('dashboard.delete'), danger: true })
+  if (!ok) return
+  setDeleting(true)
+  try {
+    if (!id) return
+    await clientApi.deleteRequest(id)
+    toast.success(t('requestDetail.deleted') || 'Request deleted')
+    navigate('/')
+  } catch (err) {
+    toast.error(getErrorMessage(err))
+  } finally {
+    setDeleting(false)
   }
+}
 
   async function handleClaim() {
     if (!id) return
@@ -247,20 +254,20 @@ export default function RequestDetail() {
     }
   }
 
-  async function handleUnclaim() {
-    if (!id) return
-    const ok = await confirm({ message: t('dashboard.unclaimConfirm') || 'Are you sure you want to unclaim this request?', confirmText: t('dashboard.unclaim'), danger: true })
-    if (!ok) return
-    setClaiming(true)
-    try {
-      const data = await clientApi.unclaimRequest(id) as { item: RequestDetailItem }
-      setItem(data.item)
-      toast.success(t('requestDetail.unclaimed') || 'Request unclaimed')
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    } finally {
-      setClaiming(false)
-    }
+async function handleUnclaim() {
+  if (!id) return
+  const ok = await confirm({ message: t('dashboard.unclaimConfirm') || 'Are you sure you want to unclaim this request?', confirmText: t('dashboard.unclaim'), danger: true })
+  if (!ok) return
+  setUnclaiming(true)
+  try {
+    const data = await clientApi.unclaimRequest(id) as { item: RequestDetailItem }
+    setItem(data.item)
+    toast.success(t('requestDetail.unclaimed') || 'Request unclaimed')
+  } catch (err) {
+    toast.error(getErrorMessage(err))
+  } finally {
+    setUnclaiming(false)
+  }
   }
 
   async function handleComment(e: React.FormEvent) {
@@ -290,10 +297,10 @@ export default function RequestDetail() {
       toast.success(t('requestDetail.filesUploaded') || 'Files uploaded')
     } catch (err) {
       toast.error(getErrorMessage(err))
-    } finally {
-      setUploading(false)
-      if (fileRef.current) fileRef.current.value = ''
-    }
+  } finally {
+    setUploading(false)
+  }
+  if (fileRef.current) fileRef.current.value = ''
   }
 
   async function handleDeleteFile(fileId: string) {
@@ -364,12 +371,13 @@ export default function RequestDetail() {
     e.preventDefault()
     if (!allocResource || !allocQty) return
     setAllocating(true)
-    try {
-      await clientApi.allocateResource(allocResource, { requestId: id, allocQuantity: Number(allocQty) })
-      setAllocResource('')
-      setAllocQty('')
-      loadResources()
-      toast.success(t('requestDetail.allocatedSuccessfully'))
+  try {
+    await clientApi.allocateResource(allocResource, { requestId: id, allocQuantity: Number(allocQty) })
+    setAllocResource('')
+    setAllocQty('')
+    load()
+    loadResources()
+    toast.success(t('requestDetail.allocatedSuccessfully'))
     } catch (err) {
       toast.error(getErrorMessage(err))
     } finally {

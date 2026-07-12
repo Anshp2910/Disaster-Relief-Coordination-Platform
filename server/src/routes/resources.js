@@ -47,8 +47,10 @@ resourcesRouter.post('/', requireAuth, validate('createResource'), async (req, r
     if (quantity < 0) return sendBadRequest(res, 'Quantity must be non-negative')
 
     const status = quantity === 0 ? 'Depleted' : quantity <= 10 ? 'Low' : 'Available'
-    const resourceData = { name, category, quantity, unit, locationName, lat, lng, notes, status, updatedBy: req.user._id }
+    const resourceData = { name, category, quantity, unit, locationName, notes, status, updatedBy: req.user._id }
     if (lat != null && lng != null) {
+      resourceData.lat = lat
+      resourceData.lng = lng
       resourceData.location = { type: 'Point', coordinates: [lng, lat] }
     }
     const resource = new Resource(resourceData)

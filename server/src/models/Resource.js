@@ -14,7 +14,7 @@ const ResourceSchema = new mongoose.Schema(
     lat: { type: Number, min: -90, max: 90 },
     lng: { type: Number, min: -180, max: 180 },
     location: {
-      type: { type: String, enum: ['Point'], default: 'Point' },
+      type: { type: String, enum: ['Point'] },
       coordinates: { type: [Number], index: '2dsphere' },
     },
     status: {
