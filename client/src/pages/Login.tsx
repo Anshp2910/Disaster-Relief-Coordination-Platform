@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import PageTransition from '../components/ui/PageTransition'
 import { createStagger, createListItem } from '../utils/animations'
-import { ShieldCheck, Activity, Eye, EyeOff, Loader2, GitBranch, Globe } from 'lucide-react'
+import { ShieldCheck, Activity, Eye, EyeOff, Loader2, GitBranch, Globe, Mail } from 'lucide-react'
 import { clientApi, API_BASE } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
@@ -104,11 +104,14 @@ export default function Login() {
 
             <motion.form onSubmit={onSubmit} variants={item}>
               {error && <div className="auth-error animate-shake" id="login-error" role="alert">{error}</div>}
-              <div className="mb-md">
+              <div className="auth-field">
                 <label htmlFor="login-email" className="auth-label">{t('auth.email')}</label>
-                <input id="login-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-invalid={error ? 'true' : 'false'} />
+                <div className="auth-input-wrap">
+                  <input id="login-email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="auth-input" placeholder={t('auth.email')} aria-invalid={error ? 'true' : 'false'} />
+                  <Mail size={16} className="auth-input-icon" aria-hidden="true" />
+                </div>
               </div>
-              <div className="mb-md">
+              <div className="auth-field">
                 <label htmlFor="login-password" className="auth-label">{t('auth.password')}</label>
                 <div className="auth-input-wrap">
                   <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required className="auth-input" placeholder={t('auth.password')} aria-invalid={error ? 'true' : 'false'} autoComplete="current-password" minLength={8} />
