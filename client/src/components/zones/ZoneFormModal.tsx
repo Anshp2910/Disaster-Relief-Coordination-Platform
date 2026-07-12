@@ -173,7 +173,7 @@ export default function ZoneFormModal({ open, editZone, form, saving, onFormChan
 
         <div className="flex gap-sm mt">
           <RippleBtn type="submit" className="" disabled={saving} aria-label={t('common.submit')}>
-            {saving ? '...' : (editZone ? t('zones.update') : t('zones.create'))}
+            {saving ? (t('common.loading') || 'Saving...') : (editZone ? t('zones.update') : t('zones.create'))}
           </RippleBtn>
           <button type="button" onClick={onClose} className="btn-ghost btn-sm" aria-label={t('common.cancel')}>{t('zones.cancel')}</button>
         </div>

@@ -134,17 +134,19 @@ export default function Resources() {
   }
   function updateForm(field: keyof ResourceFormState, value: string) { setForm((prev) => ({ ...prev, [field]: value })) }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError('')
-    try {
-      const payload = { ...form, quantity: Number(form.quantity) }
-      if (editItem) { await clientApi.updateResource(editItem._id, payload) }
-      else { await clientApi.createResource(payload) }
-      setShowForm(false)
-      load()
-    } catch (err) { setError(getErrorMessage(err)) }
-  }
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault()
+  setError('')
+  try {
+    const payload = { ...form, quantity: Number(form.quantity) }
+    let result
+    if (editItem) { result = await clientApi.updateResource(editItem._id, payload) }
+    else { result = await clientApi.createResource(payload) }
+    toast.success(editItem ? (t('resources.resourceUpdated') || 'Resource updated') : (t('resources.resourceCreated') || 'Resource created'))
+    setShowForm(false)
+    load()
+  } catch (err) { setError(getErrorMessage(err)) }
+}
 
   async function handleDelete(id: string) {
     const ok = await confirm({ message: t('resources.deleteConfirm'), danger: true })
@@ -188,23 +190,26 @@ export default function Resources() {
   }
   function openBulkEdit() { setBulkEditStatus(''); setBulkEditCategory(''); setBulkEditOpen(true) }
 
-  async function handleBulkEdit(e: React.FormEvent) {
-    e.preventDefault()
-    const ids = Array.from(selectedIds)
-    if (ids.length === 0) return
-    setBulkUpdating(true)
-    setBulkProgress({ current: 0, total: ids.length })
-    const payload: Record<string, unknown> = {}
-    if (bulkEditStatus) payload.status = bulkEditStatus
-    if (bulkEditCategory) payload.category = bulkEditCategory
-    if (Object.keys(payload).length === 0) { toast.warning(t('resources.noChanges') || 'No changes selected'); setBulkUpdating(false); return }
-    for (const id of ids) {
-      try { await clientApi.updateResource(id, payload); toast.success(`${t('resources.updated') || 'Updated'} ${id.slice(-6)}`) }
-      catch (err) { toast.error(`${id.slice(-6)}: ${getErrorMessage(err)}`) }
-      setBulkProgress((prev) => ({ ...prev, current: prev.current + 1 }))
-    }
-    setBulkUpdating(false); setBulkEditOpen(false); setSelectedIds(new Set()); load()
+async function handleBulkEdit(e: React.FormEvent) {
+  e.preventDefault()
+  const ids = Array.from(selectedIds)
+  if (ids.length === 0) return
+  setBulkUpdating(true)
+  setBulkProgress({ current: 0, total: ids.length })
+  const payload: Record<string, unknown> = {}
+  if (bulkEditStatus) payload.status = bulkEditStatus
+  if (bulkEditCategory) payload.category = bulkEditCategory
+  if (Object.keys(payload).length === 0) { toast.warning(t('resources.noChanges') || 'No changes selected'); setBulkUpdating(false); return }
+  let successCount = 0
+  for (const id of ids) {
+    try { await clientApi.updateResource(id, payload); successCount++ }
+    catch (err) { toast.error(`${id.slice(-6)}: ${getErrorMessage(err)}`) }
+    setBulkProgress((prev) => ({ ...prev, current: prev.current + 1 }))
   }
+  setBulkUpdating(false); setBulkEditOpen(false); setSelectedIds(new Set())
+  if (successCount > 0) toast.success(`${successCount} ${t('resources.updated') || 'resource(s) updated'}`)
+  load()
+}
 
   function exportCSV() { clientApi.exportResourcesCSV().catch((err: Error) => toast.error(err.message)) }
 

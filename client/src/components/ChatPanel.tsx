@@ -188,56 +188,72 @@ export default function Chat({ requestId, onClose }: ChatProps) {
     handleTyping()
   }
 
-  async function handleSend(e: React.FormEvent) {
-    e.preventDefault()
-    if ((!text.trim() && !selectedFile) || sending) return
+async function handleSend(e: React.FormEvent) {
+  e.preventDefault()
+  if ((!text.trim() && !selectedFile) || sending) return
 
-    if (selectedFile) {
-      setSending(true)
-      try {
-        const uploadResult = (await clientApi.uploadFiles(requestId, [selectedFile])) as { files?: { url?: string; name?: string }[] }
-        const uploaded = uploadResult.files?.[0]
-        if (uploaded) {
-          const msg = t('chat.fileAttached', { filename: uploaded.name || selectedFile.name })
-          const data = (await clientApi.sendChatMessage(requestId, msg)) as { message?: Message }
-          if (data.message) {
-            setMessages((prev) => {
-              if (prev.some((m) => m._id === data.message?._id)) return prev
-              return [...prev, data.message!]
-            })
-            const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
-            timeoutsRef.current.add(t)
-          }
-        }
-      } catch (err) {
-        toast.error(getErrorMessage(err))
-      }
-      setSelectedFile(null)
-      setSending(false)
-      return
-    }
+  const msgText = text.trim()
+  const file = selectedFile
+  setText('')
+  setSelectedFile(null)
+  if (fileRef.current) fileRef.current.value = ''
 
-    const msg = text.trim()
-    setText('')
+  if (file) {
     setSending(true)
     try {
-      const data = (await clientApi.sendChatMessage(requestId, msg)) as { message?: Message }
-      if (data.message) {
-        setMessages((prev) => {
-          if (prev.some((m) => m._id === data.message?._id)) return prev
-          return [...prev, data.message!]
-        })
-        const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
-        timeoutsRef.current.add(t)
+      const uploadResult = (await clientApi.uploadFiles(requestId, [file])) as { files?: { url?: string; name?: string }[] }
+      const uploaded = uploadResult.files?.[0]
+      if (uploaded) {
+        const fileMsg = t('chat.fileAttached', { filename: uploaded.name || file.name })
+        const data = (await clientApi.sendChatMessage(requestId, fileMsg)) as { message?: Message }
+        if (data.message) {
+          setMessages((prev) => {
+            if (prev.some((m) => m._id === data.message?._id)) return prev
+            return [...prev, data.message!]
+          })
+          const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+          timeoutsRef.current.add(t)
+        }
       }
-      inputRef.current?.focus()
+      if (msgText) {
+        const data2 = (await clientApi.sendChatMessage(requestId, msgText)) as { message?: Message }
+        if (data2.message) {
+          setMessages((prev) => {
+            if (prev.some((m) => m._id === data2.message?._id)) return prev
+            return [...prev, data2.message!]
+          })
+          const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+          timeoutsRef.current.add(t)
+        }
+      }
     } catch (err) {
-      setText(msg)
+      setText(msgText)
       toast.error(getErrorMessage(err))
-    } finally {
-      setSending(false)
     }
+    setSending(false)
+    inputRef.current?.focus()
+    return
   }
+
+  setSending(true)
+  try {
+    const data = (await clientApi.sendChatMessage(requestId, msgText)) as { message?: Message }
+    if (data.message) {
+      setMessages((prev) => {
+        if (prev.some((m) => m._id === data.message?._id)) return prev
+        return [...prev, data.message!]
+      })
+      const t = setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
+      timeoutsRef.current.add(t)
+    }
+    inputRef.current?.focus()
+  } catch (err) {
+    setText(msgText)
+    toast.error(getErrorMessage(err))
+  } finally {
+    setSending(false)
+  }
+}
 
   function formatTime(ts: string) {
     return new Date(ts).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })

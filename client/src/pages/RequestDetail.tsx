@@ -140,19 +140,24 @@ const [editError, setEditError] = useState<string | null>(null)
 const [statusUpdating, setStatusUpdating] = useState(false)
   const { confirm, ConfirmDialog } = useConfirm()
 
-  async function handleStatusChange(newStatus: string) {
-    if (!id || !item || newStatus === item.status) return
-    setStatusUpdating(true)
-    try {
-      const data = await clientApi.updateRequest(id, { status: newStatus }) as { item: RequestDetailItem }
+async function handleStatusChange(newStatus: string) {
+  if (!id || !item || newStatus === item.status) return
+  setStatusUpdating(true)
+  try {
+    const data = await clientApi.updateRequest(id, { status: newStatus }) as { item: RequestDetailItem }
+    if (data?.item) {
       setItem(data.item)
       toast.success(t('requestDetail.statusUpdated') || 'Status updated')
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    } finally {
-      setStatusUpdating(false)
+    } else {
+      toast.error('Failed to update status — server returned an empty response')
+      setItem((prev) => prev ?? null)
     }
+  } catch (err) {
+    toast.error(getErrorMessage(err))
+  } finally {
+    setStatusUpdating(false)
   }
+}
 
   const load = useCallback(async () => {
     if (!id) return
@@ -366,17 +371,18 @@ async function handleUnclaim() {
     return commentDate > fiveMinAgo
   }
 
-  async function handleAllocate(e: React.FormEvent) {
-    if (!id) return
-    e.preventDefault()
-    if (!allocResource || !allocQty) return
-    setAllocating(true)
+async function handleAllocate(e: React.FormEvent) {
+  if (!id) return
+  e.preventDefault()
+  if (!allocResource || !allocQty) return
+  setAllocating(true)
   try {
     await clientApi.allocateResource(allocResource, { requestId: id, allocQuantity: Number(allocQty) })
     setAllocResource('')
     setAllocQty('')
     load()
     loadResources()
+    loadMatches()
     toast.success(t('requestDetail.allocatedSuccessfully'))
     } catch (err) {
       toast.error(getErrorMessage(err))

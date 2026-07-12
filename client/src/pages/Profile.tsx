@@ -107,12 +107,19 @@ export default function Profile() {
     }
   }
 
-  function handleRemoveAvatar() {
-    setAvatarUrl(null)
-    setSelectedFile(null)
-    localStorage.removeItem('avatarUrl')
-    if (fileInputRef.current) fileInputRef.current.value = ''
+async function handleRemoveAvatar() {
+  try {
+    await clientApi.updateProfile({ avatar: '' })
+    toast.success(t('profile.avatarRemoved'))
+  } catch (err) {
+    toast.error(getErrorMessage(err))
+    return
   }
+  setAvatarUrl(null)
+  setSelectedFile(null)
+  localStorage.removeItem('avatarUrl')
+  if (fileInputRef.current) fileInputRef.current.value = ''
+}
 
   const newPasswordStrength = useMemo(() => {
     const result = evaluatePasswordStrength(newPassword)
