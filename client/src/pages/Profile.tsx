@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { User, Camera, Save, Shield, Bell, Key, Award, Mail } from 'lucide-react'
+import { User, Camera, Save, Shield, Bell, Key, Award, Mail, Eye, EyeOff } from 'lucide-react'
 import { PageHeader, RippleBtn, PageTransition } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../components/Toast'
@@ -31,6 +31,9 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [showCurPwd, setShowCurPwd] = useState(false)
+  const [showNewPwd, setShowNewPwd] = useState(false)
+  const [showConfPwd, setShowConfPwd] = useState(false)
   const [loading, setLoading] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(() => localStorage.getItem('avatarUrl'))
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -330,38 +333,44 @@ export default function Profile() {
         </h3>
         <form onSubmit={handleChangePassword}>
           <div className="ff-group">
-            <div className={`ff-wrap ${currentPassword ? 'ff-focused' : ''}`}>
+            <div className={`ff-wrap ff-pw ${currentPassword ? 'ff-focused' : ''}`}>
               <input
                 id="prof-curpwd"
-                type="password"
+                type={showCurPwd ? 'text' : 'password'}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
                 className={`ff-input ${currentPassword ? 'ff-input-filled' : ''}`}
-                placeholder={t('profile.currentPassword')}
+                placeholder=" "
               />
               <label htmlFor="prof-curpwd" className={`ff-label ${currentPassword ? 'ff-label-float' : ''}`}>
                 {t('profile.currentPassword')}
               </label>
+              <button type="button" className="ff-pw-toggle" onClick={() => setShowCurPwd(p => !p)} tabIndex={-1} aria-label={showCurPwd ? 'Hide password' : 'Show password'}>
+                {showCurPwd ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
             </div>
           </div>
 
           <div className="ff-group">
-            <div className={`ff-wrap ${newPassword ? 'ff-focused' : ''}`}>
+            <div className={`ff-wrap ff-pw ${newPassword ? 'ff-focused' : ''}`}>
               <input
                 id="prof-newpwd"
-                type="password"
+                type={showNewPwd ? 'text' : 'password'}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 minLength={8}
                 maxLength={128}
                 className={`ff-input ${newPassword ? 'ff-input-filled' : ''}`}
-                placeholder={t('profile.newPassword')}
+                placeholder=" "
               />
               <label htmlFor="prof-newpwd" className={`ff-label ${newPassword ? 'ff-label-float' : ''}`}>
                 {t('profile.newPassword')}
               </label>
+              <button type="button" className="ff-pw-toggle" onClick={() => setShowNewPwd(p => !p)} tabIndex={-1} aria-label={showNewPwd ? 'Hide password' : 'Show password'}>
+                {showNewPwd ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
             </div>
           </div>
 
@@ -377,21 +386,24 @@ export default function Profile() {
           )}
 
           <div className="ff-group">
-            <div className={`ff-wrap ${confirmPassword ? 'ff-focused' : ''}`}>
+            <div className={`ff-wrap ff-pw ${confirmPassword ? 'ff-focused' : ''}`}>
               <input
                 id="prof-confpwd"
-                type="password"
+                type={showConfPwd ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={8}
                 maxLength={128}
                 className={`ff-input ${confirmPassword ? 'ff-input-filled' : ''}`}
-                placeholder={t('profile.confirmPassword')}
+                placeholder=" "
               />
               <label htmlFor="prof-confpwd" className={`ff-label ${confirmPassword ? 'ff-label-float' : ''}`}>
                 {t('profile.confirmPassword')}
               </label>
+              <button type="button" className="ff-pw-toggle" onClick={() => setShowConfPwd(p => !p)} tabIndex={-1} aria-label={showConfPwd ? 'Hide password' : 'Show password'}>
+                {showConfPwd ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
             </div>
           </div>
 

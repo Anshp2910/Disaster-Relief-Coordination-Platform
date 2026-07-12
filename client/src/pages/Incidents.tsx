@@ -231,7 +231,7 @@ export default function Incidents() {
               <label htmlFor="inc-name" className={`ff-label ${form.name ? 'ff-label-float' : ''}`}>{t('incidents.incidentName')}</label>
             </div>
           </div>
-          <div className="flex gap-sm">
+          <div className="form-row-3">
             <div className="ff-group flex-1">
               <ModernSelect label={t('incidents.disasterType') || 'Disaster type'} options={disasterTypeOptions} value={form.disasterType} onChange={(v) => setForm((prev) => ({ ...prev, disasterType: v }))} />
             </div>
@@ -242,7 +242,7 @@ export default function Incidents() {
               <ModernSelect label={t('incidents.status') || 'Status'} options={STATUS_OPTIONS.slice(1).map((s) => ({ label: s, value: s }))} value={form.status} onChange={(v) => setForm((prev) => ({ ...prev, status: v }))} />
             </div>
           </div>
-          <div className="flex gap-sm">
+          <div className="form-row-3">
             <div className="ff-group flex-1">
               <div className={`ff-wrap ${form.centerLat ? 'ff-focused' : ''}`}>
                 <input id="inc-centerlat" type="number" step="any" value={form.centerLat} onChange={updateForm('centerLat')} required className={`ff-input ${form.centerLat ? 'ff-input-filled' : ''}`} placeholder="Lat" />

@@ -389,7 +389,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
           <Paperclip size={18} />
         </button>
         <div className="ff-group flex-1 m-0">
-          <div className={`ff-wrap ${text ? 'ff-focused' : ''}`} style={{ minHeight: 36 }}>
+          <div className={`ff-wrap ff-wrap-chat ${text ? 'ff-focused' : ''}`}>
             <input
               id="chat-input"
               ref={inputRef}
@@ -400,7 +400,7 @@ export default function Chat({ requestId, onClose }: ChatProps) {
               placeholder={t('chat.typeMessage')}
               aria-label={t('chat.typeMessage') || 'Type a message'}
             />
-            <label htmlFor="chat-input" className={`ff-label ${text ? 'ff-label-float' : ''}`} style={{ top: 14 }}>
+            <label htmlFor="chat-input" className={`ff-label ff-label-chat ${text ? 'ff-label-float' : ''}`}>
               {t('chat.typeMessage')}
             </label>
           </div>

@@ -7,6 +7,7 @@ import { createStagger } from '../utils/animations'
 import { ShieldCheck, Users, Eye, EyeOff, Loader2, GitBranch, Globe, User, Mail } from 'lucide-react'
 import { clientApi, API_BASE } from '../api/client'
 import { useAuth } from '../context/AuthContext'
+import { ModernSelect } from '../components/ui'
 import { evaluatePasswordStrength } from '../utils/passwordStrength'
 
 const FALLBACK_STATS = [
@@ -168,11 +169,9 @@ export default function Register() {
               {strength && (
                 <div className="mb-sm">
                   <div className="password-strength">
-                    <div className="password-strength-bar">
-                      {[0, 1, 2, 3].map((i) => (
-                        <span key={i} className={strength.className} />
-                      ))}
-                    </div>
+                    {[0, 1, 2, 3].map((i) => (
+                      <div key={i} className={`password-strength-bar ${strength.className}`} />
+                    ))}
                   </div>
                   <div className={`password-strength-label ${strength.className}`}>{t(strength.labelKey)}</div>
                 </div>
@@ -189,13 +188,16 @@ export default function Register() {
               </div>
 
               <div className="auth-field">
-                <label htmlFor="reg-role" className="auth-label">{t('auth.role')}</label>
-                <div className="auth-input-wrap">
-                  <select id="reg-role" value={role} onChange={(e) => setRole(e.target.value)} required className="auth-input">
-                    <option value="volunteer">{t('auth.volunteer')}</option>
-                    <option value="ngo">{t('auth.ngo')}</option>
-                  </select>
-                </div>
+                <ModernSelect
+                  label={t('auth.role')}
+                  options={[
+                    { label: t('auth.volunteer'), value: 'volunteer' },
+                    { label: t('auth.ngo'), value: 'ngo' }
+                  ]}
+                  value={role}
+                  onChange={(v) => setRole(v)}
+                  required
+                />
               </div>
 
               <button disabled={loading} type="submit" className="auth-submit">

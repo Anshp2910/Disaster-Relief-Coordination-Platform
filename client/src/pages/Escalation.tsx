@@ -174,8 +174,9 @@ export default function Escalation() {
               {t('escalation.searchRequest') || 'Search for a request...'}
             </div>
             <div ref={reqSearchRef} className="relative">
-              <div className="ff-wrap">
+              <div className={`ff-wrap ${reqSearch ? 'ff-focused' : ''}`}>
                 <input
+                  id="esc-search"
                   type="text"
                   value={reqSearch}
                   onChange={(e) => {
@@ -200,10 +201,13 @@ export default function Escalation() {
                     }
                   }}
                   required
-                  className="ff-input"
-                  placeholder={t('escalation.searchRequest') || 'Search for a request...'}
+                  className={`ff-input ${reqSearch ? 'ff-input-filled' : ''}`}
+                  placeholder=" "
                   aria-label={t('escalation.searchRequest') || 'Search for a request'}
                 />
+                <label htmlFor="esc-search" className={`ff-label ${reqSearch ? 'ff-label-float' : ''}`}>
+                  {t('escalation.searchRequest') || 'Search for a request...'}
+                </label>
               </div>
               {showReqDropdown && (
                 <div className="ms-dropdown mt-xs">

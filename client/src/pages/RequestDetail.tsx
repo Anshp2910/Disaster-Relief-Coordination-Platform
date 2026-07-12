@@ -9,7 +9,7 @@ import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
-import { Modal, ErrorState, PageHeader } from '../components/ui'
+import { Modal, ErrorState, PageHeader, ModernSelect } from '../components/ui'
 import Badge from '../components/Badge'
 import EmptyState from '../components/EmptyState'
 import SteppedProgress from '../components/SteppedProgress'
@@ -559,18 +559,24 @@ export default function RequestDetail() {
               <Package size={16} aria-hidden="true" />
               {t('requestDetail.allocateResources')}
             </h3>
-            <form onSubmit={handleAllocate} className="flex gap-sm flex-wrap">
-              <label htmlFor="rd-resource" className="sr-only">{t('requestDetail.selectResource')}</label>
-              <div className="filter-group">
-                <select id="rd-resource" value={allocResource} onChange={(e) => setAllocResource(e.target.value)} required className="filter-select">
-                  <option value="">{t('requestDetail.selectResource')}</option>
-                  {resources.map((r) => (
-                    <option key={r._id} value={r._id}>{r.name} ({r.quantity} {r.unit} {t('requestDetail.available')})</option>
-                  ))}
-                </select>
+            <form onSubmit={handleAllocate} className="flex gap-sm flex-wrap items-end">
+              <div className="flex-1" style={{ minWidth: 180 }}>
+                <ModernSelect
+                  label={t('requestDetail.selectResource')}
+                  options={[
+                    { label: t('requestDetail.selectResource'), value: '' },
+                    ...resources.map((r) => ({ label: `${r.name} (${r.quantity} ${r.unit} ${t('requestDetail.available')})`, value: r._id }))
+                  ]}
+                  value={allocResource}
+                  onChange={(v) => setAllocResource(v)}
+                />
               </div>
-              <label htmlFor="rd-qty" className="sr-only">{t('requestDetail.qty')}</label>
-              <input id="rd-qty" type="number" placeholder={t('requestDetail.qty')} value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className="text-sm w-80" />
+              <div className="ff-group flex-shrink-0" style={{ width: 100 }}>
+                <div className={`ff-wrap ${allocQty ? 'ff-focused' : ''}`}>
+                  <input id="rd-qty" type="number" value={allocQty} onChange={(e) => setAllocQty(e.target.value)} required min="1" className={`ff-input ${allocQty ? 'ff-input-filled' : ''}`} placeholder=" " />
+                  <label htmlFor="rd-qty" className={`ff-label ${allocQty ? 'ff-label-float' : ''}`}>{t('requestDetail.qty')}</label>
+                </div>
+              </div>
               <button type="submit" disabled={allocating || !allocResource || !allocQty} className="btn-primary btn-sm">
                 {allocating && <span className="spinner-sm" aria-hidden="true" />} {allocating ? 'Allocating...' : t('requestDetail.allocate')}
               </button>

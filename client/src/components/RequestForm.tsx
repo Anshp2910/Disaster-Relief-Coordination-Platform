@@ -517,7 +517,7 @@ export default function RequestForm({
                   </button>
 
                   {suggestions.length > 0 && (
-                    <div className="location-suggestions">
+                    <div className="location-suggestions" style={{ maxHeight: 240, overflowY: 'auto' }}>
                       {suggestions.map((s, i) => (
                         <div
                           key={String(s.place_id ?? '') || i}
