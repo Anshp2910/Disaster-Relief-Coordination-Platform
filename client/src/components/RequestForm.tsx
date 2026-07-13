@@ -133,11 +133,11 @@ export default function RequestForm({
   loading = false,
 }: RequestFormProps) {
   const { t } = useTranslation()
-  const STEPS: Step[] = [
+  const STEPS: Step[] = useMemo(() => [
     { title: t('stepForm.stepDetails'), description: t('stepForm.stepDetailsDesc') },
     { title: t('stepForm.stepLocation'), description: t('stepForm.stepLocationDesc') },
     { title: t('stepForm.stepReview'), description: t('stepForm.stepReviewDesc') },
-  ]
+  ], [t])
   const mapRef = useRef<HTMLDivElement | null>(null)
   const mapInstance = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)

@@ -276,7 +276,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "দাবি প্রত্যাহার করা হচ্ছে...",
+    "status": "স্থিতি"
   },
   "admin": {
     "title": "অ্যাডমিন ড্যাশবোর্ড",
@@ -419,7 +421,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "সম্পদ তৈরি হয়েছে",
+    "resourceDeleted": "সম্পদ মুছে ফেলা হয়েছে",
+    "resourceUpdated": "সম্পদ আপডেট করা হয়েছে",
+    "applying": "প্রয়োগ করা হচ্ছে..."
   },
   "zones": {
     "title": "ডিললোকেট করার কিছু নেই",
@@ -531,7 +537,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "ঘটনা তৈরি হয়েছে",
+    "deleted": "ঘটনা মুছে ফেলা হয়েছে",
+    "updated": "ঘটনা আপডেট করা হয়েছে"
   },
   "schedules": {
     "title": "স্বেচ্ছাসেবক সময়সূচী",
@@ -566,7 +575,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "সময়সূচী তৈরি হয়েছে",
+    "deleted": "সময়সূচী মুছে ফেলা হয়েছে",
+    "statusUpdated": "সময়সূচী স্থিতি আপডেট করা হয়েছে",
+    "updated": "সময়সূচী আপডেট করা হয়েছে"
   },
   "bulkImport": {
     "title": "বাল্ক আমদানি এবং CSV রপ্তানি",
@@ -632,7 +645,8 @@
     "selectRequest": "এই অনুরোধ ডি-বর্ধিত?",
     "searchPlaceholder": "একটি অনুরোধ নির্বাচন করুন...",
     "noMatch": "শিরোনাম, কারণ, বা ব্যবহারকারী দ্বারা অনুসন্ধান করুন...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "ডি-এস্কেলেট সফলভাবে"
   },
   "geofencing": {
     "title": "আপনার অনুসন্ধানের সাথে মেলে না কোনো বাড়তি অনুরোধ",
@@ -713,7 +727,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "অবতার সরানো হয়েছে"
   },
   "footer": {
     "quickLinks": "পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে",

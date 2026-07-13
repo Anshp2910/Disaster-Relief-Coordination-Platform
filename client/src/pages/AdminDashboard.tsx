@@ -392,7 +392,7 @@ function UsersPanel({ users, onChangeRole, onDelete }: UsersPanelProps) {
         sortable: true,
       },
       {
-        id: 'actions', header: t('admin.actionsHeader'), accessor: () => '', width: '100px',
+        id: 'actions', header: t('admin.actionsHeader'), accessor: () => '', width: '120px',
         render: (_row, u) => (
           <button onClick={() => onDelete(u._id)} className="admin-action-btn btn-danger"
             aria-label={`${t('admin.delete')} ${u.displayName || u.email || u._id}`}>
@@ -460,7 +460,7 @@ function RequestsPanel({ requests, onDelete }: RequestsPanelProps) {
         render: (_row, r) => <span className="small">{r.createdBy?.displayName || r.createdBy?.email || t('dashboard.unknown')}</span>,
       },
       {
-        id: 'actions', header: t('admin.actionsHeader'), accessor: () => '', width: '100px',
+        id: 'actions', header: t('admin.actionsHeader'), accessor: () => '', width: '120px',
         render: (_row, r) => (
           <button onClick={() => onDelete(r._id)} className="admin-action-btn btn-danger"
             aria-label={`${t('admin.delete')} ${r.title || r._id}`}>
@@ -518,25 +518,29 @@ export default function AdminDashboard() {
   const loadData = useCallback(async () => {
     setState(s => ({ ...s, loading: true, error: '' }))
     try {
-      const [statsResp, u, r] = await Promise.all([
+      const raw = await Promise.all([
         clientApi.adminStats(),
         clientApi.adminUsers(),
         clientApi.adminRequests({ limit: '100' }),
-      ]) as [Stats, { items: User[] }, { items: Request[] }]
+      ]) as unknown as [Stats, { items: User[] }, { items: Request[] }]
+      const [statsResp, u, r] = raw
 
       setState(s => ({ ...s, stats: statsResp, users: u.items ?? [], requests: r.items ?? [], loading: false }))
     } catch (e) {
       setState(s => ({ ...s, error: getErrorMessage(e) ?? t('admin.loadFailed'), loading: false }))
     }
   }, [t])
-  // Use a ref to keep listeners stable (avoids re-subscribing when t changes)
+  // Stable ref so auto-refresh and socket listeners always call the latest loadData
   const loadDataRef = useRef(loadData)
   loadDataRef.current = loadData
 
   useEffect(() => { document.title = 'Disaster Relief - Admin Dashboard' }, [])
   useEffect(() => { tabPanelRef.current?.focus() }, [state.activeTab])
+
+  // Single initial load; useAutoRefresh handles the rest
   useEffect(() => { loadDataRef.current() }, [])
   useAutoRefresh(() => loadDataRef.current(), { interval: 20_000 })
+
   useEffect(() => registerRefreshListener(
     ['request:created', 'request:updated', 'request:deleted', 'resource:created', 'resource:allocated'],
     () => loadDataRef.current()
@@ -663,7 +667,6 @@ export default function AdminDashboard() {
           <div
             ref={tabPanelRef}
             role="tabpanel"
-            tabIndex={0}
             id={`admin-panel-${state.activeTab}`}
             aria-label={tabs.find(t => t.id === state.activeTab)?.label ?? state.activeTab}
           >

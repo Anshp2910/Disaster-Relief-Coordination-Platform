@@ -150,7 +150,6 @@ async function handleStatusChange(newStatus: string) {
       toast.success(t('requestDetail.statusUpdated') || 'Status updated')
     } else {
       toast.error('Failed to update status — server returned an empty response')
-      setItem((prev) => prev ?? null)
     }
   } catch (err) {
     toast.error(getErrorMessage(err))
@@ -503,8 +502,8 @@ async function handleAllocate(e: React.FormEvent) {
                 </button>
               )}
               {item.claimedBy?._id === currentUser?.id && (
-                <button type="button" className="btn-danger" onClick={handleUnclaim} disabled={claiming} aria-label="Unclaim this request">
-                  {claiming && <span className="spinner-sm" aria-hidden="true" />} {claiming ? 'Unclaiming...' : t('dashboard.unclaim')}
+                <button type="button" className="btn-danger" onClick={handleUnclaim} disabled={unclaiming} aria-label="Unclaim this request">
+                  {unclaiming && <span className="spinner-sm" aria-hidden="true" />} {unclaiming ? t('requestDetail.unclaiming') || 'Unclaiming...' : t('dashboard.unclaim')}
                 </button>
               )}
               {(currentUser?.id === item.createdBy?._id || currentUser?.role === 'admin') && (

@@ -62,7 +62,7 @@ export default function PublicStatus() {
 
 if (loading) return (
   <PageTransition>
-    <div className="container" aria-hidden="true">
+    <div className="container" aria-label="Loading public status data">
       <SkeletonCard lines={3} />
     </div>
   </PageTransition>

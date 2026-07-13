@@ -196,11 +196,14 @@ export default function Geofencing() {
     }
   }, [position, radius, result])
 
+  // Use a ref for checkArea callback to avoid stale closures in interval
+  const checkAreaRef = useRef(checkArea)
+  checkAreaRef.current = checkArea
+
   useEffect(() => {
+    const onTick = () => { checkAreaRef.current() }
     if (monitoring) {
-      monitorIntervalRef.current = setInterval(() => {
-        checkArea()
-      }, 30000)
+      monitorIntervalRef.current = setInterval(onTick, 30000)
     } else {
       if (monitorIntervalRef.current) {
         clearInterval(monitorIntervalRef.current)
@@ -213,7 +216,7 @@ export default function Geofencing() {
         monitorIntervalRef.current = null
       }
     }
-  }, [monitoring, checkArea])
+  }, [monitoring])
 
   function toggleMonitoring() {
     setMonitoring((prev) => !prev)

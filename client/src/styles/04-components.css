@@ -351,7 +351,12 @@ button {
   margin: 0;
   color: inherit;
   font-size: inherit;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              opacity var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
 }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
 

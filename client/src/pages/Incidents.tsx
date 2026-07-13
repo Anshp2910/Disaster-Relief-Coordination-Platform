@@ -104,13 +104,15 @@ export default function Incidents() {
 
   useEffect(() => { load() }, [load])
   useAutoRefresh(load, { interval: 20000 })
-  useEffect(() => { return registerRefreshListener(['request:created', 'request:updated', 'request:deleted'], load) }, [load])
+  const loadRef2 = useRef(load)
+  loadRef2.current = load
+  useEffect(() => { return registerRefreshListener(['request:created', 'request:updated', 'request:deleted'], () => loadRef2.current()) }, [])
   useEffect(() => {
     if (!socket) return
-    const onCreated = () => load(); const onUpdated = () => load(); const onDeleted = () => load()
+    const onCreated = () => loadRef2.current(); const onUpdated = () => loadRef2.current(); const onDeleted = () => loadRef2.current()
     socket.on('incident:created', onCreated); socket.on('incident:updated', onUpdated); socket.on('incident:deleted', onDeleted)
     return () => { socket.off('incident:created', onCreated); socket.off('incident:updated', onUpdated); socket.off('incident:deleted', onDeleted) }
-  }, [socket, load])
+  }, [socket])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
@@ -144,8 +146,8 @@ export default function Incidents() {
     e.preventDefault(); setError(''); setSubmitting(true)
     try {
       const payload = { ...form, affectedPopulation: Number(form.affectedPopulation) || 0, centerLat: Number(form.centerLat), centerLng: Number(form.centerLng) }
-      if (editIncident) { await clientApi.updateIncident(editIncident._id, payload); toast.success('Incident updated') }
-      else { await clientApi.createIncident(payload); toast.success('Incident created') }
+      if (editIncident) { await clientApi.updateIncident(editIncident._id, payload); toast.success(t('incidents.updated') || 'Incident updated') }
+      else { await clientApi.createIncident(payload); toast.success(t('incidents.created') || 'Incident created') }
       setShowForm(false); load()
     } catch (e) { setError(getErrorMessage(e)) }
     finally { setSubmitting(false) }
@@ -154,7 +156,7 @@ export default function Incidents() {
   async function handleDelete(id: string) {
     const ok = await confirm({ message: t('incidents.deleteConfirm'), danger: true })
     if (!ok) return
-    try { await clientApi.deleteIncident(id); setSelectedIncident(null); toast.success('Incident deleted'); load() }
+    try { await clientApi.deleteIncident(id); setSelectedIncident(null); toast.success(t('incidents.deleted') || 'Incident deleted'); load() }
     catch (e) { setError(getErrorMessage(e)) }
   }
 

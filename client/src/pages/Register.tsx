@@ -21,8 +21,8 @@ const container = createStagger(0.08, 0.1)
 
 const CSS_CLASS_MAP: Record<string, string> = {
   weak: 'weak',
-  medium: 'good',
-  strong: 'strong',
+  medium: 'fair',
+  strong: 'good',
   'very-strong': 'strong',
 }
 

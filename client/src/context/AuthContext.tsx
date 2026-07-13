@@ -20,6 +20,7 @@ interface AuthContextType {
   token: string | null
   isAuthenticated: boolean
   isAdmin: boolean
+  initialLoading: boolean
   login: (tokenVal: string, userObj: User) => void
   logout: () => void
   updateUser: (updates: Partial<User>) => void
@@ -47,12 +48,19 @@ function parseTokenExpiry(): number | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => parseUser() as User | null)
   const [token, setToken] = useState<string | null>(() => safeGetItem('token'))
+  const [initialLoading, setInitialLoading] = useState(true)
   const [idleWarning, setIdleWarning] = useState(false)
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const refreshingRef = useRef(false)
 
   const isAuthenticated = !!token && !!user
   const isAdmin = user?.role === 'admin'
+
+  // Mark initial loading as complete after first render cycle so the app
+  // doesn't flash the login page while reading from localStorage.
+  useEffect(() => {
+    setInitialLoading(false)
+  }, [])
 
   const login = useCallback((tokenVal: string, userObj: User) => {
     // Normalize: ensure `id` is populated from `_id` so that all permission checks
@@ -162,7 +170,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval)
   }, [logout, refreshAuthToken, user])
 
-  const ctx = { user, token, isAuthenticated, isAdmin, login, logout, updateUser, idleWarning, resetIdleTimer }
+  const ctx = { user, token, isAuthenticated, isAdmin, initialLoading, login, logout, updateUser, idleWarning, resetIdleTimer }
 
   return (
     <AuthContext.Provider value={ctx}>

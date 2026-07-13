@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Calendar, Plus, Edit, Trash2, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
 import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect } from '../components/ui'
@@ -110,7 +110,9 @@ export default function Schedules() {
   useEffect(() => { load() }, [load])
   useEffect(() => { loadDropdowns() }, [loadDropdowns])
   useAutoRefresh(load, { interval: 20000 })
-  useEffect(() => { return registerRefreshListener(['request:created', 'request:updated'], load) }, [load])
+  const loadRef = useRef(load)
+  loadRef.current = load
+  useEffect(() => { return registerRefreshListener(['request:created', 'request:updated'], () => loadRef.current()) }, [])
 
   function openCreate() { setEditItem(null); setForm({ ...DEFAULT_FORM, userId: currentUser?.id || '' }); setShowForm(true) }
   function openEdit(item: ScheduleItem) {
@@ -132,8 +134,8 @@ export default function Schedules() {
       const payload: Record<string, unknown> = { ...form }
       if (!payload.zoneId) delete payload.zoneId
       if (!payload.userId) payload.userId = currentUser?.id
-      if (editItem) { await clientApi.updateSchedule(editItem._id, payload); toast.success('Schedule updated') }
-      else { await clientApi.createSchedule(payload); toast.success('Schedule created') }
+      if (editItem) { await clientApi.updateSchedule(editItem._id, payload); toast.success(t('schedules.updated') || 'Schedule updated') }
+      else { await clientApi.createSchedule(payload); toast.success(t('schedules.created') || 'Schedule created') }
       setShowForm(false); load()
     } catch (e) { setError(getErrorMessage(e)) }
     finally { setSubmitting(false) }
@@ -142,14 +144,14 @@ export default function Schedules() {
   async function handleDelete(id: string) {
     const ok = await confirm({ message: t('schedules.deleteConfirm'), danger: true })
     if (!ok) return
-    try { await clientApi.deleteSchedule(id); toast.success('Schedule deleted'); load() }
+    try { await clientApi.deleteSchedule(id); toast.success(t('schedules.deleted') || 'Schedule deleted'); load() }
     catch (e) { setError(getErrorMessage(e)) }
   }
 
   const handleStatusChange = useCallback(async (id: string, status: string) => {
-    try { await clientApi.updateSchedule(id, { status }); toast.success('Schedule status updated'); load() }
+    try { await clientApi.updateSchedule(id, { status }); toast.success(t('schedules.statusUpdated') || 'Schedule status updated'); load() }
     catch (e) { setError(getErrorMessage(e)) }
-  }, [load, toast])
+  }, [load, toast, t])
 
   function toggleSkill(skill: string) {
     setForm((prev) => ({ ...prev, skills: prev.skills.includes(skill) ? prev.skills.filter((s) => s !== skill) : [...prev.skills, skill] }))

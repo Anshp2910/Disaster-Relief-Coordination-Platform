@@ -273,7 +273,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "ਦਾਅਵਾ ਵਾਪਸ ਲਿਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "status": "ਸਥਿਤੀ"
   },
   "admin": {
     "title": "ਪ੍ਰਸ਼ਾਸਨ ਡੈਸ਼ਬੋਰਡ",
@@ -416,7 +418,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "ਸਰੋਤ ਬਣਾਇਆ",
+    "resourceDeleted": "ਸਰੋਤ ਮਿਟਾਇਆ",
+    "resourceUpdated": "ਸਰੋਤ ਅੱਪਡੇਟ ਕੀਤਾ",
+    "applying": "ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
   },
   "zones": {
     "title": "ਆਸਾਂਟ ਖੇਤਰ ਹੀਟ ਮੈਪ",
@@ -514,7 +520,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "ਘਟਨਾ ਬਣਾਈ",
+    "deleted": "ਘਟਨਾ ਮਿਟਾਈ",
+    "updated": "ਘਟਨਾ ਅੱਪਡੇਟ ਕੀਤੀ"
   },
   "schedules": {
     "title": "ਸਵੈ-ਸੇਵਕ ਸਮਾਂ ਪੱਤਰ",
@@ -549,7 +558,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "ਸਮਾਂ ਪੱਤਰ ਬਣਾਇਆ",
+    "deleted": "ਸਮਾਂ ਪੱਤਰ ਮਿਟਾਇਆ",
+    "statusUpdated": "ਸਮਾਂ ਪੱਤਰ ਸਥਿਤੀ ਅੱਪਡੇਟ ਕੀਤੀ",
+    "updated": "ਸਮਾਂ ਪੱਤਰ ਅੱਪਡੇਟ ਕੀਤਾ"
   },
   "bulkImport": {
     "title": "ਬਲਕ ਆਯਾਤ ਅਤੇ CSV ਨਿਕਾਸ",
@@ -615,7 +628,8 @@
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
     "selectRequest": "Select a request...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "ਡੀ-ਐਸਕਲੇਟ ਸਫਲਤਾਪੂਰਵਕ"
   },
   "geofencing": {
     "title": "ਜੀਓਫੈਂਸਿੰਗ ਚੇਤਾਵਨੀਆਂ",
@@ -696,7 +710,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "ਅਵਤਾਰ ਹਟਾਇਆ"
   },
   "footer": {
     "quickLinks": "ਤੇਜ਼ ਲਿੰਕ",

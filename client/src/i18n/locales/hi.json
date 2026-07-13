@@ -276,7 +276,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "वापस लिया जा रहा है...",
+    "status": "स्थिति"
   },
   "admin": {
     "title": "पूर्वावलोकन",
@@ -419,7 +421,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "संसाधन बनाया गया",
+    "resourceDeleted": "संसाधन हटा दिया गया",
+    "resourceUpdated": "संसाधन अपडेट किया गया",
+    "applying": "लागू किया जा रहा है..."
   },
   "zones": {
     "title": "आपदा क्षेत्र ताप मानचित्र",
@@ -531,7 +537,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "घटना बनाई गई",
+    "deleted": "घटना हटा दी गई",
+    "updated": "घटना अपडेट की गई"
   },
   "schedules": {
     "title": "स्वयंसेवक शेड्यूलिंग",
@@ -566,7 +575,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "अनुसूची बनाई गई",
+    "deleted": "अनुसूची हटा दी गई",
+    "statusUpdated": "अनुसूची स्थिति अपडेट की गई",
+    "updated": "अनुसूची अपडेट की गई"
   },
   "bulkImport": {
     "title": "थोक आयात और सीएसवी निर्यात",
@@ -632,7 +645,8 @@
     "selectRequest": "इस अनुरोध को कम करें?",
     "searchPlaceholder": "एक अनुरोध चुनें...",
     "noMatch": "शीर्षक, कारण या उपयोगकर्ता के आधार पर खोजें...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "डी-एस्कलेट सफलतापूर्वक"
   },
   "geofencing": {
     "title": "कोई भी उन्नत अनुरोध आपकी खोज से मेल नहीं खाता",
@@ -713,7 +727,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "अवतार हटा दिया गया"
   },
   "footer": {
     "quickLinks": "पासवर्ड सफलतापूर्वक बदला गया",

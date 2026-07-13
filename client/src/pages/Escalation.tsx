@@ -70,9 +70,11 @@ export default function Escalation() {
 
 useAutoRefresh(load, { interval: 20000 })
 
+  const loadRef = useRef(load)
+  loadRef.current = load
   useEffect(() => {
-    return registerRefreshListener(['request:escalated', 'request:updated'], load)
-  }, [load])
+    return registerRefreshListener(['request:escalated', 'request:updated'], () => loadRef.current())
+  }, [])
 
   const filteredItems = useMemo(() => {
     if (!debouncedSearch) return items

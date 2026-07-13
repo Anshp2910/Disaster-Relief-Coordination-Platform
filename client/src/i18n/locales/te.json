@@ -276,7 +276,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "క్లెయిమ్ ఉపసంహరించబడుతోంది...",
+    "status": "స్థితి"
   },
   "admin": {
     "title": "అడ్మిన్ డాష్‌బోర్డ్",
@@ -419,7 +421,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "వనరు సృష్టించబడింది",
+    "resourceDeleted": "వనరు తొలగించబడింది",
+    "resourceUpdated": "వనరు నవీకరించబడింది",
+    "applying": "వర్తింపజేస్తోంది..."
   },
   "zones": {
     "title": "డీలాకేట్ చేయడానికి ఏమీ లేదు",
@@ -531,7 +537,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "సంఘటన సృష్టించబడింది",
+    "deleted": "సంఘటన తొలగించబడింది",
+    "updated": "సంఘటన నవీకరించబడింది"
   },
   "schedules": {
     "title": "వాలంటీర్ షెడ్యూలింగ్",
@@ -566,7 +575,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "షెడ్యూల్ సృష్టించబడింది",
+    "deleted": "షెడ్యూల్ తొలగించబడింది",
+    "statusUpdated": "షెడ్యూల్ స్థితి నవీకరించబడింది",
+    "updated": "షెడ్యూల్ నవీకరించబడింది"
   },
   "bulkImport": {
     "title": "బల్క్ దిగుమతి & CSV ఎగుమతి",
@@ -632,7 +645,8 @@
     "selectRequest": "ఈ అభ్యర్థనను తీవ్రతరం చేయాలా?",
     "searchPlaceholder": "అభ్యర్థనను ఎంచుకోండి...",
     "noMatch": "శీర్షిక, కారణం లేదా వినియోగదారు ఆ��ారంగా శోధించండి...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "డీ-ఎస్కలేట్ విజయవంతంగా"
   },
   "geofencing": {
     "title": "మీ శోధనకు సరిపోలిన అభ్యర్థనలు ఏవీ లేవు",
@@ -713,7 +727,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "అవతార్ తీసివేయబడింది"
   },
   "footer": {
     "quickLinks": "పాస్‌వర్డ్ విజయవంతంగా మార్చబడింది",

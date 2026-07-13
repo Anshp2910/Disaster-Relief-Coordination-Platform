@@ -273,7 +273,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "ಹಕ್ಕು ಹಿಂಪಡೆಯಲಾಗುತ್ತಿದೆ...",
+    "status": "ಸ್ಥಿತಿ"
   },
   "admin": {
     "title": "ಆಡಳಿತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
@@ -416,7 +418,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "ಸಂಪನ್ಮೂಲ ರಚಿಸಲಾಗಿದೆ",
+    "resourceDeleted": "ಸಂಪನ್ಮೂಲ ಅಳಿಸಲಾಗಿದೆ",
+    "resourceUpdated": "ಸಂಪನ್ಮೂಲ ನವೀಕರಿಸಲಾಗಿದೆ",
+    "applying": "ಅನ್ವಯಿಸಲಾಗುತ್ತಿದೆ..."
   },
   "zones": {
     "title": "ಅಪಘಾತ ವಲಯ ಹೀಟ್ ಮ್ಯಾಪ್",
@@ -514,7 +520,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "ಘಟನೆ ರಚಿಸಲಾಗಿದೆ",
+    "deleted": "ಘಟನೆ ಅಳಿಸಲಾಗಿದೆ",
+    "updated": "ಘಟನೆ ನವೀಕರಿಸಲಾಗಿದೆ"
   },
   "schedules": {
     "title": "ಸ್ವಯಂಸೇವಕ ವೇಳಾಪಟ್ಟಿ",
@@ -549,7 +558,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "ವೇಳಾಪಟ್ಟಿ ರಚಿಸಲಾಗಿದೆ",
+    "deleted": "ವೇಳಾಪಟ್ಟಿ ಅಳಿಸಲಾಗಿದೆ",
+    "statusUpdated": "ವೇಳಾಪಟ್ಟಿ ಸ್ಥಿತಿ ನವೀಕರಿಸಲಾಗಿದೆ",
+    "updated": "ವೇಳಾಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ"
   },
   "bulkImport": {
     "title": "ಬಲ್ಕ್ ಆಮದು ಮತ್ತು CSV ರಫ್ತು",
@@ -615,7 +628,8 @@
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
     "selectRequest": "Select a request...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "ಡಿ-ಎಸ್ಕಲೇಟ್ ಯಶಸ್ವಿಯಾಗಿ"
   },
   "geofencing": {
     "title": "ಜಿಯೋಫೆನ್ಸಿಂಗ್ ಎಚ್ಚರಿಕೆಗಳು",
@@ -696,7 +710,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "ಅವತಾರ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"
   },
   "footer": {
     "quickLinks": "ತ್ವರಿತ ಲಿಂಕ್‌ಗಳು",

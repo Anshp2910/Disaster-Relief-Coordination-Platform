@@ -276,7 +276,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "உரிமைகோரல் திரும்பப் பெறப்படுகிறது...",
+    "status": "நிலை"
   },
   "admin": {
     "title": "நிர்வாக டாஷ்போர்டு",
@@ -419,7 +421,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "வளம் உருவாக்கப்பட்டது",
+    "resourceDeleted": "வளம் நீக்கப்பட்டது",
+    "resourceUpdated": "வளம் புதுப்பிக்கப்பட்டது",
+    "applying": "பயன்படுத்தப்படுகிறது..."
   },
   "zones": {
     "title": "ஒதுக்குவதற்கு எதுவும் இல்லை",
@@ -531,7 +537,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "சம்பவம் உருவாக்கப்பட்டது",
+    "deleted": "சம்பவம் நீக்கப்பட்டது",
+    "updated": "சம்பவம் புதுப்பிக்கப்பட்டது"
   },
   "schedules": {
     "title": "தன்னார்வத் திட்டமிடல்",
@@ -566,7 +575,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "அட்டவணை உருவாக்கப்பட்டது",
+    "deleted": "அட்டவணை நீக்கப்பட்டது",
+    "statusUpdated": "அட்டவணை நிலை புதுப்பிக்கப்பட்டது",
+    "updated": "அட்டவணை புதுப்பிக்கப்பட்டது"
   },
   "bulkImport": {
     "title": "மொத்த இறக்குமதி & CSV ஏற்றுமதி",
@@ -632,7 +645,8 @@
     "selectRequest": "இந்தக் கோரிக்கையை அதிகரிக்கவா?",
     "searchPlaceholder": "கோரிக்கையைத் தேர்ந்தெடுக்கவும்...",
     "noMatch": "தலைப்பு, காரணம் அல்லது பயனர் மூலம் தேடவும்...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "டி-எஸ்கலேட் வெற்றிகரமாக"
   },
   "geofencing": {
     "title": "உங்கள் தேடலுடன் பொருந்திய கோரிக்கைகள் எதுவும் இல்லை",
@@ -713,7 +727,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "அவதார் அகற்றப்பட்டது"
   },
   "footer": {
     "quickLinks": "கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது",

@@ -42,6 +42,7 @@ export default function CreateRequest() {
   submitButtonLabel={t('createRequest.createButton')}
   loading={formLoading}
   onSubmit={onSubmit}
+  showStatus={false}
 />
     </div>
     </PageTransition>

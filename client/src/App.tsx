@@ -30,15 +30,17 @@ import { useKeepAlive } from './hooks/useKeepAlive'
 import { PageSkeleton } from './components/PageSkeleton'
 
 function RequireAuth({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, initialLoading } = useAuth()
   const location = useLocation()
+  if (initialLoading) return <PageSkeleton />
   if (!isAuthenticated) return <Navigate to="/login" state={{ from: location.pathname + location.search }} replace />
   return children
 }
 
 function RequireAdmin({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isAdmin } = useAuth()
+  const { isAuthenticated, isAdmin, initialLoading } = useAuth()
   const location = useLocation()
+  if (initialLoading) return <PageSkeleton />
   if (!isAuthenticated) return <Navigate to="/login" state={{ from: location.pathname + location.search }} replace />
   if (!isAdmin) return <Navigate to="/dashboard" replace />
   return children

@@ -322,7 +322,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "دعویٰ واپس لیا جا رہا ہے...",
+    "status": "حالت"
   },
   "admin": {
     "title": "Admin Dashboard",
@@ -465,7 +467,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "وسیلہ تخلیق کیا گیا",
+    "resourceDeleted": "وسیلہ حذف کر دیا گیا",
+    "resourceUpdated": "وسیلہ اپ ڈیٹ کر دیا گیا",
+    "applying": "لاگو کیا جا رہا ہے..."
   },
   "zones": {
     "title": "Disaster Zone Heat Map",
@@ -577,7 +583,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "واقعہ تخلیق کیا گیا",
+    "deleted": "واقعہ حذف کر دیا گیا",
+    "updated": "واقعہ اپ ڈیٹ کر دیا گیا"
   },
   "schedules": {
     "title": "Volunteer Scheduling",
@@ -612,7 +621,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "نظام الاوقات تخلیق کیا گیا",
+    "deleted": "نظام الاوقات حذف کر دیا گیا",
+    "statusUpdated": "نظام الاوقات کی حالت اپ ڈیٹ کر دی گئی",
+    "updated": "نظام الاوقات اپ ڈیٹ کر دیا گیا"
   },
   "bulkImport": {
     "title": "Bulk Import & CSV Export",
@@ -678,7 +691,8 @@
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
     "selectRequest": "Select a request...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "ڈی ایسکلیٹ کامیابی سے"
   },
   "geofencing": {
     "title": "Geofencing Alerts",
@@ -759,7 +773,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "اوتار ہٹا دیا گیا"
   },
   "footer": {
     "quickLinks": "Quick Links",

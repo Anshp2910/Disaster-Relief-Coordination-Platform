@@ -273,7 +273,9 @@
     "editWindowExpired": "Edit window closed (5 min)",
     "edit": "Edit",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "દાવો પાછો ખેંચી રહ્યા છે...",
+    "status": "સ્થિતિ"
   },
   "admin": {
     "title": "સંચાલન ડેશબોર્ડ",
@@ -416,7 +418,11 @@
     "bulkActions": "Bulk actions",
     "selectAll": "Select All",
     "searchRequestPlaceholder": "Search for a request...",
-    "searchRequest": "Search for a request"
+    "searchRequest": "Search for a request",
+    "resourceCreated": "સાધન બનાવ્યું",
+    "resourceDeleted": "સાધન કાઢી નાખ્યું",
+    "resourceUpdated": "સાધન અપડેટ કર્યું",
+    "applying": "લાગુ કરી રહ્યા છે..."
   },
   "zones": {
     "title": "આપત્તિ વિસ્તાર હીટ મેપ",
@@ -514,7 +520,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "ઘટના બનાવી",
+    "deleted": "ઘટના કાઢી નાખી",
+    "updated": "ઘટના અપડેટ કરી"
   },
   "schedules": {
     "title": "સ્વયંસેવક સમયપત્રક",
@@ -549,7 +558,11 @@
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
     "status": "Status",
-    "today": "Today"
+    "today": "Today",
+    "created": "સમયપત્રક બનાવ્યું",
+    "deleted": "સમયપત્રક કાઢી નાખ્યું",
+    "statusUpdated": "સમયપત્રક સ્થિતિ અપડેટ કરી",
+    "updated": "સમયપત્રક અપડેટ કર્યું"
   },
   "bulkImport": {
     "title": "બલ્ક આયાત અને CSV નિકાસ",
@@ -615,7 +628,8 @@
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
     "selectRequest": "Select a request...",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "deEscalated": "ડી-એસ્કેલેટ સફળતાપૂર્વક"
   },
   "geofencing": {
     "title": "જિયોફેન્સિંગ ચેતવણીઓ",
@@ -696,7 +710,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "અવતાર દૂર કર્યો"
   },
   "footer": {
     "quickLinks": "ઝડપી લિંક્સ",

@@ -296,7 +296,8 @@
     "stars": "stars",
     "suggestedResources": "Suggested Resources",
     "changeStatus": "Change status",
-    "statusUpdated": "Status updated"
+    "statusUpdated": "Status updated",
+    "unclaiming": "Unclaiming..."
   },
   "kpi": {
     "totalRequests": "Total Requests",
@@ -577,7 +578,10 @@
     "applying": "Applying...",
     "select": "Select",
     "bulkActions": "Bulk actions",
-    "selectAll": "Select All"
+    "selectAll": "Select All",
+    "resourceCreated": "Resource created",
+    "resourceDeleted": "Resource deleted",
+    "resourceUpdated": "Resource updated"
   },
   "zones": {
     "map": "Zone Heat Map",
@@ -706,7 +710,10 @@
     "latitude": "Center Latitude",
     "longitude": "Center Longitude",
     "severity": "Severity",
-    "status": "Status"
+    "status": "Status",
+    "created": "Incident created",
+    "deleted": "Incident deleted",
+    "updated": "Incident updated"
   },
   "schedules": {
     "today": "Today",
@@ -741,7 +748,11 @@
     "createFirst": "Create your first schedule",
     "endDateBeforeStart": "End date must be after start date",
     "searchPlaceholder": "Search schedules...",
-    "status": "Status"
+    "status": "Status",
+    "created": "Schedule created",
+    "deleted": "Schedule deleted",
+    "statusUpdated": "Schedule status updated",
+    "updated": "Schedule updated"
   },
   "bulkImport": {
     "dragDropHint": "Drag & drop a CSV file here or click to browse",
@@ -889,7 +900,8 @@
     "skillFood": "Food",
     "skillOther": "Other",
     "avatarUpdated": "Avatar updated successfully",
-    "uploadAvatar": "Upload avatar photo"
+    "uploadAvatar": "Upload avatar photo",
+    "avatarRemoved": "Avatar removed"
   },
   "footer": {
     "appName": "Disaster Relief Coordination Platform",
