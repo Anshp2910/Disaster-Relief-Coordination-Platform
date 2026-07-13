@@ -1338,6 +1338,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .dt-th-fixed,
 .dt-td-fixed {
   flex: none;
+  overflow: visible;
 }
 
 .dt-th-text {
