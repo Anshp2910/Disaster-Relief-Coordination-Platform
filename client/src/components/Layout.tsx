@@ -37,7 +37,9 @@ function Layout({ children }: LayoutProps) {
             <span className="gov-navbar-bottom-dot">&middot;</span>
             <a href="/terms" className="link-as-button">{t('footer.terms')}</a>
             <span className="gov-navbar-bottom-dot">&middot;</span>
-            <span>Emergency Helpline: 112</span>
+            <span>Emergency Helpline:112</span>
+            <span>Ambulance Helpline:108</span>
+            <span>Fire Department Helpline:102</span>
           </span>
         </div>
       </footer>
