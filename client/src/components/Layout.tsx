@@ -29,20 +29,25 @@ function Layout({ children }: LayoutProps) {
         {isAuthenticated && !isAuthPage && <div className="container"><Breadcrumbs /></div>}
         {children}
       </main>
-      <footer className="gov-navbar-bottom">
-        <div className="gov-navbar-bottom-inner">
-          <span>&copy; 2026 Disaster Relief Coordination Platform</span>
-          <span className="gov-navbar-bottom-links">
-            <a href="/privacy" className="link-as-button">{t('footer.privacy')}</a>
-            <span className="gov-navbar-bottom-dot">&middot;</span>
-            <a href="/terms" className="link-as-button">{t('footer.terms')}</a>
-            <span className="gov-navbar-bottom-dot">&middot;</span>
-            <span>Emergency Helpline:112</span>
-            <span>Ambulance Helpline:108</span>
-            <span>Fire Department Helpline:102</span>
-          </span>
-        </div>
-      </footer>
+<footer className="gov-navbar-bottom">
+  <div className="gov-navbar-bottom-inner">
+    <span className="gov-footer-copy">&copy; 2026 Disaster Relief Coordination Platform</span>
+    <div className="gov-footer-links">
+      <div className="gov-footer-legal">
+        <a href="/privacy" className="link-as-button">{t('footer.privacy')}</a>
+        <span className="gov-navbar-bottom-dot" aria-hidden="true">&middot;</span>
+        <a href="/terms" className="link-as-button">{t('footer.terms')}</a>
+      </div>
+      <div className="gov-footer-helplines">
+        <span className="helpline"><strong>112</strong> Emergency</span>
+        <span className="helpline-divider" aria-hidden="true">|</span>
+        <span className="helpline"><strong>108</strong> Ambulance</span>
+        <span className="helpline-divider" aria-hidden="true">|</span>
+        <span className="helpline"><strong>102</strong> Fire</span>
+      </div>
+    </div>
+  </div>
+</footer>
     </div>
   )
 }
