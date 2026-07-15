@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useReducer } from 'react'
+import { useState, useRef, useEffect, useCallback, useReducer, useMemo } from 'react'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
 import { MapPin, Navigation } from 'lucide-react'
