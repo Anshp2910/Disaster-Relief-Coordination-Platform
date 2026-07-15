@@ -127,7 +127,7 @@ export default function ModernSelect({
         aria-haspopup="listbox"
         aria-labelledby={labelId}
         aria-controls={listboxId}
-        aria-activedescendant={activeIdx >= 0 ? `ms-option-${activeIdx}` : undefined}
+        aria-activedescendant={activeIdx >= 0 ? `ms-option-${uid}-${activeIdx}` : undefined}
       >
         <div
           className="ms-trigger"
@@ -186,7 +186,7 @@ export default function ModernSelect({
                   filtered.map((opt, idx) => (
                     <div
                       key={opt.value}
-                      id={`ms-option-${idx}`}
+                      id={`ms-option-${uid}-${idx}`}
                       className={`ms-option ${opt.value === value ? 'ms-option-active' : ''} ${idx === activeIdx ? 'ms-option-hover' : ''} ${opt.disabled ? 'ms-option-disabled' : ''}`}
                       onClick={() => { if (!opt.disabled) { onChange(opt.value); setOpen(false); setSearch('') } }}
                       onKeyDown={e => { if (e.key === 'Enter' && !opt.disabled) { onChange(opt.value); setOpen(false); setSearch('') } }}

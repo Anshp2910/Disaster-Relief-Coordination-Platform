@@ -132,6 +132,7 @@ export default function RequestForm({
   subtitle,
   showStatus = false,
   loading = false,
+  children,
 }: RequestFormProps) {
   const { t } = useTranslation()
   const STEPS: Step[] = useMemo(() => [

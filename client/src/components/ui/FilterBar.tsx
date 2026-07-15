@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -14,12 +15,15 @@ interface FilterBarProps {
 }
 
 export default function FilterBar({ search, onSearchChange, searchPlaceholder, filters }: FilterBarProps) {
+  const uid = useId()
   const { t } = useTranslation()
   return (
     <div className="flex flex-wrap items-end gap-sm mb-md">
       <div className="search-input-wrapper" style={{ flex: '1 1 200px', maxWidth: 320 }}>
         <Search size={16} className="search-input-icon" />
         <input
+          id={uid + '-search'}
+          name={uid + '-search'}
           className="search-input"
           placeholder={searchPlaceholder || t('common.search') || 'Search...'}
           value={search}
@@ -31,6 +35,8 @@ export default function FilterBar({ search, onSearchChange, searchPlaceholder, f
         <div key={f.key} className="filter-group">
           <SlidersHorizontal size={14} style={{ color: 'var(--text-muted)' }} />
           <select
+            id={uid + '-filter-' + f.key}
+            name={uid + '-filter-' + f.key}
             value={f.value}
             onChange={e => f.onChange(e.target.value)}
             className="filter-select"

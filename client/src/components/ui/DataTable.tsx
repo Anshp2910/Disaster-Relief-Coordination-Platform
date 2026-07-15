@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect, memo, type ReactNode } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect, memo, useId, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Search, ChevronUp, ChevronDown, ChevronsUpDown, X, Download, Columns3, Check, Trash2, CheckSquare, Square } from 'lucide-react'
@@ -70,6 +70,7 @@ function DataTable<T>({
   className = '',
   renderTop,
 }: DataTableProps<T>) {
+  const uid = useId()
   const { t } = useTranslation()
   const emptyTitle = emptyTitleProp ?? t('dataTable.noData')
   const bulkActionLabel = bulkActionLabelProp ?? t('dataTable.deleteSelected')
@@ -231,8 +232,9 @@ function DataTable<T>({
         <div className="dt-toolbar-left">
           {searchable && (
             <div className="dt-search-wrap">
-              <Search size={15} className="dt-search-icon" />
-                <input
+              <Search size={15} className="dt-search-icon" />                  <input
+                  id={uid + '-search'}
+                  name={uid + '-search'}
                   className="dt-search-input"
                   placeholder={t('dataTable.searchPlaceholder')}
                   value={globalSearch}
@@ -256,6 +258,8 @@ function DataTable<T>({
                   <select
                     key={col.id}
                     className="dt-filter-select"
+                    id={uid + '-filter-' + col.id}
+                    name={uid + '-filter-' + col.id}
                     value={columnFilters[col.id] || 'all'}
                     onChange={e => {
                       setColumnFilters(prev => ({ ...prev, [col.id]: e.target.value }))
@@ -453,6 +457,8 @@ function DataTable<T>({
           <div className="dt-page-size">
             <span>{t('dataTable.rowsPerPage')}</span>
             <select
+              id={uid + '-page-size'}
+              name={uid + '-page-size'}
               value={pageSz}
               onChange={e => { setPageSz(Number(e.target.value)); setPage(0) }}
               aria-label="Rows per page"
