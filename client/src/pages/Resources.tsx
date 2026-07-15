@@ -241,14 +241,14 @@ async function handleBulkEdit(e: React.FormEvent) {
           {summary.map((s) => {
           const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
           return (
-            <DataCard
-              key={s._id}
-              title={t(`categories.${s._id}`) || s._id}
-              value={`${s.totalQty} ${t('resources.units')}`}
-              subtitle={`${s.count} ${t('resources.items')}`}
-              icon={<Package size={18} />}
-              color={catColors!.text}
-            />
+      <DataCard
+        key={s._id}
+        title={t(`categories.${s._id}`) || s._id}
+        value={`${s.totalQty ?? 0} ${t('resources.units')}`}
+        subtitle={`${s.count ?? 0} ${t('resources.items')}`}
+        icon={<Package size={18} />}
+        color={catColors!.text}
+      />
           )
         })}
         </div>
