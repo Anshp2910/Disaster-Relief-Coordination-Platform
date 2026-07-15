@@ -48,6 +48,7 @@
 
 /* ── Margin ── */
 .m-0 { margin: 0; }
+.mt { margin-top: var(--space-md); }
 .mt-xs { margin-top: var(--space-xs); }
 .mt-sm { margin-top: var(--space-sm); }
 .mt-md { margin-top: var(--space-md); }
@@ -71,16 +72,22 @@
 .w-1\/2 { width: 50%; }
 .w-1\/3 { width: 33.333%; }
 .w-2\/3 { width: 66.666%; }
+.w-100 { width: 100%; }
 .min-w-0 { min-width: 0; }
+.min-w-40 { min-width: 160px; }
 .max-w-sm { max-width: 640px; }
+.max-w-75p { max-width: 75%; }
+.max-w-320 { max-width: 320px; }
 .h-full { height: 100%; }
 .h-screen { height: 100vh; }
+.h-65vh { height: 65vh; }
 
 /* ── Position ── */
 .relative { position: relative; }
 .absolute { position: absolute; }
 .fixed { position: fixed; }
 .sticky { position: sticky; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
 
 /* ── Overflow ── */
 .overflow-auto { overflow: auto; }

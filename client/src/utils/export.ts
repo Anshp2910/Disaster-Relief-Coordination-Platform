@@ -1,4 +1,4 @@
-export function downloadBlob(content: string, filename: string, mimeType: string = 'text/csv') {
+export function downloadBlob(content: string, filename: string, mimeType: string = 'text/csv;charset=utf-8') {
   const blob = new Blob([content], { type: mimeType })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
