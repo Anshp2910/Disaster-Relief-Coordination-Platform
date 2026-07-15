@@ -39,6 +39,7 @@ interface RequestFormProps {
   subtitle?: string
   showStatus?: boolean
   loading?: boolean
+  children?: React.ReactNode
 }
 
 export const PIN_ICON = L.divIcon({
@@ -372,9 +373,10 @@ export default function RequestForm({
           </div>
         )}
 
-        {error && <div className="error-text animate-shake mt-sm mb-sm" role="alert" aria-live="polite" id="rf-error">{error}</div>}
+{error && <div className="error-text animate-shake mt-sm mb-sm" role="alert" aria-live="polite" id="rf-error">{error}</div>}
+{children && <div className="mt-sm mb-sm" role="status">{children}</div>}
 
-        <StepForm
+<StepForm
           steps={STEPS}
           currentStep={currentStep}
           onStepChange={setCurrentStep}
@@ -385,84 +387,84 @@ export default function RequestForm({
           loading={formLoading}
           completeLabel={formLoading ? submitLabel : submitButtonLabel}
         >
-          {currentStep === 0 && (
-            <div>
-              <div className="ff-group">
-                <div className={`ff-wrap ${form.title ? 'ff-focused' : ''}`}>
-                  <input
-                    id="rf-title"
-                    type="text"
-                    value={form.title}
-                    onChange={(e) => setFormField('title', e.target.value)}
-                    required
-                    maxLength={200}
-                    aria-describedby={error ? 'rf-error' : undefined}
-                    className={`ff-input ${form.title ? 'ff-input-filled' : ''}`}
-                    placeholder={t('createRequest.titleLabel')}
-                  />
-                  <label htmlFor="rf-title" className={`ff-label ${form.title ? 'ff-label-float' : ''}`}>
-                    {t('createRequest.titleLabel')}
-                  </label>
-                </div>
-              </div>
+  {currentStep === 0 && (
+    <div className="flex flex-col gap-sm">
+      <div className="ff-group">
+        <div className={`ff-wrap ${form.title ? 'ff-focused' : ''}`}>
+          <input
+            id="rf-title"
+            type="text"
+            value={form.title}
+            onChange={(e) => setFormField('title', e.target.value)}
+            required
+            maxLength={200}
+            aria-describedby={error ? 'rf-error' : undefined}
+            className={`ff-input ${form.title ? 'ff-input-filled' : ''}`}
+            placeholder={t('createRequest.titleLabel')}
+          />
+          <label htmlFor="rf-title" className={`ff-label ${form.title ? 'ff-label-float' : ''}`}>
+            {t('createRequest.titleLabel')}
+          </label>
+        </div>
+      </div>
 
-              <div className="ff-group">
-                <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
-                  <textarea
-                    id="rf-desc"
-                    value={form.description}
-                    onChange={(e) => setFormField('description', e.target.value)}
-                    required
-                    rows={4}
-                    maxLength={5000}
-                    className="ff-input ff-textarea"
-                    placeholder={t('createRequest.descriptionLabel')}
-                  />
-                  <label htmlFor="rf-desc" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
-                    {t('createRequest.descriptionLabel')}
-                  </label>
-                </div>
-              </div>
+      <div className="ff-group">
+        <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
+          <textarea
+            id="rf-desc"
+            value={form.description}
+            onChange={(e) => setFormField('description', e.target.value)}
+            required
+            rows={4}
+            maxLength={5000}
+            className="ff-input ff-textarea"
+            placeholder={t('createRequest.descriptionLabel')}
+          />
+          <label htmlFor="rf-desc" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
+            {t('createRequest.descriptionLabel')}
+          </label>
+        </div>
+      </div>
 
-              <div className="flex gap-sm">
-                <div className="ff-group flex-1">
-                  <ModernSelect
-                    label={t('createRequest.categoryLabel')}
-                    options={CATEGORIES.map((c) => ({ label: t(`categories.${c}`), value: c }))}
-                    value={form.category}
-                    onChange={(v) => setFormField('category', v)}
-                  />
-                </div>
-                <div className="ff-group flex-1">
-                  <ModernSelect
-                    label={t('createRequest.priorityLabel')}
-                    options={PRIORITIES.map((p) => ({ label: t(`priorities.${p}`), value: p }))}
-                    value={form.priority}
-                    onChange={(v) => setFormField('priority', v)}
-                  />
-                </div>
-              </div>
+      <div className="flex gap-sm">
+        <div className="ff-group flex-1">
+          <ModernSelect
+            label={t('createRequest.categoryLabel')}
+            options={CATEGORIES.map((c) => ({ label: t(`categories.${c}`), value: c }))}
+            value={form.category}
+            onChange={(v) => setFormField('category', v)}
+          />
+        </div>
+        <div className="ff-group flex-1">
+          <ModernSelect
+            label={t('createRequest.priorityLabel')}
+            options={PRIORITIES.map((p) => ({ label: t(`priorities.${p}`), value: p }))}
+            value={form.priority}
+            onChange={(v) => setFormField('priority', v)}
+          />
+        </div>
+      </div>
 
-              <div className="ff-group">
-                <div className={`ff-wrap ${form.peopleCount > 0 ? 'ff-focused' : ''}`}>
-                  <input
-                    id="rf-people"
-                    type="number"
-                    inputMode="numeric"
-                    min="1"
-                    max="10000"
-                    value={form.peopleCount}
-                    onChange={(e) => setFormField('peopleCount', Number(e.target.value))}
-                    className={`ff-input ${form.peopleCount > 0 ? 'ff-input-filled' : ''}`}
-                    placeholder={t('createRequest.peopleCountLabel')}
-                  />
-                  <label htmlFor="rf-people" className={`ff-label ${form.peopleCount > 0 ? 'ff-label-float' : ''}`}>
-                    {t('createRequest.peopleCountLabel')}
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
+      <div className="ff-group">
+        <div className={`ff-wrap ${form.peopleCount > 0 ? 'ff-focused' : ''}`}>
+          <input
+            id="rf-people"
+            type="number"
+            inputMode="numeric"
+            min="1"
+            max="10000"
+            value={form.peopleCount}
+            onChange={(e) => setFormField('peopleCount', Number(e.target.value))}
+            className={`ff-input ${form.peopleCount > 0 ? 'ff-input-filled' : ''}`}
+            placeholder={t('createRequest.peopleCountLabel')}
+          />
+          <label htmlFor="rf-people" className={`ff-label ${form.peopleCount > 0 ? 'ff-label-float' : ''}`}>
+            {t('createRequest.peopleCountLabel')}
+          </label>
+        </div>
+      </div>
+    </div>
+  )}
 
           {currentStep === 1 && (
             <div>

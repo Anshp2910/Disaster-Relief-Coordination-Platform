@@ -24,11 +24,12 @@
 
 .grid-gap {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-sm);
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-md);
 }
 
 @media (max-width: 768px) {
   .grid-2 { grid-template-columns: 1fr; }
   .grid-3-responsive { grid-template-columns: 1fr; }
+  .grid-gap { grid-template-columns: 1fr; }
 }

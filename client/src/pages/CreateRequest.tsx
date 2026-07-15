@@ -32,19 +32,20 @@ export default function CreateRequest() {
 }
 
   return (
-    <PageTransition>
-      <div className="container">
-      {error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
-<RequestForm
-  title={t('createRequest.title')}
-  subtitle={t('createRequest.subtitle')}
-  submitLabel={t('createRequest.creating')}
-  submitButtonLabel={t('createRequest.createButton')}
-  loading={formLoading}
-  onSubmit={onSubmit}
-  showStatus={false}
-/>
+  <PageTransition>
+    <div className="container">
+      <RequestForm
+        title={t('createRequest.title')}
+        subtitle={t('createRequest.subtitle')}
+        submitLabel={t('createRequest.creating')}
+        submitButtonLabel={t('createRequest.createButton')}
+        loading={formLoading}
+        onSubmit={onSubmit}
+        showStatus={false}
+      >
+        {error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
+      </RequestForm>
     </div>
-    </PageTransition>
+  </PageTransition>
   )
 }
