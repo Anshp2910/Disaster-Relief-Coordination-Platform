@@ -120,7 +120,7 @@ export default function Dashboard() {
 
           {error && <ErrorState message={error} onRetry={load} />}
 
-          <div className="flex gap-sm flex-wrap items-center mb-sm">
+          <div className="dashboard-filter-row">
             {filterOptions.map((f) => (
               <button
                 key={f.key}
@@ -133,7 +133,7 @@ export default function Dashboard() {
             ))}
           </div>
 
-  <div className="flex gap-sm flex-wrap items-center mb-sm">
+  <div className="dashboard-filter-row">
     {priorityOptions.map((p) => (
       <button
         key={p.key}
