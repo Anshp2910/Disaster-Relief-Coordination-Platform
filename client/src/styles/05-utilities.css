@@ -148,3 +148,6 @@
 @media (max-width: 480px) {
   .w-320 { width: 100%; max-width: 100%; }
 }
+@media (max-width: 768px) {
+  .w-320 { width: 100%; max-width: 100%; }
+}

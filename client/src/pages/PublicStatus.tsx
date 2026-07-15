@@ -73,50 +73,16 @@ if (loading) return (
     </PageTransition>
   )
 
-  return (
-    <PageTransition>
-      <motion.div
-        className="container max-w-sm"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      >
+return (
+  <PageTransition>
+    <div className="container">
       <PageHeader title={t('public.title')} subtitle={t('public.subtitle')} />
       {data?.updatedAt ? (
         <div className="muted text-xs mt-xs">{t('public.lastUpdated')}: {new Date(data.updatedAt as string).toLocaleString()}</div>
       ) : null}
 
-      <motion.div
-        className="grid-3-responsive gap-md"
-        initial="hidden"
-        animate="show"
-        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
-      >
-        {STAT_CARDS.map(({ key, labelKey }) => {
-          const val = data?.[key]
-          if (val === undefined) return null
-          return (
-            <motion.div
-              key={key}
-              variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
-            >
-              <DataCard
-                title={t(labelKey)}
-                value={typeof val === 'number' ? val.toLocaleString() : String(val)}
-                icon={ICON_MAP[key]}
-              />
-            </motion.div>
-          )
-        })}
-      </motion.div>
-
       {data?.statusBreakdown != null && Object.keys(data.statusBreakdown as Record<string, unknown>).length > 0 && (
-        <motion.div
-          className="card mt-lg"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
+        <div className="card mt-lg">
           <h3 className="m-0 mb-sm text-base">{t('public.byStatus')}</h3>
           <div className="flex gap-lg flex-wrap">
             {Object.entries(data.statusBreakdown as Record<string, number>).map(([status, count]) => (
@@ -126,9 +92,26 @@ if (loading) return (
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.div>
-    </PageTransition>
-  )
+
+      <motion.div
+        className="grid-3-responsive gap-md mt-md"
+        initial="hidden"
+        animate="show"
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
+      >
+        {STAT_CARDS.map(({ key, labelKey }) => {
+          const val = data?.[key]
+          if (val === undefined) return null
+          return (
+            <motion.div key={key} variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}>
+              <DataCard title={t(labelKey)} value={typeof val === 'number' ? val.toLocaleString() : String(val)} icon={ICON_MAP[key]} />
+            </motion.div>
+          )
+        })}
+      </motion.div>
+    </div>
+  </PageTransition>
+)
 }

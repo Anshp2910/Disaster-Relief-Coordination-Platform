@@ -133,17 +133,17 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <div className="flex gap-sm flex-wrap items-center mb-sm">
-            {priorityOptions.map((p) => (
-              <button
-                key={p.key}
-                onClick={() => { setFilterPriority(p.key); setPage(1) }}
-                className={`btn-filter text-xs ${filterPriority === p.key ? 'active' : ''}`}
-                aria-pressed={filterPriority === p.key}
-              >
-                {p.label}
-              </button>
-            ))}
+  <div className="flex gap-sm flex-wrap items-center mb-sm">
+    {priorityOptions.map((p) => (
+      <button
+        key={p.key}
+        onClick={() => { setFilterPriority(p.key); setPage(1) }}
+        className={`btn-filter ${filterPriority === p.key ? 'active' : ''}`}
+        aria-pressed={filterPriority === p.key}
+      >
+        {p.label}
+      </button>
+    ))}
             <div className="filter-group ml-auto">
               <select id="filter-category" name="category" value={filterCategory} onChange={(e) => { setFilterCategory(e.target.value); setPage(1) }} className="filter-select">
                 <option value="All">{t('dashboard.allCategories') || 'All Categories'}</option>
