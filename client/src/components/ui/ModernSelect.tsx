@@ -31,8 +31,10 @@ export default function ModernSelect({
   searchable = true, className = '', placeholder: placeholderProp, disabled = false,
 }: ModernSelectProps) {
   const uid = useId()
+  const labelId = `ms-label-${uid}`
   const comboboxId = `ms-combobox-${uid}`
   const searchInputId = `ms-search-${uid}`
+  const listboxId = `ms-listbox-${uid}`
   const { t } = useTranslation()
   const reduced = useReducedMotion()
     const placeholder = placeholderProp ?? 'Select...'
@@ -123,8 +125,8 @@ export default function ModernSelect({
         role="combobox"
         aria-expanded={open}
         aria-haspopup="listbox"
-        aria-label={label}
-        aria-controls="ms-listbox"
+        aria-labelledby={labelId}
+        aria-controls={listboxId}
         aria-activedescendant={activeIdx >= 0 ? `ms-option-${activeIdx}` : undefined}
       >
         <div
@@ -142,7 +144,7 @@ export default function ModernSelect({
           </motion.div>
         </div>
 
-        <label htmlFor={comboboxId} className={`ff-label ms-label ${(open || value) ? 'ff-label-float' : ''}`}>
+        <label id={labelId} className={`ff-label ms-label ${(open || value) ? 'ff-label-float' : ''}`}>
           {label}{required ? ' *' : ''}
         </label>
 
@@ -177,7 +179,7 @@ export default function ModernSelect({
                   )}
                 </div>
               )}
-              <div className="ms-options" ref={listRef} role="listbox" id="ms-listbox">
+              <div className="ms-options" ref={listRef} role="listbox" id={listboxId}>
                 {filtered.length === 0 ? (
                   <div className="ms-no-options">{t('dataTable.noOptionsFound')}</div>
                 ) : (
