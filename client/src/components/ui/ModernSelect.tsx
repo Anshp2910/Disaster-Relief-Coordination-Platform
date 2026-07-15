@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, type ReactNode } from 'react'
+import { useState, useRef, useEffect, useMemo, useId, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, Search, X, Check } from 'lucide-react'
@@ -30,6 +30,9 @@ export default function ModernSelect({
   value, onChange, options, label, error, hint, touched, required,
   searchable = true, className = '', placeholder: placeholderProp, disabled = false,
 }: ModernSelectProps) {
+  const uid = useId()
+  const comboboxId = `ms-combobox-${uid}`
+  const searchInputId = `ms-search-${uid}`
   const { t } = useTranslation()
   const reduced = useReducedMotion()
     const placeholder = placeholderProp ?? 'Select...'
@@ -112,6 +115,7 @@ export default function ModernSelect({
     <div className={`ff-group ${className}`} ref={ref}>
       <div
         className={`ff-wrap ms-wrap ${open ? 'ms-open' : ''} ${showError ? 'ff-error' : ''} ${focused ? 'ff-focused' : ''} ${disabled ? 'ms-disabled' : ''}`}
+        id={comboboxId}
         onFocus={() => setFocused(true)}
         onBlur={() => { if (!open) setFocused(false) }}
         tabIndex={disabled ? -1 : 0}
@@ -138,7 +142,7 @@ export default function ModernSelect({
           </motion.div>
         </div>
 
-        <label className={`ff-label ms-label ${(open || value) ? 'ff-label-float' : ''}`}>
+        <label htmlFor={comboboxId} className={`ff-label ms-label ${(open || value) ? 'ff-label-float' : ''}`}>
           {label}{required ? ' *' : ''}
         </label>
 
@@ -156,6 +160,8 @@ export default function ModernSelect({
                   <Search size={14} className="ms-search-icon" />
                   <input
                     ref={searchRef}
+                    id={searchInputId}
+                    name={searchInputId}
                     className="ms-search-input"
                     placeholder={t('dataTable.searchPlaceholder')}
                     value={search}

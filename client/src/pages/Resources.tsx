@@ -325,55 +325,73 @@ async function handleBulkEdit(e: React.FormEvent) {
         </div>
       )}
 
-      <DataList
-        items={items}
-        loading={loading}
-        emptyTitle={t('resources.noResources')}
-        emptyDescription={t('resources.noResourcesDesc') || 'No resources match your filters'}
-        skeletonCount={4}
-        skeletonLines={3}
-        keyExtractor={(r) => r._id}
-        renderItem={(r) => (
-          <div className={`list-card ${selectMode ? 'p-sm' : ''}`}>
-            <div className="flex-between gap-sm">
-              {selectMode && (
-                <input id={`res-check-${r._id}`} type="checkbox" checked={selectedIds.has(r._id)} onChange={() => handleSelectOne(r._id)} className="cursor-pointer" aria-label={`${t('resources.select') || 'Select'} ${r.name || r._id}`} />
-              )}
-              <div className="flex-1">
-                <div className="flex gap-sm flex-wrap">
-                  <span className="text-bold">{r.name}</span>
-                  <Badge label={t(`categories.${r.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={r.category} />
-                  <Badge label={r.status || 'Available'} colors={RESOURCE_STATUS_COLORS} colorKey={r.status} />
-                </div>
-                <div className="mt-xs text-base">
-                  <strong>{r.quantity}</strong> {r.unit}
-                  {(r.allocatedQuantity ?? 0) > 0 && <span className="text-warning ml-xs">({r.allocatedQuantity} {t('resources.allocated')})</span>}
-                </div>
-                <div className="small mt-xs">{r.locationName}</div>
-                {r.allocatedTo && <div className="small mt-xs">{r.allocatedTo.title || 'Request'}</div>}
-                {r.notes && <div className="small mt-xs">{r.notes}</div>}
-              </div>
-              <div className="flex flex-col gap-xs">
-                {r.status === 'Available' && (r.quantity ?? 0) > 0 && (
-                  <button onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }} className="btn-pill" aria-label={t('resources.allocate')}>
-                    <CheckSquare size={14} /> {t('resources.allocate')}
-                  </button>
-                )}
-                {(r.allocatedQuantity ?? 0) > 0 && (
-                  <button onClick={() => handleDeallocate(r._id)} className="btn-pill" aria-label={t('resources.deallocate')}>
-                    <XCircle size={14} /> {t('resources.deallocate')}
-                  </button>
-                )}
-                <button onClick={() => openEdit(r)} className="btn-ghost btn-sm" aria-label={t('resources.editResource') || 'Edit resource'}>{t('resources.editResource')}</button>
-                <button onClick={() => handleDelete(r._id)} className="btn-danger btn-sm" aria-label={t('resources.delete') || 'Delete resource'}>{t('resources.delete')}</button>
-              </div>
-            </div>
-          </div>
+<DataList
+  items={items}
+  loading={loading}
+  emptyTitle={t('resources.noResources')}
+  emptyDescription={t('resources.noResourcesDesc') || 'No resources match your filters'}
+  skeletonCount={4}
+  skeletonLines={3}
+  keyExtractor={(r) => r._id}
+  renderItem={(r) => (
+    <div className={`list-card ${selectMode ? 'list-card--select' : ''}`}>
+      <div className="flex-between gap-sm">
+        {selectMode && (
+          <input
+            id={`res-check-${r._id}`}
+            type="checkbox"
+            checked={selectedIds.has(r._id)}
+            onChange={() => handleSelectOne(r._id)}
+            className="cursor-pointer"
+            aria-label={`${t('resources.select') || 'Select'} ${r.name || r._id}`}
+          />
         )}
-        page={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-sm flex-wrap">
+            <span className="text-bold">{r.name}</span>
+            <Badge label={t(`categories.${r.category || 'Other'}`)} colors={CATEGORY_COLORS} colorKey={r.category} />
+            <Badge label={r.status || 'Available'} colors={RESOURCE_STATUS_COLORS} colorKey={r.status} />
+          </div>
+          <div className="flex items-center gap-sm mt-xs">
+            <span className="text-base text-semi">{r.quantity} {r.unit}</span>
+            {(r.allocatedQuantity ?? 0) > 0 && (
+              <span className="text-warning text-xs">{t('resources.allocated')}: {r.allocatedQuantity}</span>
+            )}
+          </div>
+          <div className="small text-muted mt-xs">{r.locationName}</div>
+          {r.allocatedTo && <div className="small text-muted mt-xs">{r.allocatedTo.title || t('resources.allocatedToRequest')}</div>}
+          {r.notes && <div className="small text-muted mt-xs">{r.notes}</div>}
+        </div>
+        <div className="resource-actions">
+          {r.status === 'Available' && (r.quantity ?? 0) > 0 && (
+            <button
+              onClick={() => { setShowAllocModal(r); setAllocQty(''); setAllocRequestId('') }}
+              className="btn-ghost btn-sm"
+              aria-label={t('resources.allocate')}
+            >
+              <CheckSquare size={14} /> {t('resources.allocate')}
+            </button>
+          )}
+          {(r.allocatedQuantity ?? 0) > 0 && (
+            <button
+              onClick={() => handleDeallocate(r._id)}
+              className="btn-ghost btn-sm text-danger"
+              aria-label={t('resources.deallocate')}
+            >
+              <XCircle size={14} /> {t('resources.deallocate')}
+            </button>
+          )}
+          <button onClick={() => openEdit(r)} className="btn-ghost btn-sm" aria-label={t('resources.editResource') || 'Edit resource'}>
+            {t('resources.editResource')}
+          </button>
+          <button onClick={() => handleDelete(r._id)} className="btn-ghost btn-sm text-danger" aria-label={t('resources.delete') || 'Delete resource'}>
+            {t('resources.delete')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+/>
 
       <Modal open={bulkEditOpen} onClose={() => setBulkEditOpen(false)} title={t('resources.bulkEdit') || 'Bulk Edit'}>
         <form onSubmit={handleBulkEdit}>
