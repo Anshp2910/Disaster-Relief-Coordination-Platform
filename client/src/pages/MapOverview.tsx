@@ -2,7 +2,8 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { MapPin, ListFilter } from 'lucide-react'
-import { PageHeader, ErrorState, PageTransition } from '../components/ui'
+import { createStagger } from '../utils/animations'
+import { ErrorState, PageTransition } from '../components/ui'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { useTranslation } from 'react-i18next'
@@ -42,6 +43,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 const FILTER_OPTIONS_KEYS = ['All', 'Open', 'Pending', 'In Progress', 'Resolved', 'Fulfilled']
 const PRIORITY_FILTER_KEYS = ['All', 'Critical', 'High', 'Medium', 'Low']
 const CATEGORY_FILTER_KEYS = ['All', 'Medical', 'Food', 'Shelter', 'Water', 'Rescue', 'Supplies', 'Healthcare', 'Sanitation', 'Clothing', 'Transportation', 'Communication', 'Power', 'Infrastructure', 'Other']
+const containerVariants = createStagger(0.05)
 
 export default function MapOverview() {
   useEffect(() => { document.title = 'Disaster Relief - Map' }, [])
@@ -157,15 +159,26 @@ export default function MapOverview() {
     <PageTransition>
       <motion.div
         className="container"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
       >
+      {/* Dashboard-style Header */}
+          <div className="flex-between mb-md mt-md">
+            <div>
+              <h1 className="page-title">{t('dashboard.mapView')}</h1>
+              <p className="text-sm text-muted mt-xs">
+                {items.length} {t('dashboard.requests') || 'requests'} mapped
+              </p>
+            </div>
+            <div className="flex gap-sm items-center">
+              <button onClick={() => navigate('/dashboard')} className="btn-ghost btn-sm" aria-label={t('admin.backToDashboard')}>
+                {t('admin.backToDashboard')}
+              </button>
+            </div>
+          </div>
+
       <div className="card mb-md">
-        <PageHeader
-          title={t('dashboard.mapView')}
-          actions={<button onClick={() => navigate('/dashboard')} className="btn-ghost btn-sm" aria-label={t('admin.backToDashboard')}>{t('admin.backToDashboard')}</button>}
-        />
         <div className="flex gap-sm flex-wrap items-center">
           <div className="flex items-center gap-xs text-muted text-xs font-semibold flex-shrink-0" aria-hidden="true">
             <ListFilter size={14} />
@@ -175,7 +188,7 @@ export default function MapOverview() {
               <button
                 key={f.key}
                 onClick={() => setFilterStatus(f.key)}
-                className={`filter-pill ${filterStatus === f.key ? 'active' : ''}`}
+                className={`btn-filter ${filterStatus === f.key ? 'active' : ''}`}
                 aria-label={t('map.filterByStatus') + ': ' + f.label}
               >
                 {f.label}
@@ -187,7 +200,7 @@ export default function MapOverview() {
               <button
                 key={p}
                 onClick={() => setFilterPriority(p)}
-                className={`filter-pill text-xs ${filterPriority === p ? 'active' : ''}`}
+                className={`btn-filter text-xs ${filterPriority === p ? 'active' : ''}`}
                 style={p !== 'All' && PRIORITY_COLORS[p] ? { borderLeft: `3px solid ${PRIORITY_COLORS[p]}` } : undefined}
                 aria-label={`${t('map.filterByPriority')}: ${p === 'All' ? t('dashboard.filterAll') : t(`priorities.${p}`)}`}
               >

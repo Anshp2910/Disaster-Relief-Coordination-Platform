@@ -1,18 +1,21 @@
 import { useState, useEffect, useMemo, useCallback, useRef, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Calendar, Plus, Edit, Trash2, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3 } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect } from '../components/ui'
+import { motion } from 'framer-motion'
+import { Calendar, Plus, Edit, Trash2, Clock, MapPin, User, CheckCircle, XCircle, ChevronLeft, ChevronRight, List, Grid3X3, Search } from 'lucide-react'
+import { Modal, ErrorState, ModernSelect } from '../components/ui'
 import DataList from '../components/ui/DataList'
 import { SkeletonList } from '../components/Skeleton'
 import { clientApi } from '../api/client'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { registerRefreshListener } from '../hooks/useSocket'
 import { useDebounce } from '../hooks/useDebounce'
+import EmptyState from '../components/EmptyState'
 import { useAuth } from '../context/AuthContext'
 import { useConfirm } from '../hooks/useConfirm'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import { useToast } from '../components/Toast'
 import PageTransition from '../components/ui/PageTransition'
+import { createStagger } from '../utils/animations'
 
 interface ScheduleItem {
   _id: string
@@ -30,6 +33,8 @@ const SHIFT_COLORS: Record<string, { bg: string; text: string; border: string }>
   Night: { bg: 'rgba(129,140,248,0.1)', text: 'var(--violet-500)', border: 'rgba(129,140,248,0.25)' },
   'Full Day': { bg: 'var(--success-soft)', text: 'var(--success)', border: 'rgba(34,197,94,0.3)' },
 }
+
+const containerVariants = createStagger(0.05)
 
 const SCHEDULE_STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   Scheduled: { bg: 'rgba(59,130,246,0.1)', text: 'var(--accent)', border: 'rgba(59,130,246,0.3)' },
@@ -167,16 +172,77 @@ export default function Schedules() {
   return (
     <PageTransition>
       <div className="container">
-      <PageHeader title={t('nav.schedules') || 'Volunteer Scheduling'} subtitle={`${items.length} ${t('schedules.schedulesCount')}`} actions={<button className="btn-primary btn-sm" onClick={openCreate}><Plus size={16} /> {t('schedules.createSchedule')}</button>} />
+        <motion.div variants={containerVariants} initial="hidden" animate="visible">
+      {/* Dashboard-style Header */}
+          <div className="flex-between mb-md mt-md">
+            <div>
+              <h1 className="page-title">{t('nav.schedules') || 'Volunteer Scheduling'}</h1>
+              <p className="text-sm text-muted mt-xs">
+                {items.length} {t('schedules.schedulesCount')}
+              </p>
+            </div>
+            <div className="flex gap-sm items-center">
+              <button className="btn-primary btn-sm" onClick={openCreate}>
+                <Plus size={14} />
+                <span>{t('schedules.createSchedule')}</span>
+              </button>
+            </div>
+          </div>
       {error && <ErrorState message={error} onRetry={load} />}
 
-      <FilterBar search={search} onSearchChange={(v) => { setSearch(v); setPage(1) }} searchPlaceholder={t('schedules.searchPlaceholder') || 'Search schedules...'}
-        filters={[
-          { key: 'status', label: t('schedules.status') || 'Status', options: STATUS_FILTER_OPTIONS.map((s) => ({ key: s, label: s === 'All' ? t('dashboard.filterAll') : s })), value: filterStatus, onChange: (v) => { setFilterStatus(v); setPage(1) } },
-          { key: 'shift', label: t('schedules.shift') || 'Shift', options: ['All', ...SHIFT_OPTIONS].map((s) => ({ key: s, label: s === 'All' ? t('dashboard.filterAll') : s })), value: filterShift, onChange: (v) => { setFilterShift(v); setPage(1) } },
-          { key: 'zone', label: t('schedules.zone') || 'Zone', options: [{ key: 'All', label: t('schedules.allZones') }, ...zones.map((z) => ({ key: z._id, label: z.name || '' }))], value: filterZone, onChange: (v) => { setFilterZone(v); setPage(1) } },
-        ]}
-      />
+      {/* Search */}
+          <div className="card">
+            <div className="search-input-wrapper" style={{ flex: '1 1 200px', maxWidth: 320, marginBottom: 'var(--space-sm)' }}>
+              <Search size={16} className="search-input-icon" />
+              <input
+                className="search-input"
+                placeholder={t('schedules.searchPlaceholder') || 'Search schedules...'}
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+                aria-label={t('schedules.searchPlaceholder') || 'Search schedules'}
+              />
+            </div>
+
+            {/* Status Filter Buttons */}
+            <div className="dashboard-filter-row">
+              {STATUS_FILTER_OPTIONS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => { setFilterStatus(s); setPage(1) }}
+                  className={`btn-filter ${filterStatus === s ? 'active' : ''}`}
+                  aria-pressed={filterStatus === s}
+                >
+                  {s === 'All' ? t('dashboard.filterAll') : s}
+                </button>
+              ))}
+            </div>
+
+            {/* Shift Filter Buttons */}
+            <div className="dashboard-filter-row">
+              {['All', ...SHIFT_OPTIONS].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => { setFilterShift(s); setPage(1) }}
+                  className={`btn-filter ${filterShift === s ? 'active' : ''}`}
+                  aria-pressed={filterShift === s}
+                >
+                  {s === 'All' ? t('dashboard.filterAll') : s}
+                </button>
+              ))}
+            </div>
+
+            {/* Zone Filter */}
+            <div className="dashboard-filter-row">
+              <div className="filter-group">
+                <select id="sched-zone-filter" name="zoneFilter" value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }} className="filter-select">
+                  <option value="All">{t('schedules.allZones')}</option>
+                  {zones.map((z) => (
+                    <option key={z._id} value={z._id}>{z.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
 
       <div className="schedule-extra-controls">
           <div className="flex gap-md items-center flex-wrap">
@@ -297,7 +363,8 @@ export default function Schedules() {
         </form>
       </Modal>
       {ConfirmDialog}
-    </div>
+        </motion.div>
+      </div>
     </PageTransition>
   )
 }
