@@ -1,11 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
-import {
-  Package, Plus, Edit, CheckCircle, XCircle,
-  Download, CheckSquare, Search,
-} from 'lucide-react'
-import { Modal, ErrorState, DataCard, ModernSelect } from '../components/ui'
+import { Package, Plus, Edit, CheckCircle, XCircle, Download, CheckSquare } from 'lucide-react'
+import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect } from '../components/ui'
+import DataList from '../components/ui/DataList'
 import Badge from '../components/Badge'
 import { clientApi } from '../api/client'
 import { useDebounce } from '../hooks/useDebounce'
@@ -14,11 +11,6 @@ import { useConfirm } from '../hooks/useConfirm'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import PageTransition from '../components/ui/PageTransition'
 import { CATEGORY_COLORS, RESOURCE_STATUS_COLORS, CATEGORY_OPTIONS, RESOURCE_STATUS_OPTIONS } from '../utils/constants'
-import { useAutoRefresh } from '../hooks/useAutoRefresh'
-import { registerRefreshListener } from '../hooks/useSocket'
-import { SkeletonList } from '../components/Skeleton'
-import EmptyState from '../components/EmptyState'
-import { createStagger } from '../utils/animations'
 
 interface ResourceItem {
   _id: string
@@ -51,7 +43,6 @@ interface SummaryItem {
 const CATEGORIES = ['All', ...CATEGORY_OPTIONS]
 const STATUSES = ['All', ...RESOURCE_STATUS_OPTIONS]
 const EMPTY_FORM: ResourceFormState = { name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' }
-const containerVariants = createStagger(0.05)
 
 export default function Resources() {
   useEffect(() => { document.title = 'Disaster Relief - Resources' }, [])
@@ -67,9 +58,8 @@ export default function Resources() {
   const [filterCategory, setFilterCategory] = useState('All')
   const [filterStatus, setFilterStatus] = useState('All')
   const [search, setSearch] = useState('')
-  const debouncedSearch = useDebounce(search, 300)
-  const [summary, setSummary] = useState<SummaryItem[]>([])
-  const { confirm, ConfirmDialog } = useConfirm()
+const debouncedSearch = useDebounce(search, 300)
+const { confirm, ConfirmDialog } = useConfirm()
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -103,14 +93,7 @@ export default function Resources() {
   const [bulkUpdating, setBulkUpdating] = useState(false)
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 })
 
-  const loadSummary = useCallback(async () => {
-    try {
-      const statsData = await clientApi.getResourceStats() as { stats?: SummaryItem[] }
-      setSummary(statsData.stats || [])
-    } catch { /* silent */ }
-  }, [])
-
-  const load = useCallback(async () => {
+const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
