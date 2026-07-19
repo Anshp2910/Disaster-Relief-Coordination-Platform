@@ -21,7 +21,7 @@ interface ContextMenuAction<T> {
   onClick: (row: T) => void
 }
 
-interface DataTableProps<T> {
+export interface DataTableProps<T> {
   columns: ColumnDef<T>[]
   data: T[]
   keyExtractor: (row: T) => string | number

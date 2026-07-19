@@ -357,8 +357,9 @@ describe('DataTable', () => {
       const bulkActionBtn = document.querySelector('.dt-bulk-action')
       fireEvent.click(bulkActionBtn!)
       expect(onBulkAction).toHaveBeenCalledTimes(1)
-      expect(onBulkAction.mock.calls[0][0]).toHaveLength(1)
-      expect(onBulkAction.mock.calls[0][0][0].id).toBe('1')
+      const bulkSelected = (onBulkAction.mock.calls as unknown as [TestItem[]][])[0]?.[0] as TestItem[]
+      expect(bulkSelected).toHaveLength(1)
+      expect(bulkSelected[0]!.id).toBe('1')
     })
 
     it('toggles individual row selection on click', () => {
@@ -390,7 +391,8 @@ describe('DataTable', () => {
       const items = document.querySelectorAll('.dt-ctx-item')
       fireEvent.click(items[0]!)
       expect(onEdit).toHaveBeenCalledTimes(1)
-      expect(onEdit.mock.calls[0][0].id).toBe('1')
+      const editRow = (onEdit.mock.calls as unknown as [TestItem][])[0]?.[0] as TestItem
+      expect(editRow.id).toBe('1')
     })
   })
 
@@ -401,7 +403,8 @@ describe('DataTable', () => {
       const row = document.querySelector('.dt-tr-clickable')
       fireEvent.click(row!)
       expect(onRowClick).toHaveBeenCalledTimes(1)
-      expect(onRowClick.mock.calls[0][0].id).toBe('1')
+      const clickRow = (onRowClick.mock.calls as unknown as [TestItem][])[0]?.[0] as TestItem
+      expect(clickRow.id).toBe('1')
     })
   })
 
@@ -442,7 +445,7 @@ describe('DataTable', () => {
       renderTable()
       fireEvent.click(screen.getByLabelText('dataTable.exportCSV'))
       expect(createObjectURL).toHaveBeenCalledTimes(1)
-      const blob = createObjectURL.mock.calls[0][0] as Blob
+      const blob = (createObjectURL.mock.calls as unknown as unknown[][])[0]?.[0] as unknown as Blob
       expect(blob.type).toBe('text/csv;charset=utf-8;')
 
       URL.createObjectURL = origCreate
