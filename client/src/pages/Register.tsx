@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import PageTransition from '../components/ui/PageTransition'
-import { createStagger } from '../utils/animations'
+import { createStagger, createListItem } from '../utils/animations'
 import { ShieldCheck, Users, Eye, EyeOff, Loader2, GitBranch, Globe, User, Mail } from 'lucide-react'
 import { clientApi, API_BASE } from '../api/client'
 import { useAuth } from '../context/AuthContext'
@@ -18,6 +18,7 @@ const FALLBACK_STATS = [
 ]
 
 const container = createStagger(0.08, 0.1)
+const item = createListItem(20, 0.5)
 
 const CSS_CLASS_MAP: Record<string, string> = {
   weak: 'weak',
@@ -89,7 +90,7 @@ export default function Register() {
     <PageTransition>
       <motion.div className="auth-split" variants={container} initial="hidden" animate="visible">
         {/* ── LEFT: Hero Panel ── */}
-        <div className="auth-hero">
+        <motion.div className="auth-hero" variants={item}>
           <div className="auth-hero-content">
             <div className="auth-emblem" aria-hidden="true">
               <ShieldCheck size={28} />
@@ -111,10 +112,10 @@ export default function Register() {
               <span>{t('auth.registerMission')}</span>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* ── RIGHT: Register Card ── */}
-        <div className="auth-card-wrap">
+        <motion.div className="auth-card-wrap" variants={item}>
           <div className="auth-card-inner">
             <div className="flex items-center gap-sm mb-xl">
               <div className="auth-logo-wrap"><div className="auth-logo" aria-hidden="true"><ShieldCheck size={22} /></div></div>
@@ -214,7 +215,7 @@ export default function Register() {
               {t('auth.hasAccount')} <Link to="/login">{t('auth.loginLink')}</Link>
             </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
     </PageTransition>
   )

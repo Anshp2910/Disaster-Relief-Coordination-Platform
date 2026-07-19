@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import PageTransition from '../components/ui/PageTransition'
+import { createStagger, createListItem } from '../utils/animations'
 import { ShieldCheck, Mail, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
 import { clientApi } from '../api/client'
 import { getErrorMessage } from '../utils/getErrorMessage'
+
+const container = createStagger(0.08, 0.1)
+const item = createListItem(20, 0.5)
 
 export default function ForgotPassword() {
   useEffect(() => { document.title = 'Disaster Relief - Forgot Password' }, [])
@@ -45,8 +49,8 @@ export default function ForgotPassword() {
 
   return (
     <PageTransition>
-      <div className="auth-split">
-      <div className="auth-hero">
+      <motion.div className="auth-split" variants={container} initial="hidden" animate="visible">
+      <motion.div className="auth-hero" variants={item}>
         <div className="auth-hero-content">
           <div className="auth-emblem" aria-hidden="true">
             <ShieldCheck size={28} />
@@ -54,9 +58,9 @@ export default function ForgotPassword() {
           <h1 className="auth-hero-title">{t('appTitle')}</h1>
           <p className="auth-hero-sub">{t('auth.heroSubtitle')}</p>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="auth-card-wrap">
+      <motion.div className="auth-card-wrap" variants={item}>
         <div className="auth-card-inner">
           <div className="flex items-center gap-sm mb-xl">
             <div className="auth-logo-wrap"><div className="auth-logo" aria-hidden="true"><ShieldCheck size={22} /></div></div>
@@ -67,7 +71,7 @@ export default function ForgotPassword() {
           </div>
 
           {sent ? (
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
+            <motion.div variants={container} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
               <div className="flex-center mb-md text-success">
                 <CheckCircle size={48} />
               </div>
@@ -93,7 +97,7 @@ export default function ForgotPassword() {
               </div>
             </motion.div>
           ) : (
-            <>
+            <motion.div variants={container}>
               <div className="flex-center mb-md text-accent">
                 <Mail size={48} />
               </div>
@@ -124,11 +128,11 @@ export default function ForgotPassword() {
               <div className="auth-alt">
                 <Link to="/login" className="flex items-center gap-xs justify-center"><ArrowLeft size={16} />{t('auth.backToLogin')}</Link>
               </div>
-            </>
+            </motion.div>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
     </PageTransition>
   )
 }
