@@ -6,7 +6,7 @@ import { Thermometer, Plus } from 'lucide-react'
 import L from 'leaflet'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
 import { clientApi } from '../api/client'
-import { PageHeader, ErrorState, FilterBar, PageTransition, RippleBtn } from '../components/ui'
+import { ErrorState, FilterBar, PageTransition } from '../components/ui'
 import { SkeletonMap } from '../components/Skeleton'
 import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
@@ -264,25 +264,29 @@ export default function ZoneHeatMap() {
 
   return (
     <PageTransition>
-      <motion.div className="container" variants={containerVariants} initial="hidden" animate="visible">
-      <PageHeader
-        title={t('zones.title')}
-        subtitle={`${zones.length} ${t('zones.zonesCount')} \u00B7 ${totalOpen} ${t('zones.openRequests')} \u00B7 ${totalGap} ${t('zones.coverageGaps')} \u00B7 ${totalAffected.toLocaleString()} ${t('zones.affected')}`}
-        actions={
-          <div className="flex gap-sm items-center">
-            {currentUser?.role === 'admin' && (
-              <RippleBtn className="btn-primary btn-sm" onClick={openCreate} aria-label={t('zones.addZone')}>
-                <Plus size={16} />
-                <span>{t('zones.addZone')}</span>
-              </RippleBtn>
-            )}
-            <button className="btn-secondary text-sm" onClick={fetchWeather} disabled={weatherLoading}>
-              <Thermometer size={16} />
-              <span>{weatherLoading ? t('common.loading') : (t('zones.weather') || 'Weather')}</span>
-            </button>
+      <div className="container">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible">
+      {/* Dashboard-style Header */}
+          <div className="flex-between mb-md mt-md">
+            <div>
+              <h1 className="page-title">{t('zones.title')}</h1>
+              <p className="text-sm text-muted mt-xs">
+                {zones.length} {t('zones.zonesCount')} · {totalOpen} {t('zones.openRequests')} · {totalGap} {t('zones.coverageGaps')} · {totalAffected.toLocaleString()} {t('zones.affected')}
+              </p>
+            </div>
+            <div className="flex gap-sm items-center">
+              {currentUser?.role === 'admin' && (
+                <button className="btn-primary btn-sm" onClick={openCreate} aria-label={t('zones.addZone')}>
+                  <Plus size={16} />
+                  <span>{t('zones.addZone')}</span>
+                </button>
+              )}
+              <button className="btn-secondary btn-sm" onClick={fetchWeather} disabled={weatherLoading}>
+                <Thermometer size={16} />
+                <span>{weatherLoading ? t('common.loading') : (t('zones.weather') || 'Weather')}</span>
+              </button>
+            </div>
           </div>
-        }
-      />
 
       {error && <ErrorState message={error} onRetry={load} />}
 
@@ -369,7 +373,8 @@ export default function ZoneHeatMap() {
         onClose={() => setShowForm(false)}
       />
       {ConfirmDialog}
-      </motion.div>
+        </motion.div>
+      </div>
     </PageTransition>
   )
 }
