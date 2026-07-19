@@ -118,10 +118,11 @@
   --space-lg: 24px;
   --space-xl: 40px;
   --space-2xl: 64px;
+  --space-3xl: 80px;
   --space-px: 1px;
 
   --navbar-height: 48px;
-  --shell-max: 1280px;
+  --shell-max: 1440px;
 
   /* ── Border Radius ── */
   --radius-4xs: 2px;

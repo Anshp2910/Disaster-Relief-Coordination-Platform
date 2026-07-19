@@ -18,14 +18,23 @@
 
 .grid-auto-sm {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--space-md);
+}
+
+@media (min-width: 1600px) {
+  .grid-auto-sm { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 }
 
 .grid-gap {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: var(--space-md);
+}
+
+@media (min-width: 1600px) {
+  .grid-gap { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); }
+  .grid-3-responsive { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 768px) {
