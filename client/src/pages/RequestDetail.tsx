@@ -120,11 +120,9 @@ export default function RequestDetail() {
   const [uploading, setUploading] = useState(false)
   const [resources, setResources] = useState<Resource[]>([])
   const [allocating, setAllocating] = useState(false)
-const [deleting, setDeleting] = useState(false)
-  const [allocResource, setAllocResource] = useState('')
+const [allocResource, setAllocResource] = useState('')
   const [allocQty, setAllocQty] = useState('')
 const [matches, setMatches] = useState<Match[]>([])
-const [quickAllocatingId, setQuickAllocatingId] = useState<string | null>(null)
 const [showChat, setShowChat] = useState(false)
   const [feedbackList, setFeedbackList] = useState<Feedback[]>([])
   const [feedbackRating, setFeedbackRating] = useState(5)
@@ -136,7 +134,6 @@ const [showChat, setShowChat] = useState(false)
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null)
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
 const [editCommentText, setEditCommentText] = useState('')
-const [editError, setEditError] = useState<string | null>(null)
 const [statusUpdating, setStatusUpdating] = useState(false)
   const { confirm, ConfirmDialog } = useConfirm()
 
@@ -231,7 +228,6 @@ async function handleStatusChange(newStatus: string) {
 async function handleDelete() {
   const ok = await confirm({ message: t('dashboard.deleteConfirm') || 'Are you sure you want to delete this request?', confirmText: t('dashboard.delete'), danger: true })
   if (!ok) return
-  setDeleting(true)
   try {
     if (!id) return
     await clientApi.deleteRequest(id)
@@ -240,7 +236,7 @@ async function handleDelete() {
   } catch (err) {
     toast.error(getErrorMessage(err))
   } finally {
-    setDeleting(false)
+    // cleanup
   }
 }
 

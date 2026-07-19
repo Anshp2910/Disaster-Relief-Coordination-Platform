@@ -196,7 +196,7 @@ async function handleSend(e: React.FormEvent) {
   const file = selectedFile
   setText('')
   setSelectedFile(null)
-  if (fileRef.current) fileRef.current.value = ''
+  if (fileInputRef.current) fileInputRef.current.value = ''
 
   if (file) {
     setSending(true)

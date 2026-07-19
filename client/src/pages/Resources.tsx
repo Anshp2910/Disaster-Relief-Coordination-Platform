@@ -1,15 +1,20 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Package, Plus, Edit, CheckCircle, XCircle, Download, CheckSquare } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect } from '../components/ui'
-import DataList from '../components/ui/DataList'
+import { motion } from 'framer-motion'
+import { Package, Plus, Edit, CheckCircle, XCircle, Download, CheckSquare, Search } from 'lucide-react'
+import { Modal, ErrorState, DataCard, ModernSelect } from '../components/ui'
 import Badge from '../components/Badge'
 import { clientApi } from '../api/client'
 import { useDebounce } from '../hooks/useDebounce'
 import { useToast } from '../components/Toast'
+import { useAutoRefresh } from '../hooks/useAutoRefresh'
+import { registerRefreshListener } from '../hooks/useSocket'
 import { useConfirm } from '../hooks/useConfirm'
 import { getErrorMessage } from '../utils/getErrorMessage'
 import PageTransition from '../components/ui/PageTransition'
+import { SkeletonList } from '../components/Skeleton'
+import EmptyState from '../components/EmptyState'
+import { createStagger } from '../utils/animations'
 import { CATEGORY_COLORS, RESOURCE_STATUS_COLORS, CATEGORY_OPTIONS, RESOURCE_STATUS_OPTIONS } from '../utils/constants'
 
 interface ResourceItem {
@@ -40,6 +45,8 @@ interface SummaryItem {
   count?: number
 }
 
+const containerVariants = createStagger(0.05)
+
 const CATEGORIES = ['All', ...CATEGORY_OPTIONS]
 const STATUSES = ['All', ...RESOURCE_STATUS_OPTIONS]
 const EMPTY_FORM: ResourceFormState = { name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' }
@@ -53,7 +60,8 @@ export default function Resources() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(1)
+  const [summary, setSummary] = useState<SummaryItem[]>([])
+const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [filterCategory, setFilterCategory] = useState('All')
   const [filterStatus, setFilterStatus] = useState('All')
@@ -112,6 +120,13 @@ const load = useCallback(async () => {
     }
   }, [page, filterCategory, filterStatus, debouncedSearch])
 
+  const loadSummary = useCallback(async () => {
+    try {
+      const data = await clientApi.getResourceStats() as { summaryByCategory?: SummaryItem[] }
+      setSummary(data.summaryByCategory || [])
+    } catch { /* silent */ }
+  }, [])
+
   useEffect(() => { load(); loadSummary() }, [load, loadSummary])
   useAutoRefresh(load, { interval: 20000 })
   useEffect(() => { return registerRefreshListener(['resource:created', 'resource:allocated', 'request:created', 'request:updated'], load) }, [load])
@@ -129,9 +144,8 @@ const load = useCallback(async () => {
     setError('')
     try {
       const payload = { ...form, quantity: Number(form.quantity) }
-      let result
-      if (editItem) { result = await clientApi.updateResource(editItem._id, payload) }
-      else { result = await clientApi.createResource(payload) }
+      if (editItem) { await clientApi.updateResource(editItem._id, payload) }
+      else { await clientApi.createResource(payload) }
       toast.success(editItem ? (t('resources.resourceUpdated') || 'Resource updated') : (t('resources.resourceCreated') || 'Resource created'))
       setShowForm(false)
       load()
