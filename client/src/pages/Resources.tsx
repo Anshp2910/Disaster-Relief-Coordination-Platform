@@ -1,13 +1,11 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Package, Plus, Edit, CheckCircle, XCircle, Download, CheckSquare } from 'lucide-react'
-import { Modal, PageHeader, ErrorState, FilterBar, DataCard, ModernSelect } from '../components/ui'
+import { Modal, PageHeader, ErrorState, FilterBar, ModernSelect } from '../components/ui'
 import DataList from '../components/ui/DataList'
 import Badge from '../components/Badge'
 import { clientApi } from '../api/client'
-import { useAutoRefresh } from '../hooks/useAutoRefresh'
 import { useDebounce } from '../hooks/useDebounce'
-import { registerRefreshListener } from '../hooks/useSocket'
 import { useToast } from '../components/Toast'
 import { useConfirm } from '../hooks/useConfirm'
 import { getErrorMessage } from '../utils/getErrorMessage'
@@ -36,12 +34,6 @@ interface ResourceFormState {
   notes: string
 }
 
-interface SummaryItem {
-  _id: string
-  totalQty?: number
-  count?: number
-}
-
 const CATEGORIES = ['All', ...CATEGORY_OPTIONS]
 const STATUSES = ['All', ...RESOURCE_STATUS_OPTIONS]
 const EMPTY_FORM: ResourceFormState = { name: '', category: 'Food', quantity: '', unit: '', locationName: '', notes: '' }
@@ -52,17 +44,16 @@ export default function Resources() {
   const toast = useToast()
 
   const [items, setItems] = useState<ResourceItem[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [filterCategory, setFilterCategory] = useState('All')
-  const [filterStatus, setFilterStatus] = useState('All')
-  const [search, setSearch] = useState('')
-  const debouncedSearch = useDebounce(search, 300)
-  const [summary, setSummary] = useState<SummaryItem[]>([])
-  const { confirm, ConfirmDialog } = useConfirm()
+const [loading, setLoading] = useState(false)
+const [error, setError] = useState('')
+const [total, setTotal] = useState(0)
+const [page, setPage] = useState(1)
+const [totalPages, setTotalPages] = useState(1)
+const [filterCategory, setFilterCategory] = useState('All')
+const [filterStatus, setFilterStatus] = useState('All')
+const [search, setSearch] = useState('')
+const debouncedSearch = useDebounce(search, 300)
+const { confirm, ConfirmDialog } = useConfirm()
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -74,21 +65,21 @@ export default function Resources() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  const [showForm, setShowForm] = useState(false)
-  const [editItem, setEditItem] = useState<ResourceItem | null>(null)
-  const [form, setForm] = useState<ResourceFormState>(EMPTY_FORM)
+const [showForm, setShowForm] = useState(false)
+const [editItem, setEditItem] = useState<ResourceItem | null>(null)
+const [form, setForm] = useState<ResourceFormState>(EMPTY_FORM)
 
-  const [showAllocModal, setShowAllocModal] = useState<ResourceItem | null>(null)
-  const [allocQty, setAllocQty] = useState('')
-  const [allocRequestId, setAllocRequestId] = useState('')
-  const [allocating, setAllocating] = useState(false)
-  const [allocReqSearch, setAllocReqSearch] = useState('')
-  const [allocShowReqDropdown, setAllocShowReqDropdown] = useState(false)
-  const [allocReqActiveIndex, setAllocReqActiveIndex] = useState(-1)
-  const [requestOptions, setRequestOptions] = useState<{ _id: string; title: string; status: string; locationName?: string }[]>([])
-  const allocReqSearchRef = useRef<HTMLDivElement>(null)
+const [showAllocModal, setShowAllocModal] = useState<ResourceItem | null>(null)
+const [allocQty, setAllocQty] = useState('')
+const [allocRequestId, setAllocRequestId] = useState('')
+const [allocating, setAllocating] = useState(false)
+const [allocReqSearch, setAllocReqSearch] = useState('')
+const [allocShowReqDropdown, setAllocShowReqDropdown] = useState(false)
+const [allocReqActiveIndex, setAllocReqActiveIndex] = useState(-1)
+const [requestOptions, setRequestOptions] = useState<{ _id: string; title: string; status: string; locationName?: string }[]>([])
+const allocReqSearchRef = useRef<HTMLDivElement>(null)
 
-  const [selectMode, setSelectMode] = useState(false)
+const [selectMode, setSelectMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkEditOpen, setBulkEditOpen] = useState(false)
   const [bulkEditStatus, setBulkEditStatus] = useState('')
@@ -96,14 +87,7 @@ export default function Resources() {
   const [bulkUpdating, setBulkUpdating] = useState(false)
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 })
 
-  const loadSummary = useCallback(async () => {
-    try {
-  const statsData = await clientApi.getResourceStats() as { stats?: SummaryItem[] }
-  setSummary(statsData.stats || [])
-    } catch { /* silent */ }
-  }, [])
-
-  const load = useCallback(async () => {
+const load = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -122,9 +106,7 @@ export default function Resources() {
     }
   }, [page, filterCategory, filterStatus, debouncedSearch])
 
-  useEffect(() => { load(); loadSummary() }, [load, loadSummary])
-  useAutoRefresh(load, { interval: 20000 })
-  useEffect(() => { return registerRefreshListener(['resource:created', 'resource:allocated', 'request:created', 'request:updated'], load) }, [load])
+useEffect(() => { load() }, [load])
 
   function openCreate() { setEditItem(null); setForm(EMPTY_FORM); setShowForm(true) }
   function openEdit(item: ResourceItem) {
@@ -234,27 +216,9 @@ async function handleBulkEdit(e: React.FormEvent) {
         }
       />
 
-      {error && <ErrorState message={error} onRetry={load} />}
+{error && <ErrorState message={error} onRetry={load} />}
 
-      {summary.length > 0 && (
-        <div className="grid-auto-sm gap-md mb-md">
-          {summary.map((s) => {
-          const catColors = CATEGORY_COLORS[s._id] || CATEGORY_COLORS.Other
-          return (
-      <DataCard
-        key={s._id}
-        title={t(`categories.${s._id}`) || s._id}
-        value={`${s.totalQty ?? 0} ${t('resources.units')}`}
-        subtitle={`${s.count ?? 0} ${t('resources.items')}`}
-        icon={<Package size={18} />}
-        color={catColors!.text}
-      />
-          )
-        })}
-        </div>
-      )}
-
-      <FilterBar
+<FilterBar
         search={search}
         onSearchChange={(v) => { setSearch(v); setPage(1) }}
         searchPlaceholder={t('resources.searchPlaceholder')}
