@@ -122,7 +122,7 @@ export default function Login() {
                 </div>
               </div>
               <div className="flex items-center justify-between mb-lg">
-                <label className="flex items-center gap-xs text-xs text-muted cursor-pointer">
+                <label htmlFor="login-remember" className="flex items-center gap-xs text-xs text-muted cursor-pointer">
                   <input id="login-remember" name="remember" type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} /> {t('auth.rememberMe')}
                 </label>
                 <Link to="/forgot-password" className="text-xs text-accent">{t('auth.forgotPassword')}</Link>

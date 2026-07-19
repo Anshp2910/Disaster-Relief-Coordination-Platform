@@ -120,7 +120,7 @@ export default function Dashboard() {
 
           {error && <ErrorState message={error} onRetry={load} />}
 
-          <div className="dashboard-filter-row">
+          <div className="dashboard-filter-row" role="group" aria-label={t('dashboard.filterByStatus') || 'Filter by status'}>
             {filterOptions.map((f) => (
               <button
                 key={f.key}
@@ -133,7 +133,7 @@ export default function Dashboard() {
             ))}
           </div>
 
-  <div className="dashboard-filter-row">
+  <div className="dashboard-filter-row" role="group" aria-label={t('dashboard.filterByPriority') || 'Filter by priority'}>
     {priorityOptions.map((p) => (
       <button
         key={p.key}

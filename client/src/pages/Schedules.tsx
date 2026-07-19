@@ -203,7 +203,7 @@ export default function Schedules() {
             </div>
 
             {/* Status Filter Buttons */}
-            <div className="dashboard-filter-row">
+            <div className="dashboard-filter-row" role="group" aria-label={t('schedules.filterByStatus') || 'Filter by status'}>
               {STATUS_FILTER_OPTIONS.map((s) => (
                 <button
                   key={s}
@@ -217,7 +217,7 @@ export default function Schedules() {
             </div>
 
             {/* Shift Filter Buttons */}
-            <div className="dashboard-filter-row">
+            <div className="dashboard-filter-row" role="group" aria-label={t('schedules.filterByShift') || 'Filter by shift'}>
               {['All', ...SHIFT_OPTIONS].map((s) => (
                 <button
                   key={s}
@@ -231,7 +231,7 @@ export default function Schedules() {
             </div>
 
             {/* Zone Filter */}
-            <div className="dashboard-filter-row">
+            <div className="dashboard-filter-row" role="group" aria-label={t('schedules.filterByZone') || 'Filter by zone'}>
               <div className="filter-group">
                 <select id="sched-zone-filter" name="zoneFilter" value={filterZone} onChange={(e) => { setFilterZone(e.target.value); setPage(1) }} className="filter-select">
                   <option value="All">{t('schedules.allZones')}</option>

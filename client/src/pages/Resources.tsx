@@ -288,7 +288,7 @@ const load = useCallback(async () => {
             </div>
 
             {/* Category Filter Buttons */}
-            <div className="dashboard-filter-row">
+            <div className="dashboard-filter-row" role="group" aria-label={t('resources.filterByCategory') || 'Filter by category'}>
               {CATEGORIES.map((c) => (
                 <button
                   key={c}
@@ -302,7 +302,7 @@ const load = useCallback(async () => {
             </div>
 
             {/* Status Filter Buttons */}
-            <div className="dashboard-filter-row">
+            <div className="dashboard-filter-row" role="group" aria-label={t('resources.filterByStatus') || 'Filter by status'}>
               {STATUSES.map((s) => (
                 <button
                   key={s}
