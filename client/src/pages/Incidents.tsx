@@ -202,7 +202,7 @@ export default function Incidents() {
           </div>
 
           {/* Status Filter Buttons */}
-          <div className="dashboard-filter-row">
+          <div className="dashboard-filter-row" role="group" aria-label={t('dashboard.filterByStatus') || 'Filter by status'}>
             {STATUS_OPTIONS.map((s) => (
               <button
                 key={s}
@@ -216,7 +216,7 @@ export default function Incidents() {
           </div>
 
           {/* Severity Filter Buttons */}
-          <div className="dashboard-filter-row">
+          <div className="dashboard-filter-row" role="group" aria-label="Filter by severity">
             {SEVERITY_OPTIONS.map((s) => (
               <button
                 key={s}
@@ -230,7 +230,7 @@ export default function Incidents() {
           </div>
 
           {/* Disaster Type Filter Buttons */}
-          <div className="dashboard-filter-row">
+          <div className="dashboard-filter-row" role="group" aria-label="Filter by disaster type">
             {DISASTER_OPTIONS.map((d) => (
               <button
                 key={d}
