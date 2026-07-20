@@ -618,7 +618,9 @@
     "status": "Status",
     "created": "Incident created",
     "deleted": "Incident deleted",
-    "updated": "Incident updated"
+    "updated": "Incident updated",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "today": "Today",

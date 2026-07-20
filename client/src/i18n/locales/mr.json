@@ -135,7 +135,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "तुमची खात्री आहे की तुम्ही ही विनंती रद्द करू इच्छिता?",
@@ -168,7 +171,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "तुमचे स्थान पुनर्प्राप्त करण्यात अक्षम.",
@@ -366,7 +372,10 @@
     "resourceCreated": "संसाधन तयार केले",
     "resourceDeleted": "संसाधन हटवले",
     "resourceUpdated": "संसाधन अपडेट केले",
-    "applying": "लागू करत आहे..."
+    "applying": "लागू करत आहे...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "आपत्ती झोन उष्णता नकाशा",
@@ -459,7 +468,9 @@
     "status": "Status",
     "created": "घटना तयार केली",
     "deleted": "घटना हटवली",
-    "updated": "घटना अपडेट केली"
+    "updated": "घटना अपडेट केली",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "वेळापत्रक",
@@ -495,7 +506,10 @@
     "created": "वेळापत्रक तयार केले",
     "deleted": "वेळापत्रक हटवले",
     "statusUpdated": "वेळापत्रक स्थिती अपडेट केली",
-    "updated": "वेळापत्रक अपडेट केले"
+    "updated": "वेळापत्रक अपडेट केले",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "मोठ्या प्रमाणात आयात आणि CSV निर्यात",
@@ -555,7 +569,8 @@
     "searchPlaceholder": "विनंती निवडा...",
     "noMatch": "शीर्षक, कारण किंवा वापरकर्ता द्वारे शोधा...",
     "searchRequest": "Search for a request...",
-    "deEscalated": "डी-एस्केलेट यशस्वीरित्या"
+    "deEscalated": "डी-एस्केलेट यशस्वीरित्या",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "जिओफेन्सिंग सूचना",
@@ -693,7 +708,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "weekdays": {},
   "errorBoundary": {
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",

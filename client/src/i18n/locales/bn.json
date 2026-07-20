@@ -135,7 +135,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "দুর্যোগ ত্রাণ অনুরোধ তৈরি করুন",
@@ -168,7 +171,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "অনুরোধ সম্পাদনা করুন",
@@ -366,7 +372,10 @@
     "resourceCreated": "সম্পদ তৈরি হয়েছে",
     "resourceDeleted": "সম্পদ মুছে ফেলা হয়েছে",
     "resourceUpdated": "সম্পদ আপডেট করা হয়েছে",
-    "applying": "প্রয়োগ করা হচ্ছে..."
+    "applying": "প্রয়োগ করা হচ্ছে...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "ডিললোকেট করার কিছু নেই",
@@ -459,7 +468,9 @@
     "status": "Status",
     "created": "ঘটনা তৈরি হয়েছে",
     "deleted": "ঘটনা মুছে ফেলা হয়েছে",
-    "updated": "ঘটনা আপডেট করা হয়েছে"
+    "updated": "ঘটনা আপডেট করা হয়েছে",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "সময়সূচী",
@@ -495,7 +506,10 @@
     "created": "সময়সূচী তৈরি হয়েছে",
     "deleted": "সময়সূচী মুছে ফেলা হয়েছে",
     "statusUpdated": "সময়সূচী স্থিতি আপডেট করা হয়েছে",
-    "updated": "সময়সূচী আপডেট করা হয়েছে"
+    "updated": "সময়সূচী আপডেট করা হয়েছে",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "বাল্ক আমদানি এবং CSV রপ্তানি",
@@ -555,7 +569,8 @@
     "searchPlaceholder": "একটি অনুরোধ নির্বাচন করুন...",
     "noMatch": "শিরোনাম, কারণ, বা ব্যবহারকারী দ্বারা অনুসন্ধান করুন...",
     "searchRequest": "Search for a request...",
-    "deEscalated": "ডি-এস্কেলেট সফলভাবে"
+    "deEscalated": "ডি-এস্কেলেট সফলভাবে",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "জিওফেন্সিং সতর্কতা",
@@ -693,7 +708,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "weekdays": {},
   "errorBoundary": {
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",

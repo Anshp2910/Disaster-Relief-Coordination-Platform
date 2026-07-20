@@ -132,7 +132,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "ਆਸਾਂਟ ਰਾਹਤ ਬੇਨਤੀ ਬਣਾਓ",
@@ -165,7 +168,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "ਬੇਨਤੀ ਸੋਧੋ",
@@ -363,7 +369,10 @@
     "resourceCreated": "ਸਰੋਤ ਬਣਾਇਆ",
     "resourceDeleted": "ਸਰੋਤ ਮਿਟਾਇਆ",
     "resourceUpdated": "ਸਰੋਤ ਅੱਪਡੇਟ ਕੀਤਾ",
-    "applying": "ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
+    "applying": "ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "ਆਸਾਂਟ ਖੇਤਰ ਹੀਟ ਮੈਪ",
@@ -443,7 +452,9 @@
     "status": "Status",
     "created": "ਘਟਨਾ ਬਣਾਈ",
     "deleted": "ਘਟਨਾ ਮਿਟਾਈ",
-    "updated": "ਘਟਨਾ ਅੱਪਡੇਟ ਕੀਤੀ"
+    "updated": "ਘਟਨਾ ਅੱਪਡੇਟ ਕੀਤੀ",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "ਸਮਾਂ ਪੱਤਰ",
@@ -479,7 +490,10 @@
     "created": "ਸਮਾਂ ਪੱਤਰ ਬਣਾਇਆ",
     "deleted": "ਸਮਾਂ ਪੱਤਰ ਮਿਟਾਇਆ",
     "statusUpdated": "ਸਮਾਂ ਪੱਤਰ ਸਥਿਤੀ ਅੱਪਡੇਟ ਕੀਤੀ",
-    "updated": "ਸਮਾਂ ਪੱਤਰ ਅੱਪਡੇਟ ਕੀਤਾ"
+    "updated": "ਸਮਾਂ ਪੱਤਰ ਅੱਪਡੇਟ ਕੀਤਾ",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "ਬਲਕ ਆਯਾਤ ਅਤੇ CSV ਨਿਕਾਸ",
@@ -539,7 +553,8 @@
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
     "searchRequest": "Search for a request...",
-    "deEscalated": "ਡੀ-ਐਸਕਲੇਟ ਸਫਲਤਾਪੂਰਵਕ"
+    "deEscalated": "ਡੀ-ਐਸਕਲੇਟ ਸਫਲਤਾਪੂਰਵਕ",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "ਕੇਂਦਰ ਸੈੱਟ ਕਰਨ ਲਈ ਨਕਸ਼ੇ ਉੱਤੇ ਕਲਿੱਕ ਕਰੋ, ਫਿਰ ਖੇਤਰ ਜਾਂਚੋ",
@@ -671,7 +686,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "header": {
     "selectLanguage": "Select Language"
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",

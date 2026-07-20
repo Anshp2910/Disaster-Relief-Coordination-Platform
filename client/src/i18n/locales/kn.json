@@ -132,7 +132,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "ಅಪಘಾತ ನಿವಾರಣೆ ವಿನಂತಿ ರಚಿಸಿ",
@@ -165,7 +168,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "ವಿನಂತಿ ಸಂಪಾದಿಸಿ",
@@ -363,7 +369,10 @@
     "resourceCreated": "ಸಂಪನ್ಮೂಲ ರಚಿಸಲಾಗಿದೆ",
     "resourceDeleted": "ಸಂಪನ್ಮೂಲ ಅಳಿಸಲಾಗಿದೆ",
     "resourceUpdated": "ಸಂಪನ್ಮೂಲ ನವೀಕರಿಸಲಾಗಿದೆ",
-    "applying": "ಅನ್ವಯಿಸಲಾಗುತ್ತಿದೆ..."
+    "applying": "ಅನ್ವಯಿಸಲಾಗುತ್ತಿದೆ...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "ಅಪಘಾತ ವಲಯ ಹೀಟ್ ಮ್ಯಾಪ್",
@@ -443,7 +452,9 @@
     "status": "Status",
     "created": "ಘಟನೆ ರಚಿಸಲಾಗಿದೆ",
     "deleted": "ಘಟನೆ ಅಳಿಸಲಾಗಿದೆ",
-    "updated": "ಘಟನೆ ನವೀಕರಿಸಲಾಗಿದೆ"
+    "updated": "ಘಟನೆ ನವೀಕರಿಸಲಾಗಿದೆ",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "ವೇಳಾಪಟ್ಟಿಗಳು",
@@ -479,7 +490,10 @@
     "created": "ವೇಳಾಪಟ್ಟಿ ರಚಿಸಲಾಗಿದೆ",
     "deleted": "ವೇಳಾಪಟ್ಟಿ ಅಳಿಸಲಾಗಿದೆ",
     "statusUpdated": "ವೇಳಾಪಟ್ಟಿ ಸ್ಥಿತಿ ನವೀಕರಿಸಲಾಗಿದೆ",
-    "updated": "ವೇಳಾಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ"
+    "updated": "ವೇಳಾಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "ಬಲ್ಕ್ ಆಮದು ಮತ್ತು CSV ರಫ್ತು",
@@ -539,7 +553,8 @@
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
     "searchRequest": "Search for a request...",
-    "deEscalated": "ಡಿ-ಎಸ್ಕಲೇಟ್ ಯಶಸ್ವಿಯಾಗಿ"
+    "deEscalated": "ಡಿ-ಎಸ್ಕಲೇಟ್ ಯಶಸ್ವಿಯಾಗಿ",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "ಕೇಂದ್ರವನ್ನು ಹೊಂದಿಸಲು ನಕ್ಷೆಯಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ, ನಂತರ ಪ್ರದೇಶವನ್ನು ಪರಿಶೀಲಿಸಿ",
@@ -671,7 +686,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "header": {
     "selectLanguage": "Select Language"
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",

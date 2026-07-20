@@ -135,7 +135,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "విపత్తు సహాయ అభ్యర్థనను సృష్టించండి",
@@ -168,7 +171,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "అభ్యర్థనను సవరించండి",
@@ -366,7 +372,10 @@
     "resourceCreated": "వనరు సృష్టించబడింది",
     "resourceDeleted": "వనరు తొలగించబడింది",
     "resourceUpdated": "వనరు నవీకరించబడింది",
-    "applying": "వర్తింపజేస్తోంది..."
+    "applying": "వర్తింపజేస్తోంది...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "డీలాకేట్ చేయడానికి ఏమీ లేదు",
@@ -459,7 +468,9 @@
     "status": "Status",
     "created": "సంఘటన సృష్టించబడింది",
     "deleted": "సంఘటన తొలగించబడింది",
-    "updated": "సంఘటన నవీకరించబడింది"
+    "updated": "సంఘటన నవీకరించబడింది",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "షెడ్యూల్స్",
@@ -495,7 +506,10 @@
     "created": "షెడ్యూల్ సృష్టించబడింది",
     "deleted": "షెడ్యూల్ తొలగించబడింది",
     "statusUpdated": "షెడ్యూల్ స్థితి నవీకరించబడింది",
-    "updated": "షెడ్యూల్ నవీకరించబడింది"
+    "updated": "షెడ్యూల్ నవీకరించబడింది",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "బల్క్ దిగుమతి & CSV ఎగుమతి",
@@ -555,7 +569,8 @@
     "searchPlaceholder": "అభ్యర్థనను ఎంచుకోండి...",
     "noMatch": "శీర్షిక, కారణం లేదా వినియోగదారు ఆ��ారంగా శోధించండి...",
     "searchRequest": "Search for a request...",
-    "deEscalated": "డీ-ఎస్కలేట్ విజయవంతంగా"
+    "deEscalated": "డీ-ఎస్కలేట్ విజయవంతంగా",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "జియోఫెన్సింగ్ హెచ్చరికలు",
@@ -693,7 +708,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "weekdays": {},
   "errorBoundary": {
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",

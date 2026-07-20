@@ -132,7 +132,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "આપત્તિ રાહત વિનંતી બનાવો",
@@ -165,7 +168,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "વિનંતી સંપાદિત કરો",
@@ -363,7 +369,10 @@
     "resourceCreated": "સાધન બનાવ્યું",
     "resourceDeleted": "સાધન કાઢી નાખ્યું",
     "resourceUpdated": "સાધન અપડેટ કર્યું",
-    "applying": "લાગુ કરી રહ્યા છે..."
+    "applying": "લાગુ કરી રહ્યા છે...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "આપત્તિ વિસ્તાર હીટ મેપ",
@@ -443,7 +452,9 @@
     "status": "Status",
     "created": "ઘટના બનાવી",
     "deleted": "ઘટના કાઢી નાખી",
-    "updated": "ઘટના અપડેટ કરી"
+    "updated": "ઘટના અપડેટ કરી",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "સમયપત્રકો",
@@ -479,7 +490,10 @@
     "created": "સમયપત્રક બનાવ્યું",
     "deleted": "સમયપત્રક કાઢી નાખ્યું",
     "statusUpdated": "સમયપત્રક સ્થિતિ અપડેટ કરી",
-    "updated": "સમયપત્રક અપડેટ કર્યું"
+    "updated": "સમયપત્રક અપડેટ કર્યું",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "બલ્ક આયાત અને CSV નિકાસ",
@@ -539,7 +553,8 @@
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
     "searchRequest": "Search for a request...",
-    "deEscalated": "ડી-એસ્કેલેટ સફળતાપૂર્વક"
+    "deEscalated": "ડી-એસ્કેલેટ સફળતાપૂર્વક",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "કેન્દ્ર સેટ કરવા માટે નકશા પર ક્લિક કરો, પછી વિસ્તાર તપાસો",
@@ -671,7 +686,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "header": {
     "selectLanguage": "Select Language"
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",

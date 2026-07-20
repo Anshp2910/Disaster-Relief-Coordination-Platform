@@ -135,7 +135,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "क्या आप वाकई इस अनुरोध का दावा रद्द करना चाहते हैं?",
@@ -168,7 +171,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "आपका स्थान पुनः प्राप्त करने में असमर्थ.",
@@ -366,7 +372,10 @@
     "resourceCreated": "संसाधन बनाया गया",
     "resourceDeleted": "संसाधन हटा दिया गया",
     "resourceUpdated": "संसाधन अपडेट किया गया",
-    "applying": "लागू किया जा रहा है..."
+    "applying": "लागू किया जा रहा है...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "आपदा क्षेत्र ताप मानचित्र",
@@ -459,7 +468,9 @@
     "status": "Status",
     "created": "घटना बनाई गई",
     "deleted": "घटना हटा दी गई",
-    "updated": "घटना अपडेट की गई"
+    "updated": "घटना अपडेट की गई",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "अनुसूचियाँ",
@@ -495,7 +506,10 @@
     "created": "अनुसूची बनाई गई",
     "deleted": "अनुसूची हटा दी गई",
     "statusUpdated": "अनुसूची स्थिति अपडेट की गई",
-    "updated": "अनुसूची अपडेट की गई"
+    "updated": "अनुसूची अपडेट की गई",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "थोक आयात और सीएसवी निर्यात",
@@ -555,7 +569,8 @@
     "searchPlaceholder": "एक अनुरोध चुनें...",
     "noMatch": "शीर्षक, कारण या उपयोगकर्ता के आधार पर खोजें...",
     "searchRequest": "Search for a request...",
-    "deEscalated": "डी-एस्कलेट सफलतापूर्वक"
+    "deEscalated": "डी-एस्कलेट सफलतापूर्वक",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "जियोफेंसिंग अलर्ट",
@@ -693,7 +708,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "weekdays": {},
   "errorBoundary": {
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",

@@ -135,7 +135,10 @@
     "activityWaiting": "Waiting for live updates...",
     "refresh": "Refresh",
     "noRequestsDesc": "No relief requests match your current filters. Try adjusting your filters or create a new request.",
-    "createRequest": "New Request"
+    "createRequest": "New Request",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "title": "பேரிடர் நிவாரண கோரிக்கையை உருவாக்கவும்",
@@ -168,7 +171,10 @@
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
     "locationRequired": "Please select a location on the map before submitting.",
-    "failed": "Failed to create request"
+    "failed": "Failed to create request",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "கோரிக்கையைத் திருத்தவும்",
@@ -366,7 +372,10 @@
     "resourceCreated": "வளம் உருவாக்கப்பட்டது",
     "resourceDeleted": "வளம் நீக்கப்பட்டது",
     "resourceUpdated": "வளம் புதுப்பிக்கப்பட்டது",
-    "applying": "பயன்படுத்தப்படுகிறது..."
+    "applying": "பயன்படுத்தப்படுகிறது...",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "title": "ஒதுக்குவதற்கு எதுவும் இல்லை",
@@ -459,7 +468,9 @@
     "status": "Status",
     "created": "சம்பவம் உருவாக்கப்பட்டது",
     "deleted": "சம்பவம் நீக்கப்பட்டது",
-    "updated": "சம்பவம் புதுப்பிக்கப்பட்டது"
+    "updated": "சம்பவம் புதுப்பிக்கப்பட்டது",
+    "filterBySeverity": "Filter by severity",
+    "filterByDisasterType": "Filter by disaster type"
   },
   "schedules": {
     "schedulesCount": "அட்டவணைகள்",
@@ -495,7 +506,10 @@
     "created": "அட்டவணை உருவாக்கப்பட்டது",
     "deleted": "அட்டவணை நீக்கப்பட்டது",
     "statusUpdated": "அட்டவணை நிலை புதுப்பிக்கப்பட்டது",
-    "updated": "அட்டவணை புதுப்பிக்கப்பட்டது"
+    "updated": "அட்டவணை புதுப்பிக்கப்பட்டது",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "title": "மொத்த இறக்குமதி & CSV ஏற்றுமதி",
@@ -555,7 +569,8 @@
     "searchPlaceholder": "கோரிக்கையைத் தேர்ந்தெடுக்கவும்...",
     "noMatch": "தலைப்பு, காரணம் அல்லது பயனர் மூலம் தேடவும்...",
     "searchRequest": "Search for a request...",
-    "deEscalated": "டி-எஸ்கலேட் வெற்றிகரமாக"
+    "deEscalated": "டி-எஸ்கலேட் வெற்றிகரமாக",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "subtitle": "ஜியோஃபென்சிங் எச்சரிக்கைகள்",
@@ -693,7 +708,8 @@
     "sending": "Sending...",
     "back": "Back",
     "noChange": "— No change —",
-    "noResults": "No matching requests"
+    "noResults": "No matching requests",
+    "clear": "Clear"
   },
   "weekdays": {},
   "errorBoundary": {
@@ -791,7 +807,8 @@
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
     "removeImage": "Remove image",
-    "previewImageAlt": "Preview image"
+    "previewImageAlt": "Preview image",
+    "releaseHint": "Release to upload"
   },
   "datePicker": {
     "selectDate": "Select date...",
