@@ -27,8 +27,8 @@ export default function FormField(props: FormFieldProps) {
   const [showPassword, setShowPassword] = useState(false)
   const hasValue = props.as === 'custom' ? false : !!(props.value ?? '').toString()
   const isFloating = focused || hasValue
-  const showError = touched && error
-  const showSuccess = touched && !error && success
+  const showError = touched && !!error
+  const showSuccess = touched && !error && !!success
   const isPassword = props.as !== 'textarea' && props.as !== 'custom' && props.type === 'password'
 
   function handleFocus(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -42,11 +42,12 @@ export default function FormField(props: FormFieldProps) {
   }
 
   const inputProps = props.as === 'custom' ? {} : props
+  const wrapState = showError ? 'ff-error' : showSuccess ? 'ff-success' : focused ? 'ff-focused' : ''
 
   return (
     <div className={`ff-group ${className}`}>
-      <div className={`ff-wrap ${showError ? 'ff-error' : ''} ${showSuccess ? 'ff-success' : ''} ${focused ? 'ff-focused' : ''} ${isPassword ? 'ff-pw' : ''}`}>
-        {leftIcon && <div className="ff-left-icon">{leftIcon}</div>}
+      <div className={`ff-wrap ${wrapState}`}>
+        {leftIcon && <div className={`ff-left-icon ${focused ? 'ff-left-icon--active' : ''}`}>{leftIcon}</div>}
 
         {props.as === 'textarea' ? (
           <textarea
@@ -71,8 +72,12 @@ export default function FormField(props: FormFieldProps) {
           />
         )}
 
-        <label className={`ff-label ${isFloating ? 'ff-label-float' : ''} ${leftIcon ? 'ff-label-with-icon' : ''}`} htmlFor={'id' in props ? props.id as string : undefined}>
-          {label}{required ? <span aria-label="required"> *</span> : ''}
+        <label
+          className={`ff-label ${isFloating ? 'ff-label-float' : ''} ${leftIcon ? 'ff-label-with-icon' : ''}`}
+          htmlFor={'id' in props ? (props.id as string) : undefined}
+        >
+          {label}
+          {required && <span className="ff-required-star" aria-hidden="true"> *</span>}
         </label>
 
         {isPassword && (
@@ -92,32 +97,34 @@ export default function FormField(props: FormFieldProps) {
         {showError && (
           <motion.div
             className="ff-msg ff-msg-error"
-            initial={{ opacity: 0, y: -4, height: 0 }}
+            initial={{ opacity: 0, y: -5, height: 0 }}
             animate={{ opacity: 1, y: 0, height: 'auto' }}
-            exit={{ opacity: 0, y: -4, height: 0 }}
-            transition={{ duration: 0.15 }}
+            exit={{ opacity: 0, y: -5, height: 0 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            role="alert"
           >
-            <AlertCircle size={12} /> {error}
+            <AlertCircle size={12} aria-hidden="true" /> {error}
           </motion.div>
         )}
         {showSuccess && !showError && (
           <motion.div
             className="ff-msg ff-msg-success"
-            initial={{ opacity: 0, y: -4, height: 0 }}
+            initial={{ opacity: 0, y: -5, height: 0 }}
             animate={{ opacity: 1, y: 0, height: 'auto' }}
-            exit={{ opacity: 0, y: -4, height: 0 }}
-            transition={{ duration: 0.15 }}
+            exit={{ opacity: 0, y: -5, height: 0 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            role="status"
           >
-            <CheckCircle size={12} /> {success}
+            <CheckCircle size={12} aria-hidden="true" /> {success}
           </motion.div>
         )}
         {!showError && !showSuccess && hint && (
           <motion.div
             className="ff-msg ff-msg-hint"
-            initial={{ opacity: 0, y: -4, height: 0 }}
+            initial={{ opacity: 0, y: -5, height: 0 }}
             animate={{ opacity: 1, y: 0, height: 'auto' }}
-            exit={{ opacity: 0, y: -4, height: 0 }}
-            transition={{ duration: 0.15 }}
+            exit={{ opacity: 0, y: -5, height: 0 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
           >
             {hint}
           </motion.div>

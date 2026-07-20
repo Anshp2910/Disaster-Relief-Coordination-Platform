@@ -34,7 +34,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { notifications, unreadCount, markAsRead, markAllRead } = useSocket()
-  const formatTime = makeFormatTime()
+  const formatTime = useFormatTime()
   const [items, setItems] = useState<NotificationItem[]>([])
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function ActivityFeed({ limit = 20, compact = false }: ActivityFe
   )
 }
 
-function makeFormatTime() {
+function useFormatTime() {
   const { t } = useTranslation()
   return function formatTime(ts: string) {
     if (!ts) return ''

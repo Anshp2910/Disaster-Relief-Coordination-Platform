@@ -143,7 +143,10 @@
     "allRequests": "All Requests",
     "noActivity": "No recent activity",
     "activityWaiting": "Waiting for live updates...",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "filterByPriority": "Filter by priority",
+    "filterByStatus": "Filter by status",
+    "requests": "requests"
   },
   "createRequest": {
     "failed": "Failed to create request",
@@ -176,7 +179,10 @@
     "peopleLabel": "People affected:",
     "locationLabel": "Location:",
     "coordinatesLabel": "Coordinates:",
-    "locationRequired": "Please select a location on the map before submitting."
+    "locationRequired": "Please select a location on the map before submitting.",
+    "validation": {
+      "titleRequired": "Title is required"
+    }
   },
   "editRequest": {
     "title": "Edit Request",
@@ -326,6 +332,7 @@
     "dropHere": "Drop image here",
     "dropOrClick": "Drop an image or click to browse",
     "hint": "PNG, JPG, WEBP up to {{maxSize}}MB",
+    "releaseHint": "Release to upload",
     "fileTooLarge": "File too large. Max {{maxSize}}MB.",
     "notAnImage": "Please select an image file.",
     "uploadImage": "Upload image",
@@ -505,7 +512,10 @@
     "selectAll": "Select All",
     "resourceCreated": "Resource created",
     "resourceDeleted": "Resource deleted",
-    "resourceUpdated": "Resource updated"
+    "resourceUpdated": "Resource updated",
+    "filterByCategory": "Filter by category",
+    "filterByStatus": "Filter by status",
+    "allocatedToRequest": "Allocated to request"
   },
   "zones": {
     "map": "Zone Heat Map",
@@ -644,7 +654,10 @@
     "created": "Schedule created",
     "deleted": "Schedule deleted",
     "statusUpdated": "Schedule status updated",
-    "updated": "Schedule updated"
+    "updated": "Schedule updated",
+    "filterByShift": "Filter by shift",
+    "filterByStatus": "Filter by status",
+    "filterByZone": "Filter by zone"
   },
   "bulkImport": {
     "dragDropHint": "Drag & drop a CSV file here or click to browse",
@@ -704,7 +717,8 @@
     "deEscalateConfirm": "De-escalate this request?",
     "searchPlaceholder": "Search by title, reason, or user...",
     "noMatch": "No escalated requests match your search",
-    "searchRequest": "Search for a request..."
+    "searchRequest": "Search for a request...",
+    "noEscalatedDesc": "No escalated requests at this time."
   },
   "geofencing": {
     "autoRefresh": "Monitoring — auto-refreshes every 30s",
@@ -833,6 +847,7 @@
     "viewDetails": "View Details",
     "exportCSV": "Export CSV",
     "goToDashboard": "Go to Dashboard",
+    "clear": "Clear",
     "close": "x",
     "submit": "Submit",
     "download": "Download",

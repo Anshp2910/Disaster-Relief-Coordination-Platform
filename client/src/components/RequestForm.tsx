@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useCallback, useReducer, useMemo } from 'react'
+import { useState, useRef, useEffect, useCallback, useReducer, useMemo, type FormEvent, type ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import L from 'leaflet'
 import { useTranslation } from 'react-i18next'
-import { MapPin, Navigation } from 'lucide-react'
-import { StepForm, type Step, RippleBtn } from '../components/ui'
+import { MapPin, Navigation, AlertCircle, RotateCcw } from 'lucide-react'
+import { StepForm, type Step } from '../components/ui'
 import { ModernSelect } from '../components/ui'
 import { useAutoSave, AutoSaveIndicator } from '../hooks/useAutoSave'
 import { initLeafletMap, cleanupLeafletMap } from '../utils/mapInit'
@@ -39,7 +40,7 @@ interface RequestFormProps {
   subtitle?: string
   showStatus?: boolean
   loading?: boolean
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 export const PIN_ICON = L.divIcon({
@@ -47,15 +48,15 @@ export const PIN_ICON = L.divIcon({
   iconSize: [30, 42],
   iconAnchor: [15, 42],
   html: `<svg width="30" height="42" viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="pinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#3b82f6"/>
-        <stop offset="100%" stop-color="#818cf8"/>
-      </linearGradient>
-    </defs>
-    <path d="M15 0C6.7 0 0 6.7 0 15c0 10.5 15 27 15 27s15-16.5 15-27C30 6.7 23.3 0 15 0z" fill="url(#pinGrad)"/>
-    <circle cx="15" cy="14" r="6" fill="#fff"/>
-  </svg>`,
+  <defs>
+    <linearGradient id="pinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+  <path d="M15 0C6.7 0 0 6.7 0 15c0 10.5 15 27 15 27s15-16.5 15-27C30 6.7 23.3 0 15 0z" fill="url(#pinGrad)"/>
+  <circle cx="15" cy="14" r="6" fill="#fff"/>
+</svg>`,
 })
 
 export const CATEGORIES = CATEGORY_OPTIONS
@@ -176,7 +177,10 @@ export default function RequestForm({
   useEffect(() => {
     const raw = safeGetItem(draftKey)
     if (raw && !initialData) {
-      try { const draft = JSON.parse(raw); if (draft && draft.title) setShowRestore(true) } catch { /* ignore */ }
+      try {
+        const draft = JSON.parse(raw)
+        if (draft && draft.title) setShowRestore(true)
+      } catch { /* ignore */ }
     }
   }, [draftKey, initialData])
 
@@ -220,7 +224,9 @@ export default function RequestForm({
   useEffect(() => {
     if (loading || currentStep !== 1 || mapInstance.current || !mapRef.current) return
 
-    const map = initLeafletMap(mapRef.current, { onClick: (e: L.LeafletMouseEvent) => placeMarker(e.latlng.lat, e.latlng.lng) })
+    const map = initLeafletMap(mapRef.current, {
+      onClick: (e: L.LeafletMouseEvent) => placeMarker(e.latlng.lat, e.latlng.lng),
+    })
     mapInstance.current = map
 
     const onResize = () => { if (mapInstance.current) mapInstance.current.invalidateSize() }
@@ -248,9 +254,9 @@ export default function RequestForm({
       mapInstance.current = null
       markerRef.current = null
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, currentStep, placeMarker])
-  // Map effect ^ intentionally stable — adding deps like initialData would cause map re-init
+  // Map effect ^ intentionally stable
 
   function useMyLocation() {
     if (!navigator.geolocation) {
@@ -271,9 +277,21 @@ export default function RequestForm({
         })
           .then((r) => r.json())
           .then((data) => {
-            dispatch({ type: 'SET_LOCATION', lat: String(latitude), lng: String(longitude), locationName: data.display_name || `${latitude.toFixed(5)}, ${longitude.toFixed(5)}` })
+            dispatch({
+              type: 'SET_LOCATION',
+              lat: String(latitude),
+              lng: String(longitude),
+              locationName: data.display_name || `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`,
+            })
           })
-          .catch(() => { dispatch({ type: 'SET_LOCATION', lat: String(latitude), lng: String(longitude), locationName: `${latitude.toFixed(5)}, ${longitude.toFixed(5)}` }) })
+          .catch(() => {
+            dispatch({
+              type: 'SET_LOCATION',
+              lat: String(latitude),
+              lng: String(longitude),
+              locationName: `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`,
+            })
+          })
           .finally(() => setLocating(false))
       },
       () => {
@@ -283,7 +301,7 @@ export default function RequestForm({
     )
   }
 
-  async function onSearch(e: React.FormEvent) {
+  async function onSearch(e: FormEvent) {
     e.preventDefault()
     if (!searchText.trim()) return
     setSearching(true)
@@ -330,9 +348,7 @@ export default function RequestForm({
         priority: form.priority,
         peopleCount: form.peopleCount || 1,
       }
-      if (showStatus) {
-        data.status = form.status
-      }
+      if (showStatus) data.status = form.status
       await onSubmit(data)
       safeRemoveItem(draftKey)
     } catch (err) {
@@ -343,6 +359,7 @@ export default function RequestForm({
   }
 
   const canNextStep = currentStep === 0 ? !!form.title && !!form.description : true
+
   if (loading) {
     return (
       <div className="container max-w-sm">
@@ -354,226 +371,279 @@ export default function RequestForm({
   }
 
   return (
-    <div className="container max-w-sm">
-      <div className="card border-gov rounded-lg px-lg py-md">
-        <div className="flex-between items-center">
-          <div>
-            <h1 className="page-title text-2xl">{title}</h1>
-            {subtitle && <div className="small muted mt-xs">{subtitle}</div>}
-          </div>
-          <AutoSaveIndicator status={autoSaveStatus} />
-        </div>
+    <div className="rf-container">
+      <div className="rf-header">
+        <h1 className="page-title">{title}</h1>
+        {subtitle && <div className="small muted mt-xs">{subtitle}</div>}
+        <AutoSaveIndicator status={autoSaveStatus} />
+      </div>
 
-        {showRestore && (
-          <div className="draft-banner">
-            <span className="text-sm">{t('createRequest.draftFound') || 'You have an unsaved draft'}</span>
-            <div className="flex gap-xs">
-              <RippleBtn type="button" onClick={restoreDraft} className="btn-secondary btn-sm">{t('createRequest.restore') || 'Restore'}</RippleBtn>
-              <button type="button" onClick={dismissRestore} className="btn-ghost btn-sm">{t('createRequest.dismiss') || 'Dismiss'}</button>
+      {showRestore && (
+        <motion.div
+          className="draft-banner"
+          initial={{ opacity: 0, y: -8, height: 0 }}
+          animate={{ opacity: 1, y: 0, height: 'auto' }}
+          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <span className="draft-banner-icon"><RotateCcw size={14} aria-hidden="true" /></span>
+          <span className="draft-banner-text">{t('createRequest.draftFound') || 'You have an unsaved draft'}</span>
+          <div className="draft-banner-actions">
+            <button type="button" onClick={restoreDraft} className="btn-primary btn-sm">{t('createRequest.restore') || 'Restore'}</button>
+            <button type="button" onClick={dismissRestore} className="btn-ghost btn-sm">{t('createRequest.dismiss') || 'Dismiss'}</button>
+          </div>
+        </motion.div>
+      )}
+
+      {error && (
+        <motion.div
+          className="rf-error"
+          role="alert"
+          aria-live="polite"
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <AlertCircle size={16} aria-hidden="true" /> {error}
+        </motion.div>
+      )}
+      {children && <div className="rf-children" role="status">{children}</div>}
+
+      <StepForm
+        steps={STEPS}
+        currentStep={currentStep}
+        onStepChange={setCurrentStep}
+        onNext={() => setCurrentStep(s => Math.min(s + 1, 2))}
+        onPrev={() => setCurrentStep(s => Math.max(s - 1, 0))}
+        onComplete={handleSubmit}
+        canNext={canNextStep}
+        loading={formLoading}
+        completeLabel={formLoading ? submitLabel : submitButtonLabel}
+      >
+        {currentStep === 0 && (
+          <div className="rf-step-content">
+            <div className="ff-group">
+              <div className={`ff-wrap ${form.title ? 'ff-focused' : ''}`}>
+                <input
+                  id="rf-title"
+                  type="text"
+                  value={form.title}
+                  onChange={(e) => setFormField('title', e.target.value)}
+                  required
+                  maxLength={200}
+                  aria-describedby={error ? 'rf-error' : undefined}
+                  aria-invalid={!form.title && currentStep > 0 ? 'true' : undefined}
+                  className={`ff-input ${form.title ? 'ff-input-filled' : ''}`}
+                  placeholder={t('createRequest.titleLabel')}
+                />
+                <label htmlFor="rf-title" className={`ff-label ${form.title ? 'ff-label-float' : ''}`}>
+                  {t('createRequest.titleLabel')}
+                </label>
+              </div>
+            </div>
+
+            <div className="ff-group">
+              <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
+                <textarea
+                  id="rf-desc"
+                  value={form.description}
+                  onChange={(e) => setFormField('description', e.target.value)}
+                  required
+                  rows={4}
+                  maxLength={5000}
+                  className="ff-input ff-textarea"
+                  placeholder={t('createRequest.descriptionLabel')}
+                  aria-invalid={!form.description && currentStep > 0 ? 'true' : undefined}
+                />
+                <label htmlFor="rf-desc" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
+                  {t('createRequest.descriptionLabel')}
+                </label>
+              </div>
+            </div>
+
+            <div className="form-row-2">
+              <div className="ff-group flex-1">
+                <ModernSelect
+                  label={t('createRequest.categoryLabel')}
+                  options={CATEGORIES.map((c) => ({ label: t(`categories.${c}`), value: c }))}
+                  value={form.category}
+                  onChange={(v) => setFormField('category', v)}
+                  required
+                />
+              </div>
+              <div className="ff-group flex-1">
+                <ModernSelect
+                  label={t('createRequest.priorityLabel')}
+                  options={PRIORITIES.map((p) => ({ label: t(`priorities.${p}`), value: p }))}
+                  value={form.priority}
+                  onChange={(v) => setFormField('priority', v)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="ff-group">
+              <div className={`ff-wrap ${form.peopleCount > 0 ? 'ff-focused' : ''}`}>
+                <input
+                  id="rf-people"
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  max="10000"
+                  value={form.peopleCount}
+                  onChange={(e) => setFormField('peopleCount', Number(e.target.value))}
+                  className={`ff-input ${form.peopleCount > 0 ? 'ff-input-filled' : ''}`}
+                  placeholder={t('createRequest.peopleCountLabel')}
+                />
+                <label htmlFor="rf-people" className={`ff-label ${form.peopleCount > 0 ? 'ff-label-float' : ''}`}>
+                  {t('createRequest.peopleCountLabel')}
+                </label>
+              </div>
             </div>
           </div>
         )}
 
-{error && <div className="error-text animate-shake mt-sm mb-sm" role="alert" aria-live="polite" id="rf-error">{error}</div>}
-{children && <div className="mt-sm mb-sm" role="status">{children}</div>}
-
-<StepForm
-          steps={STEPS}
-          currentStep={currentStep}
-          onStepChange={setCurrentStep}
-          onNext={() => setCurrentStep((s) => Math.min(s + 1, 2))}
-          onPrev={() => setCurrentStep((s) => Math.max(s - 1, 0))}
-          onComplete={handleSubmit}
-          canNext={currentStep === 0 ? canNextStep : true}
-          loading={formLoading}
-          completeLabel={formLoading ? submitLabel : submitButtonLabel}
-        >
-  {currentStep === 0 && (
-    <div className="flex flex-col gap-sm">
-      <div className="ff-group">
-        <div className={`ff-wrap ${form.title ? 'ff-focused' : ''}`}>
-          <input
-            id="rf-title"
-            type="text"
-            value={form.title}
-            onChange={(e) => setFormField('title', e.target.value)}
-            required
-            maxLength={200}
-            aria-describedby={error ? 'rf-error' : undefined}
-            className={`ff-input ${form.title ? 'ff-input-filled' : ''}`}
-            placeholder={t('createRequest.titleLabel')}
-          />
-          <label htmlFor="rf-title" className={`ff-label ${form.title ? 'ff-label-float' : ''}`}>
-            {t('createRequest.titleLabel')}
-          </label>
-        </div>
-      </div>
-
-      <div className="ff-group">
-        <div className={`ff-wrap ${form.description ? 'ff-focused' : ''}`}>
-          <textarea
-            id="rf-desc"
-            value={form.description}
-            onChange={(e) => setFormField('description', e.target.value)}
-            required
-            rows={4}
-            maxLength={5000}
-            className="ff-input ff-textarea"
-            placeholder={t('createRequest.descriptionLabel')}
-          />
-          <label htmlFor="rf-desc" className={`ff-label ff-label-with-icon ${form.description ? 'ff-label-float' : ''}`}>
-            {t('createRequest.descriptionLabel')}
-          </label>
-        </div>
-      </div>
-
-      <div className="flex gap-sm">
-        <div className="ff-group flex-1">
-          <ModernSelect
-            label={t('createRequest.categoryLabel')}
-            options={CATEGORIES.map((c) => ({ label: t(`categories.${c}`), value: c }))}
-            value={form.category}
-            onChange={(v) => setFormField('category', v)}
-          />
-        </div>
-        <div className="ff-group flex-1">
-          <ModernSelect
-            label={t('createRequest.priorityLabel')}
-            options={PRIORITIES.map((p) => ({ label: t(`priorities.${p}`), value: p }))}
-            value={form.priority}
-            onChange={(v) => setFormField('priority', v)}
-          />
-        </div>
-      </div>
-
-      <div className="ff-group">
-        <div className={`ff-wrap ${form.peopleCount > 0 ? 'ff-focused' : ''}`}>
-          <input
-            id="rf-people"
-            type="number"
-            inputMode="numeric"
-            min="1"
-            max="10000"
-            value={form.peopleCount}
-            onChange={(e) => setFormField('peopleCount', Number(e.target.value))}
-            className={`ff-input ${form.peopleCount > 0 ? 'ff-input-filled' : ''}`}
-            placeholder={t('createRequest.peopleCountLabel')}
-          />
-          <label htmlFor="rf-people" className={`ff-label ${form.peopleCount > 0 ? 'ff-label-float' : ''}`}>
-            {t('createRequest.peopleCountLabel')}
-          </label>
-        </div>
-      </div>
-    </div>
-  )}
-
-          {currentStep === 1 && (
-            <div>
-              <div className="flex-between items-baseline gap-12 mb-sm">
-                <div>
-                  <div className="ff-label-text">{t('createRequest.selectLocation')}</div>
-                  <div className="text-sm text-muted-extra">{t('createRequest.locationHint')}</div>
-                </div>
-                <div className="text-sm text-muted-extra">
-                  {form.lat && form.lng ? (
-                    <>
-                      <div><b>{t('createRequest.lat')}</b> {Number(form.lat).toFixed(5)}</div>
-                      <div><b>{t('createRequest.lng')}</b> {Number(form.lng).toFixed(5)}</div>
-                    </>
-                  ) : (
-                    <span>{t('createRequest.notSelected')}</span>
-                  )}
-                </div>
+        {currentStep === 1 && (
+          <div className="rf-step-content">
+            <div className="location-step-header">
+              <div>
+                <div className="ff-label-text">{t('createRequest.selectLocation')}</div>
+                <div className="text-sm text-muted-extra">{t('createRequest.locationHint')}</div>
               </div>
+              <div className="text-sm text-muted-extra">
+                {form.lat && form.lng ? (
+                  <>
+                    <div><b>{t('createRequest.lat')}</b> {Number(form.lat).toFixed(5)}</div>
+                    <div><b>{t('createRequest.lng')}</b> {Number(form.lng).toFixed(5)}</div>
+                  </>
+                ) : (
+                  <span>{t('createRequest.notSelected')}</span>
+                )}
+              </div>
+            </div>
 
-              <div className="flex gap-sm mb-sm">
+            <div className="flex gap-sm mb-sm">
+              <button
+                type="button"
+                onClick={useMyLocation}
+                disabled={locating}
+                className="sf-btn sf-btn-prev"
+                aria-label={locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
+              >
+                <Navigation size={14} aria-hidden="true" />
+                {locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
+              </button>
+            </div>
+
+            <div className="flex gap-sm mb-sm">
+              <div className="relative flex-1">
+                <input
+                  id="rf-search"
+                  type="text"
+                  value={searchText}
+                  onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e as FormEvent) } }}
+                  placeholder={t('createRequest.searchPlaceholder')}
+                  aria-label={t('createRequest.searchPlaceholder')}
+                  className="location-search-input"
+                />
                 <button
                   type="button"
-                  onClick={useMyLocation}
-                  disabled={locating}
-                  className="sf-btn sf-btn-prev"
-                  aria-label={locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
+                  onClick={onSearch}
+                  disabled={searching}
+                  aria-label={searching ? t('createRequest.searching') : t('createRequest.search')}
+                  className="btn-ghost btn-sm location-search-btn"
                 >
-                  <Navigation size={14} aria-hidden="true" />
-                  {locating ? t('createRequest.locating') : t('createRequest.useMyLocation')}
+                  {searching ? t('createRequest.searching') : t('createRequest.search')}
                 </button>
 
-                <div className="relative flex-1">
-                  <input
-                    id="rf-search"
-                    type="text"
-                    value={searchText}
-                    onChange={(e) => { setSearchText(e.target.value); setSuggestions([]) }}
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onSearch(e) } }}
-                    placeholder={t('createRequest.searchPlaceholder')}
-                    aria-label={t('createRequest.searchPlaceholder')}
-                    className="location-search-input"
-                  />
-                  <button
-                    type="button"
-                    onClick={onSearch}
-                    disabled={searching}
-                    aria-label={searching ? t('createRequest.searching') : t('createRequest.search')}
-                    className="btn-ghost btn-sm location-search-btn"
+                {suggestions.length > 0 && (
+                  <motion.div
+                    className="location-suggestions"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.15 }}
+                    style={{ maxHeight: 240, overflowY: 'auto' }}
                   >
-                    {searching ? t('createRequest.searching') : t('createRequest.search')}
-                  </button>
-
-                  {suggestions.length > 0 && (
-                    <div className="location-suggestions" style={{ maxHeight: 240, overflowY: 'auto' }}>
-                      {suggestions.map((s, i) => (
-                        <div
-                          key={String(s.place_id ?? '') || i}
-                          onClick={() => pickSuggestion(s)}
-                          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickSuggestion(s) } }}
-                          role="button"
-                          tabIndex={0}
-                          className="suggestion-item"
-                          style={{
-                            borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-light)' : 'none',
-                          }}
-                        >
-                          {s.display_name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                    {suggestions.map((s, i) => (
+                      <motion.div
+                        key={String(s.place_id ?? '') || i}
+                        onClick={() => pickSuggestion(s)}
+                        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickSuggestion(s) } }}
+                        role="button"
+                        tabIndex={0}
+                        className="suggestion-item"
+                        style={{ borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-light)' : 'none' }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: i * 0.03 }}
+                      >
+                        {s.display_name}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
               </div>
-
-              <div ref={mapRef} className="mapBox" role="application" aria-label={t('map.selectLocation')} />
             </div>
-          )}
 
-          {currentStep === 2 && (
-            <div>
-              <div className="flex-col gap-md py-sm">
-                <div className="ff-label-text">{t('createRequest.review') || 'Review your request'}</div>
-                <div className="review-card">
-                  <div className="text-sm review-grid">
-                    <div><span className="text-muted">{t('createRequest.titleLabel') || 'Title'}:</span> <strong>{form.title}</strong></div>
-                    <div><span className="text-muted">{t('createRequest.descriptionLabel') || 'Description'}:</span> <strong>{form.description}</strong></div>
-                    <div className="review-field">
-                      <div><span className="text-muted">{t('createRequest.categoryLabel') || 'Category'}:</span> <strong>{t(`categories.${form.category}`)}</strong></div>
-                      <div><span className="text-muted">{t('createRequest.priorityLabel') || 'Priority'}:</span> <strong>{t(`priorities.${form.priority}`)}</strong></div>
-                    </div>
-                    <div><span className="text-muted">{t('createRequest.peopleLabel') || 'People affected'}:</span> <strong>{form.peopleCount}</strong></div>
-                    <div><span className="text-muted">{t('createRequest.locationLabel') || 'Location'}:</span> <strong>{form.locationName || `${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`}</strong></div>
-                    {form.lat && form.lng && (
-                      <div><span className="text-muted">{t('createRequest.coordinatesLabel') || 'Coordinates'}:</span> <strong>{Number(form.lat).toFixed(5)}, {Number(form.lng).toFixed(5)}</strong></div>
-                    )}
+            <div ref={mapRef} className="mapBox" role="application" aria-label={t('map.selectLocation')} />
+          </div>
+        )}
+
+        {currentStep === 2 && (
+          <div className="rf-step-content">
+            <div className="ff-label-text">{t('createRequest.review') || 'Review your request'}</div>
+            <div className="review-card">
+              <div className="review-grid">
+                <div className="review-row">
+                  <span className="review-label">{t('createRequest.titleLabel') || 'Title'}</span>
+                  <strong className="review-value">{form.title}</strong>
+                </div>
+                <div className="review-row review-row--full">
+                  <span className="review-label">{t('createRequest.descriptionLabel') || 'Description'}</span>
+                  <p className="review-value review-value--desc">{form.description}</p>
+                </div>
+                <div className="review-row review-row--inline">
+                  <div>
+                    <span className="review-label">{t('createRequest.categoryLabel') || 'Category'}</span>
+                    <strong className="review-value">{t(`categories.${form.category}`)}</strong>
+                  </div>
+                  <div>
+                    <span className="review-label">{t('createRequest.priorityLabel') || 'Priority'}</span>
+                    <strong className="review-value">{t(`priorities.${form.priority}`)}</strong>
                   </div>
                 </div>
-                {!form.lat && (
-                  <div className="text-sm text-danger flex items-center gap-xs">
-                    <MapPin size={14} aria-hidden="true" /> {t('createRequest.locationRequired') || 'Please select a location on the map before submitting.'}
+                <div className="review-row">
+                  <span className="review-label">{t('createRequest.peopleLabel') || 'People affected'}</span>
+                  <strong className="review-value">
+                    <MapPin size={14} className="review-icon" aria-hidden="true" /> {form.peopleCount}
+                  </strong>
+                </div>
+                <div className="review-row">
+                  <span className="review-label">{t('createRequest.locationLabel') || 'Location'}</span>
+                  <strong className="review-value review-value--loc">{form.locationName || `${Number(form.lat).toFixed(5)}, ${Number(form.lng).toFixed(5)}`}</strong>
+                </div>
+                {form.lat && form.lng && (
+                  <div className="review-row review-row--coords">
+                    <span className="review-label">{t('createRequest.coordinatesLabel') || 'Coordinates'}</span>
+                    <code className="review-coords">{Number(form.lat).toFixed(5)}, {Number(form.lng).toFixed(5)}</code>
                   </div>
                 )}
               </div>
             </div>
-          )}
-        </StepForm>
-      </div>
+
+            {!form.lat && (
+              <motion.div
+                className="rf-location-warning"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                role="alert"
+              >
+                <MapPin size={14} aria-hidden="true" /> {t('createRequest.locationRequired') || 'Please select a location on the map before submitting.'}
+              </motion.div>
+            )}
+          </div>
+        )}
+      </StepForm>
     </div>
   )
 }
