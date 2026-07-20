@@ -2398,6 +2398,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   color: var(--danger);
   font-weight: var(--font-weight-bold);
   margin-left: 1px;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -2495,6 +2496,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   gap: var(--space-xs);
   padding: 20px var(--space-sm) var(--space-2xs);
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   min-height: 52px;
 }
@@ -2750,6 +2752,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   cursor: pointer;
   transition: background var(--duration-fast) var(--ease-out);
   position: relative;
+  -webkit-user-select: none;
   user-select: none;
 }
 .sf-step:not(.sf-step-done) { cursor: default; }
