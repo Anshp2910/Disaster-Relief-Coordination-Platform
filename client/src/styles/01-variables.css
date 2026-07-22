@@ -159,6 +159,21 @@
   --color-medium: var(--amber-600);
   --color-low: var(--success);
 
+  /* ── Zone Severity Colors ── */
+  --severity-critical: var(--red-400, #f87171);
+  --severity-critical-stroke: var(--red-600, #dc2626);
+  --severity-high: var(--amber-400, #fbbf24);
+  --severity-high-stroke: var(--amber-600, #d97706);
+  --severity-medium: var(--amber-300, #fcd34d);
+  --severity-medium-stroke: var(--amber-500, #f59e0b);
+  --severity-low: var(--green-400, #4ade80);
+  --severity-low-stroke: var(--green-600, #16a34a);
+
+  /* ── Zone Coverage Colors ── */
+  --coverage-covered: #22c55e;
+  --coverage-partial: #f59e0b;
+  --coverage-gap: #ef4444;
+
   /* ── Category Colors ── */
   --cat-medical: var(--red-500);
   --cat-food: var(--amber-500);
@@ -232,4 +247,19 @@
   --color-medium: var(--amber-400);
   --color-low: #4ade80;
   --modal-backdrop: rgba(0, 0, 0, 0.7);
+
+  /* Dark zone severity colors */
+  --severity-critical: #f87171;
+  --severity-critical-stroke: #ef4444;
+  --severity-high: #fbbf24;
+  --severity-high-stroke: #f59e0b;
+  --severity-medium: var(--amber-300, #fcd34d);
+  --severity-medium-stroke: #d97706;
+  --severity-low: #4ade80;
+  --severity-low-stroke: #22c55e;
+
+  /* Dark zone coverage colors */
+  --coverage-covered: #4ade80;
+  --coverage-partial: #fbbf24;
+  --coverage-gap: #f87171;
 }
