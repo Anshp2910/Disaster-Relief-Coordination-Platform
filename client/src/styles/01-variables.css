@@ -56,9 +56,9 @@
   --border-light: rgba(120, 138, 190, 0.12);
   --border-hover: rgba(87, 113, 243, 0.38);
 
-  --accent: #4a6cf5;
-  --accent-hover: #3a5af0;
-  --accent-soft: rgba(74, 108, 245, 0.1);
+  --accent: #3f5de0;
+  --accent-hover: #3452e0;
+  --accent-soft: rgba(63, 93, 224, 0.1);
 
   --danger: #e5484d;
   --danger-hover: #d63d42;
