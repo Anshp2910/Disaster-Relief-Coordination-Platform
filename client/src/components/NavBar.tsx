@@ -5,6 +5,30 @@ import { useAuth } from '../context/AuthContext'
 import { FeatureNav } from './FeatureNav'
 import { NavControls } from './NavControls'
 
+function useIstClock() {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+  return now
+}
+
+function LiveTelemetry() {
+  const { t } = useTranslation()
+  const now = useIstClock()
+  const time = now.toLocaleTimeString('en-IN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  return (
+    <div className="gov-navbar-live" role="status" aria-label={`${t('kpi.live')} — ${time} IST`}>
+      <span className="gov-navbar-live-dot" aria-hidden="true" />
+      <span className="gov-navbar-clock">
+        <span className="gov-navbar-clock-time">{time}</span>
+        <span className="gov-navbar-clock-tz"> IST</span>
+      </span>
+    </div>
+  )
+}
+
 export function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
@@ -39,6 +63,8 @@ export function NavBar() {
             <div className="gov-navbar-title">{t('appTitle')}</div>
           </div>
         </button>
+
+        {showNav && <LiveTelemetry />}
 
         <div className="gov-navbar-spacer" />
 
