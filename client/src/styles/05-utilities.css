@@ -135,6 +135,22 @@
 .shadow-md { box-shadow: var(--shadow-md); }
 .shadow-lg { box-shadow: var(--shadow-lg); }
 .shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-accent { box-shadow: var(--shadow-accent); }
+
+/* ── Glass ── */
+.backdrop-blur {
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+}
+.glass-bg { background: var(--glass-bg); }
+.glass-bg-strong { background: var(--glass-bg-strong); }
+.glass-border { border: 1px solid var(--glass-border); }
+.glass-border-strong { border: 1px solid var(--glass-border-strong); }
+
+/* ── Glow ── */
+.glow-accent { box-shadow: var(--glow-accent); }
+.glow-violet { box-shadow: var(--glow-violet); }
+.glow-cyan { box-shadow: var(--glow-cyan); }
 
 /* ── Misc ── */
 .grid-full { grid-column: 1 / -1; }

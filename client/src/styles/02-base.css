@@ -3,18 +3,43 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  background: var(--bg);
 }
 
 body {
   margin: 0;
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
   font-family: var(--font);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--text);
-  background: var(--bg);
+  background: var(--gradient-mesh);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Aurora glow layer — fixed pastel blobs behind all content */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 38% at 18% 12%, var(--aurora-1) 0%, transparent 70%),
+    radial-gradient(38% 34% at 82% 8%, var(--aurora-2) 0%, transparent 70%),
+    radial-gradient(46% 42% at 78% 88%, var(--aurora-3) 0%, transparent 70%),
+    radial-gradient(40% 36% at 12% 78%, var(--aurora-2) 0%, transparent 70%);
+  background-size: 160% 160%;
+  background-repeat: no-repeat;
+  filter: blur(60px);
+  opacity: 0.5;
+  animation: aurora-drift 26s var(--ease-out) infinite alternate;
+  will-change: transform;
 }
 
 #root {
@@ -54,7 +79,7 @@ img { max-width: 100%; height: auto; }
   color: var(--text-on-accent);
 }
 
-/* ── Scrollbar (WebKit) — subtle system chrome ── */
+/* ── Scrollbar (WebKit) — frosted glass chrome ── */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -84,9 +109,13 @@ img { max-width: 100%; height: auto; }
   left: var(--space-sm);
   z-index: var(--z-skip-link);
   padding: var(--space-2xs) var(--space-sm);
-  background: var(--accent);
-  color: var(--text-on-accent);
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(1.4);
+  color: var(--accent);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-2xs);
+  box-shadow: var(--shadow-sm);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
 }
@@ -106,6 +135,29 @@ img { max-width: 100%; height: auto; }
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   letter-spacing: var(--tracking-normal);
+}
+
+/* ── Glass surfaces (base layers for the futurist look) ── */
+.glass,
+.glass-strong,
+.glass-muted {
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--glass-border-strong);
+}
+.glass { background: var(--glass-bg); }
+.glass-strong { background: var(--glass-bg-strong); }
+.glass-muted { background: var(--glass-bg-muted); }
+
+.glass-card {
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--glass-border-strong);
+  padding: var(--space-md);
 }
 
 @media (prefers-reduced-motion: reduce) {
