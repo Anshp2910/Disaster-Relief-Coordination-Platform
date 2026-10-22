@@ -96,28 +96,22 @@ export async function sendEmail({ to, subject, html, text, from }) {
   const smtpTransport = getNodemailerTransport()
   if (smtpTransport) {
     try {
-      const defaultFrom = process.env.SMTP_FROM || process.env.RESEND_EMAIL || process.env.RESEND_FROM || 'onboarding@resend.dev'
+      const defaultFrom = process.env.SMTP_FROM || process.env.RESEND_EMAIL || process.env.RESEND_FROM || 'noreply@resend.dev'
       const sender = from || defaultFrom
-      const trySend = (fromAddr) => smtpTransport.sendMail({
-        from: fromAddr,
+
+      const info = await smtpTransport.sendMail({
+        from: sender,
         to,
         subject,
         html,
         text: text || html.replace(/<[^>]+>/g, ''),
       })
 
-      let info = await trySend(sender)
-      const failedWithCustom = info.rejected || info.response?.includes('550')
-
-      if (failedWithCustom && sender !== 'onboarding@resend.dev') {
-        logger.warn('smtp-send-rejected-unverified-domain-retrying-sandbox', {
-          to, subject, from: sender, response: info.response,
-        })
-        info = await trySend('onboarding@resend.dev')
-      }
-
       if (info.rejected && info.rejected.length > 0) {
-        logger.error('smtp-send-rejected', { to, subject, from: sender, rejected: info.rejected })
+        logger.error('smtp-send-rejected', {
+          to, subject, from: sender, rejected: info.rejected,
+          hint: 'Verify your sending domain at https://resend.com/domains; sandbox sends only reach verified recipients.',
+        })
         return false
       }
 

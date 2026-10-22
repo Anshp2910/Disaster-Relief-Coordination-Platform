@@ -1,0 +1,150 @@
+@startuml Disaster Relief Coordination Platform - DFD Level 1
+!theme plain
+skinparam backgroundColor #ffffff
+skinparam handwritten false
+skinparam defaultTextAlignment center
+skinparam rectangle {
+  RoundCorner 6
+}
+skinparam database {
+  RoundCorner 6
+}
+
+title Disaster Relief Coordination Platform
+== DFD Level 1 (Process Decomposition) ==
+
+' ===================================================
+'  STYLE LEGEND
+' ===================================================
+' Actors        : #fff2cc  / border #d6b656
+' DB  (D#)      : #d9ead3  / border #558b2f
+' External (E#) : #f4cccc  / border #ea9999
+' Auth   (P1)   : #fff2cc  / border #f6b26b
+' Request(P2)   : #d9ead3  / border #76a893
+' Resource(P3)  : #d0e0e3  / border #45818e
+' Zone/Inc(P4)  : #f4cccc  / border #c27c7c
+' SOS    (P5)   : #d9ead3  / border #76a893
+' Chat   (P6)   : #f4cccc  / border #c27c7c
+' Sched  (P7)   : #fff2cc  / border #f6b26b
+' Admin  (P8)   : #d0e0e3  / border #45818e
+
+' ===================================================
+'  EXTERNAL ENTITIES
+' ===================================================
+actor "Public User\n(Unauthenticated)" as E1          #fff2cc
+actor "Volunteer / NGO\n(Self-Registered)" as E2     #fff2cc
+actor "Admin\n(Role: Admin)" as E3                   #fff2cc
+rectangle "<<External>>\nEmail Service\n(Resend / SMTP)" as E4  #f4cccc
+rectangle "<<External>>\nOpen-Meteo\nWeather API"  as E5       #f4cccc
+rectangle "<<External>>\nGIS Services\n(Nominatim / OSM)" as E6 #f4cccc
+
+' ===================================================
+'  DATA STORES
+' ===================================================
+database "<<DS>>\nD1: Users"                   as D1 #d9ead3
+database "<<DS>>\nD2: Requests\n+ Files\n+ AuditLog" as D2 #d9ead3
+database "<<DS>>\nD3: Resources"               as D3 #d9ead3
+database "<<DS>>\nD4: Zones"                   as D4 #d9ead3
+database "<<DS>>\nD5: Incidents"               as D5 #d9ead3
+database "<<DS>>\nD6: SOS Alerts"              as D6 #d9ead3
+database "<<DS>>\nD7: Chat Messages\n(90-day TTL)" as D7 #d9ead3
+database "<<DS>>\nD8: Schedules"               as D8 #d9ead3
+database "<<DS>>\nD9: Feedback"                as D9 #d9ead3
+
+' ===================================================
+'  PROCESSES
+' ===================================================
+rectangle "P1\nAuth & Authorization\n\nRegister / Login\nJWT issuance\nRole management\nPassword reset" as P1 #fff2cc
+rectangle "P2\nRequest Manager\n\nCreate / CRUD requests\nClaim / Unclaim\nGeoJSON queries\nAuditLog\nFile upload"          as P2 #d9ead3
+rectangle "P3\nResource Manager\n\nCreate / CRUD resources\nAllocate / Deallocate\nSmart match (100 km)\nGeo queries"         as P3 #d0e0e3
+rectangle "P4\nZone & Incident Manager\n\nCRUD Zones\nGeo enrichment\nCoverage status\nCRUD Incidents\nAuditLog"           as P4 #f4cccc
+rectangle "P5\nSOS & Alert Service\n\nBroadcast SOS\nAcknowledge / Resolve\nDuplicate suppression"                     as P5 #d9ead3
+rectangle "P6\nChat & Notification\nService\n\nChat messaging\nSocket.IO rooms\nWS notifications\nTiered alert display"    as P6 #f4cccc
+rectangle "P7\nVolunteer Scheduler\n\nCreate / Update schedules\nAdmin assignment\nSkill matching"                          as P7 #fff2cc
+rectangle "P8\nAnalytics & Admin\nConsole\n\nAnalytics dashboard\nBulk Import / Export\nUser management\nSeed demo data\nWeather / GIS"   as P8 #d0e0e3
+
+' ===================================================
+'  P1 — Auth & Authorization
+' ===================================================
+E2 -[#1f77b4]down-> P1    : Register / Login\n(Email, Google, GitHub)
+E3 -[#1f77b4]down-> P1    : Admin Login
+E1 -[#1f77b4]down-> P1    : Public routes (no auth)
+P1 <==[#666666]==> D1    : Create / Read / Update users\nIssue JWT tokens\nRole validation
+P1 -[#2ca02c]down-> E4   : Send password reset email
+
+' ===================================================
+'  P2 — Request Manager
+' ===================================================
+E2 -[#1f77b4]down-> P2    : Create / View / Claim requests\nAdd comments / Files
+E3 -[#1f77b4]down-> P2    : CRUD all requests\nEscalate requests
+P1 -[dotted]down-> P2    : Authenticated user ID
+P2 <==[#666666]==> D2    : CRUD requests\nGeoJSON queries\nAuditLog
+P2 -[#ff7f0e]--> P6     : WS: request:updated
+P2 -[#ff7f0e]--> P6     : WS: request:escalated
+
+' ===================================================
+'  P3 — Resource Manager
+' ===================================================
+E2 -[#1f77b4]down-> P3    : Create / Allocate\nDeallocate / Smart Match
+E3 -[#1f77b4]down-> P3    : CRUD all resources
+P1 -[dotted]down-> P3    : Authenticated user ID
+P3 <==[#666666]==> D3    : CRUD resources\nGeo queries\nQuantity & status logic
+P3 <==[#666666]==> D2    : Read request location\n(for smart matching)
+P3 -[#ff7f0e]--> P6     : WS: resource:created
+P3 -[#ff7f0e]--> P6     : WS: resource:allocated
+
+' ===================================================
+'  P4 — Zone & Incident Manager
+' ===================================================
+E3 -[#1f77b4]down-> P4    : Create / Update Zones\nCreate / Update Incidents
+P4 <==[#666666]==> D4    : CRUD zones\nGeoWithin enrichment\nCoverage status
+P4 <==[#666666]==> D5    : CRUD incidents\nAuditLog\nZone references
+P4 <==[#666666]==> D2    : Geo query: requests\nin zone radius
+P4 <==[#666666]==> D3    : Geo query: resources\nin zone radius
+
+' ===================================================
+'  P5 — SOS & Alert Service
+' ===================================================
+E2 -[#1f77b4]down-> P5    : Broadcast SOS\n(location + message)
+E3 -[#1f77b4]down-> P5    : Acknowledge SOS\nResolve SOS
+P5 <==[#666666]==> D6    : CRUD SOS alerts\nDuplicate suppression
+P5 -[#ff7f0e]--> P6     : WS: sos:alert
+
+' ===================================================
+'  P6 — Chat & Notification Service
+' ===================================================
+E2 -[#1f77b4]down-> P6    : Send / Read Chat messages
+P1 -[dotted]down-> P6    : User identity
+P6 <==[#666666]==> D7    : CRUD messages\nSocket.IO rooms\nper requestId
+P6 -[#ff7f0e]right-> E2   : Real-time notification
+P6 -[#ff7f0e]right-> E3   : Real-time alert
+
+' ===================================================
+'  P7 — Volunteer Scheduler
+' ===================================================
+E2 -[#1f77b4]down-> P7    : Create / Update\nMy schedule
+E3 -[#f59e0b]down-> P7    : Assign schedule to any user\nView all schedules
+P1 -[dotted]down-> P7    : User identity
+P7 <==[#666666]==> D8    : CRUD schedules\nShift + skill matching
+P7 -[#ff7f0e]--> P6     : WS: schedule:deleted
+
+' ===================================================
+'  P8 — Analytics & Admin Console
+' ===================================================
+E3 -[#1f77b4]down-> P8    : View Analytics\nBulk Import / Export\nManage Users / Roles\nSeed Demo Data
+E2 -[#1f77b4]down-> P8    : View weather (zone map page)
+E3 -[#1f77b4]down-> P8    : View weather (zone map page)
+P1 -[dotted]down-> P8    : Role check (requireAdmin)
+
+P8 <==[#666666]==> D1    : User stats / role change\nCascade delete user
+P8 <==[#666666]==> D2    : Full request list\nAnalytics aggregations\nCSV / JSON export
+P8 <==[#666666]==> D3    : Resource stats\nCSV export
+P8 <==[#666666]==> D6    : SOS stats
+P8 <==[#666666]==> D9    : Feedback stats
+P8 <==[#666666]==> D5    : Incident & Zone stats
+P8 <==[#666666]==> D4    : Zone enrichment stats
+
+P8 -[#ff7f0e]--> E5     : GET current weather\n(5-min cache)
+P8 -[#ff7f0e]--> E6     : Fetch map tiles\nGeocoding queries
+
+@enduml

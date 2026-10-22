@@ -1,0 +1,63 @@
+@startuml Disaster Relief Coordination Platform - DFD Level 0
+!theme plain
+skinparam backgroundColor #ffffff
+skinparam handwritten false
+skinparam defaultTextAlignment center
+skinparam rectangle {
+  BackgroundColor #add8e6
+  BorderColor #1f77b4
+  RoundCorner 8
+}
+skinparam actor {
+  BackgroundColor #fff2cc
+  BorderColor #d6b656
+  RoundCorner 4
+}
+skinparam database {
+  BackgroundColor #d9ead3
+  BorderColor #558b2f
+}
+skinparam rectangle<<external>> {
+  BackgroundColor #f4cccc
+  BorderColor #ea9999
+  RoundCorner 4
+}
+skinparam arrow {
+  Color #555555
+  FontSize 10
+  Thickness 1.5
+}
+
+title Disaster Relief Coordination Platform
+== DFD Level 0 (Context Diagram) ==
+
+rectangle "<<System>>\nDRCP System\n\n(Express API + Socket.IO\n React Client + MongoDB)" as System #add8e6
+
+actor "Public User\n(Unauthenticated)" as PublicUser               #fff2cc
+actor "Volunteer / NGO\n(Self-Registered)" as VolunteerNGO         #fff2cc
+actor "Admin\n(Role: Admin)" as Admin                              #fff2cc
+
+rectangle "<<External>>\nEmail Service\n(Resend / SMTP)"      as Email  #f4cccc
+rectangle "<<External>>\nOpen-Meteo Weather API"               as Weather #f4cccc
+rectangle "<<External>>\nGIS Services\n(Nominatim / OSM)"      as GIS    #f4cccc
+
+database "<<Data Store>>\nMongoDB Database\n\n- Users\n- Requests\n- Resources\n- Zones\n- Incidents\n- SOSAlerts\n- ChatMessages\n- Schedules \n- Feedback\n- FileUploads" as DB #d9ead3
+
+' ---- External interactions ----
+PublicUser -[#1f77b4]--> System : View public overview / stats
+VolunteerNGO -[#1f77b4]--> System : Auth (Register / Login)\nCreate & Claim Requests\nManage Resources\nReal-time Chat\nBroadcast SOS\nView Schedules\nSubmit Feedback
+Admin -[#1f77b4]--> System : Full CRUD all records\nAnalytics Dashboard\nBulk Import/Export\nManage Roles / Users\nManage Zones & Incidents\nSeed Demo Data
+
+' ---- System to external services ----
+System -[#2ca02c]--> Email   : Password reset email
+System -[#2ca02c]--> Weather : GET current weather\n(lat / lng)<- 5 min cache
+System -[#2ca02c]--> GIS     : Map tile / Geocoding queries
+
+' ---- WebSocket push notifications ----
+System -[#9467bd]--> VolunteerNGO : Real-time notifications\n(WebSocket)
+System -[#9467bd]--> Admin        : Real-time alerts\n(WebSocket)
+
+' ---- Data store boundary ----
+System <-->[#333333] DB : Read / Write\nall collections
+
+@enduml
